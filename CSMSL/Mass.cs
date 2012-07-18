@@ -24,7 +24,7 @@ namespace CSMSL
         /// <param name="charge">The given charge</param>
         /// <returns>The m/z</returns>
         public static double MzFromMass(double mass, int charge)
-        {
+        {          
             return mass / Math.Abs(charge) + Math.Sign(charge) * Constants.PROTON;
         }
 
