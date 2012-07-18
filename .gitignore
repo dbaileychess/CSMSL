@@ -1,6 +1,42 @@
-# Build Folders (you can keep bin if you'd like, to store dlls and pdbs)
-bin
-obj
+# Compiled Source #
+###################
+*.com
+*.dll
+*.exe
 
-# mstest test results
-TestResults
+# Packages #
+############
+*.7z
+*.dmg
+*.gz
+*.iso
+*.iso
+*.jar
+*.rar
+*.tar
+*.zip
+
+# Logs and databases #
+######################
+*.log
+*.sql
+*.sqlite
+# OS generated files #
+######################
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+Icon?
+ehthumbs.db
+Thumbs.db
+
+# Visual Studios #
+##################
+*.user
+*.suo
+*.sln.cache
+*.xap
+[bB]in/
+[oO]bj/
