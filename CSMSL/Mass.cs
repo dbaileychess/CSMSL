@@ -4,6 +4,45 @@ namespace CSMSL
 {
     public class Mass
     {
+        internal double _mono;
+        internal double _avg;
+        
+        public double Monoisotopic
+        {
+            get
+            {
+                return _mono;
+            }
+        }
+
+        public double Average
+        {
+            get
+            {
+                return _avg;
+            }
+        }
+
+        public Mass()
+            : this(0,0) { }
+
+        public Mass(IMass item)
+            : this(item.Mass._mono, item.Mass._avg) { }
+
+        public Mass(Mass item)
+            : this(item._mono, item._avg) { }
+
+        public Mass(double monoisotopic, double average)
+        {
+            _mono = monoisotopic;
+            _avg = average;
+        }
+
+        public override string ToString()
+        {
+            return string.Format("{0:F5} ({1:F5})", _mono, _avg);
+        }
+
         #region Static Methods
 
         /// <summary>

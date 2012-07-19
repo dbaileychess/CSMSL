@@ -39,7 +39,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Chemistry\ChemicalFormula.cs" />
     <Compile Include="Chemistry\Element.cs" />
+    <Compile Include="Chemistry\IChemicalFormula.cs" />
     <Compile Include="Chemistry\Isotope.cs" />
     <Compile Include="Chemistry\PeriodicTable.cs" />
     <Compile Include="Constants.cs" />
@@ -48,6 +50,14 @@
     <Compile Include="Mass.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Range.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Resources\AminoAcids.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Elements.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

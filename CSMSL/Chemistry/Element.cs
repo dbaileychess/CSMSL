@@ -13,11 +13,19 @@ namespace CSMSL.Chemistry
 
         private double _mass = 0;
 
-        private Isotope _mostAbundant = null;
+        private Isotope _principal = null;
 
         private string _name;
 
-        internal Element(string name, string symbol, int atomicNumber)
+        public Isotope this[int atomicNumber]
+        {
+            get
+            {
+                return _isotopes[atomicNumber];
+            }
+        }
+
+        public Element(string name, string symbol, int atomicNumber)
         {
             _name = name;
             _atomicSymbol = symbol;
@@ -52,11 +60,11 @@ namespace CSMSL.Chemistry
             }
         }
 
-        public Isotope MostAbundant
+        public Isotope Principal
         {
             get
             {
-                return _mostAbundant;
+                return _principal;
             }
         }
 
@@ -71,16 +79,26 @@ namespace CSMSL.Chemistry
             return _isotopes.Values.GetEnumerator();
         }
 
-        internal void AddIsotope(int atomicNumber, double mass, float abundance)
+        public override string ToString()
+        {
+            return _atomicSymbol;
+        }
+
+        private double _totalAbundance = 0;
+        private double _totalMass = 0;
+
+        public void AddIsotope(int atomicNumber, double mass, float abundance)
         {
             Isotope isotope = new Isotope(this, atomicNumber, mass, abundance);
             if (!_isotopes.ContainsKey(atomicNumber))
             {
                 _isotopes.Add(atomicNumber, isotope);
-
-                if (_mostAbundant == null || abundance > _mostAbundant.RelativeAbundance)
+                _totalAbundance += abundance;
+                _totalMass += abundance * mass;
+                _avgmass = _totalMass / _totalAbundance;
+                if (_principal == null || abundance > _principal.RelativeAbundance)
                 {
-                    _mostAbundant = isotope;
+                    _principal = isotope;
                     _mass = mass;
                 }
             }
