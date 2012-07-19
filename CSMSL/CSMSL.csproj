@@ -39,7 +39,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Chemistry\Element.cs" />
+    <Compile Include="Chemistry\Isotope.cs" />
+    <Compile Include="Chemistry\PeriodicTable.cs" />
     <Compile Include="Constants.cs" />
+    <Compile Include="IMass.cs" />
     <Compile Include="IRange.cs" />
     <Compile Include="Mass.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
