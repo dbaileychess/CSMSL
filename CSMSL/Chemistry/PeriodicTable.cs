@@ -11,7 +11,7 @@ namespace CSMSL.Chemistry
         /// <summary>
         /// The singleton instance of the periodic table
         /// </summary>
-        private static readonly PeriodicTable instance = new PeriodicTable();
+        private static readonly PeriodicTable _instance = new PeriodicTable();
 
         /// <summary>
         /// The internal dictionary housing all the elements, keyed by their unique atomic symbol
@@ -36,7 +36,7 @@ namespace CSMSL.Chemistry
         {
             get
             {
-                return instance;
+                return _instance;
             }
         }
 

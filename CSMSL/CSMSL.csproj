@@ -40,6 +40,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Chemistry\ChemicalFormula.cs" />
+    <Compile Include="Chemistry\ChemicalModification.cs" />
     <Compile Include="Chemistry\Element.cs" />
     <Compile Include="Chemistry\IChemicalFormula.cs" />
     <Compile Include="Chemistry\Isotope.cs" />
@@ -49,11 +50,17 @@
     <Compile Include="IRange.cs" />
     <Compile Include="Mass.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Proteomics\AminoAcidDictionary.cs" />
+    <Compile Include="Proteomics\AminoAcidPolymer.cs" />
+    <Compile Include="Proteomics\AminoAcidResidue.cs" />
+    <Compile Include="Proteomics\Peptide.cs" />
+    <Compile Include="Proteomics\Protein.cs" />
     <Compile Include="Range.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Resources\AminoAcids.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </Content>
     <Content Include="Resources\Elements.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

@@ -21,7 +21,7 @@ namespace CSMSL.Chemistry
 
         private static readonly Regex _validateFormulaRegex = new Regex("^(" + _formulaRegex.ToString() + ")+$");
 
-        private StringBuilder _chemicalFormulaSb;
+        private StringBuilder _chemicalFormulaSB;
 
         private bool _isDirty;
 
@@ -39,7 +39,7 @@ namespace CSMSL.Chemistry
         public ChemicalFormula()
         {
             _isotopes = new Dictionary<Isotope, int>();
-            _chemicalFormulaSb = new StringBuilder(9); // Based off amino acid chemical formulas
+            _chemicalFormulaSB = new StringBuilder(9); // Based off amino acid chemical formulas
             _isDirty = true;
         }
 
@@ -59,7 +59,7 @@ namespace CSMSL.Chemistry
             if (chemicalFormula == null)
             {
                 _isotopes = new Dictionary<Isotope, int>();
-                _chemicalFormulaSb = new StringBuilder(9); // Based off amino acid chemical formulas
+                _chemicalFormulaSB = new StringBuilder(9); // Based off amino acid chemical formulas
                 _isDirty = true;
             }
             else
@@ -67,11 +67,17 @@ namespace CSMSL.Chemistry
                 _isotopes = new Dictionary<Isotope, int>(chemicalFormula._isotopes);
                 if (!(_isDirty = chemicalFormula._isDirty))
                 {
-                    _chemicalFormulaSb = new StringBuilder(chemicalFormula._chemicalFormulaSb.ToString());
+                    _chemicalFormulaSB = new StringBuilder(chemicalFormula._chemicalFormulaSB.ToString());
                     _numberOfAtoms = chemicalFormula._numberOfAtoms;
                     _mass = new Mass(chemicalFormula._mass);
                 }
             }
+        }
+
+        public void Clear()
+        {
+            _isotopes.Clear();
+            _isDirty = true;
         }
 
         public Mass Mass
@@ -143,6 +149,53 @@ namespace CSMSL.Chemistry
             }
         }
 
+        public void Remove(IChemicalFormula item)
+        {
+            Remove(item.ChemicalFormula);
+        }
+
+        public void Remove(ChemicalFormula formula)
+        {
+            foreach (KeyValuePair<Isotope, int> kvp in formula._isotopes)
+            {
+                Remove(kvp.Key, kvp.Value);
+            }          
+        }
+
+        public void Remove(Isotope isotope, int count)
+        {
+            if (count != 0)
+            {
+                int curVal = 0;
+                if (_isotopes.TryGetValue(isotope, out curVal))
+                {
+                    int value = curVal - count;
+                    if (value == 0)
+                    {
+                        _isotopes.Remove(isotope);
+                    }
+                    else
+                    {
+                        _isotopes[isotope] = value;
+                    }
+                }
+                else
+                {
+                    _isotopes.Add(isotope, -count);
+                }
+                 _isDirty = true;
+            }           
+        }
+
+        public bool Remove(Isotope isotope)
+        {
+            if (_isotopes.Remove(isotope))
+            {
+                return _isDirty = true;
+            }
+            return false;
+        }
+
         public bool ContainsIsotope(Isotope isotope)
         {
             return _isotopes.ContainsKey(isotope);
@@ -162,14 +215,14 @@ namespace CSMSL.Chemistry
             {
                 CleanUp();
             }
-            return _chemicalFormulaSb.ToString();
+            return _chemicalFormulaSB.ToString();
         }
 
         private void CleanUp()
         {
             _numberOfAtoms = 0;
             _mass = new Mass();
-            _chemicalFormulaSb.Clear();
+            _chemicalFormulaSB.Clear();
             foreach (KeyValuePair<Isotope, int> kvp in _isotopes)
             {
                 int count = kvp.Value;
@@ -182,25 +235,25 @@ namespace CSMSL.Chemistry
 
                 _mass._avg += count * element.AverageMass;
 
-                _chemicalFormulaSb.Append(element.AtomicSymbol);
+                _chemicalFormulaSB.Append(element.AtomicSymbol);
 
                 if (!isotope.IsPrincipalIsotope)
                 {
-                    _chemicalFormulaSb.Append('{');
-                    _chemicalFormulaSb.Append(isotope.MassNumber);
-                    _chemicalFormulaSb.Append('}');
+                    _chemicalFormulaSB.Append('{');
+                    _chemicalFormulaSB.Append(isotope.MassNumber);
+                    _chemicalFormulaSB.Append('}');
                 }
 
                 // Can handle negative values of elements even if it doesn't make physical sense
                 if (count < 0)
                 {
-                    _chemicalFormulaSb.Append("-");
+                    _chemicalFormulaSB.Append("-");
                 }
 
                 // Append the number of elements if larger than 1
                 if (count > 1)
                 {
-                    _chemicalFormulaSb.Append(count);
+                    _chemicalFormulaSB.Append(count);
                 }
             }
 
