@@ -58,20 +58,32 @@ namespace CSMSL.Chemistry
         {
             if (chemicalFormula == null)
             {
+                // create a new blank chemical formula
                 _isotopes = new Dictionary<Isotope, int>();
                 _chemicalFormulaSB = new StringBuilder(9); // Based off amino acid chemical formulas
                 _isDirty = true;
             }
             else
             {
+                // Copy an existing chemical formula
                 _isotopes = new Dictionary<Isotope, int>(chemicalFormula._isotopes);
                 if (!(_isDirty = chemicalFormula._isDirty))
                 {
+                    // old chemical formula is already clean, don't need to reclean
                     _chemicalFormulaSB = new StringBuilder(chemicalFormula._chemicalFormulaSB.ToString());
                     _numberOfAtoms = chemicalFormula._numberOfAtoms;
                     _mass = new Mass(chemicalFormula._mass);
                 }
+                else
+                {
+                    _chemicalFormulaSB = new StringBuilder(9); // Based off amino acid chemical formulas
+                }
             }
+        }
+
+        public ChemicalFormula Clone()
+        {
+            return new ChemicalFormula(this);
         }
 
         public void Clear()
@@ -201,12 +213,23 @@ namespace CSMSL.Chemistry
             return _isotopes.ContainsKey(isotope);
         }
 
+        /// <summary>
+        /// Test for equality between two chemical formulas. Two formulas are equivalent if they have the exact same number and type of isotopes.
+        /// </summary>
+        /// <param name="other">The other chemical formula to compare with</param>
+        /// <returns>True if the chemical formulas are the same, false otherwise</returns>
         public bool Equals(ChemicalFormula other)
         {
             if (Object.ReferenceEquals(other, null)) return false;
             if (Object.ReferenceEquals(this, other)) return true;
-
-            return (_isotopes.GetHashCode() == other._isotopes.GetHashCode());
+            if (_isotopes.Count != other._isotopes.Count) return false;
+            int count = 0;
+            foreach (KeyValuePair<Isotope, int> kvp in _isotopes)
+            {
+                if (!other._isotopes.TryGetValue(kvp.Key, out count)) return false;
+                if (kvp.Value != count) return false;
+            }
+            return true;
         }
 
         public override string ToString()

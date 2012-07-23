@@ -25,13 +25,41 @@ namespace CSMSL.Proteomics
         private bool _isDirty;
 
         private StringBuilder _sequenceSB;
+
+        public ChemicalModification NTerminus
+        {
+            get
+            {
+                return _modifications[0];
+            }
+            set
+            {
+                _modifications[0] = value;
+                _isDirty = true;
+            }
+        }
+
+        public ChemicalModification CTerminus
+        {
+            get
+            {
+                return _modifications[_modifications.Length - 1];
+            }
+            set
+            {
+                _modifications[_modifications.Length - 1] = value;
+                _isDirty = true;
+            }
+        }
                 
         private void CleanUp()
-        {
+        {            
             _chemicalFormula.Clear();
             _sequenceSB.Clear();
 
             ChemicalModification mod = null;
+
+            // Handle N-Terminus
             if ((mod = _modifications[0]) != null)
             {
                 _chemicalFormula.Add(mod);
@@ -39,10 +67,11 @@ namespace CSMSL.Proteomics
                 {
                     _sequenceSB.Append('[');
                     _sequenceSB.Append(mod);
-                    _sequenceSB.Append(']');
+                    _sequenceSB.Append("]-");
                 }
             }
 
+            // Handle Amino Acid Residues
             for (int i = 0; i < _residues.Count; i++)
             {
                 AminoAcidResidue aa = _residues[i];
@@ -57,12 +86,13 @@ namespace CSMSL.Proteomics
                 }
             }
 
-            if ((mod = _modifications[_residues.Count + 1]) != null)
+            // Handle C-Terminus
+            if ((mod = _modifications[_modifications.Length - 1]) != null)
             {
                 _chemicalFormula.Add(mod);
                 if (mod != DefaultCTerm)
                 {
-                    _sequenceSB.Append('[');
+                    _sequenceSB.Append("-[");
                     _sequenceSB.Append(mod);
                     _sequenceSB.Append(']');
                 }
@@ -136,7 +166,7 @@ namespace CSMSL.Proteomics
                 {
                     _residues.Add(residue);
                     _isDirty = true;
-                    if (match.Groups[2].Success)
+                    if (match.Groups[2].Success)  // Group 1: Chemical or Text Modification
                     {
                         ChemicalModification chemicalModification = new ChemicalModification(match.Groups[2].Value);
                         _modifications[residue_position] = chemicalModification;
@@ -149,5 +179,17 @@ namespace CSMSL.Proteomics
                 }
             }
         }
+
+        public void SetModification(ChemicalModification mod, int residueNumber)
+        {
+            if (residueNumber > Length || residueNumber < 1)
+            {
+                throw new ArgumentNullException("Residue number not correct");
+            }
+            _modifications[residueNumber] = mod;
+            _isDirty = true;
+        }
+
+
     }
 }

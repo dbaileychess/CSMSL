@@ -53,6 +53,14 @@ namespace CSMSL.Proteomics
             _chemicalFormula = chemicalFormula;            
         }
 
+        public AminoAcidResidue(AminoAcidResidue aar)
+            : this(aar._name, aar._letter, aar._symbol, new ChemicalFormula(aar._chemicalFormula)) { }
+
+        public AminoAcidResidue Clone()
+        {
+            return new AminoAcidResidue(this);
+        }
+
         public override string ToString()
         {
             return _name;
