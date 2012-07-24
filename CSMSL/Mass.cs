@@ -6,7 +6,7 @@ namespace CSMSL
     {
         internal double _mono;
         internal double _avg;
-        
+
         public double Monoisotopic
         {
             get
@@ -24,7 +24,7 @@ namespace CSMSL
         }
 
         public Mass()
-            : this(0,0) { }
+            : this(0, 0) { }
 
         public Mass(IMass item)
             : this(item.Mass._mono, item.Mass._avg) { }
@@ -36,6 +36,16 @@ namespace CSMSL
         {
             _mono = monoisotopic;
             _avg = average;
+        }
+
+        /// <summary>
+        /// Calculates the m/z for the monoisotopic mass
+        /// </summary>
+        /// <param name="charge">The charge state</param>
+        /// <returns>The m/z for the moniosotopic mass at a given charge state</returns>
+        public double ToMz(int charge)
+        {
+            return MzFromMass(_mono, charge);
         }
 
         public override string ToString()
@@ -63,7 +73,7 @@ namespace CSMSL
         /// <param name="charge">The given charge</param>
         /// <returns>The m/z</returns>
         public static double MzFromMass(double mass, int charge)
-        {              
+        {
             return mass / Math.Abs(charge) + Math.Sign(charge) * Constants.PROTON;
         }
 

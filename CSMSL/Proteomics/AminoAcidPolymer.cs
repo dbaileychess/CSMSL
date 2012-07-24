@@ -1,6 +1,6 @@
 ﻿using System;
-using System.Text;
 using System.Collections.Generic;
+using System.Text;
 using System.Text.RegularExpressions;
 using CSMSL.Chemistry;
 
@@ -16,6 +16,16 @@ namespace CSMSL.Proteomics
 
         private static readonly ChemicalModification DefaultNTerm = new ChemicalModification("H");
         private static readonly ChemicalModification DefaultCTerm = new ChemicalModification("OH");
+
+        private static readonly Dictionary<FragmentType, ChemicalFormula> _fragmentIonCaps = new Dictionary<FragmentType, ChemicalFormula>()
+        {
+          {FragmentType.a, new ChemicalFormula("C-1H-1O-1")},
+          {FragmentType.b, new ChemicalFormula("H-1")},
+          {FragmentType.c, new ChemicalFormula("NH2")},
+          {FragmentType.x, new ChemicalFormula("COH-1")},
+          {FragmentType.y, new ChemicalFormula("H")},
+          {FragmentType.z, new ChemicalFormula("N-1H-2")}
+        };
 
         internal List<AminoAcidResidue> _residues;
         internal ChemicalModification[] _modifications;
@@ -51,9 +61,9 @@ namespace CSMSL.Proteomics
                 _isDirty = true;
             }
         }
-                
+
         private void CleanUp()
-        {            
+        {
             _chemicalFormula.Clear();
             _sequenceSB.Clear();
 
@@ -77,8 +87,8 @@ namespace CSMSL.Proteomics
                 AminoAcidResidue aa = _residues[i];
                 _chemicalFormula.Add(aa);
                 _sequenceSB.Append(aa.Letter);
-                if ((mod = _modifications[i + 1]) != null)  // Mods are 1-based for the N and C-terminus             
-                {           
+                if ((mod = _modifications[i + 1]) != null)  // Mods are 1-based for the N and C-terminus
+                {
                     _chemicalFormula.Add(mod);
                     _sequenceSB.Append('[');
                     _sequenceSB.Append(mod);
@@ -190,6 +200,57 @@ namespace CSMSL.Proteomics
             _isDirty = true;
         }
 
+        public Fragment CalculateFragment(FragmentType type, int number)
+        {
+            if (type == FragmentType.None || number < 1 || number > Length)
+            {
+                return null;
+            }
 
+            ChemicalFormula chemFormula = new ChemicalFormula(_fragmentIonCaps[type]);
+
+            int start = 0;
+            int end = number;
+            if (type >= FragmentType.x)
+            {
+                start = Length - number;
+                end = Length;
+                chemFormula.Add(this.CTerminus);
+            }
+            else
+            {
+                chemFormula.Add(this.NTerminus);
+            }
+           
+            for (int i = start; i < end; i++)
+            {
+                chemFormula.Add(_residues[i]);
+                chemFormula.Add(_modifications[i + 1]);
+            }
+           
+            return new Fragment(type, number, chemFormula, this);
+        }
+
+        public IEnumerable<Fragment> CalculateFragments(FragmentType types)
+        {
+            if (types == FragmentType.None)
+            {
+                yield break;
+            }
+            foreach (FragmentType type in Enum.GetValues(typeof(FragmentType)))
+            {
+                if (type == FragmentType.None || type == FragmentType.Internal) continue;
+                if ((types & type) == type)
+                {
+                    // Calculate all the fragments given this peptide's length
+                    // TODO make this faster by caching partial chemical formulas
+                    for (int i = 1; i < Length; i++)
+                    {
+                        yield return CalculateFragment(type, i);
+                    }
+                }
+            }         
+            yield break;
+        }
     }
 }

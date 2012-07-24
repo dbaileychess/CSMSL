@@ -53,7 +53,10 @@
     <Compile Include="Proteomics\AminoAcidDictionary.cs" />
     <Compile Include="Proteomics\AminoAcidPolymer.cs" />
     <Compile Include="Proteomics\AminoAcidResidue.cs" />
+    <Compile Include="Proteomics\Fragment.cs" />
+    <Compile Include="Proteomics\FragmentType.cs" />
     <Compile Include="Proteomics\Peptide.cs" />
+    <Compile Include="Proteomics\Protease.cs" />
     <Compile Include="Proteomics\Protein.cs" />
     <Compile Include="Range.cs" />
   </ItemGroup>
@@ -66,6 +69,7 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

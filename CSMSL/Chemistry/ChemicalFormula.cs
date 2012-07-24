@@ -138,6 +138,7 @@ namespace CSMSL.Chemistry
 
         public void Add(ChemicalFormula formula)
         {
+            if (formula == null) return;      
             foreach (KeyValuePair<Isotope, int> kvp in formula._isotopes)
             {
                 Add(kvp.Key, kvp.Value);
@@ -199,6 +200,11 @@ namespace CSMSL.Chemistry
             }           
         }
 
+        /// <summary>
+        /// Completely removes a particular isotope from this chemical formula.
+        /// </summary>
+        /// <param name="isotope">The isotope to remove</param>
+        /// <returns>True if the isotope was in the chemical formula and removed, false otherwise</returns>
         public bool Remove(Isotope isotope)
         {
             if (_isotopes.Remove(isotope))
@@ -206,6 +212,16 @@ namespace CSMSL.Chemistry
                 return _isDirty = true;
             }
             return false;
+        }
+
+        public bool Remove(Element element)
+        {
+            bool result = false;
+            foreach (Isotope isotope in element)
+            {
+               result |= Remove(isotope);
+            }
+            return result;
         }
 
         public bool ContainsIsotope(Isotope isotope)
