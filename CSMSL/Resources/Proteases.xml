@@ -1,0 +1,21 @@
+<Proteases>
+	<Protease>
+		<Name>Trypsin</Name>
+		<Position>N</Position>
+		<CleavageRule>						
+			<Residue position="0">K</Residue>
+			<Residue position="1" prevent="true">P</Residue>
+		</CleavageRule>
+		<CleavageRule>
+			<Residue position="0">R</Residue>
+			<Residue position="1" prevent="true">P</Residue>
+		</CleavageRule>
+	</Protease>
+	<Protease>
+		<Name>GluC</Name>
+		<Position>C</Position>
+		<CleavageRule>		
+			<Residue position="0">E</Residue>	
+		</CleavageRule>
+	</Protease>
+</Proteases>

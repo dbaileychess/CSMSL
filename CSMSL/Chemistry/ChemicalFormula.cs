@@ -306,6 +306,11 @@ namespace CSMSL.Chemistry
         /// <param name="formula">the Chemical Formula to parse</param>
         private void ParseString(string formula)
         {
+            if (string.IsNullOrEmpty(formula))
+            {
+                return;
+            }
+
             if (!IsValidChemicalFormula(formula))
             {
                 throw new FormatException("Input string for chemical formula was in an incorrect format");

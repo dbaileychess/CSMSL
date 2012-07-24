@@ -13,18 +13,24 @@ namespace CSMSL.Proteomics
         private static readonly Regex _sequenceRegex = new Regex(@"([A-Z])(?:\[([\w\{\}]+)\])?");
 
         private static readonly Regex _validateSequenceRegex = new Regex("^(" + _sequenceRegex.ToString() + ")+$");
-
-        private static readonly ChemicalModification DefaultNTerm = new ChemicalModification("H");
-        private static readonly ChemicalModification DefaultCTerm = new ChemicalModification("OH");
+             
+        internal static readonly ChemicalModification DefaultNTerm = new ChemicalModification("H");
+        internal static readonly ChemicalModification DefaultCTerm = new ChemicalModification("OH");
 
         private static readonly Dictionary<FragmentType, ChemicalFormula> _fragmentIonCaps = new Dictionary<FragmentType, ChemicalFormula>()
         {
           {FragmentType.a, new ChemicalFormula("C-1H-1O-1")},
+          {FragmentType.adot, new ChemicalFormula("C-1O-1")},
           {FragmentType.b, new ChemicalFormula("H-1")},
+          {FragmentType.bdot, new ChemicalFormula()},
           {FragmentType.c, new ChemicalFormula("NH2")},
+          {FragmentType.cdot, new ChemicalFormula("NH3")},
           {FragmentType.x, new ChemicalFormula("COH-1")},
+          {FragmentType.xdot, new ChemicalFormula("CO")},
           {FragmentType.y, new ChemicalFormula("H")},
-          {FragmentType.z, new ChemicalFormula("N-1H-2")}
+          {FragmentType.ydot, new ChemicalFormula("H2")},
+          {FragmentType.z, new ChemicalFormula("N-1H-2")},
+          {FragmentType.zdot, new ChemicalFormula("N-1H-1")},
         };
 
         internal List<AminoAcidResidue> _residues;
@@ -35,6 +41,7 @@ namespace CSMSL.Proteomics
         private bool _isDirty;
 
         private StringBuilder _sequenceSB;
+        private StringBuilder _baseSequenceSB;
 
         public ChemicalModification NTerminus
         {
@@ -66,6 +73,7 @@ namespace CSMSL.Proteomics
         {
             _chemicalFormula.Clear();
             _sequenceSB.Clear();
+            _baseSequenceSB.Clear();
 
             ChemicalModification mod = null;
 
@@ -87,6 +95,7 @@ namespace CSMSL.Proteomics
                 AminoAcidResidue aa = _residues[i];
                 _chemicalFormula.Add(aa);
                 _sequenceSB.Append(aa.Letter);
+                _baseSequenceSB.Append(aa.Letter);
                 if ((mod = _modifications[i + 1]) != null)  // Mods are 1-based for the N and C-terminus
                 {
                     _chemicalFormula.Add(mod);
@@ -109,6 +118,18 @@ namespace CSMSL.Proteomics
             }
 
             _isDirty = false;
+        }
+
+        public string Sequence
+        {
+            get
+            {
+                if (_isDirty)
+                {
+                    CleanUp();
+                }
+                return _baseSequenceSB.ToString();
+            }
         }
 
         public override string ToString()
@@ -161,13 +182,24 @@ namespace CSMSL.Proteomics
             _modifications[0] = nTerm;
             _modifications[amino_acids + 1] = cTerm;
             _sequenceSB = new StringBuilder(sequence.Length);
+            _baseSequenceSB = new StringBuilder(amino_acids);
             _chemicalFormula = new ChemicalFormula();
             ParseSequence(sequence);
         }
 
+        internal AminoAcidPolymer(IEnumerable<AminoAcidResidue> residues, ChemicalModification[] mods)
+        {            
+            _residues = new List<AminoAcidResidue>(residues);
+            _modifications = mods;
+            _sequenceSB = new StringBuilder(_residues.Count);
+            _baseSequenceSB = new StringBuilder(_residues.Count);
+            _chemicalFormula = new ChemicalFormula();
+            _isDirty = true;
+        }
+
         private void ParseSequence(string sequence)
         {
-            AminoAcidResidue residue = null;
+            AminoAcidResidue residue = null;  
             int residue_position = 1;
             foreach (Match match in _sequenceRegex.Matches(sequence))
             {

@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
+using CSMSL.Chemistry;
 
 namespace CSMSL.Proteomics
 {
@@ -22,7 +20,7 @@ namespace CSMSL.Proteomics
             get { return _endResidue; }
             set { _endResidue = value; }
         }
-                
+
         private Protein _parent;
 
         public Protein Parent
@@ -35,10 +33,18 @@ namespace CSMSL.Proteomics
             : this(sequence, null, 0) { }
 
         public Peptide(string sequence, Protein parent)
-            : this(sequence, parent, 0) { }      
+            : this(sequence, parent, 0) { }
 
         public Peptide(string sequence, Protein parent, int startResidue)
             : base(sequence)
+        {
+            _parent = parent;
+            _startResidue = startResidue;
+            _endResidue = startResidue + this.Length;
+        }
+
+        internal Peptide(IEnumerable<AminoAcidResidue> residues, ChemicalModification[] mods, Protein parent, int startResidue)
+            : base(residues, mods)
         {
             _parent = parent;
             _startResidue = startResidue;
