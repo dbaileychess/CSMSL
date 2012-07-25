@@ -5,10 +5,8 @@ namespace CSMSL.Proteomics
 {
     public class Protease
     {
-        private static readonly AminoAcidDictionary AMINO_ACIDS = AminoAcidDictionary.Instance;
+        private Regex _cleavageRegex;
 
-        public Dictionary<char, List<KeyValuePair<char,int>>> CleaveAt;
-   
         private string _name;
 
         public string Name
@@ -30,53 +28,31 @@ namespace CSMSL.Proteomics
             get { return !_isCTerminal; }
         }
 
-        public Protease(string name, bool isCTerminal)
+        public Protease(string name, bool isCTerminal, string cleavePattern)
         {
             _name = name;
-            _isCTerminal = isCTerminal;
-            CleaveAt = new Dictionary<char, List<KeyValuePair<char, int>>>();          
+            _isCTerminal = isCTerminal;             
+            _cleavageRegex = new Regex(cleavePattern, RegexOptions.Compiled);
         }
-                  
+
+        public override string ToString()
+        {
+            return _name;
+        }
+
         public List<int> GetDigestionSiteIndices(AminoAcidPolymer aminoacidpolymer)
         {
-            List<int> indices = new List<int>();
+            return GetDigestionSiteIndices(aminoacidpolymer.Sequence);
+        }
 
-            List<KeyValuePair<char, int>> exceptions = null;
-            for (int i = 0; i < aminoacidpolymer.Length; i++)
+        public List<int> GetDigestionSiteIndices(string sequence)
+        {
+            List<int> indices = new List<int>();
+            foreach (Match match in _cleavageRegex.Matches(sequence))
             {
-                char c = aminoacidpolymer[i].Letter;
-                if (CleaveAt.TryGetValue(c, out exceptions))
-                {
-                    if (exceptions == null || exceptions.Count < 1)
-                    {
-                        indices.Add(IsCTerminal ? i : i - 1);
-                    }
-                    else
-                    {
-                        bool cleave = true;
-                        foreach (KeyValuePair<char, int> exception in exceptions)
-                        {
-                            int j = i + exception.Value;
-                            if (j < aminoacidpolymer.Length)
-                            {
-                                char c2 = aminoacidpolymer[j].Letter;
-                                if(c2 == exception.Key)
-                                {
-                                    cleave = false;
-                                    break;                                   
-                                }
-                            }                            
-                        }
-                        if (cleave)
-                        {
-                            indices.Add(IsCTerminal ? i : i - 1);
-                        }
-                    }     
-                }               
+                indices.Add(match.Groups["cleave"].Index - 1);
             }
             return indices;
         }
     }
-
-
 }

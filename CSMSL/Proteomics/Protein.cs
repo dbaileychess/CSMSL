@@ -8,6 +8,12 @@ namespace CSMSL.Proteomics
     {
         private List<Peptide> _childern;
 
+        public Protein(string sequence)
+            : base(sequence)
+        {
+            _childern = new List<Peptide>();
+        }
+
         public List<Peptide> Childern
         {
             get
@@ -16,12 +22,14 @@ namespace CSMSL.Proteomics
             }
         }
 
-        public Protein(string sequence)
-            : base(sequence)
-        {
-            _childern = new List<Peptide>();
-        }
-
+        /// <summary>
+        /// Digests this protein into peptides. Peptides are stored within the protein for easy access, this digestion overwrites and previously generated peptides.
+        /// </summary>
+        /// <param name="protease">The protease to digest with</param>
+        /// <param name="maxMissedCleavages">The max number of missed cleavages generated, 0 means no missed cleavages</param>
+        /// <param name="minLength">The minimum length (in amino acids) of the peptide</param>
+        /// <param name="maxLength">The maximum length (in amino acids) of the peptide</param>
+        /// <returns>A list of digested peptides</returns>
         public List<Peptide> Digest(Protease protease, int? maxMissedCleavages, int? minLength, int? maxLength)
         {
             _childern.Clear();
