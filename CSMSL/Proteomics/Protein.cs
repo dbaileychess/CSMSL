@@ -8,10 +8,16 @@ namespace CSMSL.Proteomics
     {
         private List<Peptide> _childern;
 
+        private string _description;
+
         public Protein(string sequence)
+            : this(sequence, string.Empty) { }
+
+        public Protein(string sequence, string description)
             : base(sequence)
         {
             _childern = new List<Peptide>();
+            _description = description;
         }
 
         public List<Peptide> Childern
@@ -22,21 +28,38 @@ namespace CSMSL.Proteomics
             }
         }
 
+        public string Description
+        {
+            get { return _description; }
+            set { _description = value; }
+        }
+
+        public List<Peptide> Digest(Protease protease, int? maxMissedCleavages, int? minLength, int? maxLength)
+        {
+            return Digest(new Protease[] { protease }, maxMissedCleavages, minLength, maxLength);
+        }
+
         /// <summary>
         /// Digests this protein into peptides. Peptides are stored within the protein for easy access, this digestion overwrites and previously generated peptides.
         /// </summary>
-        /// <param name="protease">The protease to digest with</param>
+        /// <param name="proteases">The proteases to digest with</param>
         /// <param name="maxMissedCleavages">The max number of missed cleavages generated, 0 means no missed cleavages</param>
         /// <param name="minLength">The minimum length (in amino acids) of the peptide</param>
         /// <param name="maxLength">The maximum length (in amino acids) of the peptide</param>
         /// <returns>A list of digested peptides</returns>
-        public List<Peptide> Digest(Protease protease, int? maxMissedCleavages, int? minLength, int? maxLength)
+        public List<Peptide> Digest(IEnumerable<Protease> proteases, int? maxMissedCleavages, int? minLength, int? maxLength)
         {
             _childern.Clear();
 
-            List<int> indices = new List<int>() { -1 };
-            indices.AddRange(protease.GetDigestionSiteIndices(this));
-            indices.Add(Length - 1);
+            HashSet<int> locations = new HashSet<int>() { -1 };
+            foreach (Protease protease in proteases)
+            {
+                locations.UnionWith(protease.GetDigestionSiteIndices(this));
+            }
+            locations.Add(Length - 1);
+
+            List<int> indices = new List<int>(locations);
+            indices.Sort();
 
             int min = (minLength.HasValue) ? minLength.Value : 1;
             int max = (maxLength.HasValue) ? maxLength.Value : int.MaxValue;

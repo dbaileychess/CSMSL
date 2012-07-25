@@ -17,9 +17,9 @@ namespace CSMSL.Chemistry
         /// The fourth group is optional and represents the number of isotopes to add, if not present it assumes 1: H2O means 2 Hydrogen and 1 Oxygen
         /// Modified from: http://stackoverflow.com/questions/4116786/parsing-a-chemical-formula-from-a-string-in-c
         /// </summary>
-        private static readonly Regex _formulaRegex = new Regex(@"([A-Z][a-z]*)(?:\{([0-9]+)\})?(-)?([0-9]+)?");
+        private static readonly Regex _formulaRegex = new Regex(@"([A-Z][a-z]*)(?:\{([0-9]+)\})?(-)?([0-9]+)?", RegexOptions.Compiled);
 
-        private static readonly Regex _validateFormulaRegex = new Regex("^(" + _formulaRegex.ToString() + ")+$");
+        private static readonly Regex _validateFormulaRegex = new Regex("^(" + _formulaRegex.ToString() + ")+$", RegexOptions.Compiled);
 
         private StringBuilder _chemicalFormulaSB;
 
@@ -152,7 +152,7 @@ namespace CSMSL.Chemistry
                 int curVal = 0;
                 if (_isotopes.TryGetValue(isotope, out curVal))
                 {
-                    _isotopes[isotope] = curVal + count; // Much quicker that isotopes[isotope] += count
+                    _isotopes[isotope] = curVal + count; // Much quicker than isotopes[isotope] += count
                 }
                 else
                 {
@@ -299,6 +299,8 @@ namespace CSMSL.Chemistry
             // Mark as clean
             _isDirty = false;
         }
+
+
         /// <summary>
         /// Parses a string representation of chemical formula and adds the elements
         /// to this chemical formula

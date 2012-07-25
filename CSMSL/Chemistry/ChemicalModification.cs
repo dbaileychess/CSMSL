@@ -2,13 +2,20 @@
 {
     public class ChemicalModification : ChemicalFormula
     {
-        private string _name = string.Empty;
-        
-        public ChemicalModification(string chemicalFormula)
-            : base(chemicalFormula)
+        private string _name;
+
+        public string Name
         {
-            
+            get
+            {
+                if (string.IsNullOrEmpty(_name))
+                    return base.ToString();
+                return _name;
+            }
         }
+
+        public ChemicalModification(string chemicalFormula)
+            : this(chemicalFormula, string.Empty) { }
 
         public ChemicalModification(string chemicalFormula, string name)
             : base(chemicalFormula)
@@ -18,9 +25,7 @@
 
         public override string ToString()
         {
-            if (string.IsNullOrEmpty(_name)) 
-                return base.ToString();
-            return _name;
+            return Name;
         }
     }
 }

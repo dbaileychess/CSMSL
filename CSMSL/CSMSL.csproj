@@ -47,6 +47,7 @@
     <Compile Include="Chemistry\PeriodicTable.cs" />
     <Compile Include="Constants.cs" />
     <Compile Include="IMass.cs" />
+    <Compile Include="IO\FastaReader.cs" />
     <Compile Include="IRange.cs" />
     <Compile Include="Mass.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -69,11 +69,14 @@ namespace CSMSL.Chemistry
                 int atomicnumber = int.Parse(elementNode.SelectSingleNode("AtomicNumber").InnerText);
                 Element element = new Element(name, symbol, atomicnumber);
                 foreach (XmlNode isotopeNode in elementNode.SelectNodes("Isotope"))
-                {
-                    double mass = double.Parse(isotopeNode.SelectSingleNode("Mass").InnerText);
-                    int massnumber = int.Parse(isotopeNode.SelectSingleNode("MassNumber").InnerText);
+                {                 
                     float abundance = float.Parse(isotopeNode.SelectSingleNode("RelativeAbundance").InnerText);
-                    element.AddIsotope(massnumber, mass, abundance);
+                    if (abundance > 0)
+                    {
+                        double mass = double.Parse(isotopeNode.SelectSingleNode("Mass").InnerText);
+                        int massnumber = int.Parse(isotopeNode.SelectSingleNode("MassNumber").InnerText);
+                        element.AddIsotope(massnumber, mass, abundance);
+                    }
                 }
                 AddElement(element);
             }
