@@ -48,6 +48,7 @@
     <Compile Include="Constants.cs" />
     <Compile Include="IMass.cs" />
     <Compile Include="IO\FastaReader.cs" />
+    <Compile Include="IO\FastaWriter.cs" />
     <Compile Include="IRange.cs" />
     <Compile Include="Mass.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -61,6 +62,9 @@
     <Compile Include="Proteomics\ProteaseDictionary.cs" />
     <Compile Include="Proteomics\Protein.cs" />
     <Compile Include="Range.cs" />
+    <Compile Include="Spectral\IPeak.cs" />
+    <Compile Include="Spectral\Peak.cs" />
+    <Compile Include="Spectral\Spectrum.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Resources\AminoAcids.xml">

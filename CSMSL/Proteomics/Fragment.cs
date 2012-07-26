@@ -4,31 +4,20 @@ namespace CSMSL.Proteomics
 {
     public class Fragment : IChemicalFormula, IMass
     {
+        private ChemicalFormula _chemicalFormula;
         private int _number;
-
-        public int Number
-        {
-            get { return _number; }
-            set { _number = value; }
-        }
-
-        private FragmentType _type;
-
-        public FragmentType Type
-        {
-            get { return _type; }
-            set { _type = value; }
-        }
 
         private AminoAcidPolymer _parent;
 
-        public AminoAcidPolymer Parent
-        {
-            get { return _parent; }
-            set { _parent = value; }
-        }
+        private FragmentType _type;
 
-        private ChemicalFormula _chemicalFormula;
+        public Fragment(FragmentType type, int number, ChemicalFormula chemicalFormula, AminoAcidPolymer parent)
+        {
+            _type = type;
+            _number = number;
+            _chemicalFormula = chemicalFormula;
+            _parent = parent;
+        }
 
         public ChemicalFormula ChemicalFormula
         {
@@ -41,12 +30,22 @@ namespace CSMSL.Proteomics
             get { return _chemicalFormula.Mass; }
         }
 
-        public Fragment(FragmentType type, int number, ChemicalFormula chemicalFormula, AminoAcidPolymer parent)
+        public int Number
         {
-            _type = type;
-            _number = number;
-            _chemicalFormula = chemicalFormula;
-            _parent = parent;
+            get { return _number; }
+            set { _number = value; }
+        }
+
+        public AminoAcidPolymer Parent
+        {
+            get { return _parent; }
+            set { _parent = value; }
+        }
+
+        public FragmentType Type
+        {
+            get { return _type; }
+            set { _type = value; }
         }
 
         public override string ToString()

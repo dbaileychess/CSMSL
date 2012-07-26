@@ -149,10 +149,18 @@ namespace CSMSL.Chemistry
         {
             if (count != 0)
             {
-                int curVal = 0;
-                if (_isotopes.TryGetValue(isotope, out curVal))
+                int curValue = 0;
+                if (_isotopes.TryGetValue(isotope, out curValue))
                 {
-                    _isotopes[isotope] = curVal + count; // Much quicker than isotopes[isotope] += count
+                    int newValue = curValue + count;
+                    if (newValue == 0)
+                    {
+                        _isotopes.Remove(isotope);
+                    }
+                    else
+                    {
+                        _isotopes[isotope] = newValue;
+                    }
                 }
                 else
                 {
@@ -177,27 +185,7 @@ namespace CSMSL.Chemistry
 
         public void Remove(Isotope isotope, int count)
         {
-            if (count != 0)
-            {
-                int curVal = 0;
-                if (_isotopes.TryGetValue(isotope, out curVal))
-                {
-                    int value = curVal - count;
-                    if (value == 0)
-                    {
-                        _isotopes.Remove(isotope);
-                    }
-                    else
-                    {
-                        _isotopes[isotope] = value;
-                    }
-                }
-                else
-                {
-                    _isotopes.Add(isotope, -count);
-                }
-                 _isDirty = true;
-            }           
+            Add(isotope, -count);         
         }
 
         /// <summary>
