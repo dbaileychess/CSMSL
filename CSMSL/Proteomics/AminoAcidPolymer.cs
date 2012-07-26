@@ -281,7 +281,7 @@ namespace CSMSL.Proteomics
                         modSB.Append(letter);
                     }
                 }
-                else if (AMINO_ACIDS.TryGetResidue(letter, out residue))
+                else if (AMINO_ACIDS._residuesLetter.TryGetValue(letter, out residue))
                 {
                     _residues.Add(residue);
                     _baseSequenceSB.Append(letter);

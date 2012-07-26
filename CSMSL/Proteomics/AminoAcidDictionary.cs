@@ -22,9 +22,9 @@ namespace CSMSL.Proteomics
         /// <summary>
         /// The internal dictionary housing all the elements, keyed by their unique atomic symbol
         /// </summary>
-        private Dictionary<string, AminoAcidResidue> _residuesSymbol;
+        internal Dictionary<string, AminoAcidResidue> _residuesSymbol;
 
-        private Dictionary<char, AminoAcidResidue> _residuesLetter;
+        internal Dictionary<char, AminoAcidResidue> _residuesLetter;
         
         public AminoAcidResidue this[string symbol]
         {
