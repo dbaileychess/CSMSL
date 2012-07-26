@@ -61,6 +61,7 @@
     <Compile Include="Proteomics\Protease.cs" />
     <Compile Include="Proteomics\ProteaseDictionary.cs" />
     <Compile Include="Proteomics\Protein.cs" />
+    <Compile Include="Proteomics\Terminus.cs" />
     <Compile Include="Range.cs" />
     <Compile Include="Spectral\IPeak.cs" />
     <Compile Include="Spectral\Peak.cs" />

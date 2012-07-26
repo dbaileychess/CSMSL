@@ -152,7 +152,7 @@ namespace CSMSL.Chemistry
                 int curValue = 0;
                 if (_isotopes.TryGetValue(isotope, out curValue))
                 {
-                    int newValue = curValue + count;
+                    int newValue = curValue + count;                  
                     if (newValue == 0)
                     {
                         _isotopes.Remove(isotope);

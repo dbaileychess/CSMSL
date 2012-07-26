@@ -6,6 +6,7 @@ using CSMSL.Chemistry;
 
 namespace CSMSL.Proteomics
 {
+
     public abstract class AminoAcidPolymer : IChemicalFormula, IMass
     {
         internal static readonly ChemicalModification DefaultCTerm = new ChemicalModification("OH");
@@ -160,7 +161,10 @@ namespace CSMSL.Proteomics
             for (int i = start; i < end; i++)
             {
                 chemFormula.Add(_residues[i]);
-                chemFormula.Add(_modifications[i + 1]);
+                if (_modifications[i + 1] != null)
+                {
+                    chemFormula.Add(_modifications[i + 1]);
+                }
             }
 
             return new Fragment(type, number, chemFormula, this);
@@ -186,6 +190,48 @@ namespace CSMSL.Proteomics
                 }
             }
             yield break;
+        }
+
+        public void SetModification(ChemicalModification mod, Terminus terminus)
+        {
+            if ((terminus & Terminus.N) == Terminus.N)
+            {
+                _modifications[0] = mod;
+                _isDirty = true;
+            }
+            if ((terminus & Terminus.C) == Terminus.C)
+            {
+                _modifications[_modifications.Length - 1] = mod;
+                _isDirty = true;
+            }
+        }
+
+        public int SetModification(ChemicalModification mod, char letter)
+        {
+            AminoAcidResidue residue = null;
+            if (AMINO_ACIDS._residuesLetter.TryGetValue(letter, out residue))
+            {
+                return SetModification(mod, residue);
+            }
+            else
+            {
+                return 0;
+            }
+        }
+
+        public int SetModification(ChemicalModification mod, AminoAcidResidue residue)
+        {
+            int count = 0;
+            for (int i = 0; i < _residues.Count; i++)
+            {
+                if (residue.Equals(_residues[i]))
+                {
+                    _modifications[i + 1] = mod;
+                    _isDirty = true;
+                    count++;
+                }
+            }
+            return count;
         }
 
         public void SetModification(ChemicalModification mod, int residueNumber)

@@ -60,7 +60,7 @@ namespace CSMSL.Proteomics
                 string name = proteaseNode.SelectSingleNode("Name").InnerText;
                 char _char = char.Parse(proteaseNode.SelectSingleNode("Position").InnerText);
                 string regex = proteaseNode.SelectSingleNode("Cleavage").InnerText;
-                Protease protease = new Protease(name, _char == 'C', regex);
+                Protease protease = new Protease(name, (_char == 'C') ? Terminus.C : Terminus.N, regex);
                 AddProtease(protease);
             }
         }
