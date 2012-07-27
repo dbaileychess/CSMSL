@@ -44,6 +44,7 @@ namespace CSMSL.Chemistry
             get { return _atomicSymbol; }
             set { _atomicSymbol = value; }
         }
+
         public double AverageMass
         {
             get

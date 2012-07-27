@@ -1,38 +1,26 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using CSMSL.Chemistry;
 
 namespace CSMSL.Proteomics
 {
-    public class AminoAcidResidue: IEquatable<AminoAcidResidue>, IChemicalFormula, IMass
-    {        
-        private string _name;
-
-        public string Name
-        {
-            get { return _name; }
-            set { _name = value; }
-        }
-
+    public class AminoAcidResidue : IEquatable<AminoAcidResidue>, IChemicalFormula, IMass
+    {
+        private ChemicalFormula _chemicalFormula;
         private char _letter;
-
-        public char Letter
-        {
-            get { return _letter; }
-            set { _letter = value; }
-        }
+        private string _name;
 
         private string _symbol;
 
-        public string Symbol
+        public AminoAcidResidue(string name, char oneLetterAbbreviation, string threeLetterAbbreviation, ChemicalFormula chemicalFormula)
         {
-            get { return _symbol; }
-            set { _symbol = value; }
+            _name = name;
+            _letter = oneLetterAbbreviation;
+            _symbol = threeLetterAbbreviation;
+            _chemicalFormula = chemicalFormula;
         }
 
-        private ChemicalFormula _chemicalFormula;
+        public AminoAcidResidue(AminoAcidResidue aar)
+            : this(aar._name, aar._letter, aar._symbol, new ChemicalFormula(aar._chemicalFormula)) { }
 
         public ChemicalFormula ChemicalFormula
         {
@@ -40,35 +28,42 @@ namespace CSMSL.Proteomics
             private set { _chemicalFormula = value; }
         }
 
+        public char Letter
+        {
+            get { return _letter; }
+            set { _letter = value; }
+        }
+
         public Mass Mass
         {
             get { return _chemicalFormula.Mass; }
         }
-        
-        public AminoAcidResidue(string name, char oneLetterAbbreviation, string threeLetterAbbreviation, ChemicalFormula chemicalFormula)
+
+        public string Name
         {
-            _name = name;
-            _letter = oneLetterAbbreviation;
-            _symbol = threeLetterAbbreviation;
-            _chemicalFormula = chemicalFormula;            
+            get { return _name; }
+            set { _name = value; }
         }
 
-        public AminoAcidResidue(AminoAcidResidue aar)
-            : this(aar._name, aar._letter, aar._symbol, new ChemicalFormula(aar._chemicalFormula)) { }
+        public string Symbol
+        {
+            get { return _symbol; }
+            set { _symbol = value; }
+        }
 
         public AminoAcidResidue Clone()
         {
             return new AminoAcidResidue(this);
         }
 
-        public override string ToString()
-        {
-            return _name;
-        }
-
         public bool Equals(AminoAcidResidue other)
         {
             return _chemicalFormula.Equals(other._chemicalFormula);
+        }
+
+        public override string ToString()
+        {
+            return _name;
         }
     }
 }

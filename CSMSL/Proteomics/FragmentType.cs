@@ -21,5 +21,4 @@ namespace CSMSL.Proteomics
         Internal = 4096,
         All = Int32.MaxValue
     }
-
 }

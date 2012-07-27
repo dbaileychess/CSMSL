@@ -22,6 +22,38 @@ namespace CSMSL
             _mean = (_max + _min) / 2.0;
         }
 
+        public Range(Range range)
+            : this(range._min, range._max) { }
+
+        public Range(double mean, Tolerance tolerance)
+        {
+            _mean = mean;
+            SetTolerance(tolerance);
+        }
+
+        private void SetTolerance(Tolerance tolerance)
+        {
+            switch (tolerance.Type)
+            {
+                default:
+                case ToleranceType.DA:
+                    _min = _mean - tolerance.Value / 2;
+                    _max = _mean + tolerance.Value / 2;
+                    break;
+
+                case ToleranceType.MMU:
+                    _min = _mean - tolerance.Value / 2000;
+                    _max = _mean + tolerance.Value / 2000;
+                    break;
+
+                case ToleranceType.PPM:
+                    _min = _mean * (1 - (tolerance.Value / 2e6));
+                    _max = _mean * (1 + (tolerance.Value / 2e6));
+                    break;
+            }
+            _width = _max - _min;
+        }
+
         public new double Maximum
         {
             get
@@ -66,9 +98,9 @@ namespace CSMSL
 
         public double Width
         {
-            get 
-            { 
-                return _width; 
+            get
+            {
+                return _width;
             }
             set
             {

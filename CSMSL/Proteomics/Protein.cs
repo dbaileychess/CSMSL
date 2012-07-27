@@ -39,6 +39,11 @@ namespace CSMSL.Proteomics
             return Digest(new Protease[] { protease }, maxMissedCleavages, minLength, maxLength);
         }
 
+        public void ClearChildern()
+        {
+            _childern.Clear();
+        }
+
         /// <summary>
         /// Digests this protein into peptides. Peptides are stored within the protein for easy access, this digestion overwrites and previously generated peptides.
         /// </summary>

@@ -66,6 +66,7 @@
     <Compile Include="Spectral\IPeak.cs" />
     <Compile Include="Spectral\Peak.cs" />
     <Compile Include="Spectral\Spectrum.cs" />
+    <Compile Include="Tolerance.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Resources\AminoAcids.xml">

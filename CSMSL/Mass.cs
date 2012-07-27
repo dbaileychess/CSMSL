@@ -2,7 +2,7 @@
 
 namespace CSMSL
 {
-    public class Mass
+    public class Mass : IComparable<Mass>
     {
         internal double _mono;
         internal double _avg;
@@ -51,6 +51,11 @@ namespace CSMSL
         public override string ToString()
         {
             return string.Format("{0:F5} ({1:F5})", _mono, _avg);
+        }
+
+        public int CompareTo(Mass other)
+        {
+            return _mono.CompareTo(other._mono);
         }
 
         #region Static Methods

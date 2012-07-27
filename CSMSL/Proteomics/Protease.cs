@@ -14,14 +14,13 @@ namespace CSMSL.Proteomics
             get { return _name; }
             set { _name = value; }
         }
-                
+
         public Terminus Terminal;
-            
 
         public Protease(string name, Terminus terminus, string cleavePattern)
         {
             _name = name;
-            Terminal = terminus;             
+            Terminal = terminus;
             _cleavageRegex = new Regex(cleavePattern, RegexOptions.Compiled);
         }
 

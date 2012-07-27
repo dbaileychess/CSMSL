@@ -6,7 +6,6 @@ using CSMSL.Chemistry;
 
 namespace CSMSL.Proteomics
 {
-
     public abstract class AminoAcidPolymer : IChemicalFormula, IMass
     {
         internal static readonly ChemicalModification DefaultCTerm = new ChemicalModification("OH");
@@ -132,7 +131,7 @@ namespace CSMSL.Proteomics
         {
             get
             {
-                return _residues[index];
+                return _residues[index - 1];
             }
         }
 

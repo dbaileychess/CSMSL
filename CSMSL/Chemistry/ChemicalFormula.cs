@@ -126,6 +126,7 @@ namespace CSMSL.Chemistry
                 return _isotopes.Count;
             }
         }
+
         public static bool IsValidChemicalFormula(string chemicalFormula)
         {
             return _validateFormulaRegex.IsMatch(chemicalFormula);
@@ -138,7 +139,7 @@ namespace CSMSL.Chemistry
 
         public void Add(ChemicalFormula formula)
         {
-            if (formula == null) return;      
+            if (formula == null) return;
             foreach (KeyValuePair<Isotope, int> kvp in formula._isotopes)
             {
                 Add(kvp.Key, kvp.Value);
@@ -152,7 +153,7 @@ namespace CSMSL.Chemistry
                 int curValue = 0;
                 if (_isotopes.TryGetValue(isotope, out curValue))
                 {
-                    int newValue = curValue + count;                  
+                    int newValue = curValue + count;
                     if (newValue == 0)
                     {
                         _isotopes.Remove(isotope);
@@ -180,12 +181,12 @@ namespace CSMSL.Chemistry
             foreach (KeyValuePair<Isotope, int> kvp in formula._isotopes)
             {
                 Remove(kvp.Key, kvp.Value);
-            }          
+            }
         }
 
         public void Remove(Isotope isotope, int count)
         {
-            Add(isotope, -count);         
+            Add(isotope, -count);
         }
 
         /// <summary>
@@ -207,7 +208,7 @@ namespace CSMSL.Chemistry
             bool result = false;
             foreach (Isotope isotope in element)
             {
-               result |= Remove(isotope);
+                result |= Remove(isotope);
             }
             return result;
         }
@@ -288,7 +289,6 @@ namespace CSMSL.Chemistry
             _isDirty = false;
         }
 
-
         /// <summary>
         /// Parses a string representation of chemical formula and adds the elements
         /// to this chemical formula
@@ -329,6 +329,28 @@ namespace CSMSL.Chemistry
                     throw new ArgumentException(string.Format("Chemical Symbol {0} does not exist in the Periodic Table", chemsym));
                 }
             }
+        }
+
+        public static implicit operator ChemicalFormula(string sequence)
+        {
+            return new ChemicalFormula(sequence);
+        }
+
+        public static double[,] GetIsotopicDistribution(IChemicalFormula item)
+        {
+            return GetIsotopicDistribution(item.ChemicalFormula);
+        }
+
+        public static double[,] GetIsotopicDistribution(ChemicalFormula baseFormula)
+        {
+            double[,] data = new double[10, 2];
+            double totalSum = 0;
+            double value = 1;
+            foreach (KeyValuePair<Isotope, int> kvp in baseFormula._isotopes)
+            {
+                value *= kvp.Key.RelativeAbundance * kvp.Value;
+            }
+            return data;
         }
     }
 }

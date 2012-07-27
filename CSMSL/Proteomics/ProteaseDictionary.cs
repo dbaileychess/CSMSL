@@ -30,6 +30,7 @@ namespace CSMSL.Proteomics
                 return _instance;
             }
         }
+
         public Protease this[string name]
         {
             get
@@ -37,6 +38,7 @@ namespace CSMSL.Proteomics
                 return _proteases[name];
             }
         }
+
         /// <summary>
         /// Adds a protease to the singleton dictionary of proteases
         /// </summary>

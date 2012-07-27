@@ -9,7 +9,7 @@ namespace CSMSL.Proteomics
         private static readonly AminoAcidDictionary _instance = new AminoAcidDictionary();
 
         /// <summary>
-        /// The single instance of the Amino Acid Dictionary created by the program (singleton pattern) 
+        /// The single instance of the Amino Acid Dictionary created by the program (singleton pattern)
         /// </summary>
         public static AminoAcidDictionary Instance
         {
@@ -25,7 +25,7 @@ namespace CSMSL.Proteomics
         internal Dictionary<string, AminoAcidResidue> _residuesSymbol;
 
         internal Dictionary<char, AminoAcidResidue> _residuesLetter;
-        
+
         public AminoAcidResidue this[string symbol]
         {
             get

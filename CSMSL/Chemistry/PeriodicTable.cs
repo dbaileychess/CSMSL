@@ -30,7 +30,7 @@ namespace CSMSL.Chemistry
         }
 
         /// <summary>
-        /// The single instance of the Periodic Table created by the program (singleton pattern) 
+        /// The single instance of the Periodic Table created by the program (singleton pattern)
         /// </summary>
         public static PeriodicTable Instance
         {
@@ -69,7 +69,7 @@ namespace CSMSL.Chemistry
                 int atomicnumber = int.Parse(elementNode.SelectSingleNode("AtomicNumber").InnerText);
                 Element element = new Element(name, symbol, atomicnumber);
                 foreach (XmlNode isotopeNode in elementNode.SelectNodes("Isotope"))
-                {                 
+                {
                     float abundance = float.Parse(isotopeNode.SelectSingleNode("RelativeAbundance").InnerText);
                     if (abundance > 0)
                     {
@@ -90,10 +90,13 @@ namespace CSMSL.Chemistry
         /// <returns>True if the element was not present before, false if the element existed and was overwritten</returns>
         public bool AddElement(Element element)
         {
-            if(_elements.ContainsKey(element.AtomicSymbol)) {
+            if (_elements.ContainsKey(element.AtomicSymbol))
+            {
                 _elements[element.AtomicSymbol] = element;
                 return false;
-            } else {
+            }
+            else
+            {
                 _elements.Add(element.AtomicSymbol, element);
                 return true;
             }
