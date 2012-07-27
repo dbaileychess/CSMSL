@@ -203,6 +203,19 @@ namespace CSMSL.Chemistry
             return false;
         }
 
+        public bool Remove(string symbol)
+        {
+            Element element;
+            if (PERIODIC_TABLE.TryGetElement(symbol, out element))
+            {
+                return Remove(element);
+            }
+            else
+            {
+                return false;
+            }
+        }
+
         public bool Remove(Element element)
         {
             bool result = false;
@@ -246,6 +259,20 @@ namespace CSMSL.Chemistry
             return _chemicalFormulaSB.ToString();
         }
 
+        public static ChemicalFormula operator +(ChemicalFormula left, ChemicalFormula right)
+        {
+            ChemicalFormula newFormula = new ChemicalFormula(left);
+            newFormula.Add(right);
+            return newFormula;
+        }
+
+        public static ChemicalFormula operator -(ChemicalFormula left, ChemicalFormula right)
+        {
+            ChemicalFormula newFormula = new ChemicalFormula(left);
+            newFormula.Remove(right);
+            return newFormula;
+        }
+
         private void CleanUp()
         {
             _numberOfAtoms = 0;
@@ -271,15 +298,7 @@ namespace CSMSL.Chemistry
                     _chemicalFormulaSB.Append(isotope.MassNumber);
                     _chemicalFormulaSB.Append('}');
                 }
-
-                // Can handle negative values of elements even if it doesn't make physical sense
-                if (count < 0)
-                {
-                    _chemicalFormulaSB.Append("-");
-                }
-
-                // Append the number of elements if larger than 1
-                if (count > 1)
+                if (count != 1)
                 {
                     _chemicalFormulaSB.Append(count);
                 }
