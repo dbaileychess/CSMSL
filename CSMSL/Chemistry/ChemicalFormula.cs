@@ -266,6 +266,23 @@ namespace CSMSL.Chemistry
             return newFormula;
         }
 
+        public static ChemicalFormula operator *(ChemicalFormula formula, int count)
+        {
+            ChemicalFormula newFormula = formula.Clone();
+            List<Isotope> keys = new List<Isotope>(newFormula._isotopes.Keys);
+            foreach (Isotope key in keys)
+            {
+                newFormula._isotopes[key] *= count;                
+            }
+            newFormula._isDirty = true;
+            return newFormula;
+        }
+
+        public static ChemicalFormula operator *(int count, ChemicalFormula formula)
+        {
+            return formula * count;
+        }
+
         public static ChemicalFormula operator -(ChemicalFormula left, ChemicalFormula right)
         {
             ChemicalFormula newFormula = new ChemicalFormula(left);

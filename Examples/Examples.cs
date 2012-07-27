@@ -28,6 +28,8 @@ namespace ExamplesCSMSL
         {
             ChemicalFormulaExamples();
             PeptideExamples();
+            ExampleTrypticDigest digestExample = new ExampleTrypticDigest();
+            digestExample.Main();
         }
 
         /// <summary>
@@ -100,11 +102,13 @@ namespace ExamplesCSMSL
             formula1.Remove(formula2);
             WriteFormulaToConsole(formula1);
 
-            // Implicit arithmetic is also possible (supports + and -) 
+            // Implicit arithmetic is also possible (supports +, -, and *) 
             ChemicalFormula formula3 = formula2 - formula1;
             WriteFormulaToConsole(formula3);
             ChemicalFormula formula4 = formula3 + formula1;
             WriteFormulaToConsole(formula4);
+            ChemicalFormula formula5 = formula2 * 5;
+            WriteFormulaToConsole(formula5);
                      
             // Formulas consist of a dictionary of isotopes and count, and by default, the most common (abundant) isotope of an element
             // is included (i.e. Carbon 12 instead of Carbon 13). You can explicitly state that you want another isotope in a chemical formula
