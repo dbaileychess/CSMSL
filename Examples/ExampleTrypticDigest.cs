@@ -8,7 +8,7 @@ namespace ExamplesCSMSL
 {
     public class ExampleTrypticDigest
     {
-        public void Main()
+        public static void Start()
         {
             Console.WriteLine("**Start Digestion**");
             Stopwatch watch = new Stopwatch();
@@ -18,7 +18,7 @@ namespace ExamplesCSMSL
             List<Protein> prots = new List<Protein>();
             List<double> allMzs = new List<double>();
             int maxMissed = 3;
-            using (FastaReader reader = new FastaReader("./yeast_uniprot_120226.fasta"))
+            using (FastaReader reader = new FastaReader("yeast_uniprot_120226.fasta"))
             {
                 foreach (Protein protein in reader.ReadNextProtein())
                 {

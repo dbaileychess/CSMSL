@@ -25,11 +25,13 @@ namespace ExamplesCSMSL
         }
 
         private static void StartExamples()
-        {
-            ChemicalFormulaExamples();
+        {            
+            // Examples coding
+            //ChemicalFormulaExamples();
             PeptideExamples();
-            ExampleTrypticDigest digestExample = new ExampleTrypticDigest();
-            digestExample.Main();
+
+            // Example programs
+            ExampleTrypticDigest.Start();        
         }
 
         /// <summary>

@@ -52,9 +52,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="yeast_uniprot_120226.fasta">
+    <None Include="yeast_uniprot_120226.fasta">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+    </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
