@@ -171,6 +171,11 @@ namespace CSMSL.Proteomics
 
         public IEnumerable<Fragment> CalculateFragments(FragmentType types)
         {
+            return CalculateFragments(types, 1, Length-1);
+        }
+
+        public IEnumerable<Fragment> CalculateFragments(FragmentType types, int min, int max)
+        {
             if (types == FragmentType.None)
             {
                 yield break;
@@ -182,7 +187,8 @@ namespace CSMSL.Proteomics
                 {
                     // Calculate all the fragments given this peptide's length
                     // TODO make this faster by caching partial chemical formulas
-                    for (int i = 1; i < Length; i++)
+                    max = Math.Min(Length-1, max);
+                    for (int i = min; i <= max; i++)
                     {
                         yield return CalculateFragment(type, i);
                     }
