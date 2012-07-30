@@ -85,6 +85,11 @@ namespace CSMSL.Chemistry
             return _atomicSymbol;
         }
 
+        public override int GetHashCode()
+        {
+            return _atomicNumber;
+        }
+
         private double _totalAbundance = 0;
         private double _totalMass = 0;
 

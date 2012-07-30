@@ -379,8 +379,7 @@ namespace CSMSL.Chemistry
 
         public static double[,] GetIsotopicDistribution(ChemicalFormula baseFormula)
         {
-            double[,] data = new double[10, 2];
-            double totalSum = 0;
+            double[,] data = new double[10, 2];        
             double value = 1;
             foreach (KeyValuePair<Isotope, int> kvp in baseFormula._isotopes)
             {
