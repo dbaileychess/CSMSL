@@ -39,8 +39,8 @@ namespace CSMSL.Chemistry
         public ChemicalFormula()
         {
             _isotopes = new Dictionary<Isotope, int>();
-            _chemicalFormulaSB = new StringBuilder(9); // Based off amino acid chemical formulas
-            _isDirty = true;
+            _chemicalFormulaSB = new StringBuilder(9); // Based off amino acid chemical formulas          
+            _isDirty = true;          
         }
 
         public ChemicalFormula(string chemicalFormula)
@@ -148,27 +148,30 @@ namespace CSMSL.Chemistry
 
         public void Add(Isotope isotope, int count)
         {
-            if (count != 0)
+            if (count == 0)
             {
-                int curValue = 0;
-                if (_isotopes.TryGetValue(isotope, out curValue))
+                return;
+            }
+
+            int curValue = 0;
+            if (_isotopes.TryGetValue(isotope, out curValue))
+            {
+                int newValue = curValue + count;
+                if (newValue == 0)
                 {
-                    int newValue = curValue + count;
-                    if (newValue == 0)
-                    {
-                        _isotopes.Remove(isotope);
-                    }
-                    else
-                    {
-                        _isotopes[isotope] = newValue;
-                    }
+                    _isotopes.Remove(isotope);
                 }
                 else
                 {
-                    _isotopes.Add(isotope, count);
+                    _isotopes[isotope] = newValue;
                 }
-                _isDirty = true;
             }
+            else
+            {
+                _isotopes.Add(isotope, count);
+            }
+
+            _isDirty = true;            
         }
 
         public void Remove(IChemicalFormula item)
@@ -178,6 +181,7 @@ namespace CSMSL.Chemistry
 
         public void Remove(ChemicalFormula formula)
         {
+            if (formula == null) return;
             foreach (KeyValuePair<Isotope, int> kvp in formula._isotopes)
             {
                 Remove(kvp.Key, kvp.Value);
@@ -315,6 +319,7 @@ namespace CSMSL.Chemistry
                     _chemicalFormulaSB.Append(isotope.MassNumber);
                     _chemicalFormulaSB.Append('}');
                 }
+
                 if (count != 1)
                 {
                     _chemicalFormulaSB.Append(count);

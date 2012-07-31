@@ -1,10 +1,14 @@
-﻿namespace CSMSL.Chemistry
+﻿using System;
+
+namespace CSMSL.Chemistry
 {
-    public class Isotope
+    public class Isotope : IEquatable<Isotope>
     {
+        internal bool _isPrincipalIsotope;
         private float _abundance;
         private Element _element;
 
+        private int _hashCode;
         private double _mass;
         private int _massNumber;
 
@@ -14,7 +18,7 @@
             _massNumber = massNumber;
             _mass = mass;
             _abundance = abundance;
-            _hashCode = base.GetHashCode();
+            _hashCode = 13 + (_massNumber << 5) + (_element.AtomicNumber >> 2 + 12);
         }
 
         public string AtomicSymbol
@@ -25,6 +29,18 @@
         public Element Element
         {
             get { return _element; }
+        }
+
+        public bool IsPrincipalIsotope
+        {
+            get
+            {
+                return _isPrincipalIsotope;
+            }
+            set
+            {
+                _isPrincipalIsotope = value;
+            }
         }
 
         public double Mass
@@ -39,26 +55,22 @@
             private set { _massNumber = value; }
         }
 
-        public bool IsPrincipalIsotope
-        {
-            get
-            {
-                return _element.Principal == this;
-            }
-        }
-
-        private int _hashCode;
-        public override int GetHashCode()
-        {
-            return _hashCode;           
-        }
-
         public float RelativeAbundance
         {
             get { return _abundance; }
             private set { _abundance = value; }
         }
-        
+
+        public override int GetHashCode()
+        {
+            return _hashCode;
+        }
+
+        public bool Equals(Isotope other)
+        {
+            return _massNumber.Equals(other._massNumber);
+        }
+
         public override string ToString()
         {
             return string.Format("{0}{1:G0}", AtomicSymbol, _massNumber);

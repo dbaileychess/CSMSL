@@ -13,7 +13,7 @@ namespace CSMSL.Chemistry
 
         private double _mass = 0;
 
-        private Isotope _principal = null;
+        internal Isotope _principal = null;
 
         private string _name;
 
@@ -104,7 +104,12 @@ namespace CSMSL.Chemistry
                 _avgmass = _totalMass / _totalAbundance;
                 if (_principal == null || abundance > _principal.RelativeAbundance)
                 {
+                    if (_principal != null)
+                    {
+                        _principal._isPrincipalIsotope = false;
+                    }                    
                     _principal = isotope;
+                    _principal._isPrincipalIsotope = true;
                     _mass = mass;
                 }
             }

@@ -18,7 +18,7 @@ namespace ExamplesCSMSL
             List<Protein> prots = new List<Protein>();
             List<double> allMzs = new List<double>();
             int maxMissed = 3;
-            using (FastaReader reader = new FastaReader("/yeast_uniprot_120226.fasta"))
+            using (FastaReader reader = new FastaReader("Resources/yeast_uniprot_120226.fasta"))
             {
                 foreach (Protein protein in reader.ReadNextProtein())
                 {
@@ -34,7 +34,6 @@ namespace ExamplesCSMSL
             Console.WriteLine("{0:N0} proteins produced {1:N0} peptides using {2:N0} missed clevages", prots.Count, peps.Count, maxMissed);
             Console.WriteLine("**End Digestion**");
             Console.WriteLine(watch.Elapsed);
-            
         }
     }
 }

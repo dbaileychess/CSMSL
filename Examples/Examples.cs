@@ -27,7 +27,7 @@ namespace ExamplesCSMSL
         private static void StartExamples()
         {            
             // Examples coding
-            //ChemicalFormulaExamples();
+            ChemicalFormulaExamples();
             PeptideExamples();
 
             // Example programs
