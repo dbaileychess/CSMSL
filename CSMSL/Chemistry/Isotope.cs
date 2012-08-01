@@ -5,6 +5,7 @@ namespace CSMSL.Chemistry
     public class Isotope : IEquatable<Isotope>
     {
         internal bool _isPrincipalIsotope;
+        internal int _uniqueID;
         private float _abundance;
         private Element _element;
 
@@ -12,7 +13,7 @@ namespace CSMSL.Chemistry
         private double _mass;
         private int _massNumber;
 
-        public Isotope(Element parentElement, int massNumber, double mass, float abundance)
+        internal Isotope(Element parentElement, int massNumber, double mass, float abundance)
         {
             _element = parentElement;
             _massNumber = massNumber;

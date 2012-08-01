@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -19,28 +18,24 @@ namespace CSMSL.Chemistry
         /// </summary>
         private static readonly Regex _formulaRegex = new Regex(@"([A-Z][a-z]*)(?:\{([0-9]+)\})?(-)?([0-9]+)?", RegexOptions.Compiled);
 
+        private static readonly int _uniqueIDCount = 10;
         private static readonly Regex _validateFormulaRegex = new Regex("^(" + _formulaRegex.ToString() + ")+$", RegexOptions.Compiled);
-
         private StringBuilder _chemicalFormulaSB;
 
         private bool _isDirty;
 
-        /// <summary>
-        /// Internal dictionary of each isotope in the chemical formula. The key (string)
-        /// represents the isotope name, and the value (int) represents the number of that isotope
-        /// within this chemical formula.
-        /// </summary>
-        private Dictionary<Isotope, int> _isotopes;
+        private int[] _isotopes;
 
         private Mass _mass;
 
         private int _numberOfAtoms;
 
-        public ChemicalFormula()
+        public ChemicalFormula()  
         {
-            _isotopes = new Dictionary<Isotope, int>();
-            _chemicalFormulaSB = new StringBuilder(9); // Based off amino acid chemical formulas          
-            _isDirty = true;          
+            // create a new blank chemical formula
+            _isotopes = new int[_uniqueIDCount];
+            _chemicalFormulaSB = new StringBuilder(9); // Based off amino acid chemical formulas
+            _isDirty = true;
         }
 
         public ChemicalFormula(string chemicalFormula)
@@ -50,23 +45,22 @@ namespace CSMSL.Chemistry
         }
 
         public ChemicalFormula(IChemicalFormula item)
-            : this(item.ChemicalFormula)
-        {
-        }
+            : this(item.ChemicalFormula) { }
 
         public ChemicalFormula(ChemicalFormula chemicalFormula)
         {
             if (chemicalFormula == null)
             {
                 // create a new blank chemical formula
-                _isotopes = new Dictionary<Isotope, int>();
+                _isotopes = new int[_uniqueIDCount];
                 _chemicalFormulaSB = new StringBuilder(9); // Based off amino acid chemical formulas
                 _isDirty = true;
             }
             else
             {
                 // Copy an existing chemical formula
-                _isotopes = new Dictionary<Isotope, int>(chemicalFormula._isotopes);
+                _isotopes = new int[chemicalFormula._isotopes.Length];
+                Array.Copy(chemicalFormula._isotopes, _isotopes, chemicalFormula._isotopes.Length);
                 if (!(_isDirty = chemicalFormula._isDirty))
                 {
                     // old chemical formula is already clean, don't need to reclean
@@ -79,17 +73,6 @@ namespace CSMSL.Chemistry
                     _chemicalFormulaSB = new StringBuilder(9); // Based off amino acid chemical formulas
                 }
             }
-        }
-
-        public ChemicalFormula Clone()
-        {
-            return new ChemicalFormula(this);
-        }
-
-        public void Clear()
-        {
-            _isotopes.Clear();
-            _isDirty = true;
         }
 
         public Mass Mass
@@ -116,20 +99,73 @@ namespace CSMSL.Chemistry
             }
         }
 
-        /// <summary>
-        /// Number of unique elements in this chemical formula
-        /// </summary>
+        private int _uniqueIsotopes;
         public int UniqueIsotopes
         {
             get
             {
-                return _isotopes.Count;
+                if (_isDirty)
+                {
+                    CleanUp();
+                }
+                return _uniqueIsotopes;
             }
+        }
+
+        public static double[,] GetIsotopicDistribution(IChemicalFormula item)
+        {
+            return GetIsotopicDistribution(item.ChemicalFormula);
+        }
+
+        public static double[,] GetIsotopicDistribution(ChemicalFormula baseFormula)
+        {
+            double[,] data = new double[10, 2];
+            //double value = 1;
+            //foreach (KeyValuePair<Isotope, int> kvp in baseFormula._isotopes)
+            //{
+            //    value *= kvp.Key.RelativeAbundance * kvp.Value;
+            //}
+            return data;
+        }
+
+        public static implicit operator ChemicalFormula(string sequence)
+        {
+            return new ChemicalFormula(sequence);
         }
 
         public static bool IsValidChemicalFormula(string chemicalFormula)
         {
             return _validateFormulaRegex.IsMatch(chemicalFormula);
+        }
+
+        public static ChemicalFormula operator -(ChemicalFormula left, ChemicalFormula right)
+        {
+            ChemicalFormula newFormula = new ChemicalFormula(left);
+            newFormula.Remove(right);
+            return newFormula;
+        }
+
+        public static ChemicalFormula operator *(ChemicalFormula formula, int count)
+        {
+            ChemicalFormula newFormula = formula.Clone();
+            for (int i = 0; i < newFormula._isotopes.Length; i++)
+            {
+                newFormula._isotopes[i] *= count;
+            }
+            newFormula._isDirty = true;
+            return newFormula;
+        }
+
+        public static ChemicalFormula operator *(int count, ChemicalFormula formula)
+        {
+            return formula * count;
+        }
+
+        public static ChemicalFormula operator +(ChemicalFormula left, ChemicalFormula right)
+        {
+            ChemicalFormula newFormula = new ChemicalFormula(left);
+            newFormula.Add(right);
+            return newFormula;
         }
 
         public void Add(IChemicalFormula item)
@@ -140,10 +176,24 @@ namespace CSMSL.Chemistry
         public void Add(ChemicalFormula formula)
         {
             if (formula == null) return;
-            foreach (KeyValuePair<Isotope, int> kvp in formula._isotopes)
+
+            // Get the length of the formula to add
+            int length = formula._isotopes.Length;
+
+            // Resize this formula array to match the size of the incoming one
+            if (length > _isotopes.Length)
             {
-                Add(kvp.Key, kvp.Value);
+                Array.Resize(ref _isotopes, length);
             }
+
+            // Update each isotope
+            for (int i = 0; i < length; i++)
+            {
+                if (formula._isotopes[i] != 0)
+                    _isotopes[i] += formula._isotopes[i];
+            }
+
+            _isDirty = true;
         }
 
         public void Add(Isotope isotope, int count)
@@ -152,26 +202,52 @@ namespace CSMSL.Chemistry
             {
                 return;
             }
-
-            int curValue = 0;
-            if (_isotopes.TryGetValue(isotope, out curValue))
+            int id = isotope._uniqueID;
+            if (id > _isotopes.Length)
             {
-                int newValue = curValue + count;
-                if (newValue == 0)
-                {
-                    _isotopes.Remove(isotope);
-                }
-                else
-                {
-                    _isotopes[isotope] = newValue;
-                }
+                // Isotope doesn't exist, resize array and set the count
+                Array.Resize(ref _isotopes, id + 1);
+                _isotopes[id] = count;
             }
             else
             {
-                _isotopes.Add(isotope, count);
+                _isotopes[id] += count;
             }
+            _isDirty = true;
+        }
 
-            _isDirty = true;            
+        public void Clear()
+        {
+            Array.Clear(_isotopes, 0, _isotopes.Length);
+            _isDirty = true;
+        }
+
+        public ChemicalFormula Clone()
+        {
+            return new ChemicalFormula(this);
+        }
+
+        public bool ContainsIsotope(Isotope isotope)
+        {
+            if (isotope._uniqueID > _isotopes.Length) return false;
+            return _isotopes[isotope._uniqueID] != 0;
+        }
+
+        /// <summary>
+        /// Test for equality between two chemical formulas. Two formulas are equivalent if they have the exact same number and type of isotopes.
+        /// </summary>
+        /// <param name="other">The other chemical formula to compare with</param>
+        /// <returns>True if the chemical formulas are the same, false otherwise</returns>
+        public bool Equals(ChemicalFormula other)
+        {
+            if (Object.ReferenceEquals(other, null)) return false;
+            if (Object.ReferenceEquals(this, other)) return true;
+            for (int i = 0; i < _isotopes.Length; i++)
+            {
+                if ((i > other._isotopes.Length && _isotopes[i] != 0) || _isotopes[i] != other._isotopes[i])
+                    return false;
+            }
+            return true;
         }
 
         public void Remove(IChemicalFormula item)
@@ -182,10 +258,24 @@ namespace CSMSL.Chemistry
         public void Remove(ChemicalFormula formula)
         {
             if (formula == null) return;
-            foreach (KeyValuePair<Isotope, int> kvp in formula._isotopes)
+
+            // Get the length of the formula to add
+            int length = formula._isotopes.Length;
+
+            // Resize this formula array to match the size of the incoming one
+            if (length > _isotopes.Length)
             {
-                Remove(kvp.Key, kvp.Value);
+                Array.Resize(ref _isotopes, length);
             }
+
+            // Update each isotope
+            for (int i = 0; i < length; i++)
+            {
+                if (formula._isotopes[i] != 0)
+                    _isotopes[i] -= formula._isotopes[i];
+            }
+
+            _isDirty = true;
         }
 
         public void Remove(Isotope isotope, int count)
@@ -200,11 +290,14 @@ namespace CSMSL.Chemistry
         /// <returns>True if the isotope was in the chemical formula and removed, false otherwise</returns>
         public bool Remove(Isotope isotope)
         {
-            if (_isotopes.Remove(isotope))
+            int id = isotope._uniqueID;
+            if (id > _isotopes.Length) return false;
+            if (_isotopes[id] == 0)
             {
-                return _isDirty = true;
+                return false;
             }
-            return false;
+            _isotopes[id] = 0;
+            return _isDirty = true;
         }
 
         public bool Remove(string symbol)
@@ -230,30 +323,6 @@ namespace CSMSL.Chemistry
             return result;
         }
 
-        public bool ContainsIsotope(Isotope isotope)
-        {
-            return _isotopes.ContainsKey(isotope);
-        }
-
-        /// <summary>
-        /// Test for equality between two chemical formulas. Two formulas are equivalent if they have the exact same number and type of isotopes.
-        /// </summary>
-        /// <param name="other">The other chemical formula to compare with</param>
-        /// <returns>True if the chemical formulas are the same, false otherwise</returns>
-        public bool Equals(ChemicalFormula other)
-        {
-            if (Object.ReferenceEquals(other, null)) return false;
-            if (Object.ReferenceEquals(this, other)) return true;
-            if (_isotopes.Count != other._isotopes.Count) return false;
-            int count = 0;
-            foreach (KeyValuePair<Isotope, int> kvp in _isotopes)
-            {
-                if (!other._isotopes.TryGetValue(kvp.Key, out count)) return false;
-                if (kvp.Value != count) return false;
-            }
-            return true;
-        }
-
         public override string ToString()
         {
             if (_isDirty)
@@ -263,47 +332,21 @@ namespace CSMSL.Chemistry
             return _chemicalFormulaSB.ToString();
         }
 
-        public static ChemicalFormula operator +(ChemicalFormula left, ChemicalFormula right)
-        {
-            ChemicalFormula newFormula = new ChemicalFormula(left);
-            newFormula.Add(right);
-            return newFormula;
-        }
-
-        public static ChemicalFormula operator *(ChemicalFormula formula, int count)
-        {
-            ChemicalFormula newFormula = formula.Clone();
-            List<Isotope> keys = new List<Isotope>(newFormula._isotopes.Keys);
-            foreach (Isotope key in keys)
-            {
-                newFormula._isotopes[key] *= count;                
-            }
-            newFormula._isDirty = true;
-            return newFormula;
-        }
-
-        public static ChemicalFormula operator *(int count, ChemicalFormula formula)
-        {
-            return formula * count;
-        }
-
-        public static ChemicalFormula operator -(ChemicalFormula left, ChemicalFormula right)
-        {
-            ChemicalFormula newFormula = new ChemicalFormula(left);
-            newFormula.Remove(right);
-            return newFormula;
-        }
-
         private void CleanUp()
         {
             _numberOfAtoms = 0;
+            _uniqueIsotopes = 0;
             _mass = new Mass();
             _chemicalFormulaSB.Clear();
-            foreach (KeyValuePair<Isotope, int> kvp in _isotopes)
+            for (int i = 0; i < _isotopes.Length; i++)
             {
-                int count = kvp.Value;
-                Isotope isotope = kvp.Key;
+                if (_isotopes[i] == 0) continue;
+                int count = _isotopes[i];
+
+                Isotope isotope = PERIODIC_TABLE[i];
                 Element element = isotope.Element;
+
+                _uniqueIsotopes++;
 
                 _numberOfAtoms += count;
 
@@ -370,27 +413,6 @@ namespace CSMSL.Chemistry
                     throw new ArgumentException(string.Format("Chemical Symbol {0} does not exist in the Periodic Table", chemsym));
                 }
             }
-        }
-
-        public static implicit operator ChemicalFormula(string sequence)
-        {
-            return new ChemicalFormula(sequence);
-        }
-
-        public static double[,] GetIsotopicDistribution(IChemicalFormula item)
-        {
-            return GetIsotopicDistribution(item.ChemicalFormula);
-        }
-
-        public static double[,] GetIsotopicDistribution(ChemicalFormula baseFormula)
-        {
-            double[,] data = new double[10, 2];        
-            double value = 1;
-            foreach (KeyValuePair<Isotope, int> kvp in baseFormula._isotopes)
-            {
-                value *= kvp.Key.RelativeAbundance * kvp.Value;
-            }
-            return data;
         }
     }
 }

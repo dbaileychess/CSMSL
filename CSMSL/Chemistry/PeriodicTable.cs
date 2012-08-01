@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Xml;
+using System;
 
 namespace CSMSL.Chemistry
 {
@@ -26,7 +27,9 @@ namespace CSMSL.Chemistry
         private PeriodicTable()
         {
             _elements = new Dictionary<string, Element>();
+            _isotopes = new Isotope[500];
             LoadElements("Resources/Elements.xml");
+            Array.Resize(ref _isotopes, _uniqueID);
         }
 
         /// <summary>
@@ -40,11 +43,22 @@ namespace CSMSL.Chemistry
             }
         }
 
+        private int _uniqueID = 10;
+        private Isotope[] _isotopes;
+
         public Element this[string element]
         {
             get
             {
                 return _elements[element];
+            }
+        }
+
+        internal Isotope this[int uniqueID]
+        {
+            get
+            {
+                return _isotopes[uniqueID];
             }
         }
 
@@ -71,16 +85,30 @@ namespace CSMSL.Chemistry
                 foreach (XmlNode isotopeNode in elementNode.SelectNodes("Isotope"))
                 {
                     float abundance = float.Parse(isotopeNode.SelectSingleNode("RelativeAbundance").InnerText);
+                   
                     if (abundance > 0)
                     {
                         double mass = double.Parse(isotopeNode.SelectSingleNode("Mass").InnerText);
                         int massnumber = int.Parse(isotopeNode.SelectSingleNode("MassNumber").InnerText);
-                        element.AddIsotope(massnumber, mass, abundance);
+                        Isotope isotope = element.AddIsotope(massnumber, mass, abundance);
+                        XmlNode idNode = isotopeNode.Attributes["uniqueID"];
+                        if(idNode != null)                      
+                        {
+                            int uniqueId = int.Parse(idNode.Value);
+                            isotope._uniqueID = uniqueId;
+                            _isotopes[uniqueId] = isotope;
+                        }
+                        else
+                        {
+                            isotope._uniqueID = _uniqueID;
+                            _isotopes[_uniqueID++] = isotope;
+                        }                        
                     }
                 }
                 AddElement(element);
             }
         }
+    
 
         /// <summary>
         /// Adds an element to this periodic table if the element atomic symbol is not already present.

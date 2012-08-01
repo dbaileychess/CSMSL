@@ -93,7 +93,7 @@ namespace CSMSL.Chemistry
         private double _totalAbundance = 0;
         private double _totalMass = 0;
 
-        public void AddIsotope(int atomicNumber, double mass, float abundance)
+        public Isotope AddIsotope(int atomicNumber, double mass, float abundance)
         {
             Isotope isotope = new Isotope(this, atomicNumber, mass, abundance);
             if (!_isotopes.ContainsKey(atomicNumber))
@@ -113,6 +113,7 @@ namespace CSMSL.Chemistry
                     _mass = mass;
                 }
             }
+            return isotope;
         }
 
         System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
