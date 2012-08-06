@@ -25,15 +25,16 @@ namespace ExamplesCSMSL
                     foreach (Peptide peptide in protein.Digest(trypsin, maxMissed, 5, 35))
                     {
                         peps.Add(peptide);
-                        allMzs.Add(peptide.Mass.ToMz(1));
+                        allMzs.Add(peptide.Mass.ToMz(1));                        
                     }
                     prots.Add(protein);
                 }
             }
             watch.Stop();
             Console.WriteLine("{0:N0} proteins produced {1:N0} peptides using {2:N0} missed clevages", prots.Count, peps.Count, maxMissed);
-            Console.WriteLine("**End Digestion**");
-            Console.WriteLine(watch.Elapsed);
+            Console.WriteLine("Time elapsed: {0}", watch.Elapsed);
+            Console.WriteLine("Memory used: {0:N0} MB", System.Environment.WorkingSet / (1024 * 1024));
+            Console.WriteLine("**End Digestion**");           
         }
     }
 }

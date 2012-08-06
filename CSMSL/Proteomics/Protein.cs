@@ -83,7 +83,7 @@ namespace CSMSL.Proteomics
                         Array.Copy(this._modifications, begin + 1, mods, 1, len);
                         mods[0] = (begin == 0) ? _modifications[0] : AminoAcidPolymer.DefaultNTerm;
                         mods[len + 1] = (end == _modifications.Length - 1) ? _modifications[end] : AminoAcidPolymer.DefaultCTerm;
-                        Peptide peptide = new Peptide(this._residues.GetRange(begin, len), mods, this, begin);
+                        Peptide peptide = new Peptide(this._residues.GetRange(begin, len), mods, this, begin + 1);
                         _childern.Add(peptide);
                     }
                 }

@@ -43,7 +43,7 @@ namespace CSMSL.Chemistry
             }
         }
 
-        private int _uniqueID = 10;
+        private int _uniqueID = 11;
         private Isotope[] _isotopes;
 
         public Element this[string element]

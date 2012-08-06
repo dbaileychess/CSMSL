@@ -33,8 +33,7 @@ namespace CSMSL.Chemistry
         public ChemicalFormula()  
         {
             // create a new blank chemical formula
-            _isotopes = new int[_uniqueIDCount];
-            _chemicalFormulaSB = new StringBuilder(9); // Based off amino acid chemical formulas
+            _isotopes = new int[_uniqueIDCount];          
             _isDirty = true;
         }
 
@@ -52,8 +51,7 @@ namespace CSMSL.Chemistry
             if (chemicalFormula == null)
             {
                 // create a new blank chemical formula
-                _isotopes = new int[_uniqueIDCount];
-                _chemicalFormulaSB = new StringBuilder(9); // Based off amino acid chemical formulas
+                _isotopes = new int[_uniqueIDCount];               
                 _isDirty = true;
             }
             else
@@ -67,11 +65,7 @@ namespace CSMSL.Chemistry
                     _chemicalFormulaSB = new StringBuilder(chemicalFormula._chemicalFormulaSB.ToString());
                     _numberOfAtoms = chemicalFormula._numberOfAtoms;
                     _mass = new Mass(chemicalFormula._mass);
-                }
-                else
-                {
-                    _chemicalFormulaSB = new StringBuilder(9); // Based off amino acid chemical formulas
-                }
+                }               
             }
         }
 
@@ -337,7 +331,15 @@ namespace CSMSL.Chemistry
             _numberOfAtoms = 0;
             _uniqueIsotopes = 0;
             _mass = new Mass();
-            _chemicalFormulaSB.Clear();
+            if (_chemicalFormulaSB == null)
+            {
+                _chemicalFormulaSB = new StringBuilder(10);
+            }
+            else
+            {
+                _chemicalFormulaSB.Clear();
+            }
+
             for (int i = 0; i < _isotopes.Length; i++)
             {
                 if (_isotopes[i] == 0) continue;

@@ -68,6 +68,7 @@ namespace CSMSL
         /// <returns>The mass</returns>
         public static double MassFromMz(double mz, int charge)
         {
+            if (mz == 0) return 0;
             return Math.Abs(charge) * mz - charge * Constants.PROTON;
         }
 
@@ -79,6 +80,7 @@ namespace CSMSL
         /// <returns>The m/z</returns>
         public static double MzFromMass(double mass, int charge)
         {
+            if (mass == 0) return 0;
             return mass / Math.Abs(charge) + Math.Sign(charge) * Constants.PROTON;
         }
 
