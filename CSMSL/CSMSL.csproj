@@ -63,11 +63,12 @@
     <Compile Include="Proteomics\Protein.cs" />
     <Compile Include="Proteomics\Terminus.cs" />
     <Compile Include="Range.cs" />
-    <Compile Include="Resolution.cs" />
     <Compile Include="Spectral\IPeak.cs" />
     <Compile Include="Spectral\Peak.cs" />
     <Compile Include="Spectral\Spectrum.cs" />
     <Compile Include="Tolerance.cs" />
+    <Compile Include="Util\VennDiagram.cs" />
+    <Compile Include="Util\VennSet.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Resources\AminoAcids.xml">
