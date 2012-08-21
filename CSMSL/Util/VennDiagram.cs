@@ -1,14 +1,32 @@
-﻿using System;
+﻿///////////////////////////////////////////////////////////////////////////
+//  VennDiagram.cs - A set of overlapping objects divided into regions    /
+//                                                                        /
+//  Copyright 2012 Derek J. Bailey                                        /
+//  This file is part of CSMSL.                                           /
+//                                                                        /
+//  CSMSL is free software: you can redistribute it and/or modify         /
+//  it under the terms of the GNU General Public License as published by  /
+//  the Free Software Foundation, either version 3 of the License, or     /
+//  (at your option) any later version.                                   /
+//                                                                        /
+//  CSMSL is distributed in the hope that it will be useful,              /
+//  but WITHOUT ANY WARRANTY; without even the implied warranty of        /
+//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         /
+//  GNU General Public License for more details.                          /
+//                                                                        /
+//  You should have received a copy of the GNU General Public License     /
+//  along with CSMSL.  If not, see <http://www.gnu.org/licenses/>.        /
+///////////////////////////////////////////////////////////////////////////
+
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace CSMSL.Util
 {
-    public class VennDiagram<T>:
+    public class VennDiagram<T> :
         IEnumerable<VennSet<T>>
-        where T: IEquatable<T>
-    {       
+        where T : IEquatable<T>
+    {
         public int Count
         {
             get { return _inputSets.Length; }
@@ -23,12 +41,12 @@ namespace CSMSL.Util
         }
 
         private VennSet<T>[] _inputSets;
-  
+
         public VennDiagram(params VennSet<T>[] sets)
-        {            
-            _inputSets = sets;          
+        {
+            _inputSets = sets;
         }
-         
+
         public void Add(params VennSet<T>[] sets)
         {
             int newSize = Count + sets.Length;
@@ -36,7 +54,7 @@ namespace CSMSL.Util
             for (int i = 0; i < sets.Length; i++)
             {
                 _inputSets[newSize - (i + 1)] = sets[i];
-            }          
+            }
         }
 
         public void CreateDiagram()
@@ -85,7 +103,7 @@ namespace CSMSL.Util
 
             //    _totalUnique.Add(_inputSets[depth - 1]);
             //}
-           
+
             //foreach (VennSet<T> set in VennSet<T>.GenerateDiagram(InputSets))
             //{
             //    int numberofsets = set.Name.Count(c => c == '∩') + 1;
@@ -97,7 +115,7 @@ namespace CSMSL.Util
             //    {
             //        SubSets[numberofsets - 1].AddSet(set);
             //    }
-            //    Regions.Add(set.Name, set);           
+            //    Regions.Add(set.Name, set);
             //}
         }
 
@@ -105,7 +123,6 @@ namespace CSMSL.Util
         {
             return string.Format("{0:G0} sets with {1:G0} unique items", Count, (TotalUnique != null) ? TotalUnique.Count : 0);
         }
-
 
         public IEnumerator<VennSet<T>> GetEnumerator()
         {

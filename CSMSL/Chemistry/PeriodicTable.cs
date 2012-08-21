@@ -1,6 +1,26 @@
-﻿using System.Collections.Generic;
-using System.Xml;
+﻿///////////////////////////////////////////////////////////////////////////
+//  PeriodicTable.cs - The periodic table of the elements                 /
+//                                                                        /
+//  Copyright 2012 Derek J. Bailey                                        /
+//  This file is part of CSMSL.                                           /
+//                                                                        /
+//  CSMSL is free software: you can redistribute it and/or modify         /
+//  it under the terms of the GNU General Public License as published by  /
+//  the Free Software Foundation, either version 3 of the License, or     /
+//  (at your option) any later version.                                   /
+//                                                                        /
+//  CSMSL is distributed in the hope that it will be useful,              /
+//  but WITHOUT ANY WARRANTY; without even the implied warranty of        /
+//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         /
+//  GNU General Public License for more details.                          /
+//                                                                        /
+//  You should have received a copy of the GNU General Public License     /
+//  along with CSMSL.  If not, see <http://www.gnu.org/licenses/>.        /
+///////////////////////////////////////////////////////////////////////////
+
 using System;
+using System.Collections.Generic;
+using System.Xml;
 
 namespace CSMSL.Chemistry
 {
@@ -85,14 +105,14 @@ namespace CSMSL.Chemistry
                 foreach (XmlNode isotopeNode in elementNode.SelectNodes("Isotope"))
                 {
                     float abundance = float.Parse(isotopeNode.SelectSingleNode("RelativeAbundance").InnerText);
-                   
+
                     if (abundance > 0)
                     {
                         double mass = double.Parse(isotopeNode.SelectSingleNode("Mass").InnerText);
                         int massnumber = int.Parse(isotopeNode.SelectSingleNode("MassNumber").InnerText);
                         Isotope isotope = element.AddIsotope(massnumber, mass, abundance);
                         XmlNode idNode = isotopeNode.Attributes["uniqueID"];
-                        if(idNode != null)                      
+                        if (idNode != null)
                         {
                             int uniqueId = int.Parse(idNode.Value);
                             isotope._uniqueID = uniqueId;
@@ -102,13 +122,12 @@ namespace CSMSL.Chemistry
                         {
                             isotope._uniqueID = _uniqueID;
                             _isotopes[_uniqueID++] = isotope;
-                        }                        
+                        }
                     }
                 }
                 AddElement(element);
             }
         }
-    
 
         /// <summary>
         /// Adds an element to this periodic table if the element atomic symbol is not already present.

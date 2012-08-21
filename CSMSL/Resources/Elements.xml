@@ -3,7 +3,7 @@
     <Name>Hydrogen</Name>
     <Symbol>H</Symbol>
     <AtomicNumber>1</AtomicNumber>
-    <AverageMass>1.00794</AverageMass>    
+    <AverageMass>1.00794</AverageMass>
     <Isotope uniqueID = "0">
       <Mass>1.00782503207</Mass>
       <MassNumber>1</MassNumber>

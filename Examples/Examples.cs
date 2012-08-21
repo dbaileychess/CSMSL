@@ -1,18 +1,33 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿///////////////////////////////////////////////////////////////////////////
+//  Examples.cs - A collection of examples of how to use CSMSL            /
+//                                                                        /
+//  Copyright 2012 Derek J. Bailey                                        /
+//  This file is part of CSMSL.                                           /
+//                                                                        /
+//  CSMSL is free software: you can redistribute it and/or modify         /
+//  it under the terms of the GNU General Public License as published by  /
+//  the Free Software Foundation, either version 3 of the License, or     /
+//  (at your option) any later version.                                   /
+//                                                                        /
+//  CSMSL is distributed in the hope that it will be useful,              /
+//  but WITHOUT ANY WARRANTY; without even the implied warranty of        /
+//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         /
+//  GNU General Public License for more details.                          /
+//                                                                        /
+//  You should have received a copy of the GNU General Public License     /
+//  along with CSMSL.  If not, see <http://www.gnu.org/licenses/>.        /
+///////////////////////////////////////////////////////////////////////////
+
+using System;
 using System.Diagnostics;
-using CSMSL;
 using CSMSL.Chemistry;
 using CSMSL.Proteomics;
-using CSMSL.IO;
 
 namespace ExamplesCSMSL
 {
-    class Examples
+    internal class Examples
     {
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
             Console.WriteLine("==CSMSL Examples==");
             Stopwatch watch = new Stopwatch();
@@ -25,13 +40,13 @@ namespace ExamplesCSMSL
         }
 
         private static void StartExamples()
-        {            
+        {
             // Examples coding
             ChemicalFormulaExamples();
             PeptideExamples();
 
             // Example programs
-            ExampleTrypticDigest.Start();        
+            ExampleTrypticDigest.Start();
         }
 
         /// <summary>
@@ -43,7 +58,7 @@ namespace ExamplesCSMSL
 
             // Simple Peptide creation
             Peptide peptide1 = new Peptide("ACDEFGHIKLMNPQRSTVWY");
-            WritePeptideToConsole(peptide1);            
+            WritePeptideToConsole(peptide1);
 
             // Fragmenting a peptide is simple, you can include as many fragment types as you want
             Console.WriteLine("{0,-4} {1,-20} {2,-5}", "Type", "Formula", "Mass");
@@ -55,21 +70,20 @@ namespace ExamplesCSMSL
             // Modifications can be applied to any residue or termini
             Console.WriteLine("Lets add some Iron to our peptide...");
             peptide1.SetModification(new ChemicalModification("Fe"), Terminus.C | Terminus.N);
-            WritePeptideToConsole(peptide1);     
+            WritePeptideToConsole(peptide1);
 
             // A chemicalmodification is a simple wrapper for a chemical formula. You can name your mods if you want
             Console.WriteLine("Add a modification of Oxygen with the name \"Oxidation\" to all Methionines");
             ChemicalModification oxMod = new ChemicalModification("O", "Oxidation");
             peptide1.SetModification(oxMod, 'M');
-            WritePeptideToConsole(peptide1);    
- 
+            WritePeptideToConsole(peptide1);
+
             // If you fragment a modified peptide, the modifications stay part of the fragments
             Console.WriteLine("{0,-4} {1,-20} {2,-5}", "Type", "Formula", "Mass");
             foreach (Fragment fragment in peptide1.CalculateFragments(FragmentType.b, 3, 5))
             {
                 WriteFragmentToConsole(fragment);
             }
-
         }
 
         /// <summary>
@@ -99,19 +113,19 @@ namespace ExamplesCSMSL
             // You can completely remove an element from a chemical formula
             formula1.Remove("C");
             WriteFormulaToConsole(formula1);
-           
+
             // Even negative values are possible if not physically possible
             formula1.Remove(formula2);
             WriteFormulaToConsole(formula1);
 
-            // Implicit arithmetic is also possible (supports +, -, and *) 
+            // Implicit arithmetic is also possible (supports +, -, and *)
             ChemicalFormula formula3 = formula2 - formula1;
             WriteFormulaToConsole(formula3);
             ChemicalFormula formula4 = formula3 + formula1;
             WriteFormulaToConsole(formula4);
             ChemicalFormula formula5 = formula2 * 5;
             WriteFormulaToConsole(formula5);
-                     
+
             // Formulas consist of a dictionary of isotopes and count, and by default, the most common (abundant) isotope of an element
             // is included (i.e. Carbon 12 instead of Carbon 13). You can explicitly state that you want another isotope in a chemical formula
             // by this notation: <Element Symbol>{<Mass Number>} (e.g. C{13}, N{15}, etc..)
@@ -133,7 +147,7 @@ namespace ExamplesCSMSL
             // Here, a new chemical formula is made in memory based off the chemical formula of the peptide. The two chemical formulas are identicial but are separated by each pointing
             // to a new place in memory. This allows you to edit the chemicalformula without disrupting the peptide
             ChemicalFormula pepFormula = new ChemicalFormula(pep);
-            WriteFormulaToConsole(pepFormula);  
+            WriteFormulaToConsole(pepFormula);
         }
 
         /// <summary>
@@ -154,6 +168,5 @@ namespace ExamplesCSMSL
         {
             Console.WriteLine("{0,-4} {1,-20} {2,-5}", frag, frag.ChemicalFormula, frag.ChemicalFormula.Mass.Monoisotopic);
         }
-
     }
 }

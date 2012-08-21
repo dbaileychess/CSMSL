@@ -1,4 +1,24 @@
-﻿using System;
+﻿///////////////////////////////////////////////////////////////////////////
+//  ChemicalFormula.cs - A collection of elements in a single molecule    /
+//                                                                        /
+//  Copyright 2012 Derek J. Bailey                                        /
+//  This file is part of CSMSL.                                           /
+//                                                                        /
+//  CSMSL is free software: you can redistribute it and/or modify         /
+//  it under the terms of the GNU General Public License as published by  /
+//  the Free Software Foundation, either version 3 of the License, or     /
+//  (at your option) any later version.                                   /
+//                                                                        /
+//  CSMSL is distributed in the hope that it will be useful,              /
+//  but WITHOUT ANY WARRANTY; without even the implied warranty of        /
+//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         /
+//  GNU General Public License for more details.                          /
+//                                                                        /
+//  You should have received a copy of the GNU General Public License     /
+//  along with CSMSL.  If not, see <http://www.gnu.org/licenses/>.        /
+///////////////////////////////////////////////////////////////////////////
+
+using System;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -30,10 +50,10 @@ namespace CSMSL.Chemistry
 
         private int _numberOfAtoms;
 
-        public ChemicalFormula()  
+        public ChemicalFormula()
         {
             // create a new blank chemical formula
-            _isotopes = new int[_uniqueIDCount];          
+            _isotopes = new int[_uniqueIDCount];
             _isDirty = true;
         }
 
@@ -51,7 +71,7 @@ namespace CSMSL.Chemistry
             if (chemicalFormula == null)
             {
                 // create a new blank chemical formula
-                _isotopes = new int[_uniqueIDCount];               
+                _isotopes = new int[_uniqueIDCount];
                 _isDirty = true;
             }
             else
@@ -65,7 +85,7 @@ namespace CSMSL.Chemistry
                     _chemicalFormulaSB = new StringBuilder(chemicalFormula._chemicalFormulaSB.ToString());
                     _numberOfAtoms = chemicalFormula._numberOfAtoms;
                     _mass = new Mass(chemicalFormula._mass);
-                }               
+                }
             }
         }
 
@@ -94,6 +114,7 @@ namespace CSMSL.Chemistry
         }
 
         private int _uniqueIsotopes;
+
         public int UniqueIsotopes
         {
             get
