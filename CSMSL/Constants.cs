@@ -52,6 +52,8 @@ namespace CSMSL
         /// </summary>
         public const double CARBON = 12.00000000000;
 
+        public const double CARBON13 = 13.0033548378;
+
         /// <summary>
         /// The mass of the most common isotope of hydrogen in atomic units (u)
         /// </summary>

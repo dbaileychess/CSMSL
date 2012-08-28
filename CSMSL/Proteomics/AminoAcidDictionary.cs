@@ -27,6 +27,7 @@ namespace CSMSL.Proteomics
     public sealed class AminoAcidDictionary
     {
         private static readonly AminoAcidDictionary _instance = new AminoAcidDictionary();
+        private static readonly PeriodicTable PERIODIC_TABLE = PeriodicTable.Instance;
 
         /// <summary>
         /// The single instance of the Amino Acid Dictionary created by the program (singleton pattern)

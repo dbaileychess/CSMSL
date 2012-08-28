@@ -20,6 +20,8 @@
 
 using System;
 using System.Collections.Generic;
+using System.Text;
+using Combinatorics;
 
 namespace CSMSL.Util
 {
@@ -31,13 +33,13 @@ namespace CSMSL.Util
         {
             get { return _inputSets.Length; }
         }
-
-        private VennSet<T> _totalUnique;
-
+             
+        private VennSet<T>[] _subSets;
+        private Dictionary<string, VennSet<T>> _regions;
+                
         public VennSet<T> TotalUnique
         {
-            get { return _totalUnique; }
-            private set { _totalUnique = value; }
+            get { return _subSets[0]; }           
         }
 
         private VennSet<T>[] _inputSets;
@@ -59,64 +61,55 @@ namespace CSMSL.Util
 
         public void CreateDiagram()
         {
-            //Regions = new Dictionary<string, VennSet<T>>();
-            //for (int i = 0; i < Count; i++)
-            //{
-            //    SubSets[i] = new VennSet<T>("In " + (i + 1));
-            //}
+            _regions = new Dictionary<string, VennSet<T>>();
 
-            //_totalUnique = new VennSet<T>("Total Unique");
-            //for (int depth = 1; depth <= Count; depth++)
-            //{
-            //    Combinations<VennSet<T>> combinations = new Combinations<VennSet<T>>(sets, depth);
-            //    foreach (IList<VennSet<T>> combo_sets in combinations)
-            //    {
-            //        HashSet<T> baseSet = new HashSet<T>(combo_sets[0]);
-            //        StringBuilder sb = new StringBuilder();
-            //        sb.Append(combo_sets[0].Name);
-            //        for (int i = 1; i < depth; i++)
-            //        {
-            //            VennSet<T> currentSet = combo_sets[i];
-            //            baseSet.IntersectWith(currentSet);
-            //            sb.Append(" ∩ ");
-            //            sb.Append(currentSet.Name);
-            //        }
-            //        yield return new VennSet<T>(baseSet, sb.ToString());
+            // Initialize subsets
+            _subSets = new VennSet<T>[Count];
+            for (int i = 0; i < Count; i++)
+            {
+                _subSets[i] = new VennSet<T>(string.Format("In {0:G0} of {1:G0}", i + 1, Count));
+            }
 
-            //        // Skip for the last one
-            //        if (depth == number_of_sets)
-            //        {
-            //            break;
-            //        }
+            //_subSets[Count] = new VennSet<T>("Total Unique");
+            for (int depth = 1; depth <= Count; depth++)
+            {
+                Combinations<VennSet<T>> combinations = new Combinations<VennSet<T>>(_inputSets, depth);
+                foreach (IList<VennSet<T>> combo_sets in combinations)
+                {
+                    HashSet<T> baseSet = new HashSet<T>(combo_sets[0]);
+                    StringBuilder sb = new StringBuilder();
+                    sb.Append(combo_sets[0].Name);
+                    for (int i = 1; i < depth; i++)
+                    {
+                        VennSet<T> currentSet = combo_sets[i];
+                        baseSet.IntersectWith(currentSet);
+                        sb.Append(" ∩ ");
+                        sb.Append(currentSet.Name);
+                    }
+                    AddVennSet(new VennSet<T>(baseSet, sb.ToString()), depth);
 
-            //        baseSet = new HashSet<T>(baseSet);
-            //        foreach (VennSet<T> set in sets)
-            //        {
-            //            if (!combo_sets.Contains(set))
-            //            {
-            //                baseSet.ExceptWith(set);
-            //            }
-            //        }
-            //        sb.Append(" only");
-            //        yield return new VennSet<T>(baseSet, sb.ToString());
-            //    }
+                    // Skip the last one
+                    if (depth < Count)
+                    {
+                        baseSet = new HashSet<T>(baseSet);
+                        foreach (VennSet<T> set in _inputSets)
+                        {
+                            if (!combo_sets.Contains(set))
+                            {
+                                baseSet.ExceptWith(set);
+                            }
+                        }
+                        sb.Append(" only");
+                        AddVennSet(new VennSet<T>(baseSet, sb.ToString()), depth);                       
+                    }                   
+                }              
+            }                             
+        }
 
-            //    _totalUnique.Add(_inputSets[depth - 1]);
-            //}
-
-            //foreach (VennSet<T> set in VennSet<T>.GenerateDiagram(InputSets))
-            //{
-            //    int numberofsets = set.Name.Count(c => c == '∩') + 1;
-            //    if (numberofsets == Count)
-            //    {
-            //        SubSets[numberofsets - 1].AddSet(set);
-            //    }
-            //    else if (set.Name.EndsWith("only"))
-            //    {
-            //        SubSets[numberofsets - 1].AddSet(set);
-            //    }
-            //    Regions.Add(set.Name, set);
-            //}
+        private void AddVennSet(VennSet<T> set, int depth)
+        {
+            _subSets[depth - 1].Add(set);
+            _regions.Add(set.Name, set);  
         }
 
         public override string ToString()
@@ -126,12 +119,12 @@ namespace CSMSL.Util
 
         public IEnumerator<VennSet<T>> GetEnumerator()
         {
-            throw new NotImplementedException();
+            return _regions.Values.GetEnumerator();
         }
 
         System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
         {
-            throw new NotImplementedException();
+            return _regions.Values.GetEnumerator();
         }
     }
 }

@@ -354,8 +354,20 @@ namespace CSMSL.Proteomics
                     if (letter == ']')
                     {
                         inMod = false;
-                        _modifications[_residues.Count] = new ChemicalModification(modSB.ToString());
+                        string modString = modSB.ToString();
                         modSB.Clear();
+
+                        ChemicalModification modification = null;
+                        switch (modString)
+                        {
+                            case "#": // Make the modification unverisally heavy (all C12 and N14s are promoted to C13 and N15s)
+                                modification = ChemicalModification.MakeHeavy(_residues[_residues.Count - 1]);                              
+                                break;
+                            default:
+                                modification = new ChemicalModification(modString);                                
+                                break;
+                        }
+                        _modifications[_residues.Count] = modification;                                             
                     }
                     else
                     {

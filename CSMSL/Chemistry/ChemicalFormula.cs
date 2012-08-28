@@ -299,6 +299,18 @@ namespace CSMSL.Chemistry
         }
 
         /// <summary>
+        /// Return the number of given isotopes in this chemical fomrula
+        /// </summary>
+        /// <param name="isotope"></param>
+        /// <returns></returns>
+        public int Count(Isotope isotope) 
+        {
+            int id = isotope._uniqueID;
+            if (id > _isotopes.Length) return 0;
+            return _isotopes[id];
+        }
+
+        /// <summary>
         /// Completely removes a particular isotope from this chemical formula.
         /// </summary>
         /// <param name="isotope">The isotope to remove</param>

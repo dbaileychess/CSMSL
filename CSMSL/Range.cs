@@ -228,7 +228,7 @@ namespace CSMSL
         /// <returns>Format: [min - max]</returns>
         public override string ToString()
         {
-            return string.Format("[{0} - {1}]", _min, _max);
+            return string.Format("[{0:F4} - {1:F4}]", _min, _max);
         }
 
         /// <summary>

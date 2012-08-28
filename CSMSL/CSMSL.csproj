@@ -30,6 +30,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Combinatorics">
+      <HintPath>include\Combinatorics.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -67,6 +70,8 @@
     <Compile Include="Spectral\Peak.cs" />
     <Compile Include="Spectral\Spectrum.cs" />
     <Compile Include="Tolerance.cs" />
+    <Compile Include="Util\Combinatorics.cs" />
+    <Compile Include="Util\LinearRegression.cs" />
     <Compile Include="Util\VennDiagram.cs" />
     <Compile Include="Util\VennSet.cs" />
   </ItemGroup>

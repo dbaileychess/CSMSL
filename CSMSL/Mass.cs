@@ -104,6 +104,17 @@ namespace CSMSL
             return mass / Math.Abs(charge) + Math.Sign(charge) * Constants.PROTON;
         }
 
+        /// <summary>
+        /// Calculates the spacing of isotopes (C13 primarily) in m/z space at a given
+        /// charge state
+        /// </summary>
+        /// <param name="charge">The charge state to calculate the spacing in</param>
+        /// <returns>The distance (in Th) between successive isotopes</returns>
+        public static double GetPeakSpacing(int charge)
+        {
+            return (Constants.CARBON13 - Constants.CARBON) / Math.Abs(charge);
+        }
+
         #endregion Static Methods
     }
 }

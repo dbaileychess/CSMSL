@@ -20,8 +20,10 @@
 
 using System;
 using System.Diagnostics;
+using System.Collections.Generic;
 using CSMSL.Chemistry;
 using CSMSL.Proteomics;
+using CSMSL.Util;
 
 namespace ExamplesCSMSL
 {
@@ -41,12 +43,46 @@ namespace ExamplesCSMSL
 
         private static void StartExamples()
         {
+            Peptide substance_p = new Peptide("RPKPQQFFGLM");
+            foreach (Fragment fragment in substance_p.CalculateFragments(FragmentType.b | FragmentType.y))
+            {
+                Console.WriteLine(fragment.ToString() + '\t' + fragment.Mass.ToMz(1).ToString() + '\t' + fragment.ChemicalFormula.ToString());
+            }
             // Examples coding
-            ChemicalFormulaExamples();
-            PeptideExamples();
+            //ChemicalFormulaExamples();
+            //PeptideExamples();
+
+            // Example Objects
+            VennDiagramExamples();
 
             // Example programs
-            ExampleTrypticDigest.Start();
+            //ExampleTrypticDigest.Start();
+        }
+
+        private static void VennDiagramExamples()
+        {
+            Console.WriteLine("**Venn Diagram Examples**");
+
+            // Generate some random data of integers
+            Console.WriteLine("Generating Random Values");
+            int numberofsets = 5;
+            int maxvalue = 100;
+            int maxitems = 50;
+            Random ran = new Random();
+            VennSet<int>[] sets = new VennSet<int>[numberofsets];
+            for (int i = 0; i < numberofsets; i++)
+            {
+                sets[i] = new VennSet<int>(string.Format("Set {0}", i));
+                for (int j = 0; j < maxitems; j++)
+                {
+                    sets[i].Add(ran.Next(maxvalue));
+                }
+            }
+
+            // Create diagram
+            VennDiagram<int> diagram = new VennDiagram<int>(sets);
+            diagram.CreateDiagram();
+
         }
 
         /// <summary>
