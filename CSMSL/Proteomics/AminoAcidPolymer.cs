@@ -26,7 +26,7 @@ using CSMSL.Chemistry;
 
 namespace CSMSL.Proteomics
 {
-    public abstract class AminoAcidPolymer : IChemicalFormula, IMass
+    public abstract class AminoAcidPolymer : IChemicalFormula, IMass, IEquatable<AminoAcidPolymer>
     {
         internal static readonly ChemicalModification DefaultCTerm = new ChemicalModification("OH");
         internal static readonly ChemicalModification DefaultNTerm = new ChemicalModification("H");
@@ -141,6 +141,17 @@ namespace CSMSL.Proteomics
             }
         }
 
+        public int CountResidues(char residueChar)
+        {
+            int count = 0;
+            foreach (AminoAcidResidue aar in _residues)
+            {
+                if (aar.Letter == residueChar)
+                    count++;
+            }
+            return count;
+        }
+
         public AminoAcidResidue this[int index]
         {
             get
@@ -182,6 +193,8 @@ namespace CSMSL.Proteomics
 
             return new Fragment(type, number, chemFormula, this);
         }
+
+
 
         public IEnumerable<Fragment> CalculateFragments(FragmentType types)
         {
@@ -340,6 +353,37 @@ namespace CSMSL.Proteomics
             _isDirty = false;
         }
 
+        public override int GetHashCode()
+        {
+            int hCode = 748;
+            foreach (AminoAcidResidue aa in _residues)
+            {
+                hCode ^= aa.GetHashCode();
+                hCode = hCode >> 7;
+            }
+            foreach (ChemicalModification mod in _modifications)
+            {
+                if (mod != null)
+                {
+                    hCode ^= mod.GetHashCode();
+                    hCode = hCode << 3;
+                }
+            }
+            return hCode;
+        }
+
+        public bool Equals(AminoAcidPolymer other)
+        {
+            if (Object.ReferenceEquals(this, other)) return true;
+            if (this.Length != other.Length) return false;
+            for (int i = 0; i < this.Length; i++)
+            {
+                if (this[i] != other[i] || this._modifications[i] != other._modifications[i])
+                    return false;
+            }
+            return true;
+        }
+
         private void ParseSequence(string sequence)
         {
             AminoAcidResidue residue = null;
@@ -361,13 +405,13 @@ namespace CSMSL.Proteomics
                         switch (modString)
                         {
                             case "#": // Make the modification unverisally heavy (all C12 and N14s are promoted to C13 and N15s)
-                                modification = ChemicalModification.MakeHeavy(_residues[_residues.Count - 1]);                              
+                                modification = ChemicalModification.MakeHeavy(_residues[_residues.Count - 1]);
                                 break;
                             default:
-                                modification = new ChemicalModification(modString);                                
+                                modification = new ChemicalModification(modString);
                                 break;
                         }
-                        _modifications[_residues.Count] = modification;                                             
+                        _modifications[_residues.Count] = modification;
                     }
                     else
                     {
@@ -396,5 +440,47 @@ namespace CSMSL.Proteomics
             _isDirty = endCount != startcount; // set the dirty flag once, instead of everytime you add a residue
             Array.Resize(ref _modifications, endCount + 2);
         }
+
+        public static IEnumerable<string> Digest(string sequence, IEnumerable<Protease> proteases, int? maxMissedCleavages,bool assumeInitiatorMethionineCleaved, int? minLength, int? maxLength)
+        {
+            int length = sequence.Length; 
+            HashSet<int> locations = new HashSet<int>() { -1 };            
+            foreach (Protease protease in proteases)
+            {
+                locations.UnionWith(protease.GetDigestionSiteIndices(sequence));
+            }
+            locations.Add(length - 1);
+
+            List<int> indices = new List<int>(locations);
+            indices.Sort();
+
+            bool startsWithM = sequence[0].Equals('M') && !assumeInitiatorMethionineCleaved;
+            int min = (minLength.HasValue) ? minLength.Value : 1;
+            int max = (maxLength.HasValue) ? maxLength.Value : int.MaxValue;
+            int max_missed = (maxMissedCleavages.HasValue) ? maxMissedCleavages.Value : 0;
+
+            for (int missed_cleavages = 0; missed_cleavages <= max_missed; missed_cleavages++)
+            {
+                for (int i = 0; i < indices.Count - missed_cleavages - 1; i++)
+                {
+                    int len = indices[i + missed_cleavages + 1] - indices[i];
+                    if (len >= minLength && len <= maxLength)
+                    {
+                        int begin = indices[i] + 1;
+                        int end = begin + len + 1;
+                        yield return sequence.Substring(begin, len);
+
+                        if (startsWithM && begin == 0 && len - 1 >= minLength)
+                        {   
+                            yield return sequence.Substring(1, len - 1);
+                        }
+                    }
+                }
+            }
+            yield break;
+        }
+
+
+     
     }
 }

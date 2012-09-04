@@ -303,7 +303,7 @@ namespace CSMSL.Chemistry
         /// </summary>
         /// <param name="isotope"></param>
         /// <returns></returns>
-        public int Count(Isotope isotope) 
+        public int Count(Isotope isotope)
         {
             int id = isotope._uniqueID;
             if (id > _isotopes.Length) return 0;

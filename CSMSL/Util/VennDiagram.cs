@@ -33,18 +33,18 @@ namespace CSMSL.Util
         {
             get { return _inputSets.Length; }
         }
-             
+
         private VennSet<T>[] _subSets;
         private Dictionary<string, VennSet<T>> _regions;
-                
+
         public VennSet<T> TotalUnique
         {
-            get { return _subSets[0]; }           
+            get { return _subSets[0]; }
         }
 
         private VennSet<T>[] _inputSets;
 
-        public VennDiagram(params VennSet<T>[] sets)
+        private VennDiagram(params VennSet<T>[] sets)
         {
             _inputSets = sets;
         }
@@ -59,21 +59,23 @@ namespace CSMSL.Util
             }
         }
 
-        public void CreateDiagram()
+        public static VennDiagram<T> CreateDiagram(params VennSet<T>[] sets)
         {
-            _regions = new Dictionary<string, VennSet<T>>();
+            VennDiagram<T> diagram = new VennDiagram<T>(sets);
+            diagram._regions = new Dictionary<string, VennSet<T>>();
 
+            int count = diagram.Count;
             // Initialize subsets
-            _subSets = new VennSet<T>[Count];
-            for (int i = 0; i < Count; i++)
+            diagram._subSets = new VennSet<T>[count];
+            for (int i = 0; i < count; i++)
             {
-                _subSets[i] = new VennSet<T>(string.Format("In {0:G0} of {1:G0}", i + 1, Count));
+                diagram._subSets[i] = new VennSet<T>(string.Format("In {0:G0} of {1:G0}", i + 1, count));
             }
 
             //_subSets[Count] = new VennSet<T>("Total Unique");
-            for (int depth = 1; depth <= Count; depth++)
+            for (int depth = 1; depth <= count; depth++)
             {
-                Combinations<VennSet<T>> combinations = new Combinations<VennSet<T>>(_inputSets, depth);
+                Combinations<VennSet<T>> combinations = new Combinations<VennSet<T>>(diagram._inputSets, depth);
                 foreach (IList<VennSet<T>> combo_sets in combinations)
                 {
                     HashSet<T> baseSet = new HashSet<T>(combo_sets[0]);
@@ -86,13 +88,13 @@ namespace CSMSL.Util
                         sb.Append(" ∩ ");
                         sb.Append(currentSet.Name);
                     }
-                    AddVennSet(new VennSet<T>(baseSet, sb.ToString()), depth);
+                    diagram.AddVennSet(new VennSet<T>(baseSet, sb.ToString()), depth);
 
                     // Skip the last one
-                    if (depth < Count)
+                    if (depth < count)
                     {
                         baseSet = new HashSet<T>(baseSet);
-                        foreach (VennSet<T> set in _inputSets)
+                        foreach (VennSet<T> set in diagram._inputSets)
                         {
                             if (!combo_sets.Contains(set))
                             {
@@ -100,16 +102,17 @@ namespace CSMSL.Util
                             }
                         }
                         sb.Append(" only");
-                        AddVennSet(new VennSet<T>(baseSet, sb.ToString()), depth);                       
-                    }                   
-                }              
-            }                             
+                        diagram.AddVennSet(new VennSet<T>(baseSet, sb.ToString()), depth);
+                    }
+                }
+            }
+            return diagram;
         }
 
         private void AddVennSet(VennSet<T> set, int depth)
         {
             _subSets[depth - 1].Add(set);
-            _regions.Add(set.Name, set);  
+            _regions.Add(set.Name, set);
         }
 
         public override string ToString()

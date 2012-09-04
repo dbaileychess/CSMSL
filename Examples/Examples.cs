@@ -43,17 +43,12 @@ namespace ExamplesCSMSL
 
         private static void StartExamples()
         {
-            Peptide substance_p = new Peptide("RPKPQQFFGLM");
-            foreach (Fragment fragment in substance_p.CalculateFragments(FragmentType.b | FragmentType.y))
-            {
-                Console.WriteLine(fragment.ToString() + '\t' + fragment.Mass.ToMz(1).ToString() + '\t' + fragment.ChemicalFormula.ToString());
-            }
             // Examples coding
             //ChemicalFormulaExamples();
-            //PeptideExamples();
+           // PeptideExamples();
 
             // Example Objects
-            VennDiagramExamples();
+            //VennDiagramExamples();
 
             // Example programs
             //ExampleTrypticDigest.Start();
@@ -106,7 +101,7 @@ namespace ExamplesCSMSL
             // Modifications can be applied to any residue or termini
             Console.WriteLine("Lets add some Iron to our peptide...");
             peptide1.SetModification(new ChemicalModification("Fe"), Terminus.C | Terminus.N);
-            WritePeptideToConsole(peptide1);
+            WritePeptideToConsole(peptide1);            
 
             // A chemicalmodification is a simple wrapper for a chemical formula. You can name your mods if you want
             Console.WriteLine("Add a modification of Oxygen with the name \"Oxidation\" to all Methionines");

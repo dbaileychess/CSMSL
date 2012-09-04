@@ -72,6 +72,8 @@
     <Compile Include="Tolerance.cs" />
     <Compile Include="Util\Combinatorics.cs" />
     <Compile Include="Util\LinearRegression.cs" />
+    <Compile Include="Util\Statistics\FalseDiscoveryRate.cs" />
+    <Compile Include="Util\Statistics\IFalseDiscovery.cs" />
     <Compile Include="Util\VennDiagram.cs" />
     <Compile Include="Util\VennSet.cs" />
   </ItemGroup>
@@ -82,12 +84,15 @@
     </Content>
     <Content Include="Resources\Elements.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </Content>
     <Content Include="Resources\Proteases.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Util\Collections\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

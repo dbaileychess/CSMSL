@@ -50,17 +50,17 @@ namespace CSMSL.Chemistry
 
         internal static ChemicalModification MakeHeavy(Proteomics.AminoAcidResidue aminoAcidResidue)
         {
-            ChemicalFormula formula = new ChemicalFormula();  
+            ChemicalFormula formula = new ChemicalFormula();
             Isotope c12 = PERIODIC_TABLE["C"][12];
-            Isotope n14 = PERIODIC_TABLE["N"][14];  
+            Isotope n14 = PERIODIC_TABLE["N"][14];
             Isotope c13 = PERIODIC_TABLE["C"][13];
             Isotope n15 = PERIODIC_TABLE["N"][15];
             int c12_count = aminoAcidResidue.ChemicalFormula.Count(c12);
-            int n14_count = aminoAcidResidue.ChemicalFormula.Count(n14);           
+            int n14_count = aminoAcidResidue.ChemicalFormula.Count(n14);
             formula.Add(c13, c12_count);
             formula.Add(n15, n14_count);
             formula.Remove(c12, c12_count);
-            formula.Remove(n14, n14_count);                  
+            formula.Remove(n14, n14_count);
             return new ChemicalModification(formula.ToString(), "#");
         }
     }

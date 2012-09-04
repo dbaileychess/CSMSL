@@ -23,7 +23,7 @@ using System.Xml;
 
 namespace CSMSL.Proteomics
 {
-    public sealed class ProteaseDictionary
+    public sealed class ProteaseDictionary : IEnumerable<Protease>
     {
         private static readonly ProteaseDictionary _instance = new ProteaseDictionary();
 
@@ -85,6 +85,16 @@ namespace CSMSL.Proteomics
                 Protease protease = new Protease(name, (_char == 'C') ? Terminus.C : Terminus.N, regex);
                 AddProtease(protease);
             }
+        }
+
+        public IEnumerator<Protease> GetEnumerator()
+        {
+            return _proteases.Values.GetEnumerator();
+        }
+
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        {
+            return _proteases.Values.GetEnumerator();
         }
     }
 }

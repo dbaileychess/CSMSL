@@ -104,7 +104,7 @@ namespace CSMSL.Spectral
 
             peaks = new List<T>();
 
-            if ((temppeak = _peaks[index]).MZ > maxMZ) return false;
+            if (index < _peaks.Length && (temppeak = _peaks[index]).MZ > maxMZ) return false;
 
             do
             {
@@ -184,6 +184,11 @@ namespace CSMSL.Spectral
                 _peaks[i] = temppeak;
             }
             Array.Sort(_peaks);
+        }
+
+        public override string ToString()
+        {
+            return string.Format("{0:G0} Peaks", Count);
         }
     }
 }

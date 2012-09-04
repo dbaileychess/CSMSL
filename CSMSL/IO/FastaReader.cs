@@ -28,25 +28,42 @@ namespace CSMSL.IO
 {
     public class Fasta
     {
+        public static string[] DECOY_IDENTIFIERS = {"DECOY", "REVERSE"};
+
         private string _description;
         private string _sequence;
 
         public Fasta(string sequence, string description)
         {
-            _sequence = sequence;
-            _description = description;
+            Sequence = sequence;
+            Description = description;
         }
 
         public string Description
         {
             get { return _description; }
-            set { _description = value; }
+            set { 
+                _description = value;
+                foreach(string decoyIdentifier in DECOY_IDENTIFIERS) {
+                    if(_description.StartsWith(decoyIdentifier)) {
+                        _isDecoy = true;
+                        break;
+                    }                        
+                }
+            }
         }
 
         public string Sequence
         {
             get { return _sequence; }
             set { _sequence = value; }
+        }
+
+        private bool _isDecoy;
+        public bool IsDecoy
+        {
+            get { return _isDecoy; }
+            set { _isDecoy = value; }
         }
     }
 
@@ -55,6 +72,11 @@ namespace CSMSL.IO
         public char[] Delimiters = { '>' };
         private string _fileName;
         private StreamReader _reader;
+
+        public Stream BaseStream
+        {
+            get { return _reader.BaseStream; }
+        }
 
         public FastaReader(string fileName)
         {
