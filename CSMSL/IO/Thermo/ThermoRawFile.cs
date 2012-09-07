@@ -1,8 +1,19 @@
 ﻿using CSMSL.Spectral;
+using System;
 using MSFileReaderLib;
 
 namespace CSMSL.IO.Thermo
 {
+    enum RawLabelDataColumn
+    {
+        MZ = 0,
+        Intensity = 1,
+        Resolution = 2,
+        NoiseBaseline = 3,
+        NoiseLevel = 4,
+        Charge = 5
+    }
+
     public class ThermoRawFile : MsDataFile
     {
         private IXRawfile5 _rawConnection;
@@ -74,6 +85,14 @@ namespace CSMSL.IO.Thermo
             return spectrumNumber;
         }
 
+        public override double GetRetentionTime(int spectrumNumber)
+        {
+            double retentionTime = 0;
+            if (_rawConnection != null)
+                _rawConnection.RTFromScanNum(spectrumNumber, ref retentionTime);
+            return retentionTime;
+        }
+
         public override int GetMsnOrder(int spectrumNumber)
         {
             int msnOrder = 0;
@@ -82,12 +101,20 @@ namespace CSMSL.IO.Thermo
             return msnOrder;
         }
 
-        public override MsScan GetMsScan(int spectrumNumber)
+        private object GetExtravalue(int spectrumNumber, string filter)
         {
-            MsScan scan = new MsScan(spectrumNumber, this);         
-            return new MsScan(spectrumNumber, this);
+            object value = null;
+            if (_rawConnection != null)
+                _rawConnection.GetTrailerExtraValueForScanNum(spectrumNumber, filter, ref value);
+            return value;
         }
 
+        public override Polarity GetPolarity(int spectrumNumber)
+        {
+            short charge = (short)GetExtravalue(spectrumNumber, "Charge State:");           
+            return (Polarity)(Math.Sign(charge));
+        }
+        
         public void DoSomething()
         {
             

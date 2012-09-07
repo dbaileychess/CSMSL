@@ -1,10 +1,10 @@
 ﻿using System;
 using System.IO;
-using CSMSL.Spectral;
+using System.Collections.Generic;
 
 namespace CSMSL.IO
 {
-    public abstract class MsDataFile : IDisposable , IEquatable<MsDataFile>
+    public abstract class MsDataFile : IDisposable , IEquatable<MsDataFile>, IEnumerable<MsScan>
     {
         private bool _isOpen;
 
@@ -15,7 +15,10 @@ namespace CSMSL.IO
         public string FilePath
         {
             get { return _filePath; }
-            private set { _filePath = value; }
+            private set {
+                _filePath = value;
+                _name = Path.GetFileNameWithoutExtension(value);            
+            }
         }
 
         private MsDataFileType _fileType;
@@ -40,9 +43,20 @@ namespace CSMSL.IO
             protected set { _lastSpectrumNumber = value; }
         }
 
+        private string _name;
         public string Name
         {
-            get { return Path.GetFileNameWithoutExtension(FilePath); }
+            get { return _name; }
+        }
+
+        protected MsScan[] _scans;
+
+        public MsScan this[int spectrumNumber]
+        {
+            get
+            {
+                return GetMsScan(spectrumNumber);
+            }
         }
 
         public MsDataFile(string filePath, MsDataFileType filetype = MsDataFileType.UnKnown)
@@ -53,6 +67,7 @@ namespace CSMSL.IO
             }
             FilePath = filePath;
             FileType = filetype;
+            _scans = new MsScan[1000];
         }
 
         /// <summary>
@@ -68,13 +83,34 @@ namespace CSMSL.IO
             return 1;
         }
 
+        public virtual double GetRetentionTime(int spectrumNumber)
+        {
+            return double.NaN;
+        }
+
+        public virtual Polarity GetPolarity(int spectrumNumber)
+        {
+            return Polarity.Neutral;
+        }
+
         public virtual MsScan GetMsScan(int spectrumNumber)
         {
-            return new MsScan(spectrumNumber, this);
+            if (spectrumNumber >= _scans.Length)
+            {
+                Array.Resize(ref _scans, spectrumNumber + 1000);
+                return _scans[spectrumNumber] = new MsScan(spectrumNumber, this);
+            }
+
+            if (_scans[spectrumNumber] == null)
+            {
+                _scans[spectrumNumber] = new MsScan(spectrumNumber, this);
+            }
+            return _scans[spectrumNumber];    
         }
 
         public virtual void Dispose()
-        {
+        {         
+            _scans = null;
             _isOpen = false;
         }
 
@@ -90,7 +126,23 @@ namespace CSMSL.IO
 
         public bool Equals(MsDataFile other)
         {
+            if (ReferenceEquals(this, other)) return true;
             return this.FilePath.Equals(other.FilePath);
+        }
+
+        public IEnumerator<MsScan> GetEnumerator()
+        {
+            int lastscan = LastSpectrumNumber; // Grab once
+            for (int spectrumNumber = FirstSpectrumNumber; spectrumNumber < lastscan; spectrumNumber++)
+            {
+                yield return GetMsScan(spectrumNumber);
+            }
+            yield break;
+        }
+
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        {
+            return this.GetEnumerator();
         }
     }
 }

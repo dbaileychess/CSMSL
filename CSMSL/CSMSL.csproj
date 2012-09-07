@@ -54,6 +54,7 @@
     <Compile Include="IO\FastaWriter.cs" />
     <Compile Include="IO\MsDataFile.cs" />
     <Compile Include="IO\MsDataFileType.cs" />
+    <Compile Include="IO\MsScan.cs" />
     <Compile Include="IRange.cs" />
     <Compile Include="Mass.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -69,7 +70,6 @@
     <Compile Include="Proteomics\Terminus.cs" />
     <Compile Include="Range.cs" />
     <Compile Include="Spectral\IPeak.cs" />
-    <Compile Include="Spectral\MsScan.cs" />
     <Compile Include="Spectral\Peak.cs" />
     <Compile Include="Spectral\Spectrum.cs" />
     <Compile Include="Tolerance.cs" />
