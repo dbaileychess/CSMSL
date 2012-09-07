@@ -59,10 +59,23 @@ namespace CSMSL
         /// </summary>
         public const double HYDROGEN = 1.0078250321;
 
+        public const double DEUTERIUM = 2.0141017778;
+
+        public const double NITROGEN = 14.0030740048;
+
+        public const double NITROGEN15 = 15.0001088982;
+               
         /// <summary>
         /// The mass of the most common isotope of hydrogen in atomic units (u)
         /// </summary>
         public const double OXYGEN = 15.9949146221;
+
+        public const double OXYGEN18 = 17.9991610;
+
+        public const double SULFUR = 31.97207100;
+
+        public const double SULFUR34 = 33.96786690;
+
 
         #endregion Atomic
 

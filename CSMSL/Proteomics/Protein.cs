@@ -99,7 +99,7 @@ namespace CSMSL.Proteomics
                     {
                         int begin = indices[i] + 1;
                         int end = begin + len + 1;
-                        ChemicalModification[] mods = new ChemicalModification[len + 2];
+                        ChemicalModification[] mods = new ChemicalModification[len + 2];                        
                         Array.Copy(this._modifications, begin + 1, mods, 1, len);
                         mods[0] = (begin == 0) ? _modifications[0] : AminoAcidPolymer.DefaultNTerm;
                         mods[len + 1] = (end == _modifications.Length - 1) ? _modifications[end] : AminoAcidPolymer.DefaultCTerm;

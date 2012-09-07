@@ -308,7 +308,7 @@ namespace CSMSL.Proteomics
 
             StringBuilder baseSeqSB = new StringBuilder();
             ChemicalModification mod = null;
-
+                      
             // Handle N-Terminus
             if ((mod = _modifications[0]) != null)
             {
@@ -435,16 +435,29 @@ namespace CSMSL.Proteomics
                     }
                 }
             }
+
+            if (inMod)
+            {
+                throw new ArgumentException("Couldn't find the closing ] for a modification in this sequence");
+            }
+
             _sequence = baseSeqSB.ToString();
             int endCount = _residues.Count;
             _isDirty = endCount != startcount; // set the dirty flag once, instead of everytime you add a residue
             Array.Resize(ref _modifications, endCount + 2);
         }
 
-        public static IEnumerable<string> Digest(string sequence, IEnumerable<Protease> proteases, int? maxMissedCleavages,bool assumeInitiatorMethionineCleaved, int? minLength, int? maxLength)
+        #region Statics
+
+        public static IEnumerable<string> Digest(string sequence, Protease protease, int minMissedCleavages = 0, int maxMissedCleavages = 0, bool assumeInitiatorMethionineCleaved = true, int minLength = 1, int maxLength = int.MaxValue)
         {
-            int length = sequence.Length; 
-            HashSet<int> locations = new HashSet<int>() { -1 };            
+            return Digest(sequence, new Protease[] { protease }, minMissedCleavages, maxMissedCleavages, assumeInitiatorMethionineCleaved, minLength, maxLength);
+        }
+
+        public static IEnumerable<string> Digest(string sequence, IEnumerable<Protease> proteases, int minMissedCleavages = 0, int maxMissedCleavages = 0, bool assumeInitiatorMethionineCleaved = true, int minLength = 1, int maxLength = int.MaxValue)
+        {
+            int length = sequence.Length;
+            HashSet<int> locations = new HashSet<int>() { -1 };       
             foreach (Protease protease in proteases)
             {
                 locations.UnionWith(protease.GetDigestionSiteIndices(sequence));
@@ -455,11 +468,7 @@ namespace CSMSL.Proteomics
             indices.Sort();
 
             bool startsWithM = sequence[0].Equals('M') && !assumeInitiatorMethionineCleaved;
-            int min = (minLength.HasValue) ? minLength.Value : 1;
-            int max = (maxLength.HasValue) ? maxLength.Value : int.MaxValue;
-            int max_missed = (maxMissedCleavages.HasValue) ? maxMissedCleavages.Value : 0;
-
-            for (int missed_cleavages = 0; missed_cleavages <= max_missed; missed_cleavages++)
+            for (int missed_cleavages = minMissedCleavages; missed_cleavages <= maxMissedCleavages; missed_cleavages++)
             {
                 for (int i = 0; i < indices.Count - missed_cleavages - 1; i++)
                 {
@@ -471,7 +480,7 @@ namespace CSMSL.Proteomics
                         yield return sequence.Substring(begin, len);
 
                         if (startsWithM && begin == 0 && len - 1 >= minLength)
-                        {   
+                        {
                             yield return sequence.Substring(1, len - 1);
                         }
                     }
@@ -480,7 +489,7 @@ namespace CSMSL.Proteomics
             yield break;
         }
 
+        #endregion
 
-     
     }
 }

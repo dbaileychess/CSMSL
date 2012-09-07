@@ -24,6 +24,9 @@ using System.Collections.Generic;
 using CSMSL.Chemistry;
 using CSMSL.Proteomics;
 using CSMSL.Util;
+using CSMSL.IO.Thermo;
+using CSMSL.IO;
+using CSMSL.Spectral;
 
 namespace ExamplesCSMSL
 {
@@ -52,6 +55,19 @@ namespace ExamplesCSMSL
 
             // Example programs
             //ExampleTrypticDigest.Start();
+
+            //Example IO
+            MsIOExamples();
+        }
+
+        private static void MsIOExamples()
+        {
+            using (MsDataFile datFile = new ThermoRawFile(@"E:\Software\CSMSL\Examples\Resources\120826_mousetissue_tmtelite8_discovery_165min_4.raw",true))
+            {               
+                int scan1 = datFile.FirstSpectrumNumber;
+                int msn = datFile.GetMsnOrder(2450);
+                MsScan scan = datFile.GetMsScan(2450);
+            }
         }
 
         private static void VennDiagramExamples()
@@ -75,9 +91,7 @@ namespace ExamplesCSMSL
             }
 
             // Create diagram
-            VennDiagram<int> diagram = new VennDiagram<int>(sets);
-            diagram.CreateDiagram();
-
+            VennDiagram<int> diagram = VennDiagram<int>.CreateDiagram(sets);            
         }
 
         /// <summary>

@@ -24,7 +24,7 @@ using CSMSL.Chemistry;
 
 namespace CSMSL.Proteomics
 {
-    public sealed class AminoAcidDictionary
+    public sealed class AminoAcidDictionary : IEnumerable<AminoAcidResidue>
     {
         private static readonly AminoAcidDictionary _instance = new AminoAcidDictionary();
         private static readonly PeriodicTable PERIODIC_TABLE = PeriodicTable.Instance;
@@ -137,6 +137,16 @@ namespace CSMSL.Proteomics
             {
                 _residuesSymbol.Add(aminoAcid.Name, aminoAcid);
             }
+        }
+
+        public IEnumerator<AminoAcidResidue> GetEnumerator()
+        {
+            return _residuesLetter.Values.GetEnumerator();
+        }
+
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        {
+            return _residuesLetter.Values.GetEnumerator();
         }
     }
 }
