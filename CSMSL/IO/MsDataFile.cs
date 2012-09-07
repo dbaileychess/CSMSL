@@ -1,10 +1,10 @@
 ﻿using System;
-using System.IO;
 using System.Collections.Generic;
+using System.IO;
 
 namespace CSMSL.IO
 {
-    public abstract class MsDataFile : IDisposable , IEquatable<MsDataFile>, IEnumerable<MsScan>
+    public abstract class MsDataFile : IDisposable, IEquatable<MsDataFile>, IEnumerable<MsScan>
     {
         private bool _isOpen;
 
@@ -15,9 +15,10 @@ namespace CSMSL.IO
         public string FilePath
         {
             get { return _filePath; }
-            private set {
+            private set
+            {
                 _filePath = value;
-                _name = Path.GetFileNameWithoutExtension(value);            
+                _name = Path.GetFileNameWithoutExtension(value);
             }
         }
 
@@ -31,6 +32,7 @@ namespace CSMSL.IO
 
         private int _firstSpectrumNumber = -1;
         private int _lastSpectrumNumber = -1;
+
         public virtual int FirstSpectrumNumber
         {
             get { return _firstSpectrumNumber; }
@@ -44,6 +46,7 @@ namespace CSMSL.IO
         }
 
         private string _name;
+
         public string Name
         {
             get { return _name; }
@@ -105,11 +108,11 @@ namespace CSMSL.IO
             {
                 _scans[spectrumNumber] = new MsScan(spectrumNumber, this);
             }
-            return _scans[spectrumNumber];    
+            return _scans[spectrumNumber];
         }
 
         public virtual void Dispose()
-        {         
+        {
             _scans = null;
             _isOpen = false;
         }

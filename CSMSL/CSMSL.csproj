@@ -55,6 +55,7 @@
     <Compile Include="IO\MsDataFile.cs" />
     <Compile Include="IO\MsDataFileType.cs" />
     <Compile Include="IO\MsScan.cs" />
+    <Compile Include="IO\MzAnalyzerType.cs" />
     <Compile Include="IRange.cs" />
     <Compile Include="Mass.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
