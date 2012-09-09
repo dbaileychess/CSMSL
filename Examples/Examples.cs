@@ -64,13 +64,14 @@ namespace ExamplesCSMSL
         {
             Console.WriteLine("**MS I/O Examples**");
 
-            using (MsDataFile dataFile = new ThermoRawFile("Resources/ThermoRawFileMS1MS2.raw",true))
+            using (ThermoRawFile dataFile = new ThermoRawFile("Resources/ThermoRawFileMS1MS2.raw", true))
             {                               
                 MsScan scan1 = dataFile[2450];
                 MsScan scan2 = dataFile.GetMsScan(2450);
-                int counter = 0;
+                int counter = 0;     
+           
                 foreach (MsScan scan in dataFile)
-                {
+                {                      
                     Console.WriteLine("Scan #{0} MSn Order:{1} Time:{2} Polarity:{3}", scan.SpectrumNumber, scan.MsnOrder, scan.RetentionTime, scan.Polarity);
                 }
                 Console.WriteLine(counter);                    

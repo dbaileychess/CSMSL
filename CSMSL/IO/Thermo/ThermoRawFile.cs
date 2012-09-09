@@ -22,32 +22,8 @@ namespace CSMSL.IO.Thermo
             : base(filePath, MsDataFileType.ThermoRawFile) 
         {
             if (openImmediately) Open();
-        }
-
-        public override int FirstSpectrumNumber
-        {
-            get
-            {
-                if (base.FirstSpectrumNumber < 0)
-                {
-                    base.FirstSpectrumNumber = GetFirstSpectrumNumber();
-                }
-                return base.FirstSpectrumNumber;
-            }
-        }
-
-        public override int LastSpectrumNumber
-        {
-            get
-            {
-                if (base.LastSpectrumNumber < 0)
-                {
-                    base.LastSpectrumNumber = GetLastSpectrumNumber();
-                }
-                return base.LastSpectrumNumber;
-            }
-        }
-
+        }   
+      
         public override void Open()
         {
             if (!IsOpen)
@@ -69,7 +45,7 @@ namespace CSMSL.IO.Thermo
             base.Dispose();
         }
 
-        private int GetFirstSpectrumNumber()
+        protected override int GetFirstSpectrumNumber()
         {
             int spectrumNumber = 0;
             if (_rawConnection != null)
@@ -77,7 +53,7 @@ namespace CSMSL.IO.Thermo
             return spectrumNumber;
         }
 
-        private int GetLastSpectrumNumber()
+        protected override int GetLastSpectrumNumber()
         {
             int spectrumNumber = 0;
             if (_rawConnection != null)
@@ -119,5 +95,7 @@ namespace CSMSL.IO.Thermo
         {
             
         }
+
+
     }
 }

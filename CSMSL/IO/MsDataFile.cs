@@ -35,14 +35,26 @@ namespace CSMSL.IO
 
         public virtual int FirstSpectrumNumber
         {
-            get { return _firstSpectrumNumber; }
-            protected set { _firstSpectrumNumber = value; }
+            get
+            {
+                if (_firstSpectrumNumber < 0)
+                {
+                    _firstSpectrumNumber = GetFirstSpectrumNumber();
+                }
+                return _firstSpectrumNumber;
+            }             
         }
 
         public virtual int LastSpectrumNumber
         {
-            get { return _lastSpectrumNumber; }
-            protected set { _lastSpectrumNumber = value; }
+            get
+            {
+                if (_lastSpectrumNumber < 0)
+                {
+                    _lastSpectrumNumber = GetLastSpectrumNumber();
+                }
+                return _lastSpectrumNumber;
+            }              
         }
 
         private string _name;
@@ -84,7 +96,10 @@ namespace CSMSL.IO
         public virtual int GetMsnOrder(int spectrumNumber)
         {
             return 1;
-        }   
+        }
+
+        protected abstract int GetFirstSpectrumNumber();
+        protected abstract int GetLastSpectrumNumber();
   
         public virtual double GetRetentionTime(int spectrumNumber)
         {
