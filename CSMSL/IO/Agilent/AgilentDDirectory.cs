@@ -7,35 +7,8 @@ namespace CSMSL.IO.Agilent
         private IMsdrDataReader _msdr;
 
         public AgilentDDirectory(string directoryPath, bool openImmediately = false)
-            : base(directoryPath, MsDataFileType.AgilentRawFile)
-        {
-            if(openImmediately) Open();
-        }
-
-        public override int FirstSpectrumNumber
-        {
-            get
-            {
-                if(base.FirstSpectrumNumber < 0)
-                {
-                    base.FirstSpectrumNumber = GetFirstSpectrumNumber();
-                }
-                return base.FirstSpectrumNumber;
-            }
-        }
-
-        public override int LastSpectrumNumber
-        {
-            get
-            {
-                if(base.LastSpectrumNumber < 0)
-                {
-                    base.LastSpectrumNumber = GetLastSpectrumNumber();
-                }
-                return base.LastSpectrumNumber;
-            }
-        }
-
+            : base(directoryPath, MsDataFileType.AgilentRawFile, openImmediately) { }       
+          
         public override void Open()
         {
             if(!IsOpen)
@@ -56,12 +29,12 @@ namespace CSMSL.IO.Agilent
             base.Dispose();
         }
 
-        private int GetFirstSpectrumNumber()
+        protected override int GetFirstSpectrumNumber()
         {
             return 1;
         }
 
-        private int GetLastSpectrumNumber()
+        protected override int GetLastSpectrumNumber()
         {
             return (int)(_msdr.MSScanFileInformation.TotalScansPresent + 1);
         }

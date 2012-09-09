@@ -6,11 +6,24 @@ namespace CSMSL.IO
 {
     public abstract class MsDataFile : IDisposable, IEquatable<MsDataFile>, IEnumerable<MsScan>
     {
-        private bool _isOpen;
-
-        public bool IsOpen { get { return _isOpen; } }
-
+        protected MsScan[] _scans = null;
         private string _filePath;
+        private MsDataFileType _fileType;
+        private int _firstSpectrumNumber = -1;
+        private bool _isOpen;
+        private int _lastSpectrumNumber = -1;    
+        private string _name;
+
+        public MsDataFile(string filePath, MsDataFileType filetype = MsDataFileType.UnKnown, bool openImmediately = false)
+        {
+            if (!File.Exists(filePath))
+            {
+                throw new IOException(string.Format("The MS data file {0} does not currently exist", filePath));
+            }
+            FilePath = filePath;
+            FileType = filetype;
+            if (openImmediately) Open();
+        }
 
         public string FilePath
         {
@@ -22,16 +35,11 @@ namespace CSMSL.IO
             }
         }
 
-        private MsDataFileType _fileType;
-
         public MsDataFileType FileType
         {
             get { return _fileType; }
             private set { _fileType = value; }
         }
-
-        private int _firstSpectrumNumber = -1;
-        private int _lastSpectrumNumber = -1;
 
         public virtual int FirstSpectrumNumber
         {
@@ -42,8 +50,10 @@ namespace CSMSL.IO
                     _firstSpectrumNumber = GetFirstSpectrumNumber();
                 }
                 return _firstSpectrumNumber;
-            }             
+            }
         }
+
+        public bool IsOpen { get { return _isOpen; } }
 
         public virtual int LastSpectrumNumber
         {
@@ -54,17 +64,13 @@ namespace CSMSL.IO
                     _lastSpectrumNumber = GetLastSpectrumNumber();
                 }
                 return _lastSpectrumNumber;
-            }              
+            }
         }
-
-        private string _name;
 
         public string Name
         {
             get { return _name; }
         }
-
-        protected MsScan[] _scans;
 
         public MsScan this[int spectrumNumber]
         {
@@ -74,72 +80,17 @@ namespace CSMSL.IO
             }
         }
 
-        public MsDataFile(string filePath, MsDataFileType filetype = MsDataFileType.UnKnown)
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
         {
-            if (!File.Exists(filePath))
-            {
-                throw new IOException(string.Format("The file {0} does not currently exist", filePath));
-            }
-            FilePath = filePath;
-            FileType = filetype;
-            _scans = new MsScan[1000];
-        }
-
-        /// <summary>
-        /// Open up a connection to the underlying MS data stream
-        /// </summary>
-        public virtual void Open()
-        {
-            _isOpen = true;
-        }
-
-        public virtual int GetMsnOrder(int spectrumNumber)
-        {
-            return 1;
-        }
-
-        protected abstract int GetFirstSpectrumNumber();
-        protected abstract int GetLastSpectrumNumber();
-  
-        public virtual double GetRetentionTime(int spectrumNumber)
-        {
-            return double.NaN;
-        }
-
-        public virtual Polarity GetPolarity(int spectrumNumber)
-        {
-            return Polarity.Neutral;
-        }
-
-        public virtual MsScan GetMsScan(int spectrumNumber)
-        {
-            if (spectrumNumber >= _scans.Length)
-            {
-                Array.Resize(ref _scans, spectrumNumber + 1000);
-                return _scans[spectrumNumber] = new MsScan(spectrumNumber, this);
-            }
-
-            if (_scans[spectrumNumber] == null)
-            {
-                _scans[spectrumNumber] = new MsScan(spectrumNumber, this);
-            }
-            return _scans[spectrumNumber];
+            return this.GetEnumerator();
         }
 
         public virtual void Dispose()
         {
+            if (_scans != null)
+                Array.Clear(_scans, 0, _scans.Length);
             _scans = null;
             _isOpen = false;
-        }
-
-        public override string ToString()
-        {
-            return string.Format("{0} ({1})", Name, Enum.GetName(typeof(MsDataFileType), FileType));
-        }
-
-        public override int GetHashCode()
-        {
-            return this.FilePath.GetHashCode();
         }
 
         public bool Equals(MsDataFile other)
@@ -158,9 +109,46 @@ namespace CSMSL.IO
             yield break;
         }
 
-        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        public override int GetHashCode()
         {
-            return this.GetEnumerator();
+            return this.FilePath.GetHashCode();
         }
+
+        public abstract int GetMsnOrder(int spectrumNumber);
+
+        public virtual MsScan GetMsScan(int spectrumNumber)
+        {
+            if (_scans == null)
+            {
+                _scans = new MsScan[LastSpectrumNumber + 1];
+            }
+
+            if (_scans[spectrumNumber] == null)
+            {
+                _scans[spectrumNumber] = new MsScan(spectrumNumber, this);
+            }
+            return _scans[spectrumNumber];
+        }
+
+        public abstract Polarity GetPolarity(int spectrumNumber);
+
+        public abstract double GetRetentionTime(int spectrumNumber);
+
+        /// <summary>
+        /// Open up a connection to the underlying MS data stream
+        /// </summary>
+        public virtual void Open()
+        {
+            _isOpen = true;
+        }
+
+        public override string ToString()
+        {
+            return string.Format("{0} ({1})", Name, Enum.GetName(typeof(MsDataFileType), FileType));
+        }
+
+        protected abstract int GetFirstSpectrumNumber();
+
+        protected abstract int GetLastSpectrumNumber();
     }
 }

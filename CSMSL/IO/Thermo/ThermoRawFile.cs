@@ -1,10 +1,9 @@
-﻿using CSMSL.Spectral;
-using System;
+﻿using System;
 using MSFileReaderLib;
 
 namespace CSMSL.IO.Thermo
 {
-    enum RawLabelDataColumn
+    internal enum RawLabelDataColumn
     {
         MZ = 0,
         Intensity = 1,
@@ -19,11 +18,8 @@ namespace CSMSL.IO.Thermo
         private IXRawfile5 _rawConnection;
 
         public ThermoRawFile(string filePath, bool openImmediately = false)
-            : base(filePath, MsDataFileType.ThermoRawFile) 
-        {
-            if (openImmediately) Open();
-        }   
-      
+            : base(filePath, MsDataFileType.ThermoRawFile, openImmediately) { }
+
         public override void Open()
         {
             if (!IsOpen)
@@ -32,7 +28,7 @@ namespace CSMSL.IO.Thermo
                 _rawConnection.Open(FilePath);
                 _rawConnection.SetCurrentController(0, 1); // first 0 is for mass spectrometer
                 base.Open();
-            }           
+            }
         }
 
         public override void Dispose()
@@ -41,7 +37,7 @@ namespace CSMSL.IO.Thermo
             {
                 _rawConnection.Close();
                 _rawConnection = null;
-            }           
+            }
             base.Dispose();
         }
 
@@ -87,15 +83,12 @@ namespace CSMSL.IO.Thermo
 
         public override Polarity GetPolarity(int spectrumNumber)
         {
-            short charge = (short)GetExtravalue(spectrumNumber, "Charge State:");           
+            short charge = (short)GetExtravalue(spectrumNumber, "Charge State:");
             return (Polarity)(Math.Sign(charge));
         }
-        
+
         public void DoSomething()
         {
-            
         }
-
-
     }
 }

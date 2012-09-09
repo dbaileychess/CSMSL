@@ -7,12 +7,18 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSMSL", "..\CSMSL\CSMSL.csp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Thermo", "..\CSMSL\IO\Thermo\Thermo.csproj", "{24DC85FF-E97B-4140-9614-77DD8FDDD32F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Agilent", "..\CSMSL\IO\Agilent\Agilent.csproj", "{096D1DBE-12D7-4A60-B902-12768A2F2A08}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{096D1DBE-12D7-4A60-B902-12768A2F2A08}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{096D1DBE-12D7-4A60-B902-12768A2F2A08}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{096D1DBE-12D7-4A60-B902-12768A2F2A08}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{096D1DBE-12D7-4A60-B902-12768A2F2A08}.Release|Any CPU.Build.0 = Release|Any CPU
 		{24DC85FF-E97B-4140-9614-77DD8FDDD32F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{24DC85FF-E97B-4140-9614-77DD8FDDD32F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{24DC85FF-E97B-4140-9614-77DD8FDDD32F}.Release|Any CPU.ActiveCfg = Release|Any CPU
