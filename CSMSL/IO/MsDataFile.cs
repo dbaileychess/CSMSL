@@ -84,8 +84,8 @@ namespace CSMSL.IO
         public virtual int GetMsnOrder(int spectrumNumber)
         {
             return 1;
-        }
-
+        }   
+  
         public virtual double GetRetentionTime(int spectrumNumber)
         {
             return double.NaN;

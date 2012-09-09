@@ -64,7 +64,7 @@ namespace ExamplesCSMSL
         {
             Console.WriteLine("**MS I/O Examples**");
 
-            using (MsDataFile dataFile = new ThermoRawFile(@"E:\Software\CSMSL\Examples\Resources\120826_mousetissue_tmtelite8_discovery_165min_4.raw",true))
+            using (MsDataFile dataFile = new ThermoRawFile("Resources/ThermoRawFileMS1MS2.raw",true))
             {                               
                 MsScan scan1 = dataFile[2450];
                 MsScan scan2 = dataFile.GetMsScan(2450);
