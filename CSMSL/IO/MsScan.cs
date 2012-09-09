@@ -10,11 +10,34 @@ namespace CSMSL.IO
 
     public class MsScan : IEquatable<MsScan>, IDisposable
     {
-        public Spectrum Spectrum;
+        private Spectrum _spectrum = null;
+        public Spectrum Spectrum
+        {
+            get
+            {
+                if (_spectrum == null)
+                {
+                    if (ParentFile.IsOpen)
+                        _spectrum = ParentFile.GetMzSpectrum(SpectrumNumber);
+                }
+                return _spectrum;
+            }
+        }
 
         public MsDataFile ParentFile = null;
 
-        public int SpectrumNumber;
+        private int _spectrumNumber;
+        public int SpectrumNumber
+        {
+            get
+            {
+                return _spectrumNumber;
+            }
+            private set
+            {
+                _spectrumNumber = value;
+            }
+        }
 
         private int _msnOrder = -1;
         public int MsnOrder
@@ -81,7 +104,9 @@ namespace CSMSL.IO
 
         public void Dispose()
         {
-            Spectrum = null;           
+            if(_spectrum != null) 
+                _spectrum.Dispose();
+            _spectrum = null;           
         }
     }
 }

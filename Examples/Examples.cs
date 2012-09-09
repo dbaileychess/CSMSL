@@ -21,6 +21,7 @@
 using System;
 using System.Diagnostics;
 using System.Collections.Generic;
+using System.Linq;
 using CSMSL.Chemistry;
 using CSMSL.Proteomics;
 using CSMSL.Util;
@@ -67,9 +68,9 @@ namespace ExamplesCSMSL
             using (MsDataFile dataFile = new ThermoRawFile("Resources/ThermoRawFileMS1MS2.raw", true))
             {     
                 int counter = 0;                       
-                foreach (MsScan scan in dataFile)
+                foreach (MsScan scan in dataFile.GetMsScans(5,100).Where(scan => scan.MsnOrder == 1))
                 {                      
-                    Console.WriteLine("Scan #{0} MSn Order:{1} Time:{2:f3} Polarity:{3}", scan.SpectrumNumber, scan.MsnOrder, scan.RetentionTime, scan.Polarity);
+                    Console.WriteLine("Scan #{0} MSn Order: {1} Time: {2:f3} Polarity: {3} Spectrum: {4}", scan.SpectrumNumber, scan.MsnOrder, scan.RetentionTime, scan.Polarity, scan.Spectrum);
                 }
                 Console.WriteLine(counter);                    
             }

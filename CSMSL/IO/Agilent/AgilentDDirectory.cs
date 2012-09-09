@@ -77,5 +77,10 @@ namespace CSMSL.IO.Agilent
                     return Polarity.Neutral;
             }
         }
+
+        public override Spectral.Spectrum GetMzSpectrum(int spectrumNumber)
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

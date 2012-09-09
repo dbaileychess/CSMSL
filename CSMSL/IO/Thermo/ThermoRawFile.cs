@@ -90,5 +90,27 @@ namespace CSMSL.IO.Thermo
         public void DoSomething()
         {
         }
+
+        public override Spectral.Spectrum GetMzSpectrum(int spectrumNumber)
+        {
+            double[,] peakData = GetLabeledData(spectrumNumber);
+            return new Spectral.Spectrum(peakData);
+        }
+
+        private double[,] GetLabeledData(int spectrumNumber)
+        {
+            object labels = null;
+            object flags = null;
+            _rawConnection.GetLabelData(ref labels, ref flags, ref spectrumNumber);
+            double[,] peakData = (double[,])labels;
+            double[,] transformedPeakData = new double[peakData.GetLength(1), 2];
+            for (int i = 0; i < peakData.GetLength(1); i++)
+            {
+                transformedPeakData[i, 0] = peakData[0, i];
+                transformedPeakData[i, 1] = peakData[1, i];
+            }
+            return transformedPeakData;
+        }
+
     }
 }

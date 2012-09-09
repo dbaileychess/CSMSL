@@ -29,7 +29,7 @@ namespace CSMSL.Spectral
             : base(data) { }
     }
 
-    public class Spectrum<T> where T : IPeak, new()
+    public class Spectrum<T> : IDisposable where T : IPeak, new()
     {
         internal T _basePeak;
         internal int _count;
@@ -189,6 +189,13 @@ namespace CSMSL.Spectral
         public override string ToString()
         {
             return string.Format("{0:G0} Peaks", Count);
+        }
+
+        public void Dispose()
+        {
+            if(_peaks != null)
+                Array.Clear(_peaks, 0, _peaks.Length);
+            _peaks = null;
         }
     }
 }

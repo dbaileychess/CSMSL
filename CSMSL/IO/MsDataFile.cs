@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using CSMSL.Spectral;
 
 namespace CSMSL.IO
 {
@@ -101,14 +102,23 @@ namespace CSMSL.IO
 
         public IEnumerator<MsScan> GetEnumerator()
         {
-            int lastscan = LastSpectrumNumber; // Grab once
-            for (int spectrumNumber = FirstSpectrumNumber; spectrumNumber < lastscan; spectrumNumber++)
+            return GetMsScans().GetEnumerator();               
+        }
+
+        public IEnumerable<MsScan> GetMsScans()
+        {
+            return GetMsScans(FirstSpectrumNumber, LastSpectrumNumber);
+        }
+
+        public IEnumerable<MsScan> GetMsScans(int firstSpectrumNumber, int lastSpectrumNumber)
+        {
+            for (int spectrumNumber = firstSpectrumNumber; spectrumNumber <= lastSpectrumNumber; spectrumNumber++)
             {
                 yield return GetMsScan(spectrumNumber);
             }
             yield break;
-        }
-
+        }  
+     
         public override int GetHashCode()
         {
             return this.FilePath.GetHashCode();
@@ -129,6 +139,8 @@ namespace CSMSL.IO
             }
             return _scans[spectrumNumber];
         }
+
+        public abstract Spectrum GetMzSpectrum(int spectrumNumber);
 
         public abstract Polarity GetPolarity(int spectrumNumber);
 
