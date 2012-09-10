@@ -84,3 +84,38 @@ peptide1.SetModification(oxMod, 'M');
 // produces: "Peptide [Fe]-ACDEFGHIKLM[Oxidation]NPQRSTVWY-[Fe] formula is Fe2H159C107N29O30S2"
 ```
 
+### MS Data Files
+----------------------
+Most proteomic data is contained within binary files produced by the mass spectrometers themselves, often in their own proprietary formats. Interoperability between these formats is often difficult, requiring conversion to a semi-standard format (.dta, .mzXML among others). CSMSL seeks to simplify this by providing a common API to the different data formats currently available.
+
+Since CSMSL is about simplicity, so are our I/O objects. To open a connection to a Thermo raw file and print out each scan #, the following is performed:
+```csharp
+using (MsDataFile dataFile = new ThermoRawFile("somerawfile.raw", true))
+{                     
+  foreach (MsScan scan in dataFile)
+  {             
+    Console.WriteLine("Scan #{0}",scan.SpectrumNumber);
+  }
+}
+```
+In combination with System.Linq, advanced filtering is easily acheived (only return MS/MS scans):
+```csharp
+using (MsDataFile dataFile = new ThermoRawFile("somerawfile.raw", true))
+{                     
+  foreach (MsScan scan in dataFile.Where(scan => scan.MsnOrder > 1))
+  {             
+    Console.WriteLine("Scan #{0}",scan.SpectrumNumber);
+  }
+}
+```
+It is even easy to read other vendor formats without a major change in the code. To accomplish the same analysis with Agilent's .d files, the code is only changed once:
+```csharp
+using (MsDataFile dataFile = new AgilentDDirectory("somerawfile.d", true))
+{                     
+  foreach (MsScan scan in dataFile.Where(scan => scan.MsnOrder > 1))
+  {             
+    Console.WriteLine("Scan #{0}",scan.SpectrumNumber);
+  }
+}
+```
+
