@@ -65,12 +65,13 @@ namespace ExamplesCSMSL
         {
             Console.WriteLine("**MS I/O Examples**");
 
+            // Ms Data Files implment IDispoable making using statements an excellent way to manage resources
             using (MsDataFile dataFile = new ThermoRawFile("Resources/ThermoRawFileMS1MS2.raw", true))
             {     
                 int counter = 0;                       
-                foreach (MsScan scan in dataFile.GetMsScans(5,100).Where(scan => scan.MsnOrder == 1))
+                foreach (MsScan scan in dataFile)
                 {                      
-                    Console.WriteLine("Scan #{0} MSn Order: {1} Time: {2:f3} Polarity: {3} Spectrum: {4}", scan.SpectrumNumber, scan.MsnOrder, scan.RetentionTime, scan.Polarity, scan.Spectrum);
+                    Console.WriteLine("Scan #{0} MSn Order: {1} Time: {2:f3} Polarity: {3} Spectrum: {4} M/Z Analyzer: {5}", scan.SpectrumNumber, scan.MsnOrder, scan.RetentionTime, scan.Polarity, scan.Spectrum, scan.MzAnalyzer);
                 }
                 Console.WriteLine(counter);                    
             }

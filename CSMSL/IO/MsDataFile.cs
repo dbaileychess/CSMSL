@@ -8,11 +8,17 @@ namespace CSMSL.IO
     public abstract class MsDataFile : IDisposable, IEquatable<MsDataFile>, IEnumerable<MsScan>
     {
         protected MsScan[] _scans = null;
+
         private string _filePath;
+
         private MsDataFileType _fileType;
+
         private int _firstSpectrumNumber = -1;
+
         private bool _isOpen;
-        private int _lastSpectrumNumber = -1;    
+
+        private int _lastSpectrumNumber = -1;
+
         private string _name;
 
         public MsDataFile(string filePath, MsDataFileType filetype = MsDataFileType.UnKnown, bool openImmediately = false)
@@ -24,6 +30,13 @@ namespace CSMSL.IO
             FilePath = filePath;
             FileType = filetype;
             if (openImmediately) Open();
+        }
+
+        public enum MsDataFileType
+        {
+            UnKnown = 0,
+            ThermoRawFile = 1,
+            AgilentRawFile = 2
         }
 
         public string FilePath
@@ -102,23 +115,9 @@ namespace CSMSL.IO
 
         public IEnumerator<MsScan> GetEnumerator()
         {
-            return GetMsScans().GetEnumerator();               
+            return GetMsScans().GetEnumerator();
         }
 
-        public IEnumerable<MsScan> GetMsScans()
-        {
-            return GetMsScans(FirstSpectrumNumber, LastSpectrumNumber);
-        }
-
-        public IEnumerable<MsScan> GetMsScans(int firstSpectrumNumber, int lastSpectrumNumber)
-        {
-            for (int spectrumNumber = firstSpectrumNumber; spectrumNumber <= lastSpectrumNumber; spectrumNumber++)
-            {
-                yield return GetMsScan(spectrumNumber);
-            }
-            yield break;
-        }  
-     
         public override int GetHashCode()
         {
             return this.FilePath.GetHashCode();
@@ -139,6 +138,22 @@ namespace CSMSL.IO
             }
             return _scans[spectrumNumber];
         }
+
+        public IEnumerable<MsScan> GetMsScans()
+        {
+            return GetMsScans(FirstSpectrumNumber, LastSpectrumNumber);
+        }
+
+        public IEnumerable<MsScan> GetMsScans(int firstSpectrumNumber, int lastSpectrumNumber)
+        {
+            for (int spectrumNumber = firstSpectrumNumber; spectrumNumber <= lastSpectrumNumber; spectrumNumber++)
+            {
+                yield return GetMsScan(spectrumNumber);
+            }
+            yield break;
+        }
+
+        public abstract MzAnalyzerType GetMzAnalyzer(int spectrumNumber);
 
         public abstract Spectrum GetMzSpectrum(int spectrumNumber);
 

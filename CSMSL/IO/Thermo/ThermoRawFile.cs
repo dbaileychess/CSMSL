@@ -1,20 +1,32 @@
 ﻿using System;
+using CSMSL.Spectral;
 using MSFileReaderLib;
 
 namespace CSMSL.IO.Thermo
-{
-    internal enum RawLabelDataColumn
-    {
-        MZ = 0,
-        Intensity = 1,
-        Resolution = 2,
-        NoiseBaseline = 3,
-        NoiseLevel = 4,
-        Charge = 5
-    }
-
+{   
     public class ThermoRawFile : MsDataFile
     {
+        private enum RawLabelDataColumn
+        {
+            MZ = 0,
+            Intensity = 1,
+            Resolution = 2,
+            NoiseBaseline = 3,
+            NoiseLevel = 4,
+            Charge = 5
+        }
+
+        private enum ThermoMzAnalyzer
+        {
+            None = -1,
+            ITMS = 0,
+            TQMS = 1,
+            SQMS = 2,
+            TOFMS = 3,
+            FTMS = 4,
+            Sector = 5
+        }
+
         private IXRawfile5 _rawConnection;
 
         public ThermoRawFile(string filePath, bool openImmediately = false)
@@ -110,7 +122,29 @@ namespace CSMSL.IO.Thermo
                 transformedPeakData[i, 1] = peakData[1, i];
             }
             return transformedPeakData;
-        }
+        }        
 
+        public override MzAnalyzerType GetMzAnalyzer(int spectrumNumber)
+        {
+            int mzanalyzer = 0;
+            if(_rawConnection != null)
+                _rawConnection.GetMassAnalyzerTypeForScanNum(spectrumNumber, ref mzanalyzer);
+            switch ((ThermoMzAnalyzer)mzanalyzer)
+            {
+                case ThermoMzAnalyzer.FTMS:
+                    return MzAnalyzerType.Orbitrap;
+                case ThermoMzAnalyzer.ITMS:
+                    return MzAnalyzerType.IonTrap2D;
+                case ThermoMzAnalyzer.Sector:
+                    return MzAnalyzerType.Sector;
+                case ThermoMzAnalyzer.TOFMS:
+                    return MzAnalyzerType.TOF;
+                case ThermoMzAnalyzer.TQMS:
+                case ThermoMzAnalyzer.SQMS:
+                case ThermoMzAnalyzer.None:
+                default:
+                    return MzAnalyzerType.Unknown;
+            }              
+        }
     }
 }
