@@ -1,4 +1,5 @@
 ﻿using System;
+using CSMSL.Proteomics;
 using CSMSL.Spectral;
 using MSFileReaderLib;
 
@@ -26,7 +27,7 @@ namespace CSMSL.IO.Thermo
             FTMS = 4,
             Sector = 5
         }
-
+                
         private IXRawfile5 _rawConnection;
 
         public ThermoRawFile(string filePath, bool openImmediately = false)
@@ -85,7 +86,7 @@ namespace CSMSL.IO.Thermo
             return msnOrder;
         }
 
-        private object GetExtravalue(int spectrumNumber, string filter)
+        private object GetExtraValue(int spectrumNumber, string filter)
         {
             object value = null;
             if (_rawConnection != null)
@@ -95,7 +96,7 @@ namespace CSMSL.IO.Thermo
 
         public override Polarity GetPolarity(int spectrumNumber)
         {
-            short charge = (short)GetExtravalue(spectrumNumber, "Charge State:");
+            short charge = (short)GetExtraValue(spectrumNumber, "Charge State:");
             return (Polarity)(Math.Sign(charge));
         }
 
@@ -112,7 +113,7 @@ namespace CSMSL.IO.Thermo
         private double[,] GetLabeledData(int spectrumNumber)
         {
             object labels = null;
-            object flags = null;
+            object flags = null;            
             _rawConnection.GetLabelData(ref labels, ref flags, ref spectrumNumber);
             double[,] peakData = (double[,])labels;
             double[,] transformedPeakData = new double[peakData.GetLength(1), 2];
@@ -145,6 +146,56 @@ namespace CSMSL.IO.Thermo
                 default:
                     return MzAnalyzerType.Unknown;
             }              
+        }
+
+        public override double GetPrecusorMz(int spectrumNumber, int msnOrder = 2)
+        {
+            double mz = double.NaN;
+            if (_rawConnection != null)
+                _rawConnection.GetPrecursorMassForScanNum(spectrumNumber, msnOrder, ref mz);
+            return mz;
+        }
+
+        public override double GetIsolationWidth(int spectrumNumber, int msnOrder = 2)
+        {
+            object width = GetExtraValue(spectrumNumber, string.Format("MS{0} Isolation Width:", msnOrder));
+            if (width is double)
+            {
+                return (double)width;
+            }
+            return (float)width;            
+        }
+
+        public override DissociationType GetDissociationType(int spectrumNumber, int msnOrder = 2)
+        {
+            int type = 0;
+            if (_rawConnection != null)
+                _rawConnection.GetActivationTypeForScanNum(spectrumNumber, msnOrder, ref type);
+            return (DissociationType)type;
+        }
+
+        public override Range GetMzRange(int spectrumNumber)
+        {
+            int number_of_packets = -1;
+            double start_time = double.NaN;
+            double low_mass = double.NaN;
+            double high_mass = double.NaN;
+            double total_ion_current = double.NaN;
+            double base_peak_mass = double.NaN;
+            double base_peak_intensity = double.NaN;
+            int number_of_channels = -1;
+            int uniform_time = -1;
+            double frequency = double.NaN;
+            if (_rawConnection != null)
+                _rawConnection.GetScanHeaderInfoForScanNum(spectrumNumber, ref number_of_packets, ref start_time, ref low_mass, ref high_mass,
+                    ref total_ion_current, ref base_peak_mass, ref base_peak_intensity, ref number_of_channels, ref uniform_time, ref frequency);
+
+            return new Range(low_mass, high_mass);
+        }
+
+        public override short GetPrecusorCharge(int spectrumNumber, int msnOrder = 2)
+        {
+            return (short)GetExtraValue(spectrumNumber, "Charge State:");
         }
     }
 }

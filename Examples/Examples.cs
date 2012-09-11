@@ -68,10 +68,10 @@ namespace ExamplesCSMSL
             // Ms Data Files implment IDispoable making using statements an excellent way to manage resources
             using (MsDataFile dataFile = new ThermoRawFile("Resources/ThermoRawFileMS1MS2.raw", true))
             {     
-                int counter = 0;                       
-                foreach (MsScan scan in dataFile)
+                int counter = 0;  
+                foreach (MsScan scan in dataFile.OfType<MsnScan>())
                 {                      
-                    Console.WriteLine("Scan #{0} MSn Order: {1} Time: {2:f3} Polarity: {3} Spectrum: {4} M/Z Analyzer: {5}", scan.SpectrumNumber, scan.MsnOrder, scan.RetentionTime, scan.Polarity, scan.Spectrum, scan.MzAnalyzer);
+                    Console.WriteLine("Scan #{0} MSn Order: {1} Time: {2:f3} Polarity: {3} Spectrum: {4} M/Z Analyzer: {5} type: {6}", scan.SpectrumNumber, scan.MsnOrder, scan.RetentionTime, scan.Polarity, scan.Spectrum, scan.MzAnalyzer, scan.GetType());
                 }
                 Console.WriteLine(counter);                    
             }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using CSMSL.Spectral;
+using CSMSL.Proteomics;
 
 namespace CSMSL.IO
 {
@@ -123,6 +124,8 @@ namespace CSMSL.IO
             return this.FilePath.GetHashCode();
         }
 
+        public abstract DissociationType GetDissociationType(int spectrumNumber, int msnOrder = 2);
+
         public abstract int GetMsnOrder(int spectrumNumber);
 
         public virtual MsScan GetMsScan(int spectrumNumber)
@@ -134,15 +137,24 @@ namespace CSMSL.IO
 
             if (_scans[spectrumNumber] == null)
             {
-                _scans[spectrumNumber] = new MsScan(spectrumNumber, this);
+                int msn = GetMsnOrder(spectrumNumber);
+                _scans[spectrumNumber] = (msn > 1) ? new MsnScan(spectrumNumber, msn, this) : new MsScan(spectrumNumber, msn, this);
             }
             return _scans[spectrumNumber];
         }
+
+        public abstract short GetPrecusorCharge(int spectrumNumber, int msnOrder = 2);
+
+        public abstract Range GetMzRange(int spectrumNumber);
 
         public IEnumerable<MsScan> GetMsScans()
         {
             return GetMsScans(FirstSpectrumNumber, LastSpectrumNumber);
         }
+
+        public abstract double GetPrecusorMz(int spectrumNumber, int msnOrder = 2);
+
+        public abstract double GetIsolationWidth(int spectrumNumber, int msnOrder = 2);
 
         public IEnumerable<MsScan> GetMsScans(int firstSpectrumNumber, int lastSpectrumNumber)
         {

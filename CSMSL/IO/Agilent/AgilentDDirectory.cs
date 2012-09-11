@@ -1,4 +1,6 @@
 ﻿using Agilent.MassSpectrometry.DataAnalysis;
+using CSMSL.IO;
+using CSMSL.Spectral;
 
 namespace CSMSL.IO.Agilent
 {
@@ -79,6 +81,36 @@ namespace CSMSL.IO.Agilent
         }
 
         public override Spectral.Spectrum GetMzSpectrum(int spectrumNumber)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public override MzAnalyzerType GetMzAnalyzer(int spectrumNumber)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public override double GetPrecusorMz(int spectrumNumber, int msnOrder = 2)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public override double GetIsolationWidth(int spectrumNumber, int msnOrder = 2)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public override Proteomics.DissociationType GetDissociationType(int spectrumNumber, int msnOrder = 2)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public override Range GetMzRange(int spectrumNumber)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public override short GetPrecusorCharge(int spectrumNumber, int msnOrder = 2)
         {
             throw new System.NotImplementedException();
         }

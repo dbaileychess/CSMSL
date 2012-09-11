@@ -63,6 +63,10 @@ namespace CSMSL.Spectral
                 }
                 return _msnOrder;
             }
+            protected set
+            {
+                _msnOrder = value;
+            }
         }
 
         private double _retentionTime = double.NaN;
@@ -109,9 +113,23 @@ namespace CSMSL.Spectral
             }
         }
 
-        public MsScan(int spectrumNumber, MsDataFile parentFile = null)
+        private Range _mzRange = null;
+        public Range MzRange
+        {
+            get
+            {
+                if (_mzRange == null)
+                {
+                    _mzRange = ParentFile.GetMzRange(SpectrumNumber);
+                }
+                return _mzRange;
+            }
+        }
+
+        public MsScan(int spectrumNumber,int msnOrder = 1, MsDataFile parentFile = null)
         {
             SpectrumNumber = spectrumNumber;
+            MsnOrder = msnOrder;
             ParentFile = parentFile;
         }
 
