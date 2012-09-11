@@ -25,6 +25,7 @@ using System.Linq;
 using CSMSL.Chemistry;
 using CSMSL.Proteomics;
 using CSMSL.Util;
+using CSMSL.IO.Agilent;
 using CSMSL.IO.Thermo;
 using CSMSL.IO;
 using CSMSL.Spectral;
@@ -74,6 +75,17 @@ namespace ExamplesCSMSL
                     Console.WriteLine("Scan #{0} MSn Order: {1} Time: {2:f3} Polarity: {3} Spectrum: {4} M/Z Analyzer: {5} type: {6}", scan.SpectrumNumber, scan.MsnOrder, scan.RetentionTime, scan.Polarity, scan.Spectrum, scan.MzAnalyzer, scan.GetType());
                 }
                 Console.WriteLine(counter);                    
+            }
+
+            // Ms Data Files implment IDispoable making using statements an excellent way to manage resources
+            using(MsDataFile dataDirectory = new AgilentDDirectory("Resources/AgilentDDirectoryMS1MS2.d", true))
+            {
+                int counter = 0;
+                foreach(MsScan scan in dataDirectory.OfType<MsnScan>())
+                {
+                    Console.WriteLine("Scan #{0} MSn Order: {1} Time: {2:f3} Polarity: {3} Spectrum: {4} M/Z Analyzer: {5} type: {6}", scan.SpectrumNumber, scan.MsnOrder, scan.RetentionTime, scan.Polarity, scan.Spectrum, scan.MzAnalyzer, scan.GetType());
+                }
+                Console.WriteLine(counter);
             }
         }
 

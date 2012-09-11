@@ -50,6 +50,10 @@
       <Project>{3c8c9f05-9c19-4251-95fa-05d7edc8cae6}</Project>
       <Name>CSMSL</Name>
     </ProjectReference>
+    <ProjectReference Include="..\CSMSL\IO\Agilent\Agilent.csproj">
+      <Project>{096D1DBE-12D7-4A60-B902-12768A2F2A08}</Project>
+      <Name>Agilent</Name>
+    </ProjectReference>
     <ProjectReference Include="..\CSMSL\IO\Thermo\Thermo.csproj">
       <Project>{24dc85ff-e97b-4140-9614-77dd8fddd32f}</Project>
       <Name>Thermo</Name>
@@ -66,6 +70,9 @@
     </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>xcopy "$(ProjectDir)Resources\AgilentDDirectoryMS1MS2.d" "$(TargetDir)Resources\AgilentDDirectoryMS1MS2.d" /e /h /i /y</PostBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

@@ -22,19 +22,19 @@ namespace CSMSL.Spectral
 {
     public class Peak : IPeak
     {
-        internal double _intensity;
+        internal float _intensity;
         internal double _mz;
 
         public Peak()
             : this(0, 0) { }
 
-        public Peak(double mz, double intensity)
+        public Peak(double mz, float intensity)
         {
             _mz = mz;
             _intensity = intensity;
         }
 
-        public double Intensity
+        public float Intensity
         {
             get { return _intensity; }
             set { _intensity = value; }

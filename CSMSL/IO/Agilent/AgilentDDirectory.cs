@@ -1,6 +1,8 @@
 ﻿using Agilent.MassSpectrometry.DataAnalysis;
 using CSMSL.IO;
 using CSMSL.Spectral;
+using System.IO;
+using System.Text.RegularExpressions;
 
 namespace CSMSL.IO.Agilent
 {
@@ -82,37 +84,68 @@ namespace CSMSL.IO.Agilent
 
         public override Spectral.Spectrum GetMzSpectrum(int spectrumNumber)
         {
-            throw new System.NotImplementedException();
+            IBDASpecData spectrum = _msdr.GetSpectrum(spectrumNumber - 1);
+            return new Spectrum(spectrum.XArray, spectrum.YArray);
         }
 
         public override MzAnalyzerType GetMzAnalyzer(int spectrumNumber)
         {
-            throw new System.NotImplementedException();
+            IBDASpecData spectrum = _msdr.GetSpectrum(spectrumNumber - 1);
+            switch(spectrum.DeviceType)
+            {
+                case DeviceType.IonTrap:
+                    return MzAnalyzerType.IonTrap3D;
+                case DeviceType.Quadrupole:
+                case DeviceType.TandemQuadrupole:
+                    return MzAnalyzerType.Quadrupole;
+                case DeviceType.QuadrupoleTimeOfFlight:
+                case DeviceType.TimeOfFlight:
+                    return MzAnalyzerType.TOF;
+                default:
+                    return MzAnalyzerType.Unknown;
+            }
         }
 
         public override double GetPrecusorMz(int spectrumNumber, int msnOrder = 2)
         {
-            throw new System.NotImplementedException();
+            IMSScanRecord scan_record = _msdr.GetScanRecord(spectrumNumber - 1);
+            return scan_record.MZOfInterest;
         }
+
+        private static Regex ISOLATION_WIDTH_REGEX;
 
         public override double GetIsolationWidth(int spectrumNumber, int msnOrder = 2)
         {
-            throw new System.NotImplementedException();
+            string acquisition_method;
+            using(StreamReader acquisition_method_sr = new StreamReader(Path.Combine(_msdr.FileInformation.DataFileName, @"AcqData\AcqMethod.xml")))
+            {
+                acquisition_method = acquisition_method_sr.ReadToEnd();
+            }
+            if(ISOLATION_WIDTH_REGEX == null)
+            {
+                ISOLATION_WIDTH_REGEX = new Regex(@"\s*(?:&lt;|<)ID(?:&gt;|>)TargetIsolationWidth(?:&lt;|<)/ID(?:&gt;|>)\s*(?:&lt;|<)Value(?:&gt;|>).*\(~([0-9.])+ amu\)(?:&lt;|<)/Value(?:&gt;|>)");
+            }
+            Match match = ISOLATION_WIDTH_REGEX.Match(acquisition_method);
+            return double.Parse(match.Groups[1].Value);
         }
 
         public override Proteomics.DissociationType GetDissociationType(int spectrumNumber, int msnOrder = 2)
         {
-            throw new System.NotImplementedException();
+            return Proteomics.DissociationType.CID;
         }
 
         public override Range GetMzRange(int spectrumNumber)
         {
-            throw new System.NotImplementedException();
+            IBDASpecData spectrum = _msdr.GetSpectrum(spectrumNumber - 1);
+            return new Range(spectrum.MeasuredMassRange.Start, spectrum.MeasuredMassRange.End);
         }
 
         public override short GetPrecusorCharge(int spectrumNumber, int msnOrder = 2)
         {
-            throw new System.NotImplementedException();
+            IBDASpecData spectrum = _msdr.GetSpectrum(spectrumNumber - 1);
+            int precursor_charge;
+            spectrum.GetPrecursorCharge(out precursor_charge);
+            return (short)precursor_charge;
         }
     }
 }
