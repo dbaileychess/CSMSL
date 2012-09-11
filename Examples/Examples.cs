@@ -65,15 +65,22 @@ namespace ExamplesCSMSL
         {
             Console.WriteLine("**MS I/O Examples**");
 
-            // Ms Data Files implment IDispoable making using statements an excellent way to manage resources
+            // Ms Data Files implement IDispoable making using statements an excellent way to manage resources
             using (MsDataFile dataFile = new ThermoRawFile("Resources/ThermoRawFileMS1MS2.raw", true))
-            {     
-                int counter = 0;  
-                foreach (MsScan scan in dataFile.OfType<MsnScan>())
+            {
+                Console.WriteLine("{0,-4} {1} {2,-5} {3,-5} {4,-10} {5,-3} {6} {7}", "Scan #", "Msn Order", "Retention Time", "Polarity", "Spectrum", "MzAnalyzer", "DataType", "MzRange");
+                foreach (MsScan scan in dataFile)
                 {                      
-                    Console.WriteLine("Scan #{0} MSn Order: {1} Time: {2:f3} Polarity: {3} Spectrum: {4} M/Z Analyzer: {5} type: {6}", scan.SpectrumNumber, scan.MsnOrder, scan.RetentionTime, scan.Polarity, scan.Spectrum, scan.MzAnalyzer, scan.GetType());
-                }
-                Console.WriteLine(counter);                    
+                    Console.WriteLine("{0,-4} {1} {2,-5:F4} {3,-5} {4,-10} {5,-3} {6} {7}", 
+                        scan.SpectrumNumber, 
+                        scan.MsnOrder, 
+                        scan.RetentionTime, 
+                        scan.Polarity, 
+                        scan.Spectrum, 
+                        scan.MzAnalyzer, 
+                        scan.GetType(),
+                        scan.MzRange);
+                }                                 
             }
         }
 
