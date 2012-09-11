@@ -24,7 +24,7 @@ namespace CSMSL.IO
 
         public MsDataFile(string filePath, MsDataFileType filetype = MsDataFileType.UnKnown, bool openImmediately = false)
         {
-            if (!File.Exists(filePath))
+            if (!File.Exists(filePath) && !Directory.Exists(filePath))
             {
                 throw new IOException(string.Format("The MS data file {0} does not currently exist", filePath));
             }

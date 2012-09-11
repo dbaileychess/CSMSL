@@ -27,6 +27,12 @@ namespace CSMSL.Spectral
     {
         public Spectrum(double[,] data)
             : base(data) { }
+
+        public Spectrum(double[] mzs, double[] intensities)
+            : base(mzs, intensities) { }
+
+        public Spectrum(double[] mzs, float[] intensities)
+            : base(mzs, intensities) { }
     }
 
     public class Spectrum<T> : IDisposable where T : IPeak, new()
@@ -42,6 +48,11 @@ namespace CSMSL.Spectral
         }
 
         public Spectrum(double[] mzs, double[] intensities)
+        {
+            LoadData(mzs, intensities);
+        }
+
+        public Spectrum(double[] mzs, float[] intensities)
         {
             LoadData(mzs, intensities);
         }
@@ -151,9 +162,36 @@ namespace CSMSL.Spectral
             {
                 temppeak = new T();
                 temppeak.MZ = mzs[i];
-                temppeak.Intensity = intensities[i];
+                temppeak.Intensity = (float)intensities[i];
                 _tic += temppeak.Intensity;
                 if (temppeak.Intensity > maxInt)
+                {
+                    maxInt = temppeak.Intensity;
+                    _basePeak = temppeak;
+                }
+                _peaks[i] = temppeak;
+            }
+            Array.Sort(_peaks);
+        }
+
+        private void LoadData(double[] mzs, float[] intensities)
+        {
+            if(mzs.Length != intensities.Length)
+            {
+                throw new FormatException("M/Z and Intensities arrays are not the same dimensions");
+            }
+            _count = mzs.Length;
+            _peaks = new T[_count];
+            _tic = 0;
+            double maxInt = 0;
+            T temppeak;
+            for(int i = 0; i < _count; i++)
+            {
+                temppeak = new T();
+                temppeak.MZ = mzs[i];
+                temppeak.Intensity = intensities[i];
+                _tic += temppeak.Intensity;
+                if(temppeak.Intensity > maxInt)
                 {
                     maxInt = temppeak.Intensity;
                     _basePeak = temppeak;
@@ -174,7 +212,7 @@ namespace CSMSL.Spectral
             {
                 temppeak = new T();
                 temppeak.MZ = data[i, 0];
-                temppeak.Intensity = data[i, 1];
+                temppeak.Intensity = (float)data[i, 1];
                 _tic += temppeak.Intensity;
                 if (temppeak.Intensity > maxInt)
                 {
