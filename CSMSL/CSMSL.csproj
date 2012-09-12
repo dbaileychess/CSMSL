@@ -59,6 +59,8 @@
     <Compile Include="IO\FastaWriter.cs" />
     <Compile Include="IO\MsDataFile.cs" />
     <Compile Include="Proteomics\DissociationType.cs" />
+    <Compile Include="Spectral\Chromatogram.cs" />
+    <Compile Include="Spectral\ChromatogramPoint.cs" />
     <Compile Include="Spectral\MsnScan.cs" />
     <Compile Include="Spectral\MsScan.cs" />
     <Compile Include="IRange.cs" />

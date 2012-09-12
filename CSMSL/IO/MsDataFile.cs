@@ -8,7 +8,7 @@ namespace CSMSL.IO
 {
     public abstract class MsDataFile : IDisposable, IEquatable<MsDataFile>, IEnumerable<MsScan>
     {
-        protected MsScan[] _scans = null;
+        internal MsScan[] _scans = null;
 
         private string _filePath;
 
@@ -68,7 +68,10 @@ namespace CSMSL.IO
             }
         }
 
-        public bool IsOpen { get { return _isOpen; } }
+        public bool IsOpen { 
+            get { return _isOpen; }
+            protected set { _isOpen = value; }
+        }
 
         public virtual int LastSpectrumNumber
         {
@@ -189,5 +192,6 @@ namespace CSMSL.IO
         protected abstract int GetFirstSpectrumNumber();
 
         protected abstract int GetLastSpectrumNumber();
+
     }
 }

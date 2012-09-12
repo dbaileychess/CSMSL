@@ -151,9 +151,10 @@ namespace CSMSL.Spectral
 
         public void Dispose()
         {
+            ParentFile._scans[SpectrumNumber] = null; // clear the cache in the parent file
             if (_spectrum != null)
                 _spectrum.Dispose();
-            _spectrum = null;
+            _spectrum = null;           
         }
     }
 }

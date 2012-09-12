@@ -66,34 +66,40 @@ namespace ExamplesCSMSL
         {
             Console.WriteLine("**MS I/O Examples**");
 
+            Console.WriteLine("{0,-4} {1,3} {2,-6:F4} {3,-5} {4,7} {5,-10} {6}", "SN", "Msn", "RT", "Polarity", "# Peaks", "Analyzer", "M/Z Range");
+
             // Ms Data Files implement IDispoable making using statements an excellent way to manage resources
             using (MsDataFile dataFile = new ThermoRawFile("Resources/ThermoRawFileMS1MS2.raw", true))
             {
-                Console.WriteLine("{0,-4} {1} {2,-5} {3,-5} {4,-10} {5,-3} {6} {7}", "Scan #", "Msn Order", "Retention Time", "Polarity", "Spectrum", "MzAnalyzer", "DataType", "MzRange");
                 foreach (MsScan scan in dataFile)
                 {                      
-                    Console.WriteLine("{0,-4} {1} {2,-5:F4} {3,-5} {4,-10} {5,-3} {6} {7}", 
+                    Console.WriteLine("{0,-4} {1,3} {2,-6:F4} {3,-5} {4,7} {5,-10} {6}", 
                         scan.SpectrumNumber, 
                         scan.MsnOrder, 
                         scan.RetentionTime, 
                         scan.Polarity, 
-                        scan.Spectrum, 
-                        scan.MzAnalyzer, 
-                        scan.GetType(),
+                        scan.Spectrum.Count, 
+                        scan.MzAnalyzer,                        
                         scan.MzRange);
-                }                                 
+                }                       
             }
 
             // Ms Data Files implment IDispoable making using statements an excellent way to manage resources
             using(MsDataFile dataDirectory = new AgilentDDirectory("Resources/AgilentDDirectoryMS1MS2.d", true))
             {
-                int counter = 0;
-                foreach(MsScan scan in dataDirectory.OfType<MsnScan>())
+                foreach (MsScan scan in dataDirectory.OfType<MsScan>())
                 {
-                    Console.WriteLine("Scan #{0} MSn Order: {1} Time: {2:f3} Polarity: {3} Spectrum: {4} M/Z Analyzer: {5} type: {6}", scan.SpectrumNumber, scan.MsnOrder, scan.RetentionTime, scan.Polarity, scan.Spectrum, scan.MzAnalyzer, scan.GetType());
-                }
-                Console.WriteLine(counter);
+                    Console.WriteLine("{0,-4} {1,3} {2,-6:F4} {3,-5} {4,7} {5,-10} {6}",
+                        scan.SpectrumNumber,
+                        scan.MsnOrder,
+                        scan.RetentionTime,
+                        scan.Polarity,
+                        scan.Spectrum.Count,
+                        scan.MzAnalyzer,                      
+                        scan.MzRange);
+                }              
             }
+            Console.WriteLine("Memory used: {0:N0} MB", System.Environment.WorkingSet / (1024 * 1024));
         }
 
         private static void VennDiagramExamples()

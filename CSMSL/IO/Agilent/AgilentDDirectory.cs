@@ -40,7 +40,7 @@ namespace CSMSL.IO.Agilent
 
         protected override int GetLastSpectrumNumber()
         {
-            return (int)(_msdr.MSScanFileInformation.TotalScansPresent + 1);
+            return (int)(_msdr.MSScanFileInformation.TotalScansPresent);
         }
 
         public override double GetRetentionTime(int spectrumNumber)
