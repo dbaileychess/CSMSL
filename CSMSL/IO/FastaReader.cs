@@ -39,6 +39,86 @@ namespace CSMSL.IO
             Description = description;
         }
 
+        public Fasta ToDecoy()
+        {
+            return ToDecoy("DECOY_", DecoyType.Reverse);
+        }
+
+        public Fasta ToDecoy(string preText, DecoyType Method)
+        {
+            return new Fasta(GenerateDecoySequence(Sequence, Method, true, true), preText + Description);
+        }
+
+        private static string GenerateDecoySequence(string sequence, DecoyType decoyDatabaseMethod, bool excludeNTerminus, bool onlyIfNTerminusIsMethionine)
+        {
+            string decoy_sequence = null;
+
+            switch (decoyDatabaseMethod)
+            {
+                case DecoyType.Reverse:
+                    if (excludeNTerminus && (!onlyIfNTerminusIsMethionine || sequence[0] == 'M'))
+                    {
+                        char[] temp = sequence.ToCharArray();
+                        Array.Reverse(temp, 1, temp.Length - 1);
+                        decoy_sequence = new string(temp);
+                    }
+                    else
+                    {
+                        char[] temp = sequence.ToCharArray();
+                        Array.Reverse(temp);
+                        decoy_sequence = new string(temp);
+                    }
+                    break;
+                case DecoyType.Shuffle:
+                    if (excludeNTerminus && (!onlyIfNTerminusIsMethionine || sequence[0] == 'M'))
+                    {
+                        char[] temp = sequence.ToCharArray();
+                        Shuffle(temp, 1, temp.Length - 1);
+                        decoy_sequence = new string(temp);
+                    }
+                    else
+                    {
+                        char[] temp = sequence.ToCharArray();
+                        Shuffle(temp);
+                        decoy_sequence = new string(temp);
+                    }
+                    break;
+                case DecoyType.Random:
+                    decoy_sequence = string.Empty;
+                    if (excludeNTerminus && (!onlyIfNTerminusIsMethionine || sequence[0] == 'M'))
+                    {
+                        decoy_sequence += sequence[0];
+                    }
+                    while (decoy_sequence.Length < sequence.Length)
+                    {
+                        decoy_sequence += AMINO_ACIDS[RANDOM.Next(AMINO_ACIDS.Count)];
+                    }
+                    break;
+            }
+
+            return decoy_sequence;
+        }
+
+        private static readonly Random RANDOM = new Random();
+
+        private static readonly List<char> AMINO_ACIDS = new List<char>(new char[] { 'A', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'K', 'L', 'M', 'N', 'P', 'Q', 'R', 'S', 'T', 'V', 'W', 'Y' });
+
+        private static void Shuffle(char[] array)
+        {
+            Shuffle(array, 0, array.Length);
+        }
+
+        private static void Shuffle(char[] array, int startIndex, int Length)
+        {
+            for (int i = startIndex + Length; i > startIndex + 1; i--)
+            {
+                int k = RANDOM.Next(i - startIndex) + startIndex;
+                char temp = array[k];
+                array[k] = array[i - 1];
+                array[i - 1] = temp;
+            }
+        }
+
         public string Description
         {
             get { return _description; }
@@ -145,5 +225,13 @@ namespace CSMSL.IO
                 yield return _reader.ReadLine();
             yield break;
         }
+    }
+
+    public enum DecoyType
+    {
+        None = 0,
+        Reverse = 1,
+        Shuffle = 2,
+        Random = 3
     }
 }
