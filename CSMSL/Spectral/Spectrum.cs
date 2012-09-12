@@ -221,7 +221,7 @@ namespace CSMSL.Spectral
                 }
                 _peaks[i] = temppeak;
             }
-            Array.Sort(_peaks);
+            //Array.Sort(_peaks);
         }
 
         public override string ToString()

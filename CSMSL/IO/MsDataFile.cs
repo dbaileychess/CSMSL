@@ -193,5 +193,31 @@ namespace CSMSL.IO
 
         protected abstract int GetLastSpectrumNumber();
 
+        public Chromatogram GetChromatogram(ChromatogramType type = ChromatogramType.BasePeak, Range range = null)
+        {
+            Chromatogram chrom = new Chromatogram(type, range);
+            if (type == ChromatogramType.BasePeak)
+            {
+                foreach (MsScan scan in this)
+                {
+                    ChromatogramPoint point = new ChromatogramPoint(scan.RetentionTime, scan.Spectrum.BasePeak);
+                    chrom.AddPoint(point);
+                }
+            }
+            else
+            {
+                List<Peak> peaks = null;
+                foreach (MsScan scan in this)
+                {
+                    if (scan.Spectrum.TryGetPeaks(out peaks, range))
+                    {
+                        ChromatogramPoint point = new ChromatogramPoint(scan.RetentionTime, peaks);
+                        chrom.AddPoint(point);
+                    }
+                }
+            }
+            return chrom;
+        }
+
     }
 }

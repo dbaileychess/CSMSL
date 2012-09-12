@@ -1,6 +1,7 @@
 ﻿using System;
 using CSMSL.Proteomics;
 using CSMSL.Spectral;
+using System.Collections.Generic;
 using MSFileReaderLib;
 
 namespace CSMSL.IO.Thermo
@@ -89,20 +90,18 @@ namespace CSMSL.IO.Thermo
         private object GetExtraValue(int spectrumNumber, string filter)
         {
             object value = null;
-            if (_rawConnection != null)
+            if (_rawConnection != null)              
                 _rawConnection.GetTrailerExtraValueForScanNum(spectrumNumber, filter, ref value);
             return value;
         }
 
         public override Polarity GetPolarity(int spectrumNumber)
         {
-            short charge = (short)GetExtraValue(spectrumNumber, "Charge State:");
-            return (Polarity)(Math.Sign(charge));
-        }
-
-        public void DoSomething()
-        {
-        }
+            object charge = GetExtraValue(spectrumNumber, "Charge State:");
+            if(charge is short)
+                return (Polarity)(Math.Sign((short)charge));
+            return (Polarity)(Math.Sign((int)charge));
+        }  
 
         public override Spectral.Spectrum GetMzSpectrum(int spectrumNumber)
         {
