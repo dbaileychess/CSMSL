@@ -1,13 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+using System;
 
 namespace CSMSL.Spectral
 {
-    public class ChromatogramPoint : IEnumerable<IPeak>
+    public class ChromatogramPoint
     {
         private double _retentionTime;
+
         public double RetentionTime
         {
             get
@@ -17,15 +17,21 @@ namespace CSMSL.Spectral
         }
 
         private float _intensity;
+
         public float Intensity
         {
             get
             {
                 return _intensity;
             }
+            private set
+            {
+                _intensity = value;
+            }
         }
 
         private List<IPeak> _peaks;
+
         public List<IPeak> MzPeaks
         {
             get
@@ -49,11 +55,19 @@ namespace CSMSL.Spectral
             }
         }
 
+        public ChromatogramPoint(double time, IPeak peak)
+        {
+            _retentionTime = time;
+            _peaks = new List<IPeak>();
+            _peaks.Add(peak);
+            _intensity = _peaks.Sum(p => p.Intensity);
+        }
+
         public ChromatogramPoint(double time, IEnumerable<IPeak> peaks)
         {
             _retentionTime = time;
             _peaks = peaks.ToList();
-            _intensity = peaks.Sum(peak => peak.Intensity);
+            _intensity = _peaks.Sum(p => p.Intensity);
         }
 
         public ChromatogramPoint(double time, float intensity)
@@ -63,14 +77,26 @@ namespace CSMSL.Spectral
             _intensity = intensity;
         }
 
-        public IEnumerator<IPeak> GetEnumerator()
+        public void CombinePoints(ChromatogramPoint otherPoint)
         {
-            throw new NotImplementedException();
+            if (!RetentionTime.Equals(otherPoint.RetentionTime))
+            {
+                throw new ArgumentException("The two chromatogram points don't have the same retention time");
+            }
+            this.Intensity += otherPoint.Intensity;
+            if (_peaks == null)
+            {
+                _peaks = otherPoint._peaks;
+            }
+            else
+            {
+                _peaks.AddRange(otherPoint._peaks);
+            }
         }
-
-        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        
+        public override string ToString()
         {
-            throw new NotImplementedException();
+            return string.Format("({0:G4}, {1:G4})", RetentionTime, Intensity);
         }
     }
 }
