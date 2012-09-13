@@ -68,7 +68,7 @@ namespace ExamplesCSMSL
             Console.WriteLine("**MS I/O Examples**");
 
             Console.WriteLine("{0,-4} {1,3} {2,-6:F4} {3,-5} {4,7} {5,-10} {6}", "SN", "Msn", "RT", "Polarity", "# Peaks", "Analyzer", "M/Z Range");
-            string rawfile = "Resources/ThermoRawFileMS1MS2.raw"; // @"C:\Users\Derek\Documents\promega\Promega_Dilutions\120731_Promega_PeptideMix1_Heavy_1.raw";// 
+            string rawfile = @"C:\Users\Derek\Documents\promega\Promega_Dilutions\120731_Promega_PeptideMix1_Heavy_1.raw";// "Resources/ThermoRawFileMS1MS2.raw"; //
             // Ms Data Files implement IDispoable making using statements an excellent way to manage resources
             using (MsDataFile dataFile = new ThermoRawFile(rawfile, true))
             {
@@ -87,7 +87,7 @@ namespace ExamplesCSMSL
                 }
                 watch.Stop();
                 watch.Restart();
-                Chromatogram chrom = dataFile.Where(scan => scan.MsnOrder == 2).GetChromatogram(ChromatogramType.MzRange, new Range(553.79, 553.81));
+                Chromatogram chrom = dataFile.GetChromatogram(ChromatogramType.MzRange, new Range(550, 551));
                 watch.Stop();
                 Console.WriteLine("Time: {0}", watch.Elapsed);
             }

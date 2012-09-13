@@ -79,12 +79,12 @@ namespace CSMSL.Spectral
     public static class Extenion
     {
         public static Chromatogram GetChromatogram(this IEnumerable<MsScan> scans, ChromatogramType type = ChromatogramType.BasePeak, Range range = null)
-        {              
+        {
             Chromatogram chrom = new Chromatogram(type, range);
             switch (type)
             {
                 default:
-                case ChromatogramType.BasePeak:   
+                case ChromatogramType.BasePeak:
                     foreach (MsScan scan in scans)
                     {
                         ChromatogramPoint point = new ChromatogramPoint(scan.RetentionTime, scan.Spectrum.BasePeak);
@@ -102,8 +102,15 @@ namespace CSMSL.Spectral
                         }
                     }
                     break;
+                case ChromatogramType.TotalIonCurrent:
+                    foreach (MsScan scan in scans)
+                    {
+                        ChromatogramPoint point = new ChromatogramPoint(scan.RetentionTime, scan.Spectrum.TIC);
+                        chrom.AddPoint(point);
+                    }
+                    break;
             }
-            return chrom;   
+            return chrom;
         }
     }
 

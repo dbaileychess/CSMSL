@@ -92,7 +92,7 @@ namespace CSMSL.Spectral
         protected T _basePeak;
         protected int _count;
         protected T[] _peaks;
-        protected double _tic;
+        protected float _tic;
 
         protected Spectrum() { }
 
@@ -117,7 +117,7 @@ namespace CSMSL.Spectral
             }
         }
 
-        public double TIC
+        public float TIC
         {
             get
             {
@@ -171,16 +171,16 @@ namespace CSMSL.Spectral
 
             double maxInt = 0;
             int i = 0;
+            float intensity;
             foreach (T peak in peaks)
             {
-                _tic += peak.Intensity;
-                if (peak.Intensity > maxInt)
+                _tic += intensity = peak.Intensity;
+                if (intensity > maxInt)
                 {
-                    maxInt = peak.Intensity;
+                    maxInt = intensity;
                     _basePeak = peak;
                 }
-                _peaks[i] = peak;
-                i++;
+                _peaks[i++] = peak;               
             }
         }
 
