@@ -117,20 +117,18 @@ namespace CSMSL.IO.Thermo
             {
                 return Polarity.Negative;
             }
-        }  
+        }
 
         public override Spectrum GetMzSpectrum(int spectrumNumber)
         {
             double[,] peakData = GetLabeledData(spectrumNumber);
             int count = peakData.GetLength(1);
-            double[] mz = new double[count];
-            float[] intensities = new float[count];
+            List<Peak> peaks = new List<Peak>();
             for (int i = 0; i < count; i++)
             {
-                mz[i] = peakData[0, i];
-                intensities[i] = (float)peakData[1, i];
+                peaks.Add(new Peak(peakData[0, i], (float)peakData[1, i]));
             }
-            return new Spectrum(mz,intensities);
+            return new Spectrum(peaks);
         }
 
         private double[,] GetLabeledData(int spectrumNumber)

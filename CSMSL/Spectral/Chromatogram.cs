@@ -79,7 +79,7 @@ namespace CSMSL.Spectral
     public static class Extenion
     {
         public static Chromatogram GetChromatogram(this IEnumerable<MsScan> scans, ChromatogramType type = ChromatogramType.BasePeak, Range range = null)
-        {
+        {              
             Chromatogram chrom = new Chromatogram(type, range);
             switch (type)
             {
