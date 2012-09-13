@@ -87,7 +87,7 @@ namespace ExamplesCSMSL
                 }
                 watch.Stop();
                 watch.Restart();
-                Chromatogram chrom = dataFile.GetChromatogram(ChromatogramType.MzRange, new Range(553.79, 553.81));
+                Chromatogram chrom = dataFile.Where(scan => scan.MsnOrder == 2).GetChromatogram(ChromatogramType.MzRange, new Range(553.79, 553.81));
                 watch.Stop();
                 Console.WriteLine("Time: {0}", watch.Elapsed);
             }

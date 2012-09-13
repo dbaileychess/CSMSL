@@ -41,14 +41,12 @@ namespace CSMSL.Spectral
             : base(peaks) { }
     }
 
-    public class Spectrum<T> : IDisposable where T : IPeak, new()
+    public class Spectrum<T> : IDisposable where T : Peak
     {
-        internal int _basePeak;
+        internal T _basePeak;
         internal int _count;
         internal T[] _peaks;
-        internal double _tic;
-        internal double[] _mzs;
-        internal float[] _intensities;
+        internal double _tic;        
 
         public Spectrum()
         {
@@ -79,10 +77,7 @@ namespace CSMSL.Spectral
         {
             get
             {
-                T peak = new T();
-                peak.Intensity = _intensities[_basePeak];
-                peak.MZ = _mzs[_basePeak];
-                return peak;
+                return _basePeak;
             }
         }
 
@@ -122,34 +117,31 @@ namespace CSMSL.Spectral
         }
 
         public bool TryGetPeaks(out List<T> peaks, double minMZ, double maxMZ)
-        {    
-            int index = Array.BinarySearch(_mzs, minMZ);
+        {                        
+            int index = Array.BinarySearch(_peaks, new Peak(minMZ, 0f));
             if (index < 0)
                 index = ~index;
 
             peaks = new List<T>();
-
-            if (index >= _mzs.Length || _mzs[index] > maxMZ) return false;
-
-            T peak;
+            T peak; 
+            if (index >= _peaks.Length || (peak = _peaks[index]).MZ > maxMZ) return false;
+                   
             do
             {
-                peak = new T();               
-                peak.MZ = _mzs[index];
-                peak.Intensity = _intensities[index];
                 peaks.Add(peak);
                 index++;
-            } while (index < _mzs.Length && _mzs[index] <= maxMZ);
+            } while (index < _peaks.Length && (peak = _peaks[index]).MZ <= maxMZ);
 
             return true;
         }
 
         private void LoadData(IEnumerable<T> peaks)
         {
-            List<T> temppeaks = new List<T>(peaks);
-            _count = temppeaks.Count;
+
+            //_count = peaks.
             _peaks = new T[_count];
             _tic = 0;
+
             double maxInt = 0;
             for (int i = 0; i < _count; i++)
             {
@@ -217,14 +209,14 @@ namespace CSMSL.Spectral
 
         private void LoadData(double[,] data)
         {
-            _count = data.GetLength(0);
-            _mzs = new double[_count];
-            _intensities = new float[_count];         
+            _count = data.GetLength(0);                 
             _tic = 0;
             double maxInt = 0;
             double intensity = 0;
+            T tempPeak;
             for (int i = 0; i < _count; i++)
             {                
+                tempPeak = new T(
                 _tic += intensity = _intensities[i] = (float)data[i, 1];
                 _mzs[i] = data[i, 0];
                 if (intensity > maxInt)
@@ -246,5 +238,6 @@ namespace CSMSL.Spectral
                 Array.Clear(_peaks, 0, _peaks.Length);
             _peaks = null;
         }
-    }
+    }  
+
 }

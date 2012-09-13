@@ -54,7 +54,7 @@ namespace CSMSL.IO.Thermo
                 _rawConnection = null;
             }
             base.Dispose();
-        }
+        }        
 
         protected override int GetFirstSpectrumNumber()
         {

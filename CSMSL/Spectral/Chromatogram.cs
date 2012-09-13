@@ -75,4 +75,37 @@ namespace CSMSL.Spectral
             return _curve.Values.GetEnumerator();
         }
     }
+
+    public static class Extenion
+    {
+        public static Chromatogram GetChromatogram(this IEnumerable<MsScan> scans, ChromatogramType type = ChromatogramType.BasePeak, Range range = null)
+        {
+            Chromatogram chrom = new Chromatogram(type, range);
+            switch (type)
+            {
+                default:
+                case ChromatogramType.BasePeak:   
+                    foreach (MsScan scan in scans)
+                    {
+                        ChromatogramPoint point = new ChromatogramPoint(scan.RetentionTime, scan.Spectrum.BasePeak);
+                        chrom.AddPoint(point);
+                    }
+                    break;
+                case ChromatogramType.MzRange:
+                    List<Peak> peaks = null;
+                    foreach (MsScan scan in scans)
+                    {
+                        if (scan.Spectrum.TryGetPeaks(out peaks, range))
+                        {
+                            ChromatogramPoint point = new ChromatogramPoint(scan.RetentionTime, peaks);
+                            chrom.AddPoint(point);
+                        }
+                    }
+                    break;
+            }
+            return chrom;   
+        }
+    }
+
+
 }
