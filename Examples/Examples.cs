@@ -68,24 +68,23 @@ namespace ExamplesCSMSL
             Console.WriteLine("**MS I/O Examples**");
 
             Console.WriteLine("{0,-4} {1,3} {2,-6:F4} {3,-5} {4,7} {5,-10} {6}", "SN", "Msn", "RT", "Polarity", "# Peaks", "Analyzer", "M/Z Range");
-            string rawfile = @"C:\Users\Derek\Documents\promega\Promega_Dilutions\120731_Promega_PeptideMix1_Heavy_1.raw";// "Resources/ThermoRawFileMS1MS2.raw"
+            string rawfile = "Resources/ThermoRawFileMS1MS2.raw"; // @"C:\Users\Derek\Documents\promega\Promega_Dilutions\120731_Promega_PeptideMix1_Heavy_1.raw";// 
             // Ms Data Files implement IDispoable making using statements an excellent way to manage resources
             using (MsDataFile dataFile = new ThermoRawFile(rawfile, true))
             {
                 Stopwatch watch = new Stopwatch();
                 watch.Start();
-               // Chromatogram chrom = dataFile.GetChromatogram(ChromatogramType.MzRange, new Range(553.79, 553.81));
-                //foreach (MsScan scan in dataFile)
-                //{
-                //    Console.WriteLine("{0,-4} {1,3} {2,-6:F4} {3,-5} {4,7} {5,-10} {6}",
-                //        scan.SpectrumNumber,
-                //        scan.MsnOrder,
-                //        scan.RetentionTime,
-                //        scan.Polarity,
-                //        scan.Spectrum.Count,
-                //        scan.MzAnalyzer,
-                //        scan.MzRange);
-                //}
+                foreach (MsScan scan in dataFile)
+                {
+                    Console.WriteLine("{0,-4} {1,3} {2,-6:F4} {3,-5} {4,7} {5,-10} {6}",
+                        scan.SpectrumNumber,
+                        scan.MsnOrder,
+                        scan.RetentionTime,
+                        scan.Polarity,
+                        scan.Spectrum.Count,
+                        scan.MzAnalyzer,
+                        scan.MzRange);
+                }
                 watch.Stop();
                 watch.Restart();
                 Chromatogram chrom = dataFile.GetChromatogram(ChromatogramType.MzRange, new Range(553.79, 553.81));
@@ -93,8 +92,8 @@ namespace ExamplesCSMSL
                 Console.WriteLine("Time: {0}", watch.Elapsed);
             }
 
-            //// Ms Data Files implment IDispoable making using statements an excellent way to manage resources
-            //using(MsDataFile dataDirectory = new AgilentDDirectory("Resources/AgilentDDirectoryMS1MS2.d", true))
+            // Ms Data Files implment IDispoable making using statements an excellent way to manage resources
+            //using (MsDataFile dataDirectory = new AgilentDDirectory("Resources/AgilentDDirectoryMS1MS2.d", true))
             //{
             //    foreach (MsScan scan in dataDirectory.OfType<MsScan>())
             //    {
@@ -104,9 +103,9 @@ namespace ExamplesCSMSL
             //            scan.RetentionTime,
             //            scan.Polarity,
             //            scan.Spectrum.Count,
-            //            scan.MzAnalyzer,                      
+            //            scan.MzAnalyzer,
             //            scan.MzRange);
-            //    }              
+            //    }
             //}
             Console.WriteLine("Memory used: {0:N0} MB", System.Environment.WorkingSet / (1024 * 1024));
         }

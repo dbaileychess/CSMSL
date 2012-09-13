@@ -106,7 +106,12 @@ namespace CSMSL.IO
         public virtual void Dispose()
         {
             if (_scans != null)
-                Array.Clear(_scans, 0, _scans.Length);
+                foreach (MsScan scan in _scans)
+                {
+                    if (scan != null)
+                        scan.Dispose();
+                }
+            Array.Clear(_scans, 0, _scans.Length);
             _scans = null;
             _isOpen = false;
         }
