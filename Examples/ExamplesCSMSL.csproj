@@ -50,12 +50,43 @@
       <Project>{3c8c9f05-9c19-4251-95fa-05d7edc8cae6}</Project>
       <Name>CSMSL</Name>
     </ProjectReference>
+    <ProjectReference Include="..\CSMSL\IO\Agilent\Agilent.csproj">
+      <Project>{096D1DBE-12D7-4A60-B902-12768A2F2A08}</Project>
+      <Name>Agilent</Name>
+    </ProjectReference>
     <ProjectReference Include="..\CSMSL\IO\Thermo\Thermo.csproj">
       <Project>{24dc85ff-e97b-4140-9614-77dd8fddd32f}</Project>
       <Name>Thermo</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Resources\AgilentDDirectoryMS1MS2.d\AcqData\AcqMethod.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\AgilentDDirectoryMS1MS2.d\AcqData\Contents.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\AgilentDDirectoryMS1MS2.d\AcqData\DefaultMassCal.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\AgilentDDirectoryMS1MS2.d\AcqData\DeviceConfigInfo.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\AgilentDDirectoryMS1MS2.d\AcqData\Devices.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\AgilentDDirectoryMS1MS2.d\AcqData\MSActualDefs.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\AgilentDDirectoryMS1MS2.d\AcqData\MSTS.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\AgilentDDirectoryMS1MS2.d\AcqData\sample_info.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\AgilentDDirectoryMS1MS2.d\AcqData\Worklist.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Resources\yeast_uniprot_120226.fasta">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -65,7 +96,30 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <None Include="Resources\AgilentDDirectoryMS1MS2.d\AcqData\MSPeak.bin">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\AgilentDDirectoryMS1MS2.d\AcqData\MSPeriodicActuals.bin">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\AgilentDDirectoryMS1MS2.d\AcqData\MSScan.bin">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\AgilentDDirectoryMS1MS2.d\AcqData\MSScan.xsd">
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\AgilentDDirectoryMS1MS2.d\desktop.ini">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>
+    </PostBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

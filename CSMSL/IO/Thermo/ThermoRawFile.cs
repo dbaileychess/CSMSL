@@ -1,6 +1,8 @@
 ﻿using System;
 using CSMSL.Proteomics;
 using CSMSL.Spectral;
+using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using MSFileReaderLib;
 
 namespace CSMSL.IO.Thermo
@@ -52,7 +54,7 @@ namespace CSMSL.IO.Thermo
                 _rawConnection = null;
             }
             base.Dispose();
-        }
+        }        
 
         protected override int GetFirstSpectrumNumber()
         {
@@ -89,40 +91,53 @@ namespace CSMSL.IO.Thermo
         private object GetExtraValue(int spectrumNumber, string filter)
         {
             object value = null;
-            if (_rawConnection != null)
+            if (_rawConnection != null)              
                 _rawConnection.GetTrailerExtraValueForScanNum(spectrumNumber, filter, ref value);
             return value;
         }
 
+        private string GetScanFilter(int spectrumNumber)
+        {
+            string filter = null;
+            if(_rawConnection != null)
+                _rawConnection.GetFilterForScanNum(spectrumNumber, ref filter);
+            return filter;
+        }
+
+        private static Regex _polarityRegex = new Regex(@" \+ ", RegexOptions.Compiled);
+
         public override Polarity GetPolarity(int spectrumNumber)
         {
-            short charge = (short)GetExtraValue(spectrumNumber, "Charge State:");
-            return (Polarity)(Math.Sign(charge));
+            string filter = GetScanFilter(spectrumNumber);
+            if (_polarityRegex.IsMatch(filter))
+            {
+                return Polarity.Positive;
+            }
+            else
+            {
+                return Polarity.Negative;
+            }
         }
 
-        public void DoSomething()
-        {
-        }
-
-        public override Spectral.Spectrum GetMzSpectrum(int spectrumNumber)
+        public override Spectrum GetMzSpectrum(int spectrumNumber)
         {
             double[,] peakData = GetLabeledData(spectrumNumber);
-            return new Spectral.Spectrum(peakData);
+            int count = peakData.GetLength(1);
+            List<Peak> peaks = new List<Peak>();
+            for (int i = 0; i < count; i++)
+            {
+                peaks.Add(new Peak(peakData[0, i], (float)peakData[1, i]));
+            }
+            return new Spectrum(peaks);
         }
 
         private double[,] GetLabeledData(int spectrumNumber)
         {
             object labels = null;
             object flags = null;            
-            _rawConnection.GetLabelData(ref labels, ref flags, ref spectrumNumber);
-            double[,] peakData = (double[,])labels;
-            double[,] transformedPeakData = new double[peakData.GetLength(1), 2];
-            for (int i = 0; i < peakData.GetLength(1); i++)
-            {
-                transformedPeakData[i, 0] = peakData[0, i];
-                transformedPeakData[i, 1] = peakData[1, i];
-            }
-            return transformedPeakData;
+            if(_rawConnection !=null)       
+                _rawConnection.GetLabelData(ref labels, ref flags, ref spectrumNumber);
+            return (double[,])labels; 
         }        
 
         public override MzAnalyzerType GetMzAnalyzer(int spectrumNumber)

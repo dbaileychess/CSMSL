@@ -20,31 +20,81 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace CSMSL.Spectral
 {
     public class Spectrum : Spectrum<Peak>
     {
-        public Spectrum(double[,] data)
-            : base(data) { }
-    }
-
-    public class Spectrum<T> : IDisposable where T : IPeak, new()
-    {
-        internal T _basePeak;
-        internal int _count;
-        internal T[] _peaks;
-        internal double _tic;
+        public Spectrum()
+            : base() { }
 
         public Spectrum(double[,] data)
+            : base()
         {
             LoadData(data);
         }
 
-        public Spectrum(double[] mzs, double[] intensities)
+        public Spectrum(double[] mzs, float[] intensities)
+            : base()
         {
             LoadData(mzs, intensities);
         }
+
+        public Spectrum(IEnumerable<Peak> peaks)
+            : base(peaks) { }
+
+        private void LoadData(double[] mzs, float[] intensities)
+        {
+            if (mzs.Length != intensities.Length)
+            {
+                throw new FormatException("M/Z and Intensities arrays are not the same dimensions");
+            }
+            _count = mzs.Length;
+            _tic = 0;
+            _peaks = new Peak[_count];
+            double maxInt = 0;
+            for (int i = 0; i < _count; i++)
+            {
+                float intensity = intensities[i];
+                _peaks[i] = new Peak(mzs[i], intensity);
+                _tic += intensity;
+                if (intensity > maxInt)
+                {
+                    maxInt = intensity;
+                    _basePeak = _peaks[i];
+                }
+            }
+        }
+
+        private void LoadData(double[,] data)
+        {
+            _count = data.GetLength(0);
+            _tic = 0;
+            _peaks = new Peak[_count];
+            double maxInt = 0;
+            for (int i = 0; i < _count; i++)
+            {
+                float intensity = (float)data[i, 1];
+                _peaks[i] = new Peak(data[i, 0], intensity);
+                _tic += intensity;
+                if (intensity > maxInt)
+                {
+                    maxInt = intensity;
+                    _basePeak = _peaks[i];
+                }
+            }
+        }
+    }
+
+    public class Spectrum<T> : IDisposable where T : Peak
+    {
+        protected T _basePeak;
+        protected int _count;
+        protected T[] _peaks;
+        protected float _tic;
+
+        protected Spectrum() { }
 
         public Spectrum(IEnumerable<T> peaks)
         {
@@ -67,7 +117,7 @@ namespace CSMSL.Spectral
             }
         }
 
-        public double TIC
+        public float TIC
         {
             get
             {
@@ -96,94 +146,42 @@ namespace CSMSL.Spectral
 
         public bool TryGetPeaks(out List<T> peaks, double minMZ, double maxMZ)
         {
-            T temppeak = new T();
-            temppeak.MZ = minMZ;
-            int index = Array.BinarySearch(_peaks, temppeak);
+            int index = Array.BinarySearch(_peaks, new Peak(minMZ, 0f));
             if (index < 0)
                 index = ~index;
 
             peaks = new List<T>();
-
-            if (index < _peaks.Length && (temppeak = _peaks[index]).MZ > maxMZ) return false;
+            T peak;
+            if (index >= _peaks.Length || (peak = _peaks[index]).MZ > maxMZ) return false;
 
             do
             {
-                peaks.Add(temppeak);
+                peaks.Add(peak);
                 index++;
-            } while (index < _peaks.Length && (temppeak = _peaks[index]).MZ <= maxMZ);
+            } while (index < _peaks.Length && (peak = _peaks[index]).MZ <= maxMZ);
 
             return true;
         }
 
         private void LoadData(IEnumerable<T> peaks)
         {
-            List<T> temppeaks = new List<T>(peaks);
-            _count = temppeaks.Count;
+            _count = peaks.Count();
             _peaks = new T[_count];
             _tic = 0;
-            double maxInt = 0;
-            for (int i = 0; i < _count; i++)
-            {
-                T temppeak = temppeaks[i];
-                _peaks[i] = temppeak;
-                _tic += temppeak.Intensity;
-                if (temppeak.Intensity > maxInt)
-                {
-                    maxInt = temppeak.Intensity;
-                    _basePeak = temppeak;
-                }
-            }
-            Array.Sort(_peaks);
-        }
 
-        private void LoadData(double[] mzs, double[] intensities)
-        {
-            if (mzs.Length != intensities.Length)
-            {
-                throw new FormatException("M/Z and Intensities arrays are not the same dimensions");
-            }
-            _count = mzs.Length;
-            _peaks = new T[_count];
-            _tic = 0;
             double maxInt = 0;
-            T temppeak;
-            for (int i = 0; i < _count; i++)
+            int i = 0;
+            float intensity;
+            foreach (T peak in peaks)
             {
-                temppeak = new T();
-                temppeak.MZ = mzs[i];
-                temppeak.Intensity = intensities[i];
-                _tic += temppeak.Intensity;
-                if (temppeak.Intensity > maxInt)
+                _tic += intensity = peak.Intensity;
+                if (intensity > maxInt)
                 {
-                    maxInt = temppeak.Intensity;
-                    _basePeak = temppeak;
+                    maxInt = intensity;
+                    _basePeak = peak;
                 }
-                _peaks[i] = temppeak;
+                _peaks[i++] = peak;               
             }
-            Array.Sort(_peaks);
-        }
-
-        private void LoadData(double[,] data)
-        {
-            _count = data.GetLength(0);
-            _peaks = new T[_count];
-            _tic = 0;
-            double maxInt = 0;
-            T temppeak;
-            for (int i = 0; i < _count; i++)
-            {
-                temppeak = new T();
-                temppeak.MZ = data[i, 0];
-                temppeak.Intensity = data[i, 1];
-                _tic += temppeak.Intensity;
-                if (temppeak.Intensity > maxInt)
-                {
-                    maxInt = temppeak.Intensity;
-                    _basePeak = temppeak;
-                }
-                _peaks[i] = temppeak;
-            }
-            Array.Sort(_peaks);
         }
 
         public override string ToString()
@@ -193,7 +191,7 @@ namespace CSMSL.Spectral
 
         public void Dispose()
         {
-            if(_peaks != null)
+            if (_peaks != null)
                 Array.Clear(_peaks, 0, _peaks.Length);
             _peaks = null;
         }

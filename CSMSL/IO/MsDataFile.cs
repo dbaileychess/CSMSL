@@ -8,7 +8,7 @@ namespace CSMSL.IO
 {
     public abstract class MsDataFile : IDisposable, IEquatable<MsDataFile>, IEnumerable<MsScan>
     {
-        protected MsScan[] _scans = null;
+        internal MsScan[] _scans = null;
 
         private string _filePath;
 
@@ -24,7 +24,7 @@ namespace CSMSL.IO
 
         public MsDataFile(string filePath, MsDataFileType filetype = MsDataFileType.UnKnown, bool openImmediately = false)
         {
-            if (!File.Exists(filePath))
+            if (!File.Exists(filePath) && !Directory.Exists(filePath))
             {
                 throw new IOException(string.Format("The MS data file {0} does not currently exist", filePath));
             }
@@ -68,7 +68,10 @@ namespace CSMSL.IO
             }
         }
 
-        public bool IsOpen { get { return _isOpen; } }
+        public bool IsOpen { 
+            get { return _isOpen; }
+            protected set { _isOpen = value; }
+        }
 
         public virtual int LastSpectrumNumber
         {
@@ -103,7 +106,12 @@ namespace CSMSL.IO
         public virtual void Dispose()
         {
             if (_scans != null)
-                Array.Clear(_scans, 0, _scans.Length);
+                foreach (MsScan scan in _scans)
+                {
+                    if (scan != null)
+                        scan.Dispose();
+                }
+            Array.Clear(_scans, 0, _scans.Length);
             _scans = null;
             _isOpen = false;
         }
@@ -189,5 +197,7 @@ namespace CSMSL.IO
         protected abstract int GetFirstSpectrumNumber();
 
         protected abstract int GetLastSpectrumNumber();
+        
+
     }
 }
