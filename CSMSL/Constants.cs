@@ -86,6 +86,6 @@ namespace CSMSL
         /// </summary>
         public const double WATER = HYDROGEN * 2 + OXYGEN;
 
-        #endregion Molecular
+        #endregion Molecular      
     }
 }

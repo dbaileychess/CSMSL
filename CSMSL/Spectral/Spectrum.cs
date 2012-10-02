@@ -87,7 +87,7 @@ namespace CSMSL.Spectral
         }
     }
 
-    public class Spectrum<T> : IDisposable where T : Peak
+    public class Spectrum<T> : IDisposable, IEnumerable<T> where T : Peak
     {
         protected T _basePeak;
         protected int _count;
@@ -109,7 +109,7 @@ namespace CSMSL.Spectral
             }
         }
 
-        public double Count
+        public int Count
         {
             get
             {
@@ -194,6 +194,16 @@ namespace CSMSL.Spectral
             if (_peaks != null)
                 Array.Clear(_peaks, 0, _peaks.Length);
             _peaks = null;
+        }
+
+        public IEnumerator<T> GetEnumerator()
+        {
+            return (IEnumerator<T>)_peaks.GetEnumerator();
+        }
+
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        {
+            return _peaks.GetEnumerator();
         }
     }
 }

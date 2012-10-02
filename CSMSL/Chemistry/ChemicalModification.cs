@@ -22,6 +22,18 @@ namespace CSMSL.Chemistry
 {
     public class ChemicalModification : ChemicalFormula
     {
+        #region Reagents
+
+        public static ChemicalModification iTRAQ4Plex = new ChemicalModification("C{13}3C4N{15}NOH12", "iTRAQ 4-plex");
+        public static ChemicalModification iTRAQ8Plex = new ChemicalModification("C{13}7C7N{15}N3O3H24", "iTRAQ 8-plex");
+        public static ChemicalModification TMT6plex = new ChemicalModification("C{13}4C8N{15}NO2H20", "TMT 6-plex");
+        public static ChemicalModification CAM = new ChemicalModification("C2H3NO", "Carbamidomethyl");
+        public static ChemicalModification PHOSPHO = new ChemicalModification("HPO3", "Phosphorylation");
+        public static ChemicalModification OX = new ChemicalModification("O", "Oxidation");
+
+        #endregion
+
+
         private string _name;
 
         public string Name

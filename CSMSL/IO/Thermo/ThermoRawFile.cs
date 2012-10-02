@@ -123,10 +123,10 @@ namespace CSMSL.IO.Thermo
         {
             double[,] peakData = GetLabeledData(spectrumNumber);
             int count = peakData.GetLength(1);
-            List<Peak> peaks = new List<Peak>();
+            List<ThermoLabeledPeak> peaks = new List<ThermoLabeledPeak>();
             for (int i = 0; i < count; i++)
             {
-                peaks.Add(new Peak(peakData[0, i], (float)peakData[1, i]));
+                peaks.Add(new ThermoLabeledPeak(peakData[0, i], (float)peakData[1, i], (short)peakData[5, i], (float)peakData[4, i]));
             }
             return new Spectrum(peaks);
         }
@@ -211,6 +211,14 @@ namespace CSMSL.IO.Thermo
         public override short GetPrecusorCharge(int spectrumNumber, int msnOrder = 2)
         {
             return (short)GetExtraValue(spectrumNumber, "Charge State:");
+        }
+
+        public override int GetSpectrumNumber(double retentionTime)
+        {
+            int spectrumNumber = 0;
+            if (_rawConnection != null)
+                _rawConnection.ScanNumFromRT(retentionTime, ref spectrumNumber);
+            return spectrumNumber;
         }
     }
 }

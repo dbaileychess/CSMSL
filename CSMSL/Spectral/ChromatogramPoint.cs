@@ -1,35 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
-using System;
 
 namespace CSMSL.Spectral
 {
-    public class ChromatogramPoint
+    public class LabeledChromatogramPoint : ChromatogramPoint
     {
-        private double _retentionTime;
-
-        public double RetentionTime
-        {
-            get
-            {
-                return _retentionTime;
-            }
-        }
-
-        private float _intensity;
-
-        public float Intensity
-        {
-            get
-            {
-                return _intensity;
-            }
-            private set
-            {
-                _intensity = value;
-            }
-        }
-
         private List<IPeak> _peaks;
 
         public List<IPeak> MzPeaks
@@ -55,35 +31,26 @@ namespace CSMSL.Spectral
             }
         }
 
-        public ChromatogramPoint(double time, IPeak peak)
-        {
-            _retentionTime = time;
+        public LabeledChromatogramPoint(double time, IPeak peak)
+            : base(time,peak.Intensity)
+        {           
             _peaks = new List<IPeak>();
-            _peaks.Add(peak);
-            _intensity = _peaks.Sum(p => p.Intensity);
+            _peaks.Add(peak);           
         }
 
-        public ChromatogramPoint(double time, IEnumerable<IPeak> peaks)
-        {
-            _retentionTime = time;
-            _peaks = peaks.ToList();
-            _intensity = _peaks.Sum(p => p.Intensity);
+        public LabeledChromatogramPoint(double time, IEnumerable<IPeak> peaks)
+            : base(time,peaks.Sum(p => p.Intensity))
+        {           
+            _peaks = peaks.ToList();          
         }
 
-        public ChromatogramPoint(double time, float intensity)
+        public void CombinePoints(LabeledChromatogramPoint otherPoint)
         {
-            _retentionTime = time;
-            _peaks = null;
-            _intensity = intensity;
-        }
-
-        public void CombinePoints(ChromatogramPoint otherPoint)
-        {
-            if (!RetentionTime.Equals(otherPoint.RetentionTime))
+            if (!Time.Equals(otherPoint.Time))
             {
                 throw new ArgumentException("The two chromatogram points don't have the same retention time");
             }
-            this.Intensity += otherPoint.Intensity;
+            this._intensity += otherPoint.Intensity;
             if (_peaks == null)
             {
                 _peaks = otherPoint._peaks;
@@ -93,10 +60,62 @@ namespace CSMSL.Spectral
                 _peaks.AddRange(otherPoint._peaks);
             }
         }
-        
+
         public override string ToString()
         {
-            return string.Format("({0:G4}, {1:G4})", RetentionTime, Intensity);
+            return string.Format("({0:G4}, {1:G4}) Peak Count = {2:G0}", Time, Intensity, Count);
+        }
+    }
+
+    public class ChromatogramPoint : IComparable<ChromatogramPoint>
+    {
+        protected double _time;
+
+        public double Time
+        {
+            get
+            {
+                return _time;
+            }
+        }
+
+        protected float _intensity;
+
+        public float Intensity
+        {
+            get
+            {
+                return _intensity;
+            }
+            private set
+            {
+                _intensity = value;
+            }
+        }
+
+        public ChromatogramPoint(double time, float intensity)
+        {
+            _time = time;
+            _intensity = intensity;
+        }
+
+        public void CombinePoints(ChromatogramPoint otherPoint)
+        {
+            if (!Time.Equals(otherPoint.Time))
+            {
+                throw new ArgumentException("The two chromatogram points don't have the same time");
+            }
+            this._intensity += otherPoint.Intensity;           
+        }
+
+        public override string ToString()
+        {
+            return string.Format("({0:G4}, {1:G4})", Time, Intensity);
+        }
+
+        public int CompareTo(ChromatogramPoint other)
+        {
+            return this.Time.CompareTo(other.Time);
         }
     }
 }

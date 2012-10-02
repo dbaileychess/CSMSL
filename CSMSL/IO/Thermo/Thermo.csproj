@@ -39,6 +39,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ThermoLabeledPeak.cs" />
     <Compile Include="ThermoRawFile.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
