@@ -32,6 +32,7 @@ namespace CSMSL.IO
 
         private string _description;
         private string _sequence;
+        private bool _isDecoy;
 
         public Fasta(string sequence, string description)
         {
@@ -39,62 +40,59 @@ namespace CSMSL.IO
             Description = description;
         }
 
-        public Fasta ToDecoy()
+        public Fasta ToDecoy(string preText = "DECOY_", DecoyType Method = DecoyType.Reverse, bool excludeNTerminus = true, bool onlyIfNTerminusIsMethionine = true)
         {
-            return ToDecoy("DECOY_", DecoyType.Reverse);
+            return new Fasta(GenerateDecoySequence(Sequence, Method, excludeNTerminus, onlyIfNTerminusIsMethionine), preText + Description);
         }
 
-        public Fasta ToDecoy(string preText, DecoyType Method)
-        {
-            return new Fasta(GenerateDecoySequence(Sequence, Method, true, true), preText + Description);
-        }
-
+        /**
+         * Method to generate decoy sequence according to a given input sequence and other options like
+         * decoy type and whether to exclude N-terminus. 
+         **/
         private static string GenerateDecoySequence(string sequence, DecoyType decoyDatabaseMethod, bool excludeNTerminus, bool onlyIfNTerminusIsMethionine)
         {
-            string decoy_sequence = null;
+            char[] temp = new char[sequence.Length];
+            bool keepNTerminus = excludeNTerminus && (!onlyIfNTerminusIsMethionine || sequence[0] == 'M');
 
             switch (decoyDatabaseMethod)
             {
                 case DecoyType.Reverse:
-                    if (excludeNTerminus && (!onlyIfNTerminusIsMethionine || sequence[0] == 'M'))
-                    {
-                        char[] temp = sequence.ToCharArray();
+
+                    temp = sequence.ToCharArray();
+                    if (keepNTerminus)
                         Array.Reverse(temp, 1, temp.Length - 1);
-                        decoy_sequence = new string(temp);
-                    }
                     else
-                    {
-                        char[] temp = sequence.ToCharArray();
                         Array.Reverse(temp);
-                        decoy_sequence = new string(temp);
-                    }
+
                     break;
+
                 case DecoyType.Shuffle:
-                    if (excludeNTerminus && (!onlyIfNTerminusIsMethionine || sequence[0] == 'M'))
-                    {
-                        char[] temp = sequence.ToCharArray();
+
+                   temp = sequence.ToCharArray();
+                    if (keepNTerminus)
                         Shuffle(temp, 1, temp.Length - 1);
-                        decoy_sequence = new string(temp);
-                    }
                     else
-                    {
-                        char[] temp = sequence.ToCharArray();
                         Shuffle(temp);
-                        decoy_sequence = new string(temp);
-                    }
+
                     break;
+
                 case DecoyType.Random:
-                    decoy_sequence = string.Empty;
-                    if (excludeNTerminus && (!onlyIfNTerminusIsMethionine || sequence[0] == 'M'))
+
+                    int index = 0;
+                    if (keepNTerminus) 
+                        temp[index++] = sequence[0];
+
+                    // Generate Random Characters
+                    while (index < sequence.Length)
                     {
-                        decoy_sequence += sequence[0];
+                        temp[index++] = AMINO_ACIDS[RANDOM.Next(AMINO_ACIDS.Count)];
                     }
-                    while (decoy_sequence.Length < sequence.Length)
-                    {
-                        decoy_sequence += AMINO_ACIDS[RANDOM.Next(AMINO_ACIDS.Count)];
-                    }
+
                     break;
             }
+
+            // Create decoy sequence string from temporary char array.
+            string decoy_sequence = new string(temp);
 
             return decoy_sequence;
         }
@@ -139,13 +137,12 @@ namespace CSMSL.IO
             set { _sequence = value; }
         }
 
-        private bool _isDecoy;
         public bool IsDecoy
         {
             get { return _isDecoy; }
             set { _isDecoy = value; }
         }
-    }
+    } // class Fasta
 
     public enum DecoyType
     {

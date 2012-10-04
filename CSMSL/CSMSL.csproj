@@ -55,6 +55,7 @@
     <Compile Include="Chemistry\PeriodicTable.cs" />
     <Compile Include="Constants.cs" />
     <Compile Include="IMass.cs" />
+    <Compile Include="IO\Fasta.cs" />
     <Compile Include="IO\FastaReader.cs" />
     <Compile Include="IO\FastaWriter.cs" />
     <Compile Include="IO\MsDataFile.cs" />
