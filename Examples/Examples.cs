@@ -73,21 +73,21 @@ namespace ExamplesCSMSL
             using (MsDataFile dataFile = new ThermoRawFile(rawfile, true))
             {
                 Stopwatch watch = new Stopwatch();
-                watch.Start();
-                foreach (MsScan scan in dataFile)
-                {
-                    Console.WriteLine("{0,-4} {1,3} {2,-6:F4} {3,-5} {4,7} {5,-10} {6}",
-                        scan.SpectrumNumber,
-                        scan.MsnOrder,
-                        scan.RetentionTime,
-                        scan.Polarity,
-                        scan.Spectrum.Count,
-                        scan.MzAnalyzer,
-                        scan.MzRange);
-                }
-                watch.Stop();
+                //watch.Start();
+                //foreach (MsScan scan in dataFile)
+                //{
+                //    Console.WriteLine("{0,-4} {1,3} {2,-6:F4} {3,-5} {4,7} {5,-10} {6}",
+                //        scan.SpectrumNumber,
+                //        scan.MsnOrder,
+                //        scan.RetentionTime,
+                //        scan.Polarity,
+                //        scan.Spectrum.Count,
+                //        scan.MzAnalyzer,
+                //        scan.MzRange);
+                //}
+                //watch.Stop();
                 watch.Restart();
-                Chromatogram chrom = dataFile.GetChromatogram(ChromatogramType.MzRange, new Range(550, 551));
+                Chromatogram chrom = dataFile.Where(scan => scan.MsnOrder == 2).GetChromatogram(ChromatogramType.MzRange);
                 watch.Stop();
                 Console.WriteLine("Time: {0}", watch.Elapsed);
             }

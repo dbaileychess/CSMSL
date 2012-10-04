@@ -173,6 +173,11 @@ namespace CSMSL.IO
             yield break;
         }
 
+        public IEnumerable<MsScan> GetMsScans(IRange<int> range)
+        {
+            return GetMsScans(range.Minimum, range.Maximum);
+        }
+
         public abstract MzAnalyzerType GetMzAnalyzer(int spectrumNumber);
 
         public abstract Spectrum GetMzSpectrum(int spectrumNumber);
@@ -197,7 +202,7 @@ namespace CSMSL.IO
         protected abstract int GetFirstSpectrumNumber();
 
         protected abstract int GetLastSpectrumNumber();
-        
 
+        public abstract int GetSpectrumNumber(double retentionTime);     
     }
 }

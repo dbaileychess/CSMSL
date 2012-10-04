@@ -116,7 +116,7 @@ namespace CSMSL.Util
 
         public override string ToString()
         {
-            return string.Format("y = {0:F2}x + {1:F2} (R^2 = {2:F2})", Slope, Intercept, RSquared);
+            return string.Format("y = {0:F2}x + {1:F2} (R^2 = {2:F4})", Slope, Intercept, RSquared);
         }
     }
 }

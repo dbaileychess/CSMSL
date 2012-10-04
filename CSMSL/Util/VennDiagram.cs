@@ -37,6 +37,11 @@ namespace CSMSL.Util
         private VennSet<T>[] _subSets;
         private Dictionary<string, VennSet<T>> _regions;
 
+        public VennSet<T>[] SubSets
+        {
+            get { return _subSets; }
+        }
+
         public VennSet<T> TotalUnique
         {
             get { return _subSets[0]; }
