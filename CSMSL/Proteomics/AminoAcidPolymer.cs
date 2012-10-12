@@ -28,8 +28,8 @@ namespace CSMSL.Proteomics
 {
     public abstract class AminoAcidPolymer : IChemicalFormula, IMass, IEquatable<AminoAcidPolymer>
     {
-        internal static readonly ChemicalModification DefaultCTerm = new ChemicalModification("OH");
-        internal static readonly ChemicalModification DefaultNTerm = new ChemicalModification("H");
+        internal static readonly ChemicalModification DefaultCTerm = new ChemicalModification("OH", "OH");
+        internal static readonly ChemicalModification DefaultNTerm = new ChemicalModification("H", "H");
 
         private static readonly Dictionary<FragmentType, ChemicalFormula> _fragmentIonCaps = new Dictionary<FragmentType, ChemicalFormula>()
         {
@@ -228,7 +228,7 @@ namespace CSMSL.Proteomics
         public void SetModification(ChemicalModification mod, Terminus terminus)
         {
             if ((terminus & Terminus.N) == Terminus.N)
-            {
+            {               
                 _modifications[0] = mod;
                 _isDirty = true;
             }

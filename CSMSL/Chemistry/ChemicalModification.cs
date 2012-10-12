@@ -32,8 +32,7 @@ namespace CSMSL.Chemistry
         public static ChemicalModification OX = new ChemicalModification("O", "Oxidation");
 
         #endregion
-
-
+        
         private string _name;
 
         public string Name
@@ -46,6 +45,15 @@ namespace CSMSL.Chemistry
             }
         }
 
+        public ChemicalModification(ChemicalFormula chemicalFormula, string name)
+            : base(chemicalFormula) 
+        {
+            _name = name;
+        }
+
+        public ChemicalModification(ChemicalFormula chemicalFormula)
+            : this(chemicalFormula, string.Empty) { }
+
         public ChemicalModification(string chemicalFormula)
             : this(chemicalFormula, string.Empty) { }
 
@@ -53,6 +61,11 @@ namespace CSMSL.Chemistry
             : base(chemicalFormula)
         {
             _name = name;
+        }
+
+        public ChemicalModification Append(ChemicalModification mod)
+        {          
+            return new ChemicalModification(this + mod, string.Format("{0} + {1}", this.Name, mod.Name));;
         }
 
         public override string ToString()
