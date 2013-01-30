@@ -21,7 +21,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using Combinatorics;
+using Combinatorics.Collections;
 
 namespace CSMSL.Util
 {
