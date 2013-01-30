@@ -15,8 +15,6 @@ namespace CSMSL.IO
         private static readonly string s_TableExists = "SELECT name FROM sqlite_master WHERE type='table' AND name=@tableName";
         private static readonly string s_Connection = "Data Source={0};Version=3;";
 
-
-
         private SQLiteCommand insertSpectraSQL = null;
         private SQLiteCommand assocpeptoprotSQL = null;
         private SQLiteCommand insertPeptideSQL = null;
