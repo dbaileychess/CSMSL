@@ -207,7 +207,7 @@ namespace CSMSL
         /// </summary>
         /// <param name="other">The other range to compare to</param>
         /// <returns>True if the other range in any way overlaps this range, false otherwise</returns>
-        public bool IsOverlaping(IRange<T> other)
+        public bool IsOverlapping(IRange<T> other)
         {
             return Contains(other.Minimum) || Contains(other.Maximum);
         }

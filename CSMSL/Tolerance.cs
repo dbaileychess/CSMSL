@@ -29,6 +29,11 @@ namespace CSMSL
         private ToleranceType _type;
         private double _value;
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="value"></param>
         public Tolerance(ToleranceType type, double value)
         {
             _type = type;

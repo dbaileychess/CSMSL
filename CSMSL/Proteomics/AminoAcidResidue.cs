@@ -85,5 +85,6 @@ namespace CSMSL.Proteomics
         {
             return _name;
         }
+
     }
 }

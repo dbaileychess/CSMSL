@@ -1,0 +1,90 @@
+<DeviceConfigInformation>
+  <Device>
+    <DeviceID>ChipCube_1</DeviceID>
+    <DisplayName>ChipCube</DisplayName>
+  </Device>
+  <Device>
+    <DeviceID>MSQTOF_1</DeviceID>
+    <DisplayName>Q-TOF</DisplayName>
+  </Device>
+  <Parameter>
+    <DeviceID>ChipCube_1</DeviceID>
+    <ResourceName>ExtendedRunInformation</ResourceName>
+    <ResourceID>RunStart_ChipId</ResourceID>
+    <Value />
+    <Units />
+    <DisplayName>Run Start Chip ID</DisplayName>
+  </Parameter>
+  <Parameter>
+    <DeviceID>MSQTOF_1</DeviceID>
+    <ResourceName>config</ResourceName>
+    <ResourceID>REG[ACTUAL].OBJ[1].NDR[BASEADCINTERVAL]</ResourceID>
+    <Value>0.5</Value>
+    <Units />
+    <DisplayName>Base ADC Interval</DisplayName>
+  </Parameter>
+  <Parameter>
+    <DeviceID>MSQTOF_1</DeviceID>
+    <ResourceName>config</ResourceName>
+    <ResourceID>REG[ACTUAL].OBJ[1].NDR[DUALGAINRATIO]</ResourceID>
+    <Value>12</Value>
+    <Units />
+    <DisplayName>Dual Gain Ratio</DisplayName>
+  </Parameter>
+  <Parameter>
+    <DeviceID>MSQTOF_1</DeviceID>
+    <ResourceName>config</ResourceName>
+    <ResourceID>REG[ACTUAL].OBJ[1].NDR[MSPROCESSINGMODE]</ResourceID>
+    <Value>4</Value>
+    <Units />
+    <DisplayName>MS Processing Mode</DisplayName>
+  </Parameter>
+  <Parameter>
+    <DeviceID>MSQTOF_1</DeviceID>
+    <ResourceName>config</ResourceName>
+    <ResourceID>REG[ACTUAL].OBJ[1].NDR[NOMINALMASSRESOLUTION]</ResourceID>
+    <Value>14000</Value>
+    <Units>m/z</Units>
+    <DisplayName>Nominal Mass Resolution</DisplayName>
+  </Parameter>
+  <Parameter>
+    <DeviceID>MSQTOF_1</DeviceID>
+    <ResourceName>config</ResourceName>
+    <ResourceID>REG[ACTUAL].OBJ[1].NDR[PREAMPOFFSETHIGAIN]</ResourceID>
+    <Value>-0.0879999995231628</Value>
+    <Units />
+    <DisplayName>Preamp Offset High Gain</DisplayName>
+  </Parameter>
+  <Parameter>
+    <DeviceID>MSQTOF_1</DeviceID>
+    <ResourceName>config</ResourceName>
+    <ResourceID>REG[ACTUAL].OBJ[1].NDR[PREAMPOFFSETLOWGAIN]</ResourceID>
+    <Value>49917</Value>
+    <Units />
+    <DisplayName>Preamp Offset Low Gain</DisplayName>
+  </Parameter>
+  <Parameter>
+    <DeviceID>MSQTOF_1</DeviceID>
+    <ResourceName>config</ResourceName>
+    <ResourceID>REG[ACTUAL].OBJ[1].NDR[TUNEMASSRANGEMAX]</ResourceID>
+    <Value>3200</Value>
+    <Units>m/z</Units>
+    <DisplayName>Tune Mass Range Max.</DisplayName>
+  </Parameter>
+  <Parameter>
+    <DeviceID>MSQTOF_1</DeviceID>
+    <ResourceName>config</ResourceName>
+    <ResourceID>REG[ACTUAL].OBJ[1].NDR[TUNEMASSRANGEMIN]</ResourceID>
+    <Value>20</Value>
+    <Units>m/z</Units>
+    <DisplayName>Tune Mass Range Min.</DisplayName>
+  </Parameter>
+  <Parameter>
+    <DeviceID>ChipCube_1</DeviceID>
+    <ResourceName>ExtendedRunInformation</ResourceName>
+    <ResourceID>RunStop_ChipId</ResourceID>
+    <Value />
+    <Units />
+    <DisplayName>Run Stop Chip ID</DisplayName>
+  </Parameter>
+</DeviceConfigInformation>

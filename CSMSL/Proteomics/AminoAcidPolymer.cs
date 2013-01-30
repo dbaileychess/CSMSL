@@ -194,7 +194,15 @@ namespace CSMSL.Proteomics
             return new Fragment(type, number, chemFormula, this);
         }
 
-
+        public bool ContainsModification(ChemicalModification modification)
+        {
+            foreach (ChemicalModification mod in _modifications)
+            {
+                if (modification.Equals(mod))
+                    return true;
+            }
+            return false;
+        }
 
         public IEnumerable<Fragment> CalculateFragments(FragmentType types)
         {
@@ -487,6 +495,20 @@ namespace CSMSL.Proteomics
                 }
             }
             yield break;
+        }
+
+        public static double GetMass(string sequence)
+        {
+            double mass = Constants.WATER;
+            AminoAcidResidue residue = null;
+            foreach (char letter in sequence)
+            {
+                if (AMINO_ACIDS._residuesLetter.TryGetValue(letter, out residue))
+                {
+                    mass += residue.Mass.Monoisotopic;
+                }
+            }
+            return mass;
         }
 
         #endregion

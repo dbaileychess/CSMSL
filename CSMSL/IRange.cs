@@ -32,10 +32,15 @@ namespace CSMSL
 
         int CompareTo(T item);
 
+        /// <summary>
+        /// Checks to see if this range is a proper sub range of another range (inclusive)
+        /// </summary>
+        /// <param name="other">The other range to compare to</param>
+        /// <returns>True if this range is fully enclosed by the other range, false otherwise</returns>
         bool IsSubRange(IRange<T> other);
 
         bool IsSuperRange(IRange<T> other);
 
-        bool IsOverlaping(IRange<T> other);
+        bool IsOverlapping(IRange<T> other);
     }
 }

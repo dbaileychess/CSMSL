@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Devices>
+    <Version>1</Version>
+    <Device DeviceID="1">
+        <Name>QTOF</Name>
+        <DriverVersion>5.00.02</DriverVersion>
+        <FirmwareVersion>3.570</FirmwareVersion>
+        <ModelNumber>G6530A</ModelNumber>
+        <OrdinalNumber>1</OrdinalNumber>
+        <SerialNumber>US10092003</SerialNumber>
+        <Type>6</Type>
+        <StoredDataType>8</StoredDataType>
+        <Delay>0</Delay>
+        <Vendor>1</Vendor>
+    </Device>
+</Devices>

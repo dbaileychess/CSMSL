@@ -30,6 +30,7 @@ namespace CSMSL.Chemistry
         public static ChemicalModification CAM = new ChemicalModification("C2H3NO", "Carbamidomethyl");
         public static ChemicalModification PHOSPHO = new ChemicalModification("HPO3", "Phosphorylation");
         public static ChemicalModification OX = new ChemicalModification("O", "Oxidation");
+        public static ChemicalModification ACETYL = new ChemicalModification("C2H2O", "Acetyl");
 
         #endregion
         

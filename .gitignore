@@ -41,3 +41,7 @@ Thumbs.db
 *.xap
 [bB]in/
 [oO]bj/
+
+# TESTS #
+#########
+TestResults/
