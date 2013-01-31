@@ -249,5 +249,30 @@ namespace CSMSL.IO.Thermo
                 _rawConnection.ScanNumFromRT(retentionTime, ref spectrumNumber);
             return spectrumNumber;
         }
+
+        public override double GetInjectionTime(int spectrumNumber)
+        {
+            string scan_filter = null;
+            _rawConnection.GetFilterForScanNum(spectrumNumber, scan_filter);
+            
+            object labels_obj = null;
+            object values_obj = null;
+            int array_size = -1;
+            _rawConnection.GetTrailerExtraForScanNum(spectrumNumber, ref labels_obj, ref values_obj, ref array_size);
+            string[] labels = (string[])labels_obj;
+            string[] values = (string[])values_obj;
+            if (labels == null)
+            {
+                return -1;
+            }
+            Dictionary<string, string> scan_trailer = new Dictionary<string, string>(labels.Length);
+            for (int i = labels.GetLowerBound(0); i <= labels.GetUpperBound(0); i++)
+            {
+                scan_trailer.Add(labels[i], values[i]);
+            }
+            
+            double injectionTime = Convert.ToDouble(scan_trailer["Ion Injection Time (ms):"]);
+            return injectionTime;
+        }
     }
 }
