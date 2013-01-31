@@ -152,5 +152,10 @@ namespace CSMSL.IO.Agilent
         {
             throw new System.NotImplementedException();
         }
+
+        public override double GetInjectionTime(int spectrumNumber)
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

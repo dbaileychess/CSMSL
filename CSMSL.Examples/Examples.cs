@@ -56,6 +56,12 @@ namespace CSMSL.Examples
             // Example Objects
             //VennDiagramExamples();
 
+            Protease trypsin = Protease.Trypsin;
+            Protein ProteinA = new Protein("MMRGFKQRLIKKTTGSSSSSSSKKKDKEKEKEKSSTTSSTSKKPASASSSSHGTTHSSASSTGSKSTTEKGKQSGSVPSQ");
+            List<Peptide> peptides = ProteinA.Digest(trypsin, 2, 0, 1000);
+            Peptide pepA = new Peptide("TTGSSSSSSSK");
+            bool val = peptides.Contains(pepA);
+
             // Example programs
             ExampleTrypticDigest.Start();
 
