@@ -140,6 +140,18 @@ namespace CSMSL.Proteomics
                 return _sequence;
             }
         }
+            
+        public string SequenceWithModifications
+        {
+            get
+            {
+                if (_isDirty)
+                {
+                    CleanUp();
+                }
+                return _sequenceSB.ToString();
+            }
+        }
 
         public int CountResidues(char residueChar)
         {
@@ -287,11 +299,7 @@ namespace CSMSL.Proteomics
 
         public override string ToString()
         {
-            if (_isDirty)
-            {
-                CleanUp();
-            }
-            return _sequenceSB.ToString();
+            return SequenceWithModifications;
         }
 
         private void CleanUp()
