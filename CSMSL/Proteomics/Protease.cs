@@ -25,6 +25,54 @@ namespace CSMSL.Proteomics
 {
     public class Protease
     {
+        public static Protease Trypsin {get; private set;}
+        public static Protease GluC { get; private set; }
+        public static Protease LysN { get; private set; }
+        public static Protease ArgC { get; private set; }
+        public static Protease Chymotrypsin { get; private set; }
+        public static Protease LysC { get; private set; }
+        public static Protease CNBr { get; private set; }
+        public static Protease AspN { get; private set; }
+        public static Protease Thermolysin { get; private set; }
+
+        private static Dictionary<string, Protease> _proteases;
+
+        static Protease()
+        {
+            _proteases = new Dictionary<string, Protease>(20);
+
+            Trypsin = AddProtease("Trypsin", Terminus.N, @"[K|R](?'cleave')(?!P)");
+            GluC = AddProtease("GluC", Terminus.C, @"E(?'cleave')");
+            LysN = AddProtease("LysN", Terminus.N, @"(?'cleave')K");
+            ArgC = AddProtease("ArgC", Terminus.C, @"R(?'cleave')");
+            Chymotrypsin = AddProtease("Chymotrypsin", Terminus.C, @"[Y|W|F](?'cleave')");
+            LysC = AddProtease("LysC", Terminus.C, @"K(?'cleave')");
+            CNBr = AddProtease("CNBr", Terminus.C, @"M(?'cleave')");
+            AspN = AddProtease("AspN", Terminus.N, @"(?'cleave')D");
+            Thermolysin = AddProtease("Thermolysin", Terminus.N, @"(?<![D|E])(?'cleave')[A|F|I|L|M|V]");
+        }
+
+        public static Protease GetProtease(string name)
+        {
+            return _proteases[name];
+        }
+
+        public static bool TryGetProtease(string name, out Protease protease)
+        {
+            return _proteases.TryGetValue(name, out protease);
+        }
+
+        /// <summary>
+        /// Adds a protease to the singleton dictionary of proteases
+        /// </summary>
+        /// <param name="protease">The protease to add</param>
+        public static Protease AddProtease(string name, Terminus terminus, string cleavePattern)
+        {
+            Protease protease = new Protease(name, terminus, cleavePattern);
+            _proteases.Add(protease.Name, protease);
+            return protease;
+        }        
+
         private Regex _cleavageRegex;
 
         private string _name;

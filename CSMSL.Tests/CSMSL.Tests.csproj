@@ -39,10 +39,12 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\ShouldFluent.1.1.12.0\lib\Should.Fluent.dll</HintPath>
     </Reference>
+    <Reference Include="System" />
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Proteomics\PeptideTestFixture.cs" />
+    <Compile Include="Proteomics\ProteaseTestFixture.cs" />
     <Compile Include="RangeTestFixture.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

@@ -10,6 +10,7 @@ using Should.Fluent;
 namespace CSMSL.Tests.Proteomics
 {
     [TestFixture]
+    [Category("Peptide")]
     public sealed class PeptideTestFixture
     {
         private Peptide MockPeptideEveryAminoAcid;
@@ -26,7 +27,7 @@ namespace CSMSL.Tests.Proteomics
             MockPeptideEveryAminoAcid.Mass.Monoisotopic.Should().Equal(2394.12490682513);
         }
 
-        [Test]
+        [Test]      
         public void PeptideAminoAcidCount()
         {
             MockPeptideEveryAminoAcid.Length.Should().Equal(20);
@@ -38,6 +39,14 @@ namespace CSMSL.Tests.Proteomics
             MockPeptideEveryAminoAcid.SetModification(new Chemistry.ChemicalModification("Fe"), Terminus.C);
             MockPeptideEveryAminoAcid.SetModification(new Chemistry.ChemicalModification("H2NO"), Terminus.N);
             MockPeptideEveryAminoAcid.ToString().Should().Equal("[H2NO]-ACDEFGHIKLMNPQRSTVWY-[Fe]");
+        }
+
+        [Test]
+        public void PeptideEquality()
+        {
+            Peptide pepA = new Peptide("DEREK");
+            Peptide pepB = new Peptide("DEREK");            
+            pepA.Should().Equals(pepB);
         }
 
     }

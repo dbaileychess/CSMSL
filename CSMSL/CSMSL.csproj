@@ -69,14 +69,12 @@
     <Compile Include="IRange.cs" />
     <Compile Include="Mass.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Proteomics\AminoAcidDictionary.cs" />
     <Compile Include="Proteomics\AminoAcidPolymer.cs" />
-    <Compile Include="Proteomics\AminoAcidResidue.cs" />
+    <Compile Include="Proteomics\AminoAcid.cs" />
     <Compile Include="Proteomics\Fragment.cs" />
     <Compile Include="Proteomics\FragmentType.cs" />
     <Compile Include="Proteomics\Peptide.cs" />
     <Compile Include="Proteomics\Protease.cs" />
-    <Compile Include="Proteomics\ProteaseDictionary.cs" />
     <Compile Include="Proteomics\Protein.cs" />
     <Compile Include="Proteomics\Terminus.cs" />
     <Compile Include="Range.cs" />
@@ -92,10 +90,6 @@
     <Compile Include="Util\VennSet.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Resources\AminoAcids.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <SubType>Designer</SubType>
-    </Content>
     <Content Include="Resources\Elements.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <SubType>Designer</SubType>
@@ -104,9 +98,6 @@
     <None Include="Resources\mzlite_create.sqlite">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <Content Include="Resources\Proteases.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Util\Collections\" />
