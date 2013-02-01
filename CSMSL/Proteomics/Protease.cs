@@ -24,9 +24,10 @@ using System.Text.RegularExpressions;
 
 namespace CSMSL.Proteomics
 {
-    public class Protease
+    public class Protease: IProtease
     {
         public static Protease Trypsin {get; private set;}
+        public static Protease TrypsinNoProlineRule { get; private set; }
         public static Protease GluC { get; private set; }
         public static Protease LysN { get; private set; }
         public static Protease ArgC { get; private set; }
@@ -42,14 +43,16 @@ namespace CSMSL.Proteomics
         {
             _proteases = new Dictionary<string, Protease>(10);
 
-            Trypsin = AddProtease("Trypsin", Terminus.N, @"[K|R](?'cleave')(?!P)");
+
+            Trypsin = AddProtease("Trypsin", Terminus.C, @"[K|R](?'cleave')(?!P)");
+            TrypsinNoProlineRule = AddProtease("Trypsin No Proline Rule", Terminus.C, @"[K|R](?'cleave')");
             GluC = AddProtease("GluC", Terminus.C, @"E(?'cleave')");
             LysN = AddProtease("LysN", Terminus.N, @"(?'cleave')K");
             ArgC = AddProtease("ArgC", Terminus.C, @"R(?'cleave')");
-            Chymotrypsin = AddProtease("Chymotrypsin", Terminus.C, @"[Y|W|F](?'cleave')");
+            Chymotrypsin = AddProtease("Chymotrypsin", Terminus.C, @"[Y|W|F|L](?'cleave')(?!P)");
             LysC = AddProtease("LysC", Terminus.C, @"K(?'cleave')");
             CNBr = AddProtease("CNBr", Terminus.C, @"M(?'cleave')");
-            AspN = AddProtease("AspN", Terminus.N, @"(?'cleave')D");
+            AspN = AddProtease("AspN", Terminus.N, @"(?'cleave')[B|D]");
             Thermolysin = AddProtease("Thermolysin", Terminus.N, @"(?<![D|E])(?'cleave')[A|F|I|L|M|V]");
         }
 
@@ -100,14 +103,14 @@ namespace CSMSL.Proteomics
             return _name;
         }
 
-        public Collection<int> GetDigestionSiteIndices(AminoAcidPolymer aminoacidpolymer)
+        public SortedSet<int> GetDigestionSites(AminoAcidPolymer aminoacidpolymer)
         {
-            return GetDigestionSiteIndices(aminoacidpolymer.Sequence);
+            return GetDigestionSites(aminoacidpolymer.Sequence);
         }
 
-        public Collection<int> GetDigestionSiteIndices(string sequence)
+        public SortedSet<int> GetDigestionSites(string sequence)
         {
-            Collection<int> items = new Collection<int>();            
+            SortedSet<int> items = new SortedSet<int>();            
             foreach (Match match in _cleavageRegex.Matches(sequence))
             {
                 items.Add(match.Groups["cleave"].Index - 1);

@@ -54,9 +54,9 @@ namespace CSMSL.Proteomics
             set { _description = value; }
         }
 
-        public List<Peptide> Digest(Protease protease, int? maxMissedCleavages, int? minLength, int? maxLength)
+        public List<Peptide> Digest(IProtease protease, int maxMissedCleavages = 3, int minLength = 1, int maxLength = int.MaxValue)
         {
-            return Digest(new Protease[] { protease }, maxMissedCleavages, minLength, maxLength);
+            return Digest(new IProtease[] { protease }, maxMissedCleavages, minLength, maxLength);
         }
 
         public void ClearChildern()
@@ -72,27 +72,27 @@ namespace CSMSL.Proteomics
         /// <param name="minLength">The minimum length (in amino acids) of the peptide</param>
         /// <param name="maxLength">The maximum length (in amino acids) of the peptide</param>
         /// <returns>A list of digested peptides</returns>
-        public List<Peptide> Digest(IEnumerable<Protease> proteases, int? maxMissedCleavages, int? minLength, int? maxLength)
+        public List<Peptide> Digest(IEnumerable<IProtease> proteases, int maxMissedCleavages = 3, int minLength = 1, int maxLength = int.MaxValue)
         {
-            _childern.Clear();
+            //_childern.Clear();
+            List<Peptide> peptides = new List<Peptide>();
 
-            HashSet<int> locations = new HashSet<int>() { -1 };
-            foreach (Protease protease in proteases)
+            // Combine all the proteases digestion sites
+            SortedSet<int> locations = new SortedSet<int>() { -1 };
+            foreach (IProtease protease in proteases)
             {
-                locations.UnionWith(protease.GetDigestionSiteIndices(this));
+                locations.UnionWith(protease.GetDigestionSites(this.Sequence));
             }
-            locations.Add(Length - 1);
-
+            locations.Add(Length - 1);          
+           
             List<int> indices = new List<int>(locations);
-            indices.Sort();
+            //indices.Sort(); // most likely not needed if locations is a sorted set
 
-            int min = (minLength.HasValue) ? minLength.Value : 1;
-            int max = (maxLength.HasValue) ? maxLength.Value : int.MaxValue;
-            int max_missed = (maxMissedCleavages.HasValue) ? maxMissedCleavages.Value : 0;
-
-            for (int missed_cleavages = 0; missed_cleavages <= max_missed; missed_cleavages++)
+            int indiciesCount = indices.Count;     
+            for (int missed_cleavages = 0; missed_cleavages <= maxMissedCleavages; missed_cleavages++)
             {
-                for (int i = 0; i < indices.Count - missed_cleavages - 1; i++)
+                int max = indiciesCount - missed_cleavages - 1;
+                for (int i = 0; i < max; i++)
                 {
                     int len = indices[i + missed_cleavages + 1] - indices[i];
                     if (len >= minLength && len <= maxLength)
@@ -104,12 +104,12 @@ namespace CSMSL.Proteomics
                         mods[0] = (begin == 0) ? _modifications[0] : AminoAcidPolymer.DefaultNTerm;
                         mods[len + 1] = (end == _modifications.Length - 1) ? _modifications[end] : AminoAcidPolymer.DefaultCTerm;
                         Peptide peptide = new Peptide(this._residues.GetRange(begin, len), mods, this, begin + 1);
-                        _childern.Add(peptide);
+                        peptides.Add(peptide);
                     }
                 }
             }
 
-            return _childern;
+            return peptides;
         }
     }
 }

@@ -14,11 +14,13 @@ namespace CSMSL.Tests.Proteomics
     public sealed class PeptideTestFixture
     {
         private Peptide MockPeptideEveryAminoAcid;
+        private Peptide MockTrypticPeptide;
 
         [SetUp]
         public void SetUp()
         {
             MockPeptideEveryAminoAcid = new Peptide("ACDEFGHIKLMNPQRSTVWY");
+            MockTrypticPeptide = new Peptide("TTGSSSSSSSK");
         }
 
         [Test]
@@ -31,6 +33,15 @@ namespace CSMSL.Tests.Proteomics
         public void PeptideAminoAcidCount()
         {
             MockPeptideEveryAminoAcid.Length.Should().Equal(20);
+        }
+
+        [Test]
+        public void CountNumberOfResidues()
+        {
+            MockTrypticPeptide.CountResidues('S').Should().Equal(7);
+            MockTrypticPeptide.CountResidues('Q').Should().Equal(0);
+            MockTrypticPeptide.CountResidues('T').Should().Equal(2);
+            MockTrypticPeptide.CountResidues('G').Should().Equal(1);
         }
 
         [Test]

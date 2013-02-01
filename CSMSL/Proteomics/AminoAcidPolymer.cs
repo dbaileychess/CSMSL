@@ -154,11 +154,11 @@ namespace CSMSL.Proteomics
         }
 
         public int CountResidues(char residueChar)
-        {
+        {           
             int count = 0;
             foreach (AminoAcid aar in _residues)
             {
-                if (aar.Letter == residueChar)
+                if (aar.Letter.Equals(residueChar))
                     count++;
             }
             return count;
@@ -488,7 +488,7 @@ namespace CSMSL.Proteomics
             HashSet<int> locations = new HashSet<int>() { -1 };       
             foreach (Protease protease in proteases)
             {
-                locations.UnionWith(protease.GetDigestionSiteIndices(sequence));
+                locations.UnionWith(protease.GetDigestionSites(sequence));
             }
             locations.Add(length - 1);
 
