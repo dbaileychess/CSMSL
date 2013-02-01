@@ -18,6 +18,7 @@
 //  along with CSMSL.  If not, see <http://www.gnu.org/licenses/>.        /
 ///////////////////////////////////////////////////////////////////////////
 
+using System.Collections.ObjectModel;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
@@ -39,7 +40,7 @@ namespace CSMSL.Proteomics
 
         static Protease()
         {
-            _proteases = new Dictionary<string, Protease>(20);
+            _proteases = new Dictionary<string, Protease>(10);
 
             Trypsin = AddProtease("Trypsin", Terminus.N, @"[K|R](?'cleave')(?!P)");
             GluC = AddProtease("GluC", Terminus.C, @"E(?'cleave')");
@@ -83,7 +84,9 @@ namespace CSMSL.Proteomics
             set { _name = value; }
         }
 
-        public Terminus Terminal;
+        public Terminus Terminal { get; private set; }
+
+        public string CleavagePattern { get { return _cleavageRegex.ToString(); } }
 
         public Protease(string name, Terminus terminus, string cleavePattern)
         {
@@ -97,19 +100,19 @@ namespace CSMSL.Proteomics
             return _name;
         }
 
-        public List<int> GetDigestionSiteIndices(AminoAcidPolymer aminoacidpolymer)
+        public Collection<int> GetDigestionSiteIndices(AminoAcidPolymer aminoacidpolymer)
         {
             return GetDigestionSiteIndices(aminoacidpolymer.Sequence);
         }
 
-        public List<int> GetDigestionSiteIndices(string sequence)
+        public Collection<int> GetDigestionSiteIndices(string sequence)
         {
-            List<int> indices = new List<int>();
+            Collection<int> items = new Collection<int>();            
             foreach (Match match in _cleavageRegex.Matches(sequence))
             {
-                indices.Add(match.Groups["cleave"].Index - 1);
+                items.Add(match.Groups["cleave"].Index - 1);
             }
-            return indices;
+            return items;
         }
     }
 }

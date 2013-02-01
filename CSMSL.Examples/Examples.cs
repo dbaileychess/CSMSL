@@ -56,14 +56,9 @@ namespace CSMSL.Examples
             // Example Objects
             //VennDiagramExamples();
 
-            Protease trypsin = Protease.Trypsin;
-            Protein ProteinA = new Protein("MMRGFKQRLIKKTTGSSSSSSSKKKDKEKEKEKSSTTSSTSKKPASASSSSHGTTHSSASSTGSKSTTEKGKQSGSVPSQ");
-            List<Peptide> peptides = ProteinA.Digest(trypsin, 2, 0, 1000);
-            Peptide pepA = new Peptide("TTGSSSSSSSK");
-            bool val = peptides.Contains(pepA);
 
             // Example programs
-            ExampleTrypticDigest.Start();
+            //ExampleTrypticDigest.Start();
 
             //Example IO
             //MsIOExamples();
@@ -72,7 +67,7 @@ namespace CSMSL.Examples
         private static void MsIOExamples()
         {
             Console.WriteLine("**MS I/O Examples**");
-
+                     
             Console.WriteLine("{0,-4} {1,3} {2,-6:F4} {3,-5} {4,7} {5,-10} {6}", "SN", "Msn", "RT", "Polarity", "# Peaks", "Analyzer", "M/Z Range");
             string rawfile = @"C:\Users\Derek\Documents\promega\Promega_Dilutions\120731_Promega_PeptideMix1_Heavy_1.raw";// "Resources/ThermoRawFileMS1MS2.raw"; //
             // Ms Data Files implement IDispoable making using statements an excellent way to manage resources
