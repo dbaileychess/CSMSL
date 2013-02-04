@@ -21,6 +21,7 @@
 using System;
 using System.Collections.Generic;
 using System.Xml;
+using System.IO;
 
 namespace CSMSL.Chemistry
 {
@@ -93,7 +94,23 @@ namespace CSMSL.Chemistry
         /// <param name="elementListXML">The xml file containing the data</param>
         public void LoadElements(string elementListXML)
         {
-            XmlDocument doc = new XmlDocument();
+          
+            using (XmlReader reader = XmlReader.Create(elementListXML))
+            {
+                while (reader.ReadToFollowing("Element"))
+                {                  
+                    reader.ReadToFollowing("Name");
+                    reader.ReadStartElement("Name");
+                    string name = reader.ReadContentAsString();                  
+                    reader.ReadEndElement();
+                    reader.ReadStartElement("Symbol");
+                    string symbol = reader.ReadContentAsString();    
+                    reader.ReadEndElement();
+                        
+                }
+            }
+
+            XmlDocument doc = new XmlDocument();     
             doc.Load(elementListXML);
             XmlNode periodictableNode = doc.SelectSingleNode("/PeriodicTable");
             foreach (XmlNode elementNode in periodictableNode.SelectNodes("Element"))
