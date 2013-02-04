@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using NUnit.Framework;
+using Should;
 using Should.Fluent;
 using CSMSL.Proteomics;
 
@@ -11,10 +12,10 @@ namespace CSMSL.Tests.Proteomics
 {
     [TestFixture ( Category = "Protease") ]
     public sealed class ProteaseTestFixture
-    {
+    {        
         private Protein ProteinA;
 
-        [SetUp]
+        [TestFixtureSetUp]
         public void Setup()
         {
             ProteinA = new Protein( "MMRGFKQRLIKKTTGSSSSSSSKKKDKEKEKEKSSTTSSTSKKPASASSSSHGTTHSSASSTGSKSTTEKGKQSGSVPSQ" +
@@ -43,6 +44,33 @@ namespace CSMSL.Tests.Proteomics
             List<Peptide> peptides = ProteinA.Digest(Protease.TrypsinNoProlineRule);
             peptides.Should().Contain.Item(new Peptide("INLFR"));
             peptides.Should().Not.Contain.Item(new Peptide("INLFRP"));    
+        }
+
+        [Test]
+        public void NullEnzymeDigestion()
+        {
+            IProtease protease = null;          
+            List<Peptide> peptides = ProteinA.Digest(protease);
+            peptides.Should().Count.Exactly(1);
+        }
+
+        [Test]
+        public void NoEnzymeDigestion()
+        {
+            List<Peptide> peptides = ProteinA.Digest(Protease.None, maxMissedCleavages: 8, minLength: 5);
+            peptides.Should().Contain.One(new Peptide("SLYHPQ"));
+        }
+
+        [Test]
+        public void MultipleProteaseDigestion()
+        {
+            List<IProtease> proteases = new List<IProtease>();
+            proteases.Add(Protease.Trypsin);
+            proteases.Add(Protease.GluC);
+
+            List<Peptide> peptides = ProteinA.Digest(proteases, maxMissedCleavages: 1, maxLength: 5);
+            peptides.Should().Contain.One(new Peptide("NWSK"));
+            peptides.Should().Contain.One(new Peptide("ENWSK"));
         }
 
         [Test]
@@ -79,14 +107,21 @@ namespace CSMSL.Tests.Proteomics
         [Test]
         public void DigestionMinMaxLength()
         {
-            for (int minLength = 0; minLength < 50; minLength += 5)
+            for (int minLength = 0; minLength < 50; minLength += 10)
             {
-                for (int maxLength = 0; maxLength < 50; maxLength += 5)
+                for (int maxLength = 0; maxLength < 50; maxLength += 10)
                 {
                     List<Peptide> peptides = ProteinA.Digest(Protease.Trypsin, minLength: minLength, maxLength: maxLength);
                     peptides.Should().Not.Contain.Any(pep => pep.Length > maxLength && pep.Length < minLength);
                 }
             }
+        }
+
+        [Test]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void InvalidMaxMissedClevages()
+        {
+            ProteinA.Digest(Protease.Trypsin, maxMissedCleavages: -1);  
         }
 
 

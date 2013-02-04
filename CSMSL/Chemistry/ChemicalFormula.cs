@@ -217,7 +217,8 @@ namespace CSMSL.Chemistry
             {
                 return;
             }
-            int id = isotope._uniqueID;
+           
+            int id = isotope.UniqueID;
             if (id > _isotopes.Length)
             {
                 // Isotope doesn't exist, resize array and set the count
@@ -244,8 +245,8 @@ namespace CSMSL.Chemistry
 
         public bool ContainsIsotope(Isotope isotope)
         {
-            if (isotope._uniqueID > _isotopes.Length) return false;
-            return _isotopes[isotope._uniqueID] != 0;
+            if (isotope.UniqueID > _isotopes.Length) return false;
+            return _isotopes[isotope.UniqueID] != 0;
         }
 
         /// <summary>
@@ -305,7 +306,7 @@ namespace CSMSL.Chemistry
         /// <returns></returns>
         public int Count(Isotope isotope)
         {
-            int id = isotope._uniqueID;
+            int id = isotope.UniqueID;
             if (id > _isotopes.Length) return 0;
             return _isotopes[id];
         }
@@ -317,7 +318,7 @@ namespace CSMSL.Chemistry
         /// <returns>True if the isotope was in the chemical formula and removed, false otherwise</returns>
         public bool Remove(Isotope isotope)
         {
-            int id = isotope._uniqueID;
+            int id = isotope.UniqueID;
             if (id > _isotopes.Length) return false;
             if (_isotopes[id] == 0)
             {

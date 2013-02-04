@@ -115,15 +115,15 @@ namespace CSMSL.Chemistry
                         if (idNode != null)
                         {
                             int uniqueId = int.Parse(idNode.Value);
-                            isotope._uniqueID = uniqueId;
+                            isotope.UniqueID = uniqueId;
                             _isotopes[uniqueId] = isotope;
                         }
                         else
                         {
-                            isotope._uniqueID = _uniqueID;
+                            isotope.UniqueID = _uniqueID;
                             _isotopes[_uniqueID++] = isotope;
                         }
-                    }
+                    }                 
                 }
                 AddElement(element);
             }

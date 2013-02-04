@@ -178,7 +178,7 @@ namespace CSMSL.Examples
         private static void ChemicalFormulaExamples()
         {
             Console.WriteLine("**Chemical Formula Examples**");
-
+          
             // Simple chemical formula creation
             ChemicalFormula formula1 = new ChemicalFormula("C2H3NO");
             WriteFormulaToConsole(formula1);

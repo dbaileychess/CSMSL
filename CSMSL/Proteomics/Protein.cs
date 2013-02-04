@@ -19,6 +19,7 @@
 ///////////////////////////////////////////////////////////////////////////
 
 using System;
+using CSMSL.IO;
 using System.Collections.Generic;
 using CSMSL.Chemistry;
 
@@ -26,8 +27,6 @@ namespace CSMSL.Proteomics
 {
     public class Protein : AminoAcidPolymer
     {
-        private List<Peptide> _childern;
-
         private string _description;
 
         public Protein(string sequence)
@@ -35,35 +34,26 @@ namespace CSMSL.Proteomics
 
         public Protein(string sequence, string description)
             : base(sequence)
-        {
-            _childern = new List<Peptide>();
+        {           
             _description = description;
         }
-
-        public List<Peptide> Childern
-        {
-            get
-            {
-                return _childern;
-            }
-        }
-
+     
         public string Description
         {
             get { return _description; }
             set { _description = value; }
         }
 
+        public Fasta ToFasta()
+        {
+            return new Fasta(this.Sequence, this.Description);
+        }
+
         public List<Peptide> Digest(IProtease protease, int maxMissedCleavages = 3, int minLength = 1, int maxLength = int.MaxValue)
         {
             return Digest(new IProtease[] { protease }, maxMissedCleavages, minLength, maxLength);
         }
-
-        public void ClearChildern()
-        {
-            _childern.Clear();
-        }
-
+               
         /// <summary>
         /// Digests this protein into peptides. Peptides are stored within the protein for easy access, this digestion overwrites and previously generated peptides.
         /// </summary>
@@ -74,6 +64,11 @@ namespace CSMSL.Proteomics
         /// <returns>A list of digested peptides</returns>
         public List<Peptide> Digest(IEnumerable<IProtease> proteases, int maxMissedCleavages = 3, int minLength = 1, int maxLength = int.MaxValue)
         {
+            if (maxMissedCleavages < 0)
+            {
+                throw new ArgumentOutOfRangeException("maxMissedCleavages", "The maximum number of missedcleavages must be >= 0");
+            }
+
             //_childern.Clear();
             List<Peptide> peptides = new List<Peptide>();
 
@@ -81,11 +76,14 @@ namespace CSMSL.Proteomics
             SortedSet<int> locations = new SortedSet<int>() { -1 };
             foreach (IProtease protease in proteases)
             {
-                locations.UnionWith(protease.GetDigestionSites(this.Sequence));
+                if (protease != null)
+                {
+                    locations.UnionWith(protease.GetDigestionSites(this.Sequence));
+                }
             }
             locations.Add(Length - 1);          
            
-            List<int> indices = new List<int>(locations);
+            IList<int> indices = new List<int>(locations);
             //indices.Sort(); // most likely not needed if locations is a sorted set
 
             int indiciesCount = indices.Count;     

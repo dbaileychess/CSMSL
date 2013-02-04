@@ -24,6 +24,14 @@ namespace CSMSL.Chemistry
 {
     public class Element : IEnumerable<Isotope>
     {
+        //public static Element Carbon { get; private set; }
+
+        //static Element()
+        //{
+        //    Carbon = PeriodicTable.Instance["C"];
+        //}
+
+
         private int _atomicNumber;
         private string _atomicSymbol;
 
@@ -126,10 +134,10 @@ namespace CSMSL.Chemistry
                 {
                     if (_principal != null)
                     {
-                        _principal._isPrincipalIsotope = false;
+                        _principal.IsPrincipalIsotope = false;
                     }
                     _principal = isotope;
-                    _principal._isPrincipalIsotope = true;
+                    _principal.IsPrincipalIsotope = true;
                     _mass = mass;
                 }
             }

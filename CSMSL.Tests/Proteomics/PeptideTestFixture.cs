@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using CSMSL.Proteomics;
 using NUnit.Framework;
 using Should.Fluent;
+using CSMSL.Chemistry;
 
 namespace CSMSL.Tests.Proteomics
 {
@@ -47,8 +48,8 @@ namespace CSMSL.Tests.Proteomics
         [Test]
         public void PeptideWithModifidedTermni()
         {
-            MockPeptideEveryAminoAcid.SetModification(new Chemistry.ChemicalModification("Fe"), Terminus.C);
-            MockPeptideEveryAminoAcid.SetModification(new Chemistry.ChemicalModification("H2NO"), Terminus.N);
+            MockPeptideEveryAminoAcid.SetModification(new ChemicalModification("Fe"), Terminus.C);
+            MockPeptideEveryAminoAcid.SetModification(new ChemicalModification("H2NO"), Terminus.N);
             MockPeptideEveryAminoAcid.ToString().Should().Equal("[H2NO]-ACDEFGHIKLMNPQRSTVWY-[Fe]");
         }
 

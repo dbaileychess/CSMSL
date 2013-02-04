@@ -36,12 +36,13 @@ namespace CSMSL.Proteomics
         public static Protease CNBr { get; private set; }
         public static Protease AspN { get; private set; }
         public static Protease Thermolysin { get; private set; }
+        public static Protease None { get; private set; }
 
         private static Dictionary<string, Protease> _proteases;
 
         static Protease()
         {
-            _proteases = new Dictionary<string, Protease>(10);
+            _proteases = new Dictionary<string, Protease>(12);
 
 
             Trypsin = AddProtease("Trypsin", Terminus.C, @"[K|R](?'cleave')(?!P)");
@@ -54,6 +55,7 @@ namespace CSMSL.Proteomics
             CNBr = AddProtease("CNBr", Terminus.C, @"M(?'cleave')");
             AspN = AddProtease("AspN", Terminus.N, @"(?'cleave')[B|D]");
             Thermolysin = AddProtease("Thermolysin", Terminus.N, @"(?<![D|E])(?'cleave')[A|F|I|L|M|V]");
+            None = AddProtease("None", Terminus.C, @"[A-Z](?'cleave')");
         }
 
         public static Protease GetProtease(string name)
@@ -103,19 +105,19 @@ namespace CSMSL.Proteomics
             return _name;
         }
 
-        public SortedSet<int> GetDigestionSites(AminoAcidPolymer aminoacidpolymer)
+        public ReadOnlyCollection<int> GetDigestionSites(AminoAcidPolymer aminoacidpolymer)
         {
             return GetDigestionSites(aminoacidpolymer.Sequence);
         }
 
-        public SortedSet<int> GetDigestionSites(string sequence)
+        public ReadOnlyCollection<int> GetDigestionSites(string sequence)
         {
-            SortedSet<int> items = new SortedSet<int>();            
+            List<int> sites = new List<int>();            
             foreach (Match match in _cleavageRegex.Matches(sequence))
             {
-                items.Add(match.Groups["cleave"].Index - 1);
+                sites.Add(match.Groups["cleave"].Index - 1);
             }
-            return items;
+            return new ReadOnlyCollection<int>(sites);
         }
     }
 }

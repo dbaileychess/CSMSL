@@ -26,7 +26,7 @@ using CSMSL.Chemistry;
 
 namespace CSMSL.Proteomics
 {
-    public abstract class AminoAcidPolymer : IChemicalFormula, IMass, IEqualityComparer<AminoAcidPolymer>
+    public abstract class AminoAcidPolymer : IChemicalFormula, IMass
     {
         internal static readonly ChemicalModification DefaultCTerm = new ChemicalModification("OH", "OH");
         internal static readonly ChemicalModification DefaultNTerm = new ChemicalModification("H", "H");
@@ -533,17 +533,5 @@ namespace CSMSL.Proteomics
 
         #endregion
 
-
-
-
-        public bool Equals(AminoAcidPolymer x, AminoAcidPolymer y)
-        {
-            throw new NotImplementedException();
-        }
-
-        public int GetHashCode(AminoAcidPolymer obj)
-        {
-            throw new NotImplementedException();
-        }
     }
 }

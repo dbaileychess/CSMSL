@@ -33,7 +33,7 @@ namespace CSMSL.Examples
             Console.WriteLine("**Start Digestion**");
             Stopwatch watch = new Stopwatch();
             watch.Start();
-            Protease trypsin = Protease.Trypsin;            
+            Protease trypsin = Protease.Trypsin;  
             List<Peptide> peps = new List<Peptide>();
             List<Protein> prots = new List<Protein>();
             List<double> allMzs = new List<double>();
