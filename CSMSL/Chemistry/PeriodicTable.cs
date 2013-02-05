@@ -99,51 +99,78 @@ namespace CSMSL.Chemistry
             {
                 while (reader.ReadToFollowing("Element"))
                 {                  
-                    reader.ReadToFollowing("Name");
-                    reader.ReadStartElement("Name");
-                    string name = reader.ReadContentAsString();                  
-                    reader.ReadEndElement();
-                    reader.ReadStartElement("Symbol");
-                    string symbol = reader.ReadContentAsString();    
-                    reader.ReadEndElement();
-                        
-                }
-            }
-
-            XmlDocument doc = new XmlDocument();     
-            doc.Load(elementListXML);
-            XmlNode periodictableNode = doc.SelectSingleNode("/PeriodicTable");
-            foreach (XmlNode elementNode in periodictableNode.SelectNodes("Element"))
-            {
-                string name = elementNode.SelectSingleNode("Name").InnerText;
-                string symbol = elementNode.SelectSingleNode("Symbol").InnerText;
-                int atomicnumber = int.Parse(elementNode.SelectSingleNode("AtomicNumber").InnerText);
-                Element element = new Element(name, symbol, atomicnumber);
-                foreach (XmlNode isotopeNode in elementNode.SelectNodes("Isotope"))
-                {
-                    float abundance = float.Parse(isotopeNode.SelectSingleNode("RelativeAbundance").InnerText);
-
-                    if (abundance > 0)
+                    reader.ReadToFollowing("Name");   
+                    string name = reader.ReadElementContentAsString();
+                    reader.ReadToFollowing("Symbol");
+                    string symbol = reader.ReadElementContentAsString();
+                    reader.ReadToFollowing("AtomicNumber");
+                    int atomicnumber = reader.ReadElementContentAsInt();
+                    Element element = new Element(name, symbol, atomicnumber);
+                    reader.ReadToFollowing("Isotope");
+                    do
                     {
-                        double mass = double.Parse(isotopeNode.SelectSingleNode("Mass").InnerText);
-                        int massnumber = int.Parse(isotopeNode.SelectSingleNode("MassNumber").InnerText);
-                        Isotope isotope = element.AddIsotope(massnumber, mass, abundance);
-                        XmlNode idNode = isotopeNode.Attributes["uniqueID"];
-                        if (idNode != null)
+                        //reader.ReadStartElement("Isotope");
+                        string unqiueID = reader.GetAttribute("uniqueID");
+                        reader.ReadToFollowing("RelativeAbundance");
+                        float abundance = reader.ReadElementContentAsFloat();
+                        if (abundance > 0)
                         {
-                            int uniqueId = int.Parse(idNode.Value);
-                            isotope.UniqueID = uniqueId;
-                            _isotopes[uniqueId] = isotope;
+                            reader.ReadToFollowing("Mass");
+                            double mass = reader.ReadElementContentAsDouble();
+                            reader.ReadToFollowing("MassNumber");
+                            int massNumber = reader.ReadElementContentAsInt();
+                            Isotope isotope = element.AddIsotope(massNumber, mass, abundance);
+                            if (unqiueID != null)
+                            {
+                                int uniqueId = int.Parse(unqiueID);
+                                isotope.UniqueID = uniqueId;
+                                _isotopes[uniqueId] = isotope;
+                            }
+                            else
+                            {
+                                isotope.UniqueID = _uniqueID;
+                                _isotopes[_uniqueID++] = isotope;
+                            }
                         }
-                        else
-                        {
-                            isotope.UniqueID = _uniqueID;
-                            _isotopes[_uniqueID++] = isotope;
-                        }
-                    }                 
+                    } while (reader.ReadToNextSibling("Isotope"));
+                    AddElement(element);                 
                 }
-                AddElement(element);
             }
+
+            //XmlDocument doc = new XmlDocument();     
+            //doc.Load(elementListXML);
+            //XmlNode periodictableNode = doc.SelectSingleNode("/PeriodicTable");
+            //foreach (XmlNode elementNode in periodictableNode.SelectNodes("Element"))
+            //{
+            //    string name = elementNode.SelectSingleNode("Name").InnerText;
+            //    string symbol = elementNode.SelectSingleNode("Symbol").InnerText;
+            //    int atomicnumber = int.Parse(elementNode.SelectSingleNode("AtomicNumber").InnerText);
+            //    Element element = new Element(name, symbol, atomicnumber);
+            //    foreach (XmlNode isotopeNode in elementNode.SelectNodes("Isotope"))
+            //    {
+            //        float abundance = float.Parse(isotopeNode.SelectSingleNode("RelativeAbundance").InnerText);
+
+            //        if (abundance > 0)
+            //        {
+            //            double mass = double.Parse(isotopeNode.SelectSingleNode("Mass").InnerText);
+            //            int massnumber = int.Parse(isotopeNode.SelectSingleNode("MassNumber").InnerText);
+            //            Isotope isotope = element.AddIsotope(massnumber, mass, abundance);
+            //            XmlNode idNode = isotopeNode.Attributes["uniqueID"];
+            //            if (idNode != null)
+            //            {
+            //                int uniqueId = int.Parse(idNode.Value);
+            //                isotope.UniqueID = uniqueId;
+            //                _isotopes[uniqueId] = isotope;
+            //            }
+            //            else
+            //            {
+            //                isotope.UniqueID = _uniqueID;
+            //                _isotopes[_uniqueID++] = isotope;
+            //            }
+            //        }                 
+            //    }
+            //    AddElement(element);
+            //}
         }
 
         /// <summary>
