@@ -344,7 +344,7 @@ namespace CSMSL.Chemistry
         public bool Remove(Element element)
         {
             bool result = false;
-            foreach (Isotope isotope in element)
+            foreach (Isotope isotope in element._isotopes.Values)
             {
                 result |= Remove(isotope);
             }
@@ -434,7 +434,7 @@ namespace CSMSL.Chemistry
                 {
                     Isotope isotope = match.Groups[2].Success ?     // Group 2 (optional): Isotope Mass Number
                         element[int.Parse(match.Groups[2].Value)] :
-                        element.Principal;
+                        element.PrincipalIsotope;
                     int sign = match.Groups[3].Success ?            // Group 3 (optional): Negative Sign
                         -1 :
                         1;

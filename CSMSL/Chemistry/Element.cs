@@ -22,21 +22,23 @@ using System.Collections.Generic;
 
 namespace CSMSL.Chemistry
 {
-    public class Element : IEnumerable<Isotope>
-    {    
-        private int _atomicNumber;
-        private string _atomicSymbol;
-
-        private double _avgmass = 0;
-
-        private Dictionary<int, Isotope> _isotopes;
-
-        private double _mass = 0;
-
-        internal Isotope _principal = null;
-
-        private string _name;
-
+    /// <summary>
+    /// Represents a single chemical element. Elements comprises of multiple
+    /// isotopes, with the element mass being a weighted average of all the
+    /// isotopes atomic masses weighted by their natural relative abundance.
+    /// </summary>
+    public sealed class Element 
+    {     
+        /// <summary>
+        /// The element's isotopes stored based on their atomic number
+        /// </summary>
+        internal Dictionary<int, Isotope> _isotopes;
+             
+        /// <summary>
+        /// Gets an isotope of this element based on its atomic number
+        /// </summary>
+        /// <param name="atomicNumber">The atomic number of the isotope to get</param>
+        /// <returns>The isotope with the supplied atomic number</returns>
         public Isotope this[int atomicNumber]
         {
             get
@@ -45,100 +47,102 @@ namespace CSMSL.Chemistry
             }
         }
 
-        public Element(string name, string symbol, int atomicNumber)
+        /// <summary>
+        /// Create a new element
+        /// </summary>
+        /// <param name="name">The name of the element</param>
+        /// <param name="symbol">The symbol of the element</param>
+        /// <param name="atomicNumber">The atomic number of the element</param>
+        internal Element(string name, string symbol, int atomicNumber)
         {
-            _name = name;
-            _atomicSymbol = symbol;
-            _atomicNumber = atomicNumber;
-            _isotopes = new Dictionary<int, Isotope>();
+            Name = name;
+            AtomicSymbol = symbol;
+            AtomicNumber = atomicNumber;
+            AverageMass = 0;
+            TotalAbundance = 0;
+            _isotopes = new Dictionary<int, Isotope>(4);
         }
 
-        public int AtomicNumber
-        {
-            get { return _atomicNumber; }
-            set { _atomicNumber = value; }
-        }
+        /// <summary>
+        /// The atomic number of this element (also the number of protons)
+        /// </summary>
+        public int AtomicNumber { get; private set; }
 
-        public string AtomicSymbol
-        {
-            get { return _atomicSymbol; }
-            set { _atomicSymbol = value; }
-        }
+        /// <summary>
+        /// The atomic symbol of this element
+        /// </summary>
+        public string AtomicSymbol { get; private set; }
 
-        public double AverageMass
-        {
-            get
-            {
-                return _avgmass;
-            }
-        }
+        /// <summary>
+        /// The average mass of all this element's isotopes weighted by their
+        /// relative natural abundance (in unified atomic mass units)
+        /// </summary>
+        public double AverageMass { get; private set; }
 
-        public double Mass
-        {
-            get
-            {
-                return _mass;
-            }
-        }
+        /// <summary>
+        /// The total abundance of all this isotopes (should be nearly one, any deviation
+        /// is due to the lack of percision in the raw NIST data)
+        /// </summary>
+        public double TotalAbundance { get; private set; }
 
-        public Isotope Principal
-        {
-            get
-            {
-                return _principal;
-            }
-        }
+        /// <summary>
+        /// The most abundant (principal) isotope of this element
+        /// </summary>
+        public Isotope PrincipalIsotope { get; private set; }
 
-        public string Name
-        {
-            get { return _name; }
-            set { _name = value; }
-        }
+        /// <summary>
+        /// The name of this element
+        /// </summary>
+        public string Name { get; private set;}
 
-        public IEnumerator<Isotope> GetEnumerator()
-        {
-            return _isotopes.Values.GetEnumerator();
-        }
+        /// <summary>
+        /// The number of isotopes this element comprises of (only isotopes with
+        /// natural relative abundances > 0% are considered)
+        /// </summary>
+        public int IsotopeCount { get { return _isotopes.Count; } }
 
+        /// <summary>
+        /// Returns a textual representation of this element in the following format: Hydrogen (H) Helium (He)
+        /// </summary>
+        /// <returns>The name and atomic symbol</returns>
         public override string ToString()
         {
-            return _atomicSymbol;
+            return string.Format("{0} ({1})", Name, AtomicSymbol);
         }
-
-        public override int GetHashCode()
-        {
-            return _atomicNumber;
-        }
-
-        private double _totalAbundance = 0;
+              
+        /// <summary>
+        /// The sum of the weighted isotope masses
+        /// </summary>
         private double _totalMass = 0;
 
-        public Isotope AddIsotope(int atomicNumber, double mass, float abundance)
+        /// <summary>
+        /// Add an isotope to this element
+        /// </summary>
+        /// <param name="atomicNumber">The atomic number of the isotope</param>
+        /// <param name="atomicMass">The atomic mass of the isotope </param>
+        /// <param name="abundance">The natural relative abundance of the isotope</param>
+        /// <returns>The created isotopes that is added to this element</returns>
+        internal Isotope AddIsotope(int atomicNumber, double atomicMass, float abundance)
         {
-            Isotope isotope = new Isotope(this, atomicNumber, mass, abundance);
+            Isotope isotope = new Isotope(this, atomicNumber, atomicMass, abundance);
             if (!_isotopes.ContainsKey(atomicNumber))
             {
                 _isotopes.Add(atomicNumber, isotope);
-                _totalAbundance += abundance;
-                _totalMass += abundance * mass;
-                _avgmass = _totalMass / _totalAbundance;
-                if (_principal == null || abundance > _principal.RelativeAbundance)
+                TotalAbundance += abundance;
+                _totalMass += abundance * atomicMass;
+                AverageMass = _totalMass / TotalAbundance;
+                if (PrincipalIsotope == null || abundance > PrincipalIsotope.RelativeAbundance)
                 {
-                    if (_principal != null)
+                    if (PrincipalIsotope != null)
                     {
-                        _principal.IsPrincipalIsotope = false;
+                        PrincipalIsotope.IsPrincipalIsotope = false;
                     }
-                    _principal = isotope;
-                    _principal.IsPrincipalIsotope = true;
-                    _mass = mass;
+                    PrincipalIsotope = isotope;
+                    PrincipalIsotope.IsPrincipalIsotope = true;                    
                 }
             }
             return isotope;
         }
 
-        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
-        {
-            return _isotopes.Values.GetEnumerator();
-        }
     }
 }

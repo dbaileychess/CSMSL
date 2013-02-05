@@ -30,11 +30,18 @@ namespace CSMSL.Chemistry
     public sealed class Isotope
     {        
 
-        internal Isotope(Element parentElement, int massNumber, double mass, float abundance)
+        /// <summary>
+        /// Create a new isotope
+        /// </summary>
+        /// <param name="parentElement">The parent element of the isotope</param>
+        /// <param name="massNumber">The mass number of the isotope</param>
+        /// <param name="atomicMass">The atomic mass of the isotope</param>
+        /// <param name="abundance">The natural relative abundance of the isotope</param>
+        internal Isotope(Element parentElement, int massNumber, double atomicMass, float abundance)
         {
             Element = parentElement;
             MassNumber = massNumber;
-            AtomicMass = mass;
+            AtomicMass = atomicMass;
             RelativeAbundance = abundance;
         }
 
@@ -101,7 +108,7 @@ namespace CSMSL.Chemistry
         public float RelativeAbundance { get; private set; }     
 
         /// <summary>
-        /// Returns the isotope in the following format: H1 He4 O16
+        /// Returns a textual representation of this isotope in the following format: H1 He4 O16
         /// </summary>
         /// <returns>The atomic symbol and mass number combined</returns>
         public override string ToString()
