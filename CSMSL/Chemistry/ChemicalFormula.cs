@@ -19,6 +19,7 @@
 ///////////////////////////////////////////////////////////////////////////
 
 using System;
+using System.Collections.Generic;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -26,8 +27,7 @@ namespace CSMSL.Chemistry
 {
     public class ChemicalFormula : IMass, IEquatable<ChemicalFormula>
     {
-        public static readonly PeriodicTable PERIODIC_TABLE = PeriodicTable.Instance;
-
+      
         /// <summary>
         /// A regular expression for matching chemical formulas such as: C2C{13}3H5NO5
         /// The first group is the only non-optional group and that handles the chemical symbol: H, He, etc..
@@ -50,13 +50,19 @@ namespace CSMSL.Chemistry
 
         private int _numberOfAtoms;
 
+        /// <summary>
+        /// Create an empty chemical formula
+        /// </summary>
         public ChemicalFormula()
-        {
-            // create a new blank chemical formula
+        {            
             _isotopes = new int[_uniqueIDCount];
             _isDirty = true;
         }
 
+        /// <summary>
+        /// Create an chemical formula from the given string representation
+        /// </summary>
+        /// <param name="chemicalFormula">The string representation of the chemical formula</param>
         public ChemicalFormula(string chemicalFormula)
             : this()
         {
@@ -66,27 +72,33 @@ namespace CSMSL.Chemistry
         public ChemicalFormula(IChemicalFormula item)
             : this(item.ChemicalFormula) { }
 
-        public ChemicalFormula(ChemicalFormula chemicalFormula)
+        public ChemicalFormula(ChemicalFormula other)
         {
-            if (chemicalFormula == null)
-            {
+            if (other == null)
+            {                
                 // create a new blank chemical formula
                 _isotopes = new int[_uniqueIDCount];
                 _isDirty = true;
             }
             else
             {
-                // Copy an existing chemical formula
-                _isotopes = new int[chemicalFormula._isotopes.Length];
-                Array.Copy(chemicalFormula._isotopes, _isotopes, chemicalFormula._isotopes.Length);
-                _largestIsotopeID = chemicalFormula._largestIsotopeID;
-                if (!(_isDirty = chemicalFormula._isDirty))
-                {
-                    // old chemical formula is already clean, don't need to reclean
-                    _chemicalFormulaSB = new StringBuilder(chemicalFormula._chemicalFormulaSB.ToString());
-                    _numberOfAtoms = chemicalFormula._numberOfAtoms;
-                    _mass = new Mass(chemicalFormula._mass);
-                }
+                CopyFrom(other);               
+            }
+        }
+
+        private void CopyFrom(ChemicalFormula other)
+        {
+            // Copy an existing chemical formula
+            _isotopes = new int[other._isotopes.Length];
+            _largestIsotopeID = other._largestIsotopeID;
+            Array.Copy(other._isotopes, _isotopes, other._isotopes.Length);
+            
+            if (!(_isDirty = other._isDirty))
+            {
+                // old chemical formula is already clean, don't need to reclean
+                _chemicalFormulaSB = new StringBuilder(other._chemicalFormulaSB.ToString());
+                _numberOfAtoms = other._numberOfAtoms;
+                _mass = new Mass(other._mass);
             }
         }
 
@@ -114,8 +126,20 @@ namespace CSMSL.Chemistry
             }
         }
 
-        private int _uniqueIsotopes;
+        private int _uniqueElements;
+        public int UniqueElements
+        {
+            get
+            {
+                if (_isDirty)
+                {
+                    CleanUp();
+                }
+                return _uniqueElements;
+            }
+        }
 
+        private int _uniqueIsotopes;
         public int UniqueIsotopes
         {
             get
@@ -147,7 +171,7 @@ namespace CSMSL.Chemistry
 
         public static ChemicalFormula operator *(ChemicalFormula formula, int count)
         {
-            ChemicalFormula newFormula = formula.Clone();
+            ChemicalFormula newFormula = new ChemicalFormula(formula);
             for (int i = 0; i < newFormula._isotopes.Length; i++)
             {
                 newFormula._isotopes[i] *= count;
@@ -240,11 +264,6 @@ namespace CSMSL.Chemistry
             _isDirty = true;
         }
 
-        public ChemicalFormula Clone()
-        {
-            return new ChemicalFormula(this);
-        }
-
         /// <summary>
         /// Checks if the isotope is present in this chemical formula
         /// </summary>
@@ -270,22 +289,45 @@ namespace CSMSL.Chemistry
             return Count(symbol, atomicNumber) != 0;
         }
               
-        /// <summary>
-        /// Test for equality between two chemical formulas. Two formulas are equivalent if they have the exact same number and type of isotopes.
-        /// </summary>
-        /// <param name="other">The other chemical formula to compare with</param>
-        /// <returns>True if the chemical formulas are the same, false otherwise</returns>
-        public bool Equals(ChemicalFormula other)
+        ///// <summary>
+        ///// Test for equality between two chemical formulas. Two formulas are equivalent if they have the exact same number and type of isotopes.
+        ///// </summary>
+        ///// <param name="other">The other chemical formula to compare with</param>
+        ///// <returns>True if the chemical formulas are the same, false otherwise</returns>
+        //public bool Equals(ChemicalFormula other)
+        //{
+        //    if (Object.ReferenceEquals(other, null)) return false;
+        //    if (Object.ReferenceEquals(this, other)) return true;
+        //    for (int i = 0; i < _isotopes.Length; i++)
+        //    {
+        //        if ((i > other._isotopes.Length && _isotopes[i] != 0) || _isotopes[i] != other._isotopes[i])
+        //            return false;
+        //    }
+        //    return true;
+        //}
+
+        public override bool Equals(object obj)
         {
-            if (Object.ReferenceEquals(other, null)) return false;
-            if (Object.ReferenceEquals(this, other)) return true;
-            for (int i = 0; i < _isotopes.Length; i++)
+            if (obj == null || !(obj is ChemicalFormula))
             {
-                if ((i > other._isotopes.Length && _isotopes[i] != 0) || _isotopes[i] != other._isotopes[i])
+                return false;
+            }
+            return this.Equals((ChemicalFormula)obj);
+        }
+
+        public virtual bool Equals(ChemicalFormula other)
+        {
+            if (Object.ReferenceEquals(this, other)) return true;
+            if (this._largestIsotopeID != other._largestIsotopeID) return false;          
+
+            for (int i = 0; i < this._largestIsotopeID; i++)
+            {
+                if (this._isotopes[i] != other._isotopes[i])
                     return false;
             }
             return true;
         }
+
 
         public void Remove(IChemicalFormula item)
         {
@@ -296,7 +338,7 @@ namespace CSMSL.Chemistry
         {
             if (formula == null) return;
 
-            // Get the length of the formula to add
+            // Get the length of the formula to remove
             int id = formula._largestIsotopeID;
 
             // Resize this formula array to match the size of the incoming one
@@ -350,14 +392,15 @@ namespace CSMSL.Chemistry
         }
 
         public int Count(string symbol)
-        {            
-            Element element = PERIODIC_TABLE[symbol];
+        {
+
+            Element element = Element.PeriodicTable[symbol];
             return Count(element);            
         }
 
         public int Count(string symbol, int atomicNumber)
         {
-            Isotope isotope = PERIODIC_TABLE[symbol][atomicNumber];
+            Isotope isotope = Element.PeriodicTable[symbol][atomicNumber];
             return Count(isotope);
         }
 
@@ -381,7 +424,7 @@ namespace CSMSL.Chemistry
 
         public bool Remove(string symbol)
         {
-            Element element = PERIODIC_TABLE[symbol];
+            Element element = Element.PeriodicTable[symbol];
             return Remove(element);          
         }
 
@@ -404,6 +447,9 @@ namespace CSMSL.Chemistry
             return _chemicalFormulaSB.ToString();
         }
 
+        /// <summary>
+        /// Recalculate parameters of the chemical formula
+        /// </summary>
         private void CleanUp()
         {
             _numberOfAtoms = 0;
@@ -418,21 +464,25 @@ namespace CSMSL.Chemistry
                 _chemicalFormulaSB.Clear();
             }
 
-            for (int i = 0; i <= _largestIsotopeID; i++)
-            {
-                if (_isotopes[i] == 0) continue;
-                int count = _isotopes[i];
+            HashSet<Element> elements = new HashSet<Element>();
 
-                Isotope isotope = PERIODIC_TABLE[i];
+            for (int i = 0; i <= _largestIsotopeID; i++)
+            {  
+                int count = _isotopes[i];
+                if (count == 0)
+                    continue;
+
+                Isotope isotope = Element.PeriodicTable[i];
                 Element element = isotope.Element;
+                elements.Add(element);
 
                 _uniqueIsotopes++;
 
                 _numberOfAtoms += count;
 
-                _mass._mono += count * isotope.AtomicMass;
-
-                _mass._avg += count * element.AverageMass;
+                _mass.Monoisotopic += count * isotope.AtomicMass;
+             
+                _mass.Average += count * element.AverageMass;
 
                 _chemicalFormulaSB.Append(element.AtomicSymbol);
 
@@ -448,6 +498,8 @@ namespace CSMSL.Chemistry
                     _chemicalFormulaSB.Append(count);
                 }
             }
+
+            _uniqueElements = elements.Count;
 
             // Mark as clean
             _isDirty = false;
@@ -472,7 +524,7 @@ namespace CSMSL.Chemistry
             foreach (Match match in _formulaRegex.Matches(formula))
             {
                 string chemsym = match.Groups[1].Value;             // Group 1: Chemical Symbol
-                if (PERIODIC_TABLE.TryGetElement(chemsym, out element))
+                if (Element.PeriodicTable.TryGetElement(chemsym, out element))
                 {
                     Isotope isotope = match.Groups[2].Success ?     // Group 2 (optional): Isotope Mass Number
                         element[int.Parse(match.Groups[2].Value)] :

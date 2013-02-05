@@ -20,42 +20,36 @@
 
 using System;
 
-namespace CSMSL
+namespace CSMSL.Chemistry
 {
     public class Mass : IComparable<Mass>
     {
-        internal double _mono;
-        internal double _avg;
+        /// <summary>
+        /// The mass of all the isotopes (in unified atomic mass units)
+        /// </summary>
+        public double Monoisotopic { get; internal set; }
 
-        public double Monoisotopic
-        {
-            get
-            {
-                return _mono;
-            }
-        }
+        /// <summary>
+        /// The average mass of all the elements (in unified atomic mass units)
+        /// </summary>
+        public double Average { get; internal set;}   
 
-        public double Average
-        {
-            get
-            {
-                return _avg;
-            }
-        }
-
+        /// <summary>
+        /// Create a default mass with the Monoisotpic and Average mass of 0
+        /// </summary>
         public Mass()
             : this(0, 0) { }
 
         public Mass(IMass item)
-            : this(item.Mass._mono, item.Mass._avg) { }
+            : this(item.Mass.Monoisotopic, item.Mass.Average) { }
 
         public Mass(Mass item)
-            : this(item._mono, item._avg) { }
+            : this(item.Monoisotopic, item.Average) { }
 
         public Mass(double monoisotopic, double average)
         {
-            _mono = monoisotopic;
-            _avg = average;
+            Monoisotopic = monoisotopic;
+            Average = average;
         }
 
         /// <summary>
@@ -65,17 +59,17 @@ namespace CSMSL
         /// <returns>The m/z for the moniosotopic mass at a given charge state</returns>
         public double ToMz(int charge)
         {
-            return MzFromMass(_mono, charge);
+            return MzFromMass(Monoisotopic, charge);
         }
 
         public override string ToString()
         {
-            return string.Format("{0:F5} ({1:F5})", _mono, _avg);
+            return string.Format("{0:F5} ({1:F5})", Monoisotopic, Average);
         }
 
         public int CompareTo(Mass other)
         {
-            return _mono.CompareTo(other._mono);
+            return Monoisotopic.CompareTo(other.Monoisotopic);
         }
 
         #region Static Methods
@@ -100,7 +94,7 @@ namespace CSMSL
         /// <returns>The m/z</returns>
         public static double MzFromMass(double mass, int charge)
         {
-            if (mass == 0) return 0;
+            if (mass == 0 || charge == 0) return 0;
             return mass / Math.Abs(charge) + Math.Sign(charge) * Constants.PROTON;
         }
 

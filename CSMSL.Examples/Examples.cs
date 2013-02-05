@@ -58,7 +58,7 @@ namespace CSMSL.Examples
 
 
             // Example programs
-            ExampleTrypticDigest.Start();
+            //ExampleTrypticDigest.Start();
 
             //Example IO
             //MsIOExamples();

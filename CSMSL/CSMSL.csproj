@@ -56,7 +56,7 @@
     <Compile Include="Chemistry\Isotope.cs" />
     <Compile Include="Chemistry\PeriodicTable.cs" />
     <Compile Include="Constants.cs" />
-    <Compile Include="IMass.cs" />
+    <Compile Include="Chemistry\IMass.cs" />
     <Compile Include="IO\Fasta.cs" />
     <Compile Include="IO\FastaReader.cs" />
     <Compile Include="IO\FastaWriter.cs" />
@@ -68,7 +68,7 @@
     <Compile Include="Spectral\MsnScan.cs" />
     <Compile Include="Spectral\MsScan.cs" />
     <Compile Include="IRange.cs" />
-    <Compile Include="Mass.cs" />
+    <Compile Include="Chemistry\Mass.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Proteomics\AminoAcidPolymer.cs" />
     <Compile Include="Proteomics\AminoAcid.cs" />

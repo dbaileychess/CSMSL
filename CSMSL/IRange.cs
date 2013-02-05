@@ -22,12 +22,27 @@ using System;
 
 namespace CSMSL
 {
+    /// <summary>
+    /// A range of values with a well defined minimum and maximum value
+    /// </summary>
+    /// <typeparam name="T">Any type that uses IComparable</typeparam>
     public interface IRange<T> : IEquatable<IRange<T>> where T : IComparable<T>
     {
+        /// <summary>
+        /// The minimum value of this range
+        /// </summary>
         T Minimum { get; set; }
 
+        /// <summary>
+        /// The maximum value of this range
+        /// </summary>
         T Maximum { get; set; }
 
+        /// <summary>
+        /// Checks if an item is within the range
+        /// </summary>
+        /// <param name="item">The item to check</param>
+        /// <returns>True if the item is >= minimum and <= maximum</returns>
         bool Contains(T item);
 
         int CompareTo(T item);

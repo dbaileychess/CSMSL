@@ -48,7 +48,7 @@ namespace CSMSL.Chemistry
         private PeriodicTable()
         {
             _elements = new Dictionary<string, Element>();
-            _isotopes = new Isotope[500];
+            _isotopes = new Isotope[300];
             LoadElements("Resources/Elements.xml");
             Array.Resize(ref _isotopes, _uniqueID);
         }
@@ -64,7 +64,7 @@ namespace CSMSL.Chemistry
             }
         }
 
-        private int _uniqueID = 11;
+        private int _uniqueID = 10;
         private Isotope[] _isotopes;
 
         public Element this[string element]
@@ -94,7 +94,7 @@ namespace CSMSL.Chemistry
         /// <param name="elementListXML">The xml file containing the data</param>
         public void LoadElements(string elementListXML)
         {          
-            using (XmlReader reader = XmlReader.Create(elementListXML))
+            using (XmlReader reader = XmlReader.Create(elementListXML))            
             {
                 while (reader.ReadToFollowing("Element"))
                 {                  
