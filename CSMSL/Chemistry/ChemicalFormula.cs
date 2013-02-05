@@ -79,6 +79,7 @@ namespace CSMSL.Chemistry
                 // Copy an existing chemical formula
                 _isotopes = new int[chemicalFormula._isotopes.Length];
                 Array.Copy(chemicalFormula._isotopes, _isotopes, chemicalFormula._isotopes.Length);
+                _largestIsotopeID = chemicalFormula._largestIsotopeID;
                 if (!(_isDirty = chemicalFormula._isDirty))
                 {
                     // old chemical formula is already clean, don't need to reclean
@@ -177,22 +178,29 @@ namespace CSMSL.Chemistry
             if (formula == null) return;
 
             // Get the length of the formula to add
-            int length = formula._isotopes.Length;
+            int id = formula._largestIsotopeID;
 
-            // Resize this formula array to match the size of the incoming one
-            if (length > _isotopes.Length)
+            if (id > _largestIsotopeID)
             {
-                Array.Resize(ref _isotopes, length);
-            }     
+                _largestIsotopeID = id;
+               
+                if (id > _isotopes.Length)
+                {
+                    // Resize this formula array to match the size of the incoming one
+                    Array.Resize(ref _isotopes, id + 1);
+                }
+            }          
 
             // Update each isotope
-            for (int i = 0; i < length; i++)
+            for (int i = 0; i <= id; i++)
             {              
                 _isotopes[i] += formula._isotopes[i];
             }
 
             _isDirty = true;
         }
+
+        internal int _largestIsotopeID = 0;
 
         /// <summary>
         /// Add an isotope to this chemical formula
@@ -205,16 +213,21 @@ namespace CSMSL.Chemistry
                 return;            
            
             int id = isotope.UniqueID;
-            if (id > _isotopes.Length)
+
+            if (id > _largestIsotopeID)
             {
-                // Isotope doesn't exist, resize array and set the count (faster than the += below)
-                Array.Resize(ref _isotopes, id + 1);
-                _isotopes[id] = count;
+                _largestIsotopeID = id;
+                if (id > _isotopes.Length)
+                {
+                    // Isotope doesn't exist, resize array and set the count (faster than the += below)
+                    Array.Resize(ref _isotopes, id + 1);
+                    _isotopes[id] = count;
+                    _isDirty = true;
+                    return;
+                }
             }
-            else
-            {
-                _isotopes[id] += count;
-            }
+           
+            _isotopes[id] += count;            
             _isDirty = true;
         }
 
@@ -284,19 +297,18 @@ namespace CSMSL.Chemistry
             if (formula == null) return;
 
             // Get the length of the formula to add
-            int length = formula._isotopes.Length;
+            int id = formula._largestIsotopeID;
 
             // Resize this formula array to match the size of the incoming one
-            if (length > _isotopes.Length)
+            if (id > _isotopes.Length)
             {
-                Array.Resize(ref _isotopes, length);
+                Array.Resize(ref _isotopes, id + 1);
             }
 
             // Update each isotope
-            for (int i = 0; i < length; i++)
-            {
-                if (formula._isotopes[i] != 0)
-                    _isotopes[i] -= formula._isotopes[i];
+            for (int i = 0; i <= id; i++)
+            {               
+                _isotopes[i] -= formula._isotopes[i];
             }
 
             _isDirty = true;
@@ -406,7 +418,7 @@ namespace CSMSL.Chemistry
                 _chemicalFormulaSB.Clear();
             }
 
-            for (int i = 0; i < _isotopes.Length; i++)
+            for (int i = 0; i <= _largestIsotopeID; i++)
             {
                 if (_isotopes[i] == 0) continue;
                 int count = _isotopes[i];
@@ -448,10 +460,8 @@ namespace CSMSL.Chemistry
         /// <param name="formula">the Chemical Formula to parse</param>
         private void ParseString(string formula)
         {
-            if (string.IsNullOrEmpty(formula))
-            {
-                return;
-            }
+            if (string.IsNullOrEmpty(formula))         
+                return;            
 
             if (!IsValidChemicalFormula(formula))
             {
