@@ -126,23 +126,7 @@ namespace CSMSL.Chemistry
                 return _uniqueIsotopes;
             }
         }
-
-        public static double[,] GetIsotopicDistribution(IChemicalFormula item)
-        {
-            return GetIsotopicDistribution(item.ChemicalFormula);
-        }
-
-        public static double[,] GetIsotopicDistribution(ChemicalFormula baseFormula)
-        {
-            double[,] data = new double[10, 2];
-            //double value = 1;
-            //foreach (KeyValuePair<Isotope, int> kvp in baseFormula._isotopes)
-            //{
-            //    value *= kvp.Key.RelativeAbundance * kvp.Value;
-            //}
-            return data;
-        }
-
+        
         public static implicit operator ChemicalFormula(string sequence)
         {
             return new ChemicalFormula(sequence);
@@ -199,29 +183,31 @@ namespace CSMSL.Chemistry
             if (length > _isotopes.Length)
             {
                 Array.Resize(ref _isotopes, length);
-            }
+            }     
 
             // Update each isotope
             for (int i = 0; i < length; i++)
-            {
-                if (formula._isotopes[i] != 0)
-                    _isotopes[i] += formula._isotopes[i];
+            {              
+                _isotopes[i] += formula._isotopes[i];
             }
 
             _isDirty = true;
         }
 
+        /// <summary>
+        /// Add an isotope to this chemical formula
+        /// </summary>
+        /// <param name="isotope">The isotope to add</param>
+        /// <param name="count">The number of the isotope to add</param>
         public void Add(Isotope isotope, int count)
         {
-            if (count == 0)
-            {
-                return;
-            }
+            if (isotope == null || count == 0)            
+                return;            
            
             int id = isotope.UniqueID;
             if (id > _isotopes.Length)
             {
-                // Isotope doesn't exist, resize array and set the count
+                // Isotope doesn't exist, resize array and set the count (faster than the += below)
                 Array.Resize(ref _isotopes, id + 1);
                 _isotopes[id] = count;
             }
@@ -232,6 +218,9 @@ namespace CSMSL.Chemistry
             _isDirty = true;
         }
 
+        /// <summary>
+        /// Remove all isotopes from this chemical formula to create an 'empty' chemical formula
+        /// </summary>
         public void Clear()
         {
             Array.Clear(_isotopes, 0, _isotopes.Length);
@@ -243,12 +232,31 @@ namespace CSMSL.Chemistry
             return new ChemicalFormula(this);
         }
 
-        public bool ContainsIsotope(Isotope isotope)
+        /// <summary>
+        /// Checks if the isotope is present in this chemical formula
+        /// </summary>
+        /// <param name="isotope">The isotope to look for</param>
+        /// <returns>True if there is a non-negative number of the isotope in this formula</returns>
+        public bool Contains(Isotope isotope)
         {
-            if (isotope.UniqueID > _isotopes.Length) return false;
-            return _isotopes[isotope.UniqueID] != 0;
+            return Count(isotope) != 0;           
         }
 
+        public bool Contains(Element element)
+        {
+            return Count(element) != 0;
+        }
+
+        public bool Contains(string symbol)
+        {
+            return Count(symbol) != 0;
+        }
+
+        public bool Contains(string symbol, int atomicNumber)
+        {
+            return Count(symbol, atomicNumber) != 0;
+        }
+              
         /// <summary>
         /// Test for equality between two chemical formulas. Two formulas are equivalent if they have the exact same number and type of isotopes.
         /// </summary>
@@ -305,10 +313,40 @@ namespace CSMSL.Chemistry
         /// <param name="isotope"></param>
         /// <returns></returns>
         public int Count(Isotope isotope)
+        {          
+            if (isotope == null || isotope.UniqueID > _isotopes.Length) 
+                return 0;
+            return _isotopes[isotope.UniqueID];
+        }
+
+        /// <summary>
+        /// Count the number of isotopes from this element are
+        /// present in this chemical formula
+        /// </summary>
+        /// <param name="element">The element to search for</param>
+        /// <returns>The total number of all the element isotopes in this chemical formula</returns>
+        public int Count(Element element)
         {
-            int id = isotope.UniqueID;
-            if (id > _isotopes.Length) return 0;
-            return _isotopes[id];
+            if (element == null)
+                return 0;
+            int count = 0;
+            foreach (Isotope isotope in element._isotopes.Values)
+            {
+                count += Count(isotope);
+            }
+            return count;
+        }
+
+        public int Count(string symbol)
+        {            
+            Element element = PERIODIC_TABLE[symbol];
+            return Count(element);            
+        }
+
+        public int Count(string symbol, int atomicNumber)
+        {
+            Isotope isotope = PERIODIC_TABLE[symbol][atomicNumber];
+            return Count(isotope);
         }
 
         /// <summary>
@@ -318,27 +356,21 @@ namespace CSMSL.Chemistry
         /// <returns>True if the isotope was in the chemical formula and removed, false otherwise</returns>
         public bool Remove(Isotope isotope)
         {
-            int id = isotope.UniqueID;
-            if (id > _isotopes.Length) return false;
-            if (_isotopes[id] == 0)
+            if (isotope == null || isotope.UniqueID > _isotopes.Length)
+                return false;
+         
+            if (_isotopes[isotope.UniqueID] == 0)
             {
                 return false;
             }
-            _isotopes[id] = 0;
+            _isotopes[isotope.UniqueID] = 0;
             return _isDirty = true;
         }
 
         public bool Remove(string symbol)
         {
-            Element element;
-            if (PERIODIC_TABLE.TryGetElement(symbol, out element))
-            {
-                return Remove(element);
-            }
-            else
-            {
-                return false;
-            }
+            Element element = PERIODIC_TABLE[symbol];
+            return Remove(element);          
         }
 
         public bool Remove(Element element)
