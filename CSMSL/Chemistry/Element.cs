@@ -23,15 +23,7 @@ using System.Collections.Generic;
 namespace CSMSL.Chemistry
 {
     public class Element : IEnumerable<Isotope>
-    {
-        //public static Element Carbon { get; private set; }
-
-        //static Element()
-        //{
-        //    Carbon = PeriodicTable.Instance["C"];
-        //}
-
-
+    {    
         private int _atomicNumber;
         private string _atomicSymbol;
 

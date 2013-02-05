@@ -386,7 +386,7 @@ namespace CSMSL.Chemistry
 
                 _numberOfAtoms += count;
 
-                _mass._mono += count * isotope.Mass;
+                _mass._mono += count * isotope.AtomicMass;
 
                 _mass._avg += count * element.AverageMass;
 

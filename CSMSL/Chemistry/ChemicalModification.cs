@@ -76,7 +76,7 @@ namespace CSMSL.Chemistry
 
         internal static ChemicalModification MakeHeavy(Proteomics.AminoAcid aminoAcidResidue)
         {
-            ChemicalFormula formula = new ChemicalFormula();
+            ChemicalFormula formula = new ChemicalFormula();         
             Isotope c12 = PERIODIC_TABLE["C"][12];
             Isotope n14 = PERIODIC_TABLE["N"][14];
             Isotope c13 = PERIODIC_TABLE["C"][13];
