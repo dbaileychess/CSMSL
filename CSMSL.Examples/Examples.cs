@@ -51,14 +51,14 @@ namespace CSMSL.Examples
         {
             // Examples coding
             ChemicalFormulaExamples();
-           // PeptideExamples();
+            //PeptideExamples();
 
             // Example Objects
             //VennDiagramExamples();
 
 
             // Example programs
-            //ExampleTrypticDigest.Start();
+            ExampleTrypticDigest.Start();
 
             //Example IO
             //MsIOExamples();

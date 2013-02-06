@@ -36,6 +36,52 @@ namespace CSMSL.Tests.Chemistry
         }
 
         [Test]
+        public void ImplicitAddFormula()
+        {
+            ChemicalFormula formulaA = new ChemicalFormula("C2H3NO");
+            ChemicalFormula formulaB = new ChemicalFormula("H2O");
+            ChemicalFormula formulaC = new ChemicalFormula("C2H5NO2");
+
+            ChemicalFormula formulaD = formulaA + formulaB;
+
+            formulaD.Should().Equal(formulaC);
+        }
+
+        [Test]
+        public void ImplicitSubtractFormula()
+        {
+            ChemicalFormula formulaA = new ChemicalFormula("C2H5NO2");
+            ChemicalFormula formulaB = new ChemicalFormula("H2O");
+            ChemicalFormula formulaC = new ChemicalFormula("C2H3NO");
+
+            ChemicalFormula formulaD = formulaA - formulaB;
+
+            formulaD.Should().Equal(formulaC);
+        }
+
+        [Test]
+        public void ImplicitMultipleFormulaLeft()
+        {
+            ChemicalFormula formulaA = new ChemicalFormula("C2H3NO");
+            ChemicalFormula formulaB = new ChemicalFormula("C4H6N2O2");           
+
+            ChemicalFormula formulaC = formulaA * 2;
+
+            formulaB.Should().Equal(formulaC);
+        }
+
+        [Test]
+        public void ImplicitMultipleFormulaRight()
+        {
+            ChemicalFormula formulaA = new ChemicalFormula("C2H3NO");
+            ChemicalFormula formulaB = new ChemicalFormula("C4H6N2O2");
+
+            ChemicalFormula formulaC = 2 * formulaA;
+
+            formulaB.Should().Equal(formulaC);
+        }
+
+        [Test]
         public void ImplicitConstructor()
         {
             ChemicalFormula formulaA = new ChemicalFormula("C2H3NO");
@@ -54,12 +100,77 @@ namespace CSMSL.Tests.Chemistry
         }
 
         [Test]
+        public void AddNullToFormula()
+        {
+            ChemicalFormula formulaA = new ChemicalFormula("C2H3NO");
+            formulaA.Add(NullChemicalFormula);
+
+            formulaA.Should().Equal(formulaA);
+        }
+
+        [Test]
+        public void AddZeroIsotopeToFormula()
+        {
+            ChemicalFormula formulaA = new ChemicalFormula("C2H3NO");
+            ChemicalFormula formulaB = new ChemicalFormula("C2H3NO");
+
+            formulaA.Add(Element.PeriodicTable["H"][1], 0);
+
+            formulaA.Should().Equal(formulaB);
+        }
+
+        [Test]
+        public void AddIChemicalFormulaToFormula()
+        {
+            ChemicalFormula formulaA = new ChemicalFormula("C2H3NO");
+            ChemicalFormula formulaB = new ChemicalFormula("C18H31N5O11");
+            CSMSL.Proteomics.Peptide pep = new CSMSL.Proteomics.Peptide("TEST");
+
+            formulaA.Add(pep);
+
+            formulaA.Should().Equal(formulaB);
+        }
+
+        [Test]
+        public void AddFormulaToItself()
+        {
+            ChemicalFormula formulaA = new ChemicalFormula("C2H3NO");
+            ChemicalFormula formulaB = new ChemicalFormula("C4H6N2O2");
+
+            formulaA.Add(formulaA);
+
+            formulaA.Should().Equal(formulaB);
+        }              
+
+        [Test]
+        public void AddNegativeIsotopeToFormula()
+        {
+            ChemicalFormula formulaA = new ChemicalFormula("C2H3NO");
+            ChemicalFormula formulaB = new ChemicalFormula("C2H1NO");
+
+            formulaA.Add(Element.PeriodicTable["H"][1], -2);
+
+            formulaA.Should().Equal(formulaB);
+        }
+
+        [Test]
         public void AddIsotopeToFormula()
         {
             ChemicalFormula formulaA = new ChemicalFormula("C2H3NO");
             ChemicalFormula formulaB = new ChemicalFormula("C2H4NO");
 
             formulaA.Add(Element.PeriodicTable["H"][1], 1);
+
+            formulaA.Should().Equal(formulaB);
+        }
+
+        [Test]
+        public void AddLargeIsotopeToFormula()
+        {
+            ChemicalFormula formulaA = new ChemicalFormula("C2H3NO");
+            ChemicalFormula formulaB = new ChemicalFormula("C2H3NOFe");
+
+            formulaA.Add(Element.PeriodicTable["Fe"], 1);
 
             formulaA.Should().Equal(formulaB);
         }
@@ -75,7 +186,170 @@ namespace CSMSL.Tests.Chemistry
     
             formulaA.Should().Equal(formulaC);
         }
-        
+
+        [Test]
+        public void RemoveNonExistantIsotopeFromFromula()
+        {
+            ChemicalFormula formulaA = new ChemicalFormula("C2H5NO2");
+            ChemicalFormula formulaB = new ChemicalFormula("Fe");
+            ChemicalFormula formulaC = new ChemicalFormula("C2H5Fe-1NO2");
+
+            formulaA.Remove(formulaB);
+
+            formulaA.Should().Equal(formulaC);
+        }
+
+        [Test]
+        public void RemoveFormulaFromFromula()
+        {
+            ChemicalFormula formulaA = new ChemicalFormula("C2H5NO2");
+            ChemicalFormula formulaB = new ChemicalFormula("H2O");
+            ChemicalFormula formulaC = new ChemicalFormula("C2H3NO");
+
+            formulaA.Remove(formulaB);
+
+            formulaA.Should().Equal(formulaC);
+        }
+
+        [Test]
+        public void RemoveNullFormulaFromFromula()
+        {
+            ChemicalFormula formulaA = new ChemicalFormula("C2H3NO");     
+            ChemicalFormula formulaB = new ChemicalFormula("C2H3NO");
+
+            formulaA.Remove(NullChemicalFormula);
+
+            formulaA.Should().Equal(formulaB);
+        }
+
+        [Test]
+        public void RemoveEmptyFormulaFromFromula()
+        {
+            ChemicalFormula formulaA = new ChemicalFormula("C2H3NO");
+            ChemicalFormula formulaB = new ChemicalFormula("C2H3NO");
+
+            formulaA.Remove(EmptyFormula);
+
+            formulaA.Should().Equal(formulaB);
+        }
+
+        [Test]
+        public void RemoveIsotopeFromFromula()
+        {
+            ChemicalFormula formulaA = new ChemicalFormula("C2H3NO");
+            ChemicalFormula formulaB = new ChemicalFormula("C2HNO");
+
+            formulaA.Remove(Element.PeriodicTable["H"][1], 2);
+
+            formulaA.Should().Equal(formulaB);
+        }
+
+        [Test]
+        public void RemoveZeroIsotopeFromFromula()
+        {
+            ChemicalFormula formulaA = new ChemicalFormula("C2H3NO");
+            ChemicalFormula formulaB = new ChemicalFormula("C2H3NO");
+
+            formulaA.Remove(Element.PeriodicTable["H"][1], 0);
+
+            formulaA.Should().Equal(formulaB);
+        }
+
+        [Test]
+        public void RemoveNegativeIsotopeFromFromula()
+        {
+            ChemicalFormula formulaA = new ChemicalFormula("C2H3NO");
+            ChemicalFormula formulaB = new ChemicalFormula("C2H5NO");
+
+            formulaA.Remove(Element.PeriodicTable["H"][1], -2);
+
+            formulaA.Should().Equal(formulaB);
+        }
+
+        [Test]
+        public void RemoveNullIsotopeFromFromula()
+        {
+            ChemicalFormula formulaA = new ChemicalFormula("C2H3NO");
+            ChemicalFormula formulaB = new ChemicalFormula("C2H3NO");
+
+            formulaA.Remove(NullIsotope);
+
+            formulaA.Should().Equal(formulaB);
+        }
+
+        [Test]
+        public void RemoveIsotopeCompletelyFromFromula()
+        {
+            ChemicalFormula formulaA = new ChemicalFormula("C2H3NO");
+            ChemicalFormula formulaB = new ChemicalFormula("C2NO");
+
+            formulaA.Remove(Element.PeriodicTable["H"][1]);
+
+            formulaA.Should().Equal(formulaB);
+        }
+
+        [Test]
+        public void RemoveElementCompletelyFromFromula()
+        {
+            ChemicalFormula formulaA = new ChemicalFormula("C2H3NO");
+            ChemicalFormula formulaB = new ChemicalFormula("C2NO");
+
+            formulaA.Remove(Element.PeriodicTable["H"]);
+
+            formulaA.Should().Equal(formulaB);
+        }
+
+        [Test]
+        public void RemoveNullElementFromFromula()
+        {
+            ChemicalFormula formulaA = new ChemicalFormula("C2H3NO");
+            ChemicalFormula formulaB = new ChemicalFormula("C2H3NO");
+
+            formulaA.Remove(NullElement);
+
+            formulaA.Should().Equal(formulaB);
+        }
+
+        [Test]
+        public void RemoveElementCompletelyFromFromulaWithHeavyIsotope()
+        {
+            ChemicalFormula formulaA = new ChemicalFormula("C2C{13}H3NO");
+            ChemicalFormula formulaB = new ChemicalFormula("H3NO");
+
+            formulaA.Remove(Element.PeriodicTable["C"]);
+
+            formulaA.Should().Equal(formulaB);
+        }
+
+        [Test]
+        public void RemoveElementCompletelyFromFromulaBySymbol()
+        {
+            ChemicalFormula formulaA = new ChemicalFormula("C2H3NO");
+            ChemicalFormula formulaB = new ChemicalFormula("C2NO");
+
+            formulaA.Remove("H");
+
+            formulaA.Should().Equal(formulaB);
+        }
+
+        [Test]
+        public void ClearFormula()
+        {
+            ChemicalFormula formulaA = new ChemicalFormula("C2H3NO");
+            formulaA.Clear();
+
+            formulaA.AtomCount.Should().Equal(0);
+        }
+
+        [Test]
+        public void HashCodeEquality()
+        {
+            ChemicalFormula formulaA = new ChemicalFormula("C2H3NO");
+            ChemicalFormula formulaB = new ChemicalFormula("H3C2NO");
+
+            formulaA.GetHashCode().Should().Equal(formulaB.GetHashCode());
+        }
+
         [Test]      
         public void FormulaEqualsItself()
         {
@@ -156,26 +430,73 @@ namespace CSMSL.Tests.Chemistry
         }
 
         [Test]
+        public void HillNotation()
+        {
+            ChemicalFormula formulaA = new ChemicalFormula("H3NC2O");
+
+            formulaA.ToString().Should().Equal("C2H3NO");
+        }
+
+        [Test]
+        public void HillNotationWithNegativeCount()
+        {
+            ChemicalFormula formulaA = new ChemicalFormula("H3NC-2O");
+
+            formulaA.ToString().Should().Equal("C-2H3NO");
+        }
+
+        [Test]
+        public void HillNotationWithHeavyIsotope()
+        {
+            ChemicalFormula formulaA = new ChemicalFormula("H3NC2C{13}2O");
+
+            formulaA.ToString().Should().Equal("C2C{13}2H3NO");
+        }
+
+        [Test]
+        public void HillNotationNoCarbon()
+        {
+            ChemicalFormula formulaA = new ChemicalFormula("HBr");
+
+            formulaA.ToString().Should().Equal("BrH");
+        }
+
+        [Test]
+        public void HillNotationNoCarbonNoHydrogen()
+        {
+            ChemicalFormula formulaA = new ChemicalFormula("Ca5O14Al6");
+
+            formulaA.ToString().Should().Equal("Al6Ca5O14");
+        }
+
+        [Test]
+        public void HillNotationNoHydrogen()
+        {
+            ChemicalFormula formulaA = new ChemicalFormula("NC2O");
+
+            formulaA.ToString().Should().Equal("C2NO");
+        }
+
+        [Test]
         public void UniqueIsotopes()
         {
             ChemicalFormula formulaA = new ChemicalFormula("C2H3NO");
 
-            formulaA.UniqueIsotopes.Should().Equal(4);
+            formulaA.IsotopeCount.Should().Equal(4);
         }
-
 
         [Test]
         public void UniqueIsotopesWithHeavyIsotope()
         {
             ChemicalFormula formulaA = new ChemicalFormula("CC{13}H3NO");
 
-            formulaA.UniqueIsotopes.Should().Equal(5);
+            formulaA.IsotopeCount.Should().Equal(5);
         }
 
         [Test]
         public void UniqueIsotopesOfEmptyFormula()
         {
-            EmptyFormula.UniqueIsotopes.Should().Equal(0);
+            EmptyFormula.IsotopeCount.Should().Equal(0);
         }
 
         [Test]
@@ -183,22 +504,21 @@ namespace CSMSL.Tests.Chemistry
         {
             ChemicalFormula formulaA = new ChemicalFormula("C2H3NO");
 
-            formulaA.UniqueElements.Should().Equal(4);
+            formulaA.ElementCount.Should().Equal(4);
         }
-
 
         [Test]
         public void UniqueElementsWithHeavyIsotope()
         {
             ChemicalFormula formulaA = new ChemicalFormula("CC{13}H3NO");
 
-            formulaA.UniqueElements.Should().Equal(4);
+            formulaA.ElementCount.Should().Equal(4);
         }
 
         [Test]
         public void UniqueElementsOfEmptyFormula()
         {
-            EmptyFormula.UniqueElements.Should().Equal(0);
+            EmptyFormula.ElementCount.Should().Equal(0);
         }
 
         [Test]
@@ -206,13 +526,13 @@ namespace CSMSL.Tests.Chemistry
         {
             ChemicalFormula formulaA = new ChemicalFormula("C2H3NO");
 
-            formulaA.NumberOfAtoms.Should().Equal(7);
+            formulaA.AtomCount.Should().Equal(7);
         }
-
+         
         [Test]
         public void NumberOfAtomsOfEmptyFormula()
-        {     
-            EmptyFormula.NumberOfAtoms.Should().Equal(0);
+        {
+            EmptyFormula.AtomCount.Should().Equal(0);
         }
         
         [Test]
