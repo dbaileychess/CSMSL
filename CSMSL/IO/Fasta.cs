@@ -40,7 +40,15 @@ namespace CSMSL.IO
             Description = description;
         }
 
-        public Fasta ToDecoy(string preText = "DECOY_", DecoyType Method = DecoyType.Reverse, bool excludeNTerminus = true, bool onlyIfNTerminusIsMethionine = true)
+        /// <summary>
+        /// Generate a decoy version of the given fasta
+        /// </summary>
+        /// <param name="preText">The pretext to add to the description to indicated this is a decoy fasta</param>
+        /// <param name="Method">The decoy generation type</param>
+        /// <param name="excludeNTerminus">Exclude the n-terminal amino acid</param>
+        /// <param name="onlyIfNTerminusIsMethionine">Exclude the n-terminal amino aicd only if it is a Methionine</param>
+        /// <returns>The generated decoy fasta</returns>
+        public Fasta ToDecoy(string preText = "DECOY_", DecoyDatabaseMethod Method = DecoyDatabaseMethod.Reverse, bool excludeNTerminus = true, bool onlyIfNTerminusIsMethionine = true)
         {
             return new Fasta(GenerateDecoySequence(Sequence, Method, excludeNTerminus, onlyIfNTerminusIsMethionine), preText + Description);
         }
@@ -49,14 +57,14 @@ namespace CSMSL.IO
          * Method to generate decoy sequence according to a given input sequence and other options like
          * decoy type and whether to exclude N-terminus. 
          **/
-        private static string GenerateDecoySequence(string sequence, DecoyType decoyType, bool excludeNTerminus, bool onlyIfNTerminusIsMethionine)
+        private static string GenerateDecoySequence(string sequence, DecoyDatabaseMethod decoyType, bool excludeNTerminus, bool onlyIfNTerminusIsMethionine)
         {
             char[] temp = new char[sequence.Length];
             bool keepNTerminus = excludeNTerminus && (!onlyIfNTerminusIsMethionine || sequence[0] == 'M');
 
             switch (decoyType)
             {
-                case DecoyType.Reverse:
+                case DecoyDatabaseMethod.Reverse:
 
                     temp = sequence.ToCharArray();
                     if (keepNTerminus)
@@ -66,7 +74,7 @@ namespace CSMSL.IO
 
                     break;
 
-                case DecoyType.Shuffle:
+                case DecoyDatabaseMethod.Shuffle:
 
                    temp = sequence.ToCharArray();
                     if (keepNTerminus)
@@ -76,7 +84,7 @@ namespace CSMSL.IO
 
                     break;
 
-                case DecoyType.Random:
+                case DecoyDatabaseMethod.Random:
 
                     int index = 0;
                     if (keepNTerminus) 
@@ -88,6 +96,8 @@ namespace CSMSL.IO
                         temp[index++] = AMINO_ACIDS[RANDOM.Next(AMINO_ACIDS.Count)];
                     }
 
+                    break;
+                case DecoyDatabaseMethod.None:
                     break;
             }
 
@@ -144,11 +154,13 @@ namespace CSMSL.IO
         }
     } // class Fasta
 
-    public enum DecoyType
+
+    public enum DecoyDatabaseMethod
     {
-        None = 0,
-        Reverse = 1,
-        Shuffle = 2,
-        Random = 3
+        None,
+        Reverse,
+        Shuffle,
+        Random
     }
+    
 }
