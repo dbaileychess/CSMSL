@@ -145,7 +145,7 @@ namespace CSMSL.Examples
             // Simple Peptide creation
             Peptide peptide1 = new Peptide("ACDEFGHIKLMNPQRSTVWY");
             WritePeptideToConsole(peptide1);
-                   
+                
             // Fragmenting a peptide is simple, you can include as many fragment types as you want
             Console.WriteLine("{0,-4} {1,-20} {2,-5}", "Type", "Formula", "Mass");
             foreach (Fragment fragment in peptide1.CalculateFragments(FragmentType.b | FragmentType.y))

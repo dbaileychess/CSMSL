@@ -161,6 +161,10 @@ namespace CSMSL.Chemistry
         }
 
         private string _chemicalFormulaString;
+
+        /// <summary>
+        /// The string representation of the chemical formula in Hill Notation
+        /// </summary>
         public string Formula
         {
             get
@@ -463,8 +467,7 @@ namespace CSMSL.Chemistry
         {
             _atomCount = 0;
             _isotopeCount = 0;
-            _mass = new Mass();
-                     
+            _mass = new Mass();                     
            
             HashSet<int> elements = new HashSet<int>();
 
@@ -502,7 +505,7 @@ namespace CSMSL.Chemistry
             _isDirty = false;
         }
 
-        public void CleanUpFormula()
+        private void CleanUpFormula()
         {
             string carbonPart = "";
             string hydrogenPart = "";
