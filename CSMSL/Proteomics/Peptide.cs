@@ -19,6 +19,7 @@
 ///////////////////////////////////////////////////////////////////////////
 
 using System.Collections.Generic;
+using System;
 using CSMSL.Chemistry;
 
 namespace CSMSL.Proteomics
@@ -63,12 +64,13 @@ namespace CSMSL.Proteomics
             _endResidue = startResidue + this.Length;
         }
 
-        internal Peptide(IEnumerable<AminoAcidResidue> residues, ChemicalModification[] mods, Protein parent, int startResidue)
+        internal Peptide(IEnumerable<AminoAcid> residues, ChemicalModification[] mods, Protein parent, int startResidue)
             : base(residues, mods)
         {
             _parent = parent;
             _startResidue = startResidue;
             _endResidue = startResidue + this.Length;
         }
+
     }
 }

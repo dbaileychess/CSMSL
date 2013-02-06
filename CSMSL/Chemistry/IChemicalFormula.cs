@@ -22,6 +22,9 @@ namespace CSMSL.Chemistry
 {
     public interface IChemicalFormula
     {
+        /// <summary>
+        /// The chemical formula of this object
+        /// </summary>
         ChemicalFormula ChemicalFormula { get; }
     }
 }

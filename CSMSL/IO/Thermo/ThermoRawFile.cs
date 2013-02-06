@@ -1,4 +1,5 @@
 ﻿using System;
+using CSMSL;
 using CSMSL.Proteomics;
 using CSMSL.Spectral;
 using System.Collections.Generic;
@@ -121,14 +122,42 @@ namespace CSMSL.IO.Thermo
 
         public override Spectrum GetMzSpectrum(int spectrumNumber)
         {
-            double[,] peakData = GetLabeledData(spectrumNumber);
-            int count = peakData.GetLength(1);
-            List<ThermoLabeledPeak> peaks = new List<ThermoLabeledPeak>();
-            for (int i = 0; i < count; i++)
+            MzAnalyzerType mzAnalyzer = GetMzAnalyzer(spectrumNumber);
+            double[,] peakData;
+            int count;
+            switch (mzAnalyzer)
             {
-                peaks.Add(new ThermoLabeledPeak(peakData[0, i], (float)peakData[1, i], (short)peakData[5, i], (float)peakData[4, i]));
+                default:
+                case MzAnalyzerType.Orbitrap:
+                    peakData = GetLabeledData(spectrumNumber);
+                    count = peakData.GetLength(1);
+                    List<ThermoLabeledPeak> peaks = new List<ThermoLabeledPeak>();
+                    for (int i = 0; i < count; i++)
+                    {
+                        peaks.Add(new ThermoLabeledPeak(peakData[0, i], (float)peakData[1, i], (short)peakData[5, i], (float)peakData[4, i]));
+                    }
+                    return new Spectrum(peaks);
+                case MzAnalyzerType.IonTrap2D:
+                    peakData = GetUnlabeledData(spectrumNumber);
+                    count = peakData.GetLength(1);
+                    List<Peak> low_res_peaks = new List<Peak>();
+                    for (int i = 0; i < count; i++)
+                    {
+                        low_res_peaks.Add(new Peak(peakData[0, i], (float)peakData[1, i]));
+                    }
+                    return new Spectrum(low_res_peaks);                    
             }
-            return new Spectrum(peaks);
+        }
+
+        private double[,] GetUnlabeledData(int spectrumNumber)
+        {
+            object mass_list = null;
+            object peak_flags = null;
+            int array_size = -1;
+            double centroidPeakWidth = double.NaN;
+            if (_rawConnection != null)
+                _rawConnection.GetMassListFromScanNum(ref spectrumNumber, null, 0, 0, 0, Convert.ToInt32(true), ref centroidPeakWidth, ref mass_list, ref peak_flags, ref array_size);
+            return (double[,])mass_list;                
         }
 
         private double[,] GetLabeledData(int spectrumNumber)
@@ -219,6 +248,31 @@ namespace CSMSL.IO.Thermo
             if (_rawConnection != null)
                 _rawConnection.ScanNumFromRT(retentionTime, ref spectrumNumber);
             return spectrumNumber;
+        }
+
+        public override double GetInjectionTime(int spectrumNumber)
+        {
+            string scan_filter = null;
+            _rawConnection.GetFilterForScanNum(spectrumNumber, scan_filter);
+            
+            object labels_obj = null;
+            object values_obj = null;
+            int array_size = -1;
+            _rawConnection.GetTrailerExtraForScanNum(spectrumNumber, ref labels_obj, ref values_obj, ref array_size);
+            string[] labels = (string[])labels_obj;
+            string[] values = (string[])values_obj;
+            if (labels == null)
+            {
+                return -1;
+            }
+            Dictionary<string, string> scan_trailer = new Dictionary<string, string>(labels.Length);
+            for (int i = labels.GetLowerBound(0); i <= labels.GetUpperBound(0); i++)
+            {
+                scan_trailer.Add(labels[i], values[i]);
+            }
+            
+            double injectionTime = Convert.ToDouble(scan_trailer["Ion Injection Time (ms):"]);
+            return injectionTime;
         }
     }
 }

@@ -22,79 +22,98 @@ using System;
 
 namespace CSMSL.Chemistry
 {
-    public class Isotope : IEquatable<Isotope>
-    {
-        internal bool _isPrincipalIsotope;
-        internal int _uniqueID;
-        private float _abundance;
-        private Element _element;
 
-        private int _hashCode;
-        private double _mass;
-        private int _massNumber;
+    /// <summary>
+    /// Represents a single isotope of a chemical element. Contains a unique number
+    /// of protons and neutrons compared to every other isotope.
+    /// </summary>
+    public sealed class Isotope
+    {        
 
-        internal Isotope(Element parentElement, int massNumber, double mass, float abundance)
+        /// <summary>
+        /// Create a new isotope
+        /// </summary>
+        /// <param name="parentElement">The parent element of the isotope</param>
+        /// <param name="massNumber">The mass number of the isotope</param>
+        /// <param name="atomicMass">The atomic mass of the isotope</param>
+        /// <param name="abundance">The natural relative abundance of the isotope</param>
+        internal Isotope(Element parentElement, int massNumber, double atomicMass, float abundance)
         {
-            _element = parentElement;
-            _massNumber = massNumber;
-            _mass = mass;
-            _abundance = abundance;
-            _hashCode = 13 + (_massNumber << 5) + (_element.AtomicNumber >> 2 + 12);
+            Element = parentElement;
+            MassNumber = massNumber;
+            AtomicMass = atomicMass;
+            RelativeAbundance = abundance;
         }
 
+        /// <summary>
+        /// Unique numerical ID used to optimized chemical formula construction 
+        /// </summary>
+        internal int UniqueID { get; set; }
+
+        /// <summary>
+        /// Is this the most abundant isotope of its parent element?
+        /// </summary>
+        internal bool IsPrincipalIsotope { get; set; }
+
+        /// <summary>
+        /// The atomic symbol for this isotope
+        /// </summary>
         public string AtomicSymbol
         {
-            get { return _element.AtomicSymbol; }
+            get { return Element.AtomicSymbol; }
         }
 
-        public Element Element
+        /// <summary>
+        /// The atomic number of the isotope's parent element (also the number of protons)
+        /// </summary>
+        public int AtomicNumber
         {
-            get { return _element; }
+            get { return Element.AtomicNumber; }
         }
 
-        public bool IsPrincipalIsotope
+        /// <summary>
+        /// The number of protons in this isotope
+        /// </summary>
+        public int Protons
         {
-            get
-            {
-                return _isPrincipalIsotope;
-            }
-            set
-            {
-                _isPrincipalIsotope = value;
-            }
+            get { return Element.AtomicNumber; }
         }
 
-        public double Mass
+        /// <summary>
+        /// The number of neutrons in this isotope
+        /// </summary>
+        public int Neutrons
         {
-            get { return _mass; }
-            private set { _mass = value; }
+            get { return MassNumber - Element.AtomicNumber; }
         }
+        
+        /// <summary>
+        /// The element this isotope is apart of (based on atomic number)
+        /// </summary>
+        public Element Element { get; private set; }            
+       
+        /// <summary>
+        /// The atomic mass of this isotope (in unified atomic mass units)
+        /// </summary>
+        public double AtomicMass { get; private set; }
 
-        public int MassNumber
-        {
-            get { return _massNumber; }
-            private set { _massNumber = value; }
-        }
+        /// <summary>
+        /// The total number of nucleons (protons and neutrons) in this isotope
+        /// </summary>
+        public int MassNumber { get; private set; }
 
-        public float RelativeAbundance
-        {
-            get { return _abundance; }
-            private set { _abundance = value; }
-        }
+        /// <summary>
+        /// The relative natural abundance of this isotope in nature (on Earth)
+        /// </summary>
+        public float RelativeAbundance { get; private set; }     
 
-        public override int GetHashCode()
-        {
-            return _hashCode;
-        }
-
-        public bool Equals(Isotope other)
-        {
-            return _massNumber.Equals(other._massNumber);
-        }
-
+        /// <summary>
+        /// Returns a textual representation of this isotope in the following format: H1 He4 O16
+        /// </summary>
+        /// <returns>The atomic symbol and mass number combined</returns>
         public override string ToString()
         {
-            return string.Format("{0}{1:G0}", AtomicSymbol, _massNumber);
+            return string.Format("{0}{1:G0}", AtomicSymbol, MassNumber);
         }
     }
 }

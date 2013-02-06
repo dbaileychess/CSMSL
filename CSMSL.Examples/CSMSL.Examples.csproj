@@ -7,10 +7,11 @@
     <ProjectGuid>{7448B5D7-FFD9-4212-BCF5-1811DE3301C1}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ExamplesCSMSL</RootNamespace>
-    <AssemblyName>ExamplesCSMSL</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <RootNamespace>CSMSL.Examples</RootNamespace>
+    <AssemblyName>CSMSL.Examples</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -21,6 +22,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -30,15 +32,11 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Examples.cs" />
@@ -51,7 +49,7 @@
       <Name>CSMSL</Name>
     </ProjectReference>
     <ProjectReference Include="..\CSMSL\IO\Agilent\Agilent.csproj">
-      <Project>{096D1DBE-12D7-4A60-B902-12768A2F2A08}</Project>
+      <Project>{096d1dbe-12d7-4a60-b902-12768a2f2a08}</Project>
       <Name>Agilent</Name>
     </ProjectReference>
     <ProjectReference Include="..\CSMSL\IO\Thermo\Thermo.csproj">
@@ -98,6 +96,7 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
+    <None Include="app.config" />
     <None Include="Resources\AgilentDDirectoryMS1MS2.d\AcqData\MSPeak.bin">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

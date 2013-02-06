@@ -147,5 +147,15 @@ namespace CSMSL.IO.Agilent
             spectrum.GetPrecursorCharge(out precursor_charge);
             return (short)precursor_charge;
         }
+
+        public override int GetSpectrumNumber(double retentionTime)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public override double GetInjectionTime(int spectrumNumber)
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

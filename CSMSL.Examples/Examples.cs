@@ -31,7 +31,7 @@ using CSMSL.IO.Thermo;
 using CSMSL.IO;
 using CSMSL.Spectral;
 
-namespace ExamplesCSMSL
+namespace CSMSL.Examples
 {
     internal class Examples
     {
@@ -50,23 +50,24 @@ namespace ExamplesCSMSL
         private static void StartExamples()
         {
             // Examples coding
-            //ChemicalFormulaExamples();
-           // PeptideExamples();
+            ChemicalFormulaExamples();
+            //PeptideExamples();
 
             // Example Objects
             //VennDiagramExamples();
 
+
             // Example programs
-            //ExampleTrypticDigest.Start();
+            ExampleTrypticDigest.Start();
 
             //Example IO
-            MsIOExamples();
+            //MsIOExamples();
         }
 
         private static void MsIOExamples()
         {
             Console.WriteLine("**MS I/O Examples**");
-
+                     
             Console.WriteLine("{0,-4} {1,3} {2,-6:F4} {3,-5} {4,7} {5,-10} {6}", "SN", "Msn", "RT", "Polarity", "# Peaks", "Analyzer", "M/Z Range");
             string rawfile = @"C:\Users\Derek\Documents\promega\Promega_Dilutions\120731_Promega_PeptideMix1_Heavy_1.raw";// "Resources/ThermoRawFileMS1MS2.raw"; //
             // Ms Data Files implement IDispoable making using statements an excellent way to manage resources
@@ -144,7 +145,7 @@ namespace ExamplesCSMSL
             // Simple Peptide creation
             Peptide peptide1 = new Peptide("ACDEFGHIKLMNPQRSTVWY");
             WritePeptideToConsole(peptide1);
-
+                   
             // Fragmenting a peptide is simple, you can include as many fragment types as you want
             Console.WriteLine("{0,-4} {1,-20} {2,-5}", "Type", "Formula", "Mass");
             foreach (Fragment fragment in peptide1.CalculateFragments(FragmentType.b | FragmentType.y))
@@ -177,7 +178,7 @@ namespace ExamplesCSMSL
         private static void ChemicalFormulaExamples()
         {
             Console.WriteLine("**Chemical Formula Examples**");
-
+          
             // Simple chemical formula creation
             ChemicalFormula formula1 = new ChemicalFormula("C2H3NO");
             WriteFormulaToConsole(formula1);

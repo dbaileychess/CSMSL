@@ -24,7 +24,7 @@ using System.Diagnostics;
 using CSMSL.IO;
 using CSMSL.Proteomics;
 
-namespace ExamplesCSMSL
+namespace CSMSL.Examples
 {
     public class ExampleTrypticDigest
     {
@@ -33,7 +33,7 @@ namespace ExamplesCSMSL
             Console.WriteLine("**Start Digestion**");
             Stopwatch watch = new Stopwatch();
             watch.Start();
-            Protease trypsin = ProteaseDictionary.Instance["Trypsin"];
+            Protease trypsin = Protease.Trypsin;  
             List<Peptide> peps = new List<Peptide>();
             List<Protein> prots = new List<Protein>();
             List<double> allMzs = new List<double>();

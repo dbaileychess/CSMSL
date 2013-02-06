@@ -1,0 +1,104 @@
+﻿CREATE TABLE IF NOT EXISTS organisms (
+	ID              INTEGER PRIMARY KEY,
+	scientific_name TEXT,
+	common_name     TEXT,
+	UNIQUE(scientific_name) ON CONFLICT IGNORE
+);
+        
+CREATE TABLE IF NOT EXISTS fasta_files (
+	ID              INTEGER PRIMARY KEY,
+	name            TEXT,
+	organismID      INTEGER REFERENCES organism(ID) ON UPDATE CASCADE ON DELETE CASCADE
+);
+       
+CREATE TABLE IF NOT EXISTS peptide_to_protein (
+	peptideID       INTEGER REFERENCES peptides(ID) ON UPDATE CASCADE ON DELETE CASCADE,
+	proteinID       INTEGER REFERENCES proteins(ID) ON UPDATE CASCADE ON DELETE CASCADE,
+	startResidue    INTEGER,
+	stopResidue     INTEGER,
+	UNIQUE(peptideID, proteinID, startResidue) ON CONFLICT IGNORE
+);
+
+CREATE TABLE IF NOT EXISTS peptides (
+	ID          INTEGER PRIMARY KEY,
+	sequence    TEXT UNIQUE ON CONFLICT IGNORE,
+	mass        REAL                                                                                                               
+);
+
+CREATE TABLE IF NOT EXISTS proteins (
+	ID				INTEGER PRIMARY KEY,
+	sequence		TEXT,
+	descriptionID	INTEGER REFERENCES protein_headers(ID) ON UPDATE CASCADE ON DELETE CASCADE,
+	decoy			INTEGER,
+	UNIQUE(sequence) ON CONFLICT IGNORE                                                        
+);
+
+CREATE TABLE IF NOT EXISTS protein_headers (
+	ID					INTEGER PRIMARY KEY,
+	accession			TEXT,
+	entryName			TEXT,
+	proteinName			TEXT,
+	geneName			TEXT,
+	organismID			INTEGER REFERENCES organisms(ID) ON UPDATE CASCADE ON DELETE CASCADE,
+	proteinExistence	INTEGER,
+	sequenceVersion		INTEGER,
+	UNIQUE(accession) ON CONFLICT IGNORE
+);
+
+CREATE TABLE IF NOT EXISTS ms_data_files (
+	ID      INTEGER PRIMARY KEY,
+	name    TEXT UNIQUE ON CONFLICT IGNORE
+);
+
+CREATE TABLE IF NOT EXISTS spectra_parameters (
+	ID			INTEGER PRIMARY KEY,
+	type		TEXT,
+	value		TEXT,
+	UNIQUE(type, value) ON CONFLICT IGNORE
+);
+
+CREATE TABLE IF NOT EXISTS spectra_headers ( 
+	ID				INTEGER PRIMARY KEY,
+	msn				INTEGER,
+	firstmass		REAL,
+	lastmass		REAL,
+	fragmentationID	INTEGER REFERENCES spectra_parameters(ID) ON UPDATE CASCADE ON DELETE CASCADE,
+	mzanalyzerID	INTEGER REFERENCES spectra_parameters(ID) ON UPDATE CASCADE ON DELETE CASCADE,
+	resolution		REAL,
+	polarity		INTEGER,
+	UNIQUE(msn,firstmass,lastmass,fragmentationID,mzanalyzerID,resolution,polarity) ON CONFLICT IGNORE
+);
+
+CREATE TABLE IF NOT EXISTS spectra (
+	ID              INTEGER PRIMARY KEY,
+	scan_number     INTEGER,
+	retention_time  REAL,
+	scan_header		INTEGER REFERENCES spectra_headers(ID) ON UPDATE CASCADE ON DELETE CASCADE,
+	msdatafileID    INTEGER REFERENCES ms_data_files(ID) ON UPDATE CASCADE ON DELETE CASCADE,
+	UNIQUE(scan_number, msdatafileID) ON CONFLICT IGNORE
+);
+
+CREATE TABLE IF NOT EXISTS experiments (
+	ID          INTEGER PRIMARY KEY,
+	name        TEXT,
+	description TEXT
+);
+
+CREATE TABLE IF NOT EXISTS msdatafiles_to_experiment (
+	msdatafileID    INTEGER REFERENCES ms_data_files(ID) ON UPDATE CASCADE ON DELETE CASCADE,
+	experimentID    INTEGER REFERENCES experiments(ID) ON UPDATE CASCADE ON DELETE CASCADE,
+	UNIQUE(msdatafileID, experimentID) ON CONFLICT IGNORE
+);
+
+CREATE TABLE IF NOT EXISTS peptide_spectral_matches (
+	peptideID	INTEGER REFERENCES peptides(ID) ON UPDATE CASCADE ON DELETE CASCADE,
+	spectraID	INTEGER REFERENCES spectra(ID) ON UPDATE CASCADE ON DELETE CASCADE,
+	UNIQUE(peptideID, spectraID) ON CONFLICT IGNORE
+ );
+
+ CREATE TABLE IF NOT EXISTS modificiations (
+	ID		INTEGER PRIMARY KEY,
+	name	TEXT,
+	mass	REAL,
+	UNIQUE(name, mass) ON CONFLICT IGNORE
+ );

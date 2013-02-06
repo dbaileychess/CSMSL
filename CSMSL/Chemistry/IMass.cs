@@ -18,7 +18,7 @@
 //  along with CSMSL.  If not, see <http://www.gnu.org/licenses/>.        /
 ///////////////////////////////////////////////////////////////////////////
 
-namespace CSMSL
+namespace CSMSL.Chemistry
 {
     public interface IMass
     {

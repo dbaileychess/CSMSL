@@ -57,7 +57,7 @@ namespace CSMSL
         /// <summary>
         /// The mass of the most common isotope of hydrogen in atomic units (u)
         /// </summary>
-        public const double HYDROGEN = 1.0078250321;
+        public const double HYDROGEN = 1.00782503207;
 
         public const double DEUTERIUM = 2.0141017778;
 
@@ -68,7 +68,7 @@ namespace CSMSL
         /// <summary>
         /// The mass of the most common isotope of hydrogen in atomic units (u)
         /// </summary>
-        public const double OXYGEN = 15.9949146221;
+        public const double OXYGEN = 15.99491461956;
 
         public const double OXYGEN18 = 17.9991610;
 

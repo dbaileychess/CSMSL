@@ -198,7 +198,7 @@ namespace CSMSL.Spectral
 
         public IEnumerator<T> GetEnumerator()
         {
-            return (IEnumerator<T>)_peaks.GetEnumerator();
+            return _peaks.AsEnumerable().GetEnumerator();
         }
 
         System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()

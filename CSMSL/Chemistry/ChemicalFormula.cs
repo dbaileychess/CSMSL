@@ -19,15 +19,14 @@
 ///////////////////////////////////////////////////////////////////////////
 
 using System;
+using System.Collections.Generic;
 using System.Text;
 using System.Text.RegularExpressions;
 
 namespace CSMSL.Chemistry
 {
     public class ChemicalFormula : IMass, IEquatable<ChemicalFormula>
-    {
-        public static readonly PeriodicTable PERIODIC_TABLE = PeriodicTable.Instance;
-
+    {      
         /// <summary>
         /// A regular expression for matching chemical formulas such as: C2C{13}3H5NO5
         /// The first group is the only non-optional group and that handles the chemical symbol: H, He, etc..
@@ -37,26 +36,50 @@ namespace CSMSL.Chemistry
         /// Modified from: http://stackoverflow.com/questions/4116786/parsing-a-chemical-formula-from-a-string-in-c
         /// </summary>
         private static readonly Regex _formulaRegex = new Regex(@"([A-Z][a-z]*)(?:\{([0-9]+)\})?(-)?([0-9]+)?", RegexOptions.Compiled);
-
-        private static readonly int _uniqueIDCount = 10;
         private static readonly Regex _validateFormulaRegex = new Regex("^(" + _formulaRegex.ToString() + ")+$", RegexOptions.Compiled);
-        private StringBuilder _chemicalFormulaSB;
+        
+        private static readonly int _uniqueIDCount = 10;
+               
+        /// <summary>
+        /// Indicates if the internal _isotope array has been modified, requiring necessary
+        /// clean up code to be performed.
+        /// </summary>
+        private bool _isDirty;          
 
-        private bool _isDirty;
+        private bool _isFormulaDirty;
 
+        /// <summary>
+        /// Main data store the isotopes. 
+        /// <remarks>Acts as a dictionary where each isotope's UniqueID
+        /// is the key (index) of this array. The array is front loaded to provide the most
+        /// common elements first (C H N O P) to reduce memory footprint and provide quick
+        /// addition/subtraction of formulas.</remarks>
+        /// </summary>
         private int[] _isotopes;
+        
+        /// <summary>
+        /// The index pointer to the largest isotope UniqueID currently contained in
+        /// int[] _isotopes 
+        /// </summary>
+        private int _largestIsotopeID;
 
-        private Mass _mass;
+        #region Constructors
 
-        private int _numberOfAtoms;
-
+        /// <summary>
+        /// Create an empty chemical formula
+        /// </summary>
         public ChemicalFormula()
-        {
-            // create a new blank chemical formula
+        {            
             _isotopes = new int[_uniqueIDCount];
+            _largestIsotopeID = 0;
+            _isFormulaDirty = true;
             _isDirty = true;
         }
 
+        /// <summary>
+        /// Create an chemical formula from the given string representation
+        /// </summary>
+        /// <param name="chemicalFormula">The string representation of the chemical formula</param>
         public ChemicalFormula(string chemicalFormula)
             : this()
         {
@@ -66,29 +89,26 @@ namespace CSMSL.Chemistry
         public ChemicalFormula(IChemicalFormula item)
             : this(item.ChemicalFormula) { }
 
-        public ChemicalFormula(ChemicalFormula chemicalFormula)
+        public ChemicalFormula(ChemicalFormula other)
         {
-            if (chemicalFormula == null)
-            {
+            if (other == null)
+            {                
                 // create a new blank chemical formula
                 _isotopes = new int[_uniqueIDCount];
-                _isDirty = true;
+                _largestIsotopeID = 9;                 
             }
             else
             {
-                // Copy an existing chemical formula
-                _isotopes = new int[chemicalFormula._isotopes.Length];
-                Array.Copy(chemicalFormula._isotopes, _isotopes, chemicalFormula._isotopes.Length);
-                if (!(_isDirty = chemicalFormula._isDirty))
-                {
-                    // old chemical formula is already clean, don't need to reclean
-                    _chemicalFormulaSB = new StringBuilder(chemicalFormula._chemicalFormulaSB.ToString());
-                    _numberOfAtoms = chemicalFormula._numberOfAtoms;
-                    _mass = new Mass(chemicalFormula._mass);
-                }
+                CopyFrom(other);               
             }
+            _isDirty = true;
         }
 
+        #endregion
+
+        #region Properties
+
+        private Mass _mass;
         public Mass Mass
         {
             get
@@ -101,7 +121,8 @@ namespace CSMSL.Chemistry
             }
         }
 
-        public int NumberOfAtoms
+        private int _atomCount;
+        public int AtomCount
         {
             get
             {
@@ -109,13 +130,12 @@ namespace CSMSL.Chemistry
                 {
                     CleanUp();
                 }
-                return _numberOfAtoms;
+                return _atomCount;
             }
         }
 
-        private int _uniqueIsotopes;
-
-        public int UniqueIsotopes
+        private int _elementCount;
+        public int ElementCount
         {
             get
             {
@@ -123,25 +143,473 @@ namespace CSMSL.Chemistry
                 {
                     CleanUp();
                 }
-                return _uniqueIsotopes;
+                return _elementCount;
             }
         }
 
-        public static double[,] GetIsotopicDistribution(IChemicalFormula item)
+        private int _isotopeCount;
+        public int IsotopeCount
         {
-            return GetIsotopicDistribution(item.ChemicalFormula);
+            get
+            {
+                if (_isDirty)
+                {
+                    CleanUp();
+                }
+                return _isotopeCount;
+            }
         }
 
-        public static double[,] GetIsotopicDistribution(ChemicalFormula baseFormula)
+        private string _chemicalFormulaString;
+        public string Formula
         {
-            double[,] data = new double[10, 2];
-            //double value = 1;
-            //foreach (KeyValuePair<Isotope, int> kvp in baseFormula._isotopes)
-            //{
-            //    value *= kvp.Key.RelativeAbundance * kvp.Value;
-            //}
-            return data;
+            get
+            {
+                if (_isFormulaDirty)
+                    CleanUpFormula();
+                return _chemicalFormulaString;
+            }
         }
+
+        #endregion
+
+        #region Add/Remove
+
+        public void Add(IChemicalFormula item)
+        {
+            Add(item.ChemicalFormula);
+        }
+
+        /// <summary>
+        /// Add a chemical formula to this chemical formula.
+        /// </summary>
+        /// <param name="formula">The chemical formula to add to this</param>
+        public void Add(ChemicalFormula formula)
+        {
+            if (formula == null)
+                return;
+
+            // Get the length of the formula to add
+            int id = formula._largestIsotopeID;
+
+            if (id > _largestIsotopeID)
+            {
+                _largestIsotopeID = id;
+               
+                if (id > _isotopes.Length)
+                {
+                    // Resize this formula array to match the size of the incoming one
+                    Array.Resize(ref _isotopes, id + 1);
+                }
+            }          
+
+            // Update each isotope
+            for (int i = 0; i <= id; i++)
+            {              
+                _isotopes[i] += formula._isotopes[i];
+            }
+
+            _isDirty = true;
+            _isFormulaDirty = true;
+        }
+
+        /// <summary>
+        /// Add the principal isotope of the element to this chemical formula
+        /// </summary>
+        /// <param name="element">The element to add</param>
+        /// <param name="count">The number of the element to add</param>
+        public void Add(Element element, int count)
+        {
+            Add(element.PrincipalIsotope, count);
+        }
+               
+        /// <summary>
+        /// Add an isotope to this chemical formula
+        /// </summary>
+        /// <param name="isotope">The isotope to add</param>
+        /// <param name="count">The number of the isotope to add</param>
+        public void Add(Isotope isotope, int count)
+        {
+            if (isotope == null || count == 0)            
+                return;            
+           
+            int id = isotope.UniqueID;
+
+            if (id > _largestIsotopeID)
+            {
+                _largestIsotopeID = id;
+                if (id > _isotopes.Length)
+                {
+                    // Isotope doesn't exist, resize array and set the count (faster than the += below)
+                    Array.Resize(ref _isotopes, id + 1);
+                    _isotopes[id] = count;
+                    _isDirty = true;
+                    _isFormulaDirty = true;
+                    return;
+                }
+            }
+           
+            _isotopes[id] += count;            
+            _isDirty = true;
+            _isFormulaDirty = true;
+        }
+
+        public void Remove(IChemicalFormula item)
+        {
+            Remove(item.ChemicalFormula);
+        }
+
+        public void Remove(ChemicalFormula formula)
+        {
+            if (formula == null) return;
+
+            // Get the length of the formula to remove
+            int id = formula._largestIsotopeID;
+
+            // Resize this formula array to match the size of the incoming one
+            if (id > _isotopes.Length)
+            {
+                _largestIsotopeID = formula._largestIsotopeID;
+                Array.Resize(ref _isotopes, id + 1);
+            }
+
+            // Update each isotope
+            for (int i = 0; i <= id; i++)
+            {
+                _isotopes[i] -= formula._isotopes[i];
+            }
+
+            _isDirty = true;
+            _isFormulaDirty = true;
+        }
+
+        public void Remove(Isotope isotope, int count)
+        {
+            Add(isotope, -count);
+        }
+
+        /// <summary>
+        /// Completely removes a particular isotope from this chemical formula.
+        /// </summary>
+        /// <param name="isotope">The isotope to remove</param>
+        /// <returns>True if the isotope was in the chemical formula and removed, false otherwise</returns>
+        public bool Remove(Isotope isotope)
+        {
+            if (isotope == null || isotope.UniqueID > _largestIsotopeID)
+                return false;
+
+            if (_isotopes[isotope.UniqueID] == 0)
+            {
+                return false;
+            }
+            _isotopes[isotope.UniqueID] = 0;
+            _isFormulaDirty = true;
+            return _isDirty = true;
+        }
+
+        public bool Remove(string symbol)
+        {
+            Element element = Element.PeriodicTable[symbol];
+            return Remove(element);
+        }
+
+        public bool Remove(Element element)
+        {
+            if (element == null)
+                return false;
+            bool result = false;
+            foreach (Isotope isotope in element._isotopes.Values)
+            {
+                result |= Remove(isotope);
+            }
+            return result;
+        }
+
+        /// <summary>
+        /// Remove all isotopes from this chemical formula to create an 'empty' chemical formula
+        /// </summary>
+        public void Clear()
+        {
+            Array.Clear(_isotopes, 0, _isotopes.Length);
+            _isFormulaDirty = true;
+            _isDirty = true;
+        }
+
+        #endregion 
+
+        #region Count/Contains
+
+        /// <summary>
+        /// Checks if the isotope is present in this chemical formula
+        /// </summary>
+        /// <param name="isotope">The isotope to look for</param>
+        /// <returns>True if there is a non-negative number of the isotope in this formula</returns>
+        public bool Contains(Isotope isotope)
+        {
+            return Count(isotope) != 0;           
+        }
+
+        public bool Contains(Element element)
+        {
+            return Count(element) != 0;
+        }
+
+        public bool Contains(string symbol)
+        {
+            return Count(symbol) != 0;
+        }
+
+        public bool Contains(string symbol, int atomicNumber)
+        {
+            return Count(symbol, atomicNumber) != 0;
+        }
+
+        /// <summary>
+        /// Return the number of given isotopes in this chemical fomrula
+        /// </summary>
+        /// <param name="isotope"></param>
+        /// <returns></returns>
+        public int Count(Isotope isotope)
+        {
+            if (isotope == null || isotope.UniqueID > _isotopes.Length)
+                return 0;
+            return _isotopes[isotope.UniqueID];
+        }
+
+        /// <summary>
+        /// Count the number of isotopes from this element are
+        /// present in this chemical formula
+        /// </summary>
+        /// <param name="element">The element to search for</param>
+        /// <returns>The total number of all the element isotopes in this chemical formula</returns>
+        public int Count(Element element)
+        {
+            if (element == null)
+                return 0;
+            int count = 0;
+            foreach (Isotope isotope in element._isotopes.Values)
+            {
+                count += Count(isotope);
+            }
+            return count;
+        }
+
+        public int Count(string symbol)
+        {
+
+            Element element = Element.PeriodicTable[symbol];
+            return Count(element);
+        }
+
+        public int Count(string symbol, int atomicNumber)
+        {
+            Isotope isotope = Element.PeriodicTable[symbol][atomicNumber];
+            return Count(isotope);
+        }
+
+        #endregion
+
+        public override int GetHashCode()
+        {
+            int hCode = 7;
+            for (int i = 0; i < _largestIsotopeID; i++)
+            {
+                hCode += _isotopes[i] << (i + 1);
+            }
+            return hCode;
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (obj == null || !(obj is ChemicalFormula))
+            {
+                return false;
+            }
+            return this.Equals((ChemicalFormula)obj);
+        }
+
+        public virtual bool Equals(ChemicalFormula other)
+        {
+            if (Object.ReferenceEquals(this, other)) return true;
+            if (this._largestIsotopeID != other._largestIsotopeID) return false;          
+
+            for (int i = 0; i < this._largestIsotopeID; i++)
+            {
+                if (this._isotopes[i] != other._isotopes[i])
+                    return false;
+            }
+            return true;
+        }
+               
+        public override string ToString()
+        {
+            return Formula;
+        }
+
+        #region Private Methods
+
+        private void CopyFrom(ChemicalFormula other)
+        {
+            // Copy an existing chemical formula
+            _isotopes = new int[other._isotopes.Length];
+            _largestIsotopeID = other._largestIsotopeID;
+            Array.Copy(other._isotopes, _isotopes, other._isotopes.Length);
+        }
+
+        /// <summary>
+        /// Recalculate parameters of the chemical formula
+        /// </summary>
+        private void CleanUp()
+        {
+            _atomCount = 0;
+            _isotopeCount = 0;
+            _mass = new Mass();
+                     
+           
+            HashSet<int> elements = new HashSet<int>();
+
+            int newLargestIsotopeID = 0;
+
+            for (int i = 0; i <= _largestIsotopeID; i++)
+            {  
+                int count = _isotopes[i];
+                if (count == 0)
+                    continue;
+
+                if (i > newLargestIsotopeID)
+                {
+                    newLargestIsotopeID = i;
+                }
+
+                Isotope isotope = Element.PeriodicTable[i];
+                Element element = isotope.Element;
+                elements.Add(element.AtomicNumber);
+
+                _isotopeCount++;
+
+                _atomCount += count;
+
+                _mass.Monoisotopic += count * isotope.AtomicMass;
+             
+                _mass.Average += count * element.AverageMass;                
+            }
+
+            _largestIsotopeID = newLargestIsotopeID;
+
+            _elementCount = elements.Count;
+                   
+            // Mark as clean
+            _isDirty = false;
+        }
+
+        public void CleanUpFormula()
+        {
+            string carbonPart = "";
+            string hydrogenPart = "";
+            List<string> otherParts = new List<string>();
+            StringBuilder sb = new StringBuilder(4);
+            
+            for (int i = 0; i <= _largestIsotopeID; i++)
+            {
+                int count = _isotopes[i];
+                if (count == 0)
+                    continue;
+
+                Isotope isotope = Element.PeriodicTable[i];
+                Element element = isotope.Element;              
+
+                sb.Clear();
+                sb.Append(isotope.AtomicSymbol);
+
+                if (!isotope.IsPrincipalIsotope)
+                {
+                    sb.Append('{');
+                    sb.Append(isotope.MassNumber);
+                    sb.Append('}');
+                }
+
+                if (count != 1)
+                {
+                    sb.Append(count);
+                }
+
+                switch (isotope.AtomicSymbol)
+                {
+                    case "C":
+                        carbonPart += sb.ToString();
+                        break;
+                    case "D":
+                    case "H":
+                        hydrogenPart += sb.ToString();
+                        break;
+                    default:
+                        otherParts.Add(sb.ToString());
+                        break;
+                }
+            }
+          
+            if (string.IsNullOrEmpty(carbonPart))
+            {
+                // No carbons, so just add the hydrogen to the list and sort alphabetically
+                otherParts.Add(hydrogenPart);
+                otherParts.Sort();
+            }
+            else
+            {
+                otherParts.Sort();
+                otherParts.Insert(0, hydrogenPart);
+                otherParts.Insert(0, carbonPart);
+            }
+
+            _chemicalFormulaString = string.Join("", otherParts);
+
+            // Mark as clean
+            _isFormulaDirty = false;
+        }
+
+        /// <summary>
+        /// Parses a string representation of chemical formula and adds the elements
+        /// to this chemical formula
+        /// </summary>
+        /// <param name="formula">the Chemical Formula to parse</param>
+        private void ParseString(string formula)
+        {
+            if (string.IsNullOrEmpty(formula))         
+                return;            
+
+            if (!IsValidChemicalFormula(formula))
+            {
+                throw new FormatException("Input string for chemical formula was in an incorrect format");
+            }
+
+            Element element = null;
+            foreach (Match match in _formulaRegex.Matches(formula))
+            {
+                string chemsym = match.Groups[1].Value;             // Group 1: Chemical Symbol
+                if (Element.PeriodicTable.TryGetElement(chemsym, out element))
+                {
+                    Isotope isotope = match.Groups[2].Success ?     // Group 2 (optional): Isotope Mass Number
+                        element[int.Parse(match.Groups[2].Value)] :
+                        element.PrincipalIsotope;
+                    int sign = match.Groups[3].Success ?            // Group 3 (optional): Negative Sign
+                        -1 :
+                        1;
+                    int numofelem = match.Groups[4].Success ?       // Group 4 (optional): Number of Elements
+                        int.Parse(match.Groups[4].Value) :
+                        1;
+
+                    Add(isotope, sign * numofelem);
+                }
+                else
+                {
+                    throw new ArgumentException(string.Format("Chemical Symbol {0} does not exist in the Periodic Table", chemsym));
+                }
+            }
+        }
+
+        #endregion
+
+        #region Statics
 
         public static implicit operator ChemicalFormula(string sequence)
         {
@@ -162,12 +630,13 @@ namespace CSMSL.Chemistry
 
         public static ChemicalFormula operator *(ChemicalFormula formula, int count)
         {
-            ChemicalFormula newFormula = formula.Clone();
+            ChemicalFormula newFormula = new ChemicalFormula(formula);
             for (int i = 0; i < newFormula._isotopes.Length; i++)
             {
                 newFormula._isotopes[i] *= count;
             }
             newFormula._isDirty = true;
+            newFormula._isFormulaDirty = true;
             return newFormula;
         }
 
@@ -183,271 +652,8 @@ namespace CSMSL.Chemistry
             return newFormula;
         }
 
-        public void Add(IChemicalFormula item)
-        {
-            Add(item.ChemicalFormula);
-        }
+        #endregion
 
-        public void Add(ChemicalFormula formula)
-        {
-            if (formula == null) return;
 
-            // Get the length of the formula to add
-            int length = formula._isotopes.Length;
-
-            // Resize this formula array to match the size of the incoming one
-            if (length > _isotopes.Length)
-            {
-                Array.Resize(ref _isotopes, length);
-            }
-
-            // Update each isotope
-            for (int i = 0; i < length; i++)
-            {
-                if (formula._isotopes[i] != 0)
-                    _isotopes[i] += formula._isotopes[i];
-            }
-
-            _isDirty = true;
-        }
-
-        public void Add(Isotope isotope, int count)
-        {
-            if (count == 0)
-            {
-                return;
-            }
-            int id = isotope._uniqueID;
-            if (id > _isotopes.Length)
-            {
-                // Isotope doesn't exist, resize array and set the count
-                Array.Resize(ref _isotopes, id + 1);
-                _isotopes[id] = count;
-            }
-            else
-            {
-                _isotopes[id] += count;
-            }
-            _isDirty = true;
-        }
-
-        public void Clear()
-        {
-            Array.Clear(_isotopes, 0, _isotopes.Length);
-            _isDirty = true;
-        }
-
-        public ChemicalFormula Clone()
-        {
-            return new ChemicalFormula(this);
-        }
-
-        public bool ContainsIsotope(Isotope isotope)
-        {
-            if (isotope._uniqueID > _isotopes.Length) return false;
-            return _isotopes[isotope._uniqueID] != 0;
-        }
-
-        /// <summary>
-        /// Test for equality between two chemical formulas. Two formulas are equivalent if they have the exact same number and type of isotopes.
-        /// </summary>
-        /// <param name="other">The other chemical formula to compare with</param>
-        /// <returns>True if the chemical formulas are the same, false otherwise</returns>
-        public bool Equals(ChemicalFormula other)
-        {
-            if (Object.ReferenceEquals(other, null)) return false;
-            if (Object.ReferenceEquals(this, other)) return true;
-            for (int i = 0; i < _isotopes.Length; i++)
-            {
-                if ((i > other._isotopes.Length && _isotopes[i] != 0) || _isotopes[i] != other._isotopes[i])
-                    return false;
-            }
-            return true;
-        }
-
-        public void Remove(IChemicalFormula item)
-        {
-            Remove(item.ChemicalFormula);
-        }
-
-        public void Remove(ChemicalFormula formula)
-        {
-            if (formula == null) return;
-
-            // Get the length of the formula to add
-            int length = formula._isotopes.Length;
-
-            // Resize this formula array to match the size of the incoming one
-            if (length > _isotopes.Length)
-            {
-                Array.Resize(ref _isotopes, length);
-            }
-
-            // Update each isotope
-            for (int i = 0; i < length; i++)
-            {
-                if (formula._isotopes[i] != 0)
-                    _isotopes[i] -= formula._isotopes[i];
-            }
-
-            _isDirty = true;
-        }
-
-        public void Remove(Isotope isotope, int count)
-        {
-            Add(isotope, -count);
-        }
-
-        /// <summary>
-        /// Return the number of given isotopes in this chemical fomrula
-        /// </summary>
-        /// <param name="isotope"></param>
-        /// <returns></returns>
-        public int Count(Isotope isotope)
-        {
-            int id = isotope._uniqueID;
-            if (id > _isotopes.Length) return 0;
-            return _isotopes[id];
-        }
-
-        /// <summary>
-        /// Completely removes a particular isotope from this chemical formula.
-        /// </summary>
-        /// <param name="isotope">The isotope to remove</param>
-        /// <returns>True if the isotope was in the chemical formula and removed, false otherwise</returns>
-        public bool Remove(Isotope isotope)
-        {
-            int id = isotope._uniqueID;
-            if (id > _isotopes.Length) return false;
-            if (_isotopes[id] == 0)
-            {
-                return false;
-            }
-            _isotopes[id] = 0;
-            return _isDirty = true;
-        }
-
-        public bool Remove(string symbol)
-        {
-            Element element;
-            if (PERIODIC_TABLE.TryGetElement(symbol, out element))
-            {
-                return Remove(element);
-            }
-            else
-            {
-                return false;
-            }
-        }
-
-        public bool Remove(Element element)
-        {
-            bool result = false;
-            foreach (Isotope isotope in element)
-            {
-                result |= Remove(isotope);
-            }
-            return result;
-        }
-
-        public override string ToString()
-        {
-            if (_isDirty)
-            {
-                CleanUp();
-            }
-            return _chemicalFormulaSB.ToString();
-        }
-
-        private void CleanUp()
-        {
-            _numberOfAtoms = 0;
-            _uniqueIsotopes = 0;
-            _mass = new Mass();
-            if (_chemicalFormulaSB == null)
-            {
-                _chemicalFormulaSB = new StringBuilder(10);
-            }
-            else
-            {
-                _chemicalFormulaSB.Clear();
-            }
-
-            for (int i = 0; i < _isotopes.Length; i++)
-            {
-                if (_isotopes[i] == 0) continue;
-                int count = _isotopes[i];
-
-                Isotope isotope = PERIODIC_TABLE[i];
-                Element element = isotope.Element;
-
-                _uniqueIsotopes++;
-
-                _numberOfAtoms += count;
-
-                _mass._mono += count * isotope.Mass;
-
-                _mass._avg += count * element.AverageMass;
-
-                _chemicalFormulaSB.Append(element.AtomicSymbol);
-
-                if (!isotope.IsPrincipalIsotope)
-                {
-                    _chemicalFormulaSB.Append('{');
-                    _chemicalFormulaSB.Append(isotope.MassNumber);
-                    _chemicalFormulaSB.Append('}');
-                }
-
-                if (count != 1)
-                {
-                    _chemicalFormulaSB.Append(count);
-                }
-            }
-
-            // Mark as clean
-            _isDirty = false;
-        }
-
-        /// <summary>
-        /// Parses a string representation of chemical formula and adds the elements
-        /// to this chemical formula
-        /// </summary>
-        /// <param name="formula">the Chemical Formula to parse</param>
-        private void ParseString(string formula)
-        {
-            if (string.IsNullOrEmpty(formula))
-            {
-                return;
-            }
-
-            if (!IsValidChemicalFormula(formula))
-            {
-                throw new FormatException("Input string for chemical formula was in an incorrect format");
-            }
-
-            Element element = null;
-            foreach (Match match in _formulaRegex.Matches(formula))
-            {
-                string chemsym = match.Groups[1].Value;             // Group 1: Chemical Symbol
-                if (PERIODIC_TABLE.TryGetElement(chemsym, out element))
-                {
-                    Isotope isotope = match.Groups[2].Success ?     // Group 2 (optional): Isotope Mass Number
-                        element[int.Parse(match.Groups[2].Value)] :
-                        element.Principal;
-                    int sign = match.Groups[3].Success ?            // Group 3 (optional): Negative Sign
-                        -1 :
-                        1;
-                    int numofelem = match.Groups[4].Success ?       // Group 4 (optional): Number of Elements
-                        int.Parse(match.Groups[4].Value) :
-                        1;
-
-                    Add(isotope, sign * numofelem);
-                }
-                else
-                {
-                    throw new ArgumentException(string.Format("Chemical Symbol {0} does not exist in the Periodic Table", chemsym));
-                }
-            }
-        }
     }
 }

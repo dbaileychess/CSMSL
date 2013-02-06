@@ -18,13 +18,67 @@
 //  along with CSMSL.  If not, see <http://www.gnu.org/licenses/>.        /
 ///////////////////////////////////////////////////////////////////////////
 
+using System.Collections.ObjectModel;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
 namespace CSMSL.Proteomics
 {
-    public class Protease
+    public class Protease: IProtease
     {
+        public static Protease Trypsin {get; private set;}
+        public static Protease TrypsinNoProlineRule { get; private set; }
+        public static Protease GluC { get; private set; }
+        public static Protease LysN { get; private set; }
+        public static Protease ArgC { get; private set; }
+        public static Protease Chymotrypsin { get; private set; }
+        public static Protease LysC { get; private set; }
+        public static Protease CNBr { get; private set; }
+        public static Protease AspN { get; private set; }
+        public static Protease Thermolysin { get; private set; }
+        public static Protease None { get; private set; }
+
+        private static Dictionary<string, Protease> _proteases;
+
+        static Protease()
+        {
+            _proteases = new Dictionary<string, Protease>(12);
+
+
+            Trypsin = AddProtease("Trypsin", Terminus.C, @"[K|R](?'cleave')(?!P)");
+            TrypsinNoProlineRule = AddProtease("Trypsin No Proline Rule", Terminus.C, @"[K|R](?'cleave')");
+            GluC = AddProtease("GluC", Terminus.C, @"E(?'cleave')");
+            LysN = AddProtease("LysN", Terminus.N, @"(?'cleave')K");
+            ArgC = AddProtease("ArgC", Terminus.C, @"R(?'cleave')");
+            Chymotrypsin = AddProtease("Chymotrypsin", Terminus.C, @"[Y|W|F|L](?'cleave')(?!P)");
+            LysC = AddProtease("LysC", Terminus.C, @"K(?'cleave')");
+            CNBr = AddProtease("CNBr", Terminus.C, @"M(?'cleave')");
+            AspN = AddProtease("AspN", Terminus.N, @"(?'cleave')[B|D]");
+            Thermolysin = AddProtease("Thermolysin", Terminus.N, @"(?<![D|E])(?'cleave')[A|F|I|L|M|V]");
+            None = AddProtease("None", Terminus.C, @"[A-Z](?'cleave')");
+        }
+
+        public static Protease GetProtease(string name)
+        {
+            return _proteases[name];
+        }
+
+        public static bool TryGetProtease(string name, out Protease protease)
+        {
+            return _proteases.TryGetValue(name, out protease);
+        }
+
+        /// <summary>
+        /// Adds a protease to the singleton dictionary of proteases
+        /// </summary>
+        /// <param name="protease">The protease to add</param>
+        public static Protease AddProtease(string name, Terminus terminus, string cleavePattern)
+        {
+            Protease protease = new Protease(name, terminus, cleavePattern);
+            _proteases.Add(protease.Name, protease);
+            return protease;
+        }        
+
         private Regex _cleavageRegex;
 
         private string _name;
@@ -35,7 +89,9 @@ namespace CSMSL.Proteomics
             set { _name = value; }
         }
 
-        public Terminus Terminal;
+        public Terminus Terminal { get; private set; }
+
+        public string CleavagePattern { get { return _cleavageRegex.ToString(); } }
 
         public Protease(string name, Terminus terminus, string cleavePattern)
         {
@@ -49,19 +105,19 @@ namespace CSMSL.Proteomics
             return _name;
         }
 
-        public List<int> GetDigestionSiteIndices(AminoAcidPolymer aminoacidpolymer)
+        public ReadOnlyCollection<int> GetDigestionSites(AminoAcidPolymer aminoacidpolymer)
         {
-            return GetDigestionSiteIndices(aminoacidpolymer.Sequence);
+            return GetDigestionSites(aminoacidpolymer.Sequence);
         }
 
-        public List<int> GetDigestionSiteIndices(string sequence)
+        public ReadOnlyCollection<int> GetDigestionSites(string sequence)
         {
-            List<int> indices = new List<int>();
+            List<int> sites = new List<int>();            
             foreach (Match match in _cleavageRegex.Matches(sequence))
             {
-                indices.Add(match.Groups["cleave"].Index - 1);
+                sites.Add(match.Groups["cleave"].Index - 1);
             }
-            return indices;
+            return new ReadOnlyCollection<int>(sites);
         }
     }
 }

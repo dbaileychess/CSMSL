@@ -10,7 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>CSMSL.IO.Agilent</RootNamespace>
     <AssemblyName>CSMSL.Agilent</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
   </PropertyGroup>
@@ -22,6 +22,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -30,6 +31,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="BaseCommon, Version=5.0.519.13, Culture=neutral, processorArchitecture=MSIL">
@@ -53,8 +55,6 @@
       <HintPath>include\MassSpecDataReader.dll</HintPath>
     </Reference>
     <Reference Include="System" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AgilentDDirectory.cs" />
@@ -62,7 +62,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\CSMSL.csproj">
-      <Project>{3C8C9F05-9C19-4251-95FA-05D7EDC8CAE6}</Project>
+      <Project>{3c8c9f05-9c19-4251-95fa-05d7edc8cae6}</Project>
       <Name>CSMSL</Name>
     </ProjectReference>
   </ItemGroup>
