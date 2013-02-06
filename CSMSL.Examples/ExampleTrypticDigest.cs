@@ -28,24 +28,22 @@ namespace CSMSL.Examples
 {
     public class ExampleTrypticDigest
     {
-        public static void Start()
+        public static void Start(IProtease protease, int maxMissed = 3)
         {
             Console.WriteLine("**Start Digestion**");
             Stopwatch watch = new Stopwatch();
-            watch.Start();
-            Protease trypsin = Protease.Trypsin;  
+            watch.Start();          
             List<Peptide> peps = new List<Peptide>();
             List<Protein> prots = new List<Protein>();
-            List<double> allMzs = new List<double>();
-            int maxMissed = 3;
+            List<double> allMzs = new List<double>();         
             using (FastaReader reader = new FastaReader("Resources/yeast_uniprot_120226.fasta"))
             {
                 foreach (Protein protein in reader.ReadNextProtein())
                 {
-                    foreach (Peptide peptide in protein.Digest(trypsin, maxMissed, 5, 35))
+                    foreach (Peptide peptide in protein.Digest(protease, maxMissed, 5, 35))
                     {
                         peps.Add(peptide);
-                        allMzs.Add(peptide.Mass.ToMz(1));
+                        allMzs.Add(peptide.Mass.ToMz(1)); // forces the calculation of the mass and thus chemical formula
                     }
                     prots.Add(protein);
                 }
