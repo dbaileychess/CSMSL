@@ -57,12 +57,12 @@ namespace CSMSL.IO
          * Method to generate decoy sequence according to a given input sequence and other options like
          * decoy type and whether to exclude N-terminus. 
          **/
-        private static string GenerateDecoySequence(string sequence, DecoyDatabaseMethod decoyType, bool excludeNTerminus, bool onlyIfNTerminusIsMethionine)
+        private static string GenerateDecoySequence(string sequence, DecoyDatabaseMethod DecoyType, bool excludeNTerminus, bool onlyIfNTerminusIsMethionine)
         {
             char[] temp = new char[sequence.Length];
             bool keepNTerminus = excludeNTerminus && (!onlyIfNTerminusIsMethionine || sequence[0] == 'M');
 
-            switch (decoyType)
+            switch (DecoyType)
             {
                 case DecoyDatabaseMethod.Reverse:
 
