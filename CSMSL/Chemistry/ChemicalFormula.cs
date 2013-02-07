@@ -411,6 +411,32 @@ namespace CSMSL.Chemistry
             return Count(isotope);
         }
 
+        public int GetNeutronCount()
+        {
+            int neutrons = 0;
+            for (int i = 0; i < _largestIsotopeID; i++)
+            {
+                if (_isotopes[i] == 0)
+                    continue;
+
+                neutrons += Element.PeriodicTable[i].Neutrons * _isotopes[i];
+            }
+            return neutrons;
+        }
+
+        public int GetProtonCount()
+        {
+            int protons = 0;
+            for (int i = 0; i < _largestIsotopeID; i++)
+            {
+                if (_isotopes[i] == 0)
+                    continue;
+
+                protons += Element.PeriodicTable[i].Protons * _isotopes[i];
+            }
+            return protons;
+        }
+
         #endregion
 
         public override int GetHashCode()
@@ -656,6 +682,8 @@ namespace CSMSL.Chemistry
         }
 
         #endregion
+
+
 
 
     }
