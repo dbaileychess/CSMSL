@@ -37,7 +37,8 @@ namespace CSMSL.IO
         {
             UnKnown = 0,
             ThermoRawFile = 1,
-            AgilentRawFile = 2
+            AgilentRawFile = 2,
+            BrukerRawFile = 3
         }
 
         public string FilePath
@@ -106,14 +107,16 @@ namespace CSMSL.IO
         public virtual void Dispose()
         {
             if (_scans != null)
+            {
                 foreach (MsScan scan in _scans)
                 {
                     if (scan != null)
                         scan.Dispose();
                 }
-            Array.Clear(_scans, 0, _scans.Length);
-            _scans = null;
-            _isOpen = false;
+                Array.Clear(_scans, 0, _scans.Length);
+                _scans = null;
+                _isOpen = false;
+            }
         }
 
         public bool Equals(MsDataFile other)

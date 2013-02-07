@@ -28,6 +28,7 @@ using CSMSL.Proteomics;
 using CSMSL.Util;
 using CSMSL.IO.Agilent;
 using CSMSL.IO.Thermo;
+using CSMSL.IO.Bruker;
 using CSMSL.IO;
 using CSMSL.Spectral;
 
@@ -55,60 +56,52 @@ namespace CSMSL.Examples
 
             // Example Objects
             //VennDiagramExamples();
-
-
+            
             // Example programs
-            ExampleTrypticDigest.Start(Protease.Trypsin);
+            //ExampleTrypticDigest.Start(Protease.Trypsin);
 
             //Example IO
-            //MsIOExamples();
+            MsIOExamples();
         }
 
         private static void MsIOExamples()
         {
             Console.WriteLine("**MS I/O Examples**");
                      
-            Console.WriteLine("{0,-4} {1,3} {2,-6:F4} {3,-5} {4,7} {5,-10} {6}", "SN", "Msn", "RT", "Polarity", "# Peaks", "Analyzer", "M/Z Range");
-            string rawfile = @"C:\Users\Derek\Documents\promega\Promega_Dilutions\120731_Promega_PeptideMix1_Heavy_1.raw";// "Resources/ThermoRawFileMS1MS2.raw"; //
-            // Ms Data Files implement IDispoable making using statements an excellent way to manage resources
-            using (MsDataFile dataFile = new ThermoRawFile(rawfile, true))
-            {
-                Stopwatch watch = new Stopwatch();
-                //watch.Start();
-                //foreach (MsScan scan in dataFile)
-                //{
-                //    Console.WriteLine("{0,-4} {1,3} {2,-6:F4} {3,-5} {4,7} {5,-10} {6}",
-                //        scan.SpectrumNumber,
-                //        scan.MsnOrder,
-                //        scan.RetentionTime,
-                //        scan.Polarity,
-                //        scan.Spectrum.Count,
-                //        scan.MzAnalyzer,
-                //        scan.MzRange);
-                //}
-                //watch.Stop();
-                watch.Restart();
-                Chromatogram chrom = dataFile.Where(scan => scan.MsnOrder == 2).GetChromatogram(ChromatogramType.MzRange);
-                watch.Stop();
-                Console.WriteLine("Time: {0}", watch.Elapsed);
-            }
+            Console.WriteLine("{0,-4} {1,3} {2,-6:F4} {3,-5} {4,7} {5,-10} {6}", "SN", "Msn", "RT", "Polarity", "# Peaks", "Analyzer", "M/Z Range");         
 
-            // Ms Data Files implment IDispoable making using statements an excellent way to manage resources
-            //using (MsDataFile dataDirectory = new AgilentDDirectory("Resources/AgilentDDirectoryMS1MS2.d", true))
+            List<MsDataFile> exampleRawFiles = new List<MsDataFile>();
+            exampleRawFiles.Add(new ThermoRawFile("Resources/ThermoRawFileMS1MS2.raw"));
+            exampleRawFiles.Add(new AgilentDDirectory("Resources/AgilentDDirectoryMS1MS2.d"));
+
+            foreach(MsDataFile dataFile in exampleRawFiles)  
+            {
+                dataFile.Open();
+                Stopwatch watch = new Stopwatch();
+                watch.Start();
+                foreach (MsScan scan in dataFile)
+                {
+                    Console.WriteLine("{0,-4} {1,3} {2,-6:F4} {3,-5} {4,7} {5,-10} {6}",
+                        scan.SpectrumNumber,
+                        scan.MsnOrder,
+                        scan.RetentionTime,
+                        scan.Polarity,
+                        scan.Spectrum.Count,
+                        scan.MzAnalyzer,
+                        scan.MzRange);
+                }
+                watch.Stop();
+                Console.WriteLine("File: {0}", dataFile.Name);
+                Console.WriteLine("Time: {0}", watch.Elapsed);
+                Console.WriteLine("Memory used: {0:N0} MB", System.Environment.WorkingSet / (1024 * 1024));
+            }
+           
+            //using (MsDataFile dataFile = new BrukerDDirectory(@"E:\Software\Third Parties\BRUKER sample data & executable\BRUKER sample data & executable\10 fmol BSA_01_637.d", true))
             //{
-            //    foreach (MsScan scan in dataDirectory.OfType<MsScan>())
-            //    {
-            //        Console.WriteLine("{0,-4} {1,3} {2,-6:F4} {3,-5} {4,7} {5,-10} {6}",
-            //            scan.SpectrumNumber,
-            //            scan.MsnOrder,
-            //            scan.RetentionTime,
-            //            scan.Polarity,
-            //            scan.Spectrum.Count,
-            //            scan.MzAnalyzer,
-            //            scan.MzRange);
-            //    }
+            //    Console.WriteLine(dataFile.GetMsnOrder(1324));
             //}
-            Console.WriteLine("Memory used: {0:N0} MB", System.Environment.WorkingSet / (1024 * 1024));
+
+           
         }
 
         private static void VennDiagramExamples()
