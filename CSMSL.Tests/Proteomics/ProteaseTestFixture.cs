@@ -7,6 +7,7 @@ using NUnit.Framework;
 using Should;
 using Should.Fluent;
 using CSMSL.Proteomics;
+using CSMSL.Chemistry;
 
 namespace CSMSL.Tests.Proteomics
 {
@@ -115,6 +116,19 @@ namespace CSMSL.Tests.Proteomics
                     peptides.Should().Not.Contain.Any(pep => pep.Length > maxLength && pep.Length < minLength);
                 }
             }
+        }
+
+        [Test]
+        public void DigestionPerservesCTerminalModification()
+        {
+            Protein prot = new Protein("MMRGFKQRLIKKTTGSSSSSSSKKKDKEKEKEKSSTTSSTSKKPASASSSSHGTTHSSASSTGSKSTTEKGKQSGSVPSQ");
+            prot.SetModification(ChemicalModification.iTRAQ4Plex, Terminus.C);
+
+            Peptide peptide = new Peptide("QSGSVPSQ");
+            peptide.SetModification(ChemicalModification.iTRAQ4Plex, Terminus.C);
+
+            List<Peptide> peptides = prot.Digest(Protease.Trypsin, 0, 5, 10);
+            peptides.Should().Contain.Item(peptide);
         }
 
         [Test]

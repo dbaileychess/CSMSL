@@ -161,6 +161,10 @@ namespace CSMSL.Chemistry
         }
 
         private string _chemicalFormulaString;
+
+        /// <summary>
+        /// The string representation of the chemical formula in Hill Notation
+        /// </summary>
         public string Formula
         {
             get
@@ -407,6 +411,32 @@ namespace CSMSL.Chemistry
             return Count(isotope);
         }
 
+        public int GetNeutronCount()
+        {
+            int neutrons = 0;
+            for (int i = 0; i < _largestIsotopeID; i++)
+            {
+                if (_isotopes[i] == 0)
+                    continue;
+
+                neutrons += Element.PeriodicTable[i].Neutrons * _isotopes[i];
+            }
+            return neutrons;
+        }
+
+        public int GetProtonCount()
+        {
+            int protons = 0;
+            for (int i = 0; i < _largestIsotopeID; i++)
+            {
+                if (_isotopes[i] == 0)
+                    continue;
+
+                protons += Element.PeriodicTable[i].Protons * _isotopes[i];
+            }
+            return protons;
+        }
+
         #endregion
 
         public override int GetHashCode()
@@ -463,8 +493,7 @@ namespace CSMSL.Chemistry
         {
             _atomCount = 0;
             _isotopeCount = 0;
-            _mass = new Mass();
-                     
+            _mass = new Mass();                     
            
             HashSet<int> elements = new HashSet<int>();
 
@@ -502,7 +531,7 @@ namespace CSMSL.Chemistry
             _isDirty = false;
         }
 
-        public void CleanUpFormula()
+        private void CleanUpFormula()
         {
             string carbonPart = "";
             string hydrogenPart = "";
@@ -653,6 +682,8 @@ namespace CSMSL.Chemistry
         }
 
         #endregion
+
+
 
 
     }

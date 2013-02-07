@@ -404,6 +404,22 @@ namespace CSMSL.Tests.Chemistry
         }
 
         [Test]
+        public void TotalNeutrons()
+        {
+            ChemicalFormula formulaA = new ChemicalFormula("C2H3NO");
+
+            formulaA.GetNeutronCount().Should().Equal(19);
+        }
+
+        [Test]
+        public void TotalProtons()
+        {
+            ChemicalFormula formulaA = new ChemicalFormula("C2H3NO");
+
+            formulaA.GetProtonCount().Should().Equal(22);
+        }
+
+        [Test]
         public void ContainsIsotope()
         {
             CAM.Contains(Element.PeriodicTable["C"].PrincipalIsotope).Should().Be.True();
