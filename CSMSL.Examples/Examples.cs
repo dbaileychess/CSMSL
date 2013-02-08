@@ -61,7 +61,7 @@ namespace CSMSL.Examples
             //ExampleTrypticDigest.Start(Protease.Trypsin);
 
             //Example IO
-            MsIOExamples();
+            //MsIOExamples();
         }
 
         private static void MsIOExamples()
@@ -72,8 +72,8 @@ namespace CSMSL.Examples
 
             List<MsDataFile> exampleRawFiles = new List<MsDataFile>();
             exampleRawFiles.Add(new ThermoRawFile("Resources/ThermoRawFileMS1MS2.raw"));
-            exampleRawFiles.Add(new AgilentDDirectory("Resources/AgilentDDirectoryMS1MS2.d"));
-
+            //exampleRawFiles.Add(new AgilentDDirectory("Resources/AgilentDDirectoryMS1MS2.d"));   
+            exampleRawFiles.Add(new BrukerDDirectory(@"E:\Software\Third Parties\BRUKER sample data & executable\BRUKER sample data & executable\10 fmol BSA_01_637.d"));
             foreach(MsDataFile dataFile in exampleRawFiles)  
             {
                 dataFile.Open();
@@ -94,14 +94,7 @@ namespace CSMSL.Examples
                 Console.WriteLine("File: {0}", dataFile.Name);
                 Console.WriteLine("Time: {0}", watch.Elapsed);
                 Console.WriteLine("Memory used: {0:N0} MB", System.Environment.WorkingSet / (1024 * 1024));
-            }
-           
-            //using (MsDataFile dataFile = new BrukerDDirectory(@"E:\Software\Third Parties\BRUKER sample data & executable\BRUKER sample data & executable\10 fmol BSA_01_637.d", true))
-            //{
-            //    Console.WriteLine(dataFile.GetMsnOrder(1324));
-            //}
-
-           
+            }           
         }
 
         private static void VennDiagramExamples()
