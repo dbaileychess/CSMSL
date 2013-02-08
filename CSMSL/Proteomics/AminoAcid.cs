@@ -158,7 +158,7 @@ namespace CSMSL.Proteomics
 
         public override string ToString()
         {
-            return _name;
+            return string.Format("{0} {1} ({2})", Letter, Symbol, Name);
         }
 
     }

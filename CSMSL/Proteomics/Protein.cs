@@ -95,13 +95,8 @@ namespace CSMSL.Proteomics
                     int len = indices[i + missed_cleavages + 1] - indices[i];
                     if (len >= minLength && len <= maxLength)
                     {
-                        int begin = indices[i] + 1;
-                        int end = begin + len + 1;
-                        IChemicalFormula[] mods = new IChemicalFormula[len + 2];                        
-                        Array.Copy(this._modifications, begin + 1, mods, 1, len);
-                        mods[0] = (begin == 0) ? _modifications[0] : AminoAcidPolymer.DefaultNTerminusModification;
-                        mods[len + 1] = (end == _modifications.Length - 1) ? _modifications[end] : AminoAcidPolymer.DefaultCTerminusModification;
-                        Peptide peptide = new Peptide(this._residues.GetRange(begin, len), mods, this, begin + 1);
+                        int begin = indices[i] + 1;               
+                        Peptide peptide = new Peptide(this, begin, len);
                         peptides.Add(peptide);
                     }
                 }

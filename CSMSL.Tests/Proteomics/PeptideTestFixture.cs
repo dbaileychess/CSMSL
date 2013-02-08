@@ -209,5 +209,23 @@ namespace CSMSL.Tests.Proteomics
             pepA.Should().Equals(pepB);
         }
 
+        [Test]
+        public void PeptideParitalCloneInternal()
+        {
+            Peptide pepA = new Peptide("DEREK");
+            Peptide pepB = new Peptide(pepA, 1, 3);
+            Peptide pepC = new Peptide("ERE");
+            pepB.Should().Equals(pepC);
+        }
+
+        [Test]
+        public void PeptideParitalCloneInternalWithModificationInternal()
+        {
+            Peptide pepA = new Peptide("DER[Fe]EK");
+            Peptide pepB = new Peptide(pepA, 2, 3);
+            Peptide pepC = new Peptide("R[Fe]EK");
+            pepB.Should().Equals(pepC);
+        }
+
     }
 }
