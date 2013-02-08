@@ -64,7 +64,7 @@ namespace CSMSL.Proteomics
             _endResidue = startResidue + this.Length;
         }
 
-        internal Peptide(IEnumerable<AminoAcid> residues, ChemicalModification[] mods, Protein parent, int startResidue)
+        internal Peptide(IEnumerable<AminoAcid> residues, IChemicalFormula[] mods, Protein parent, int startResidue)
             : base(residues, mods)
         {
             _parent = parent;
