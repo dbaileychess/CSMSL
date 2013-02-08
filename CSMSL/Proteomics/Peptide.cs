@@ -42,14 +42,25 @@ namespace CSMSL.Proteomics
             set { _endResidue = value; }
         }
 
-        private Protein _parent;
+        private AminoAcidPolymer _parent;
 
-        public Protein Parent
+        public AminoAcidPolymer Parent
         {
             get { return _parent; }
             set { _parent = value; }
         }
 
+        public Peptide(AminoAcidPolymer aminoAcidPolymer, int firstResidue, int length)
+            : base(aminoAcidPolymer, firstResidue, length)
+        {
+            _parent = aminoAcidPolymer;
+            _startResidue = firstResidue;
+            _endResidue = firstResidue + length - 1;
+        }
+
+        public Peptide(AminoAcidPolymer aminoAcidPolymer)
+            : this(aminoAcidPolymer, 0, aminoAcidPolymer.Length) { }
+                 
         public Peptide(string sequence)
             : this(sequence, null, 0) { }
 
@@ -61,16 +72,17 @@ namespace CSMSL.Proteomics
         {
             _parent = parent;
             _startResidue = startResidue;
-            _endResidue = startResidue + this.Length;
+            _endResidue = startResidue + Length - 1;
         }
 
-        internal Peptide(IEnumerable<AminoAcid> residues, ChemicalModification[] mods, Protein parent, int startResidue)
-            : base(residues, mods)
+        public Peptide GetSubPeptide(int firstResidue, int length)
         {
-            _parent = parent;
-            _startResidue = startResidue;
-            _endResidue = startResidue + this.Length;
+            return new Peptide(this, firstResidue, length);
         }
 
+        public override string ToString()
+        {
+            return base.ToString();
+        }
     }
 }

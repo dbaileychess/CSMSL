@@ -68,7 +68,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Chemistry\ChemicalFormulaTestFixture.cs" />
-    <Compile Include="Chemistry\MassTexsFixture.cs" />
+    <Compile Include="Chemistry\MassTestFixture.cs" />
     <Compile Include="Proteomics\PeptideTestFixture.cs" />
     <Compile Include="Proteomics\ProteaseTestFixture.cs" />
     <Compile Include="RangeTestFixture.cs" />

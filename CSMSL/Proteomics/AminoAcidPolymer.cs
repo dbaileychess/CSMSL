@@ -28,10 +28,10 @@ namespace CSMSL.Proteomics
 {
     public abstract class AminoAcidPolymer : IChemicalFormula, IMass
     {
-        internal static readonly ChemicalModification DefaultCTerm = new ChemicalModification("OH", "OH");
-        internal static readonly ChemicalModification DefaultNTerm = new ChemicalModification("H", "H");
+        public static readonly IChemicalFormula DefaultCTerminusModification = new ChemicalFormula("OH");
+        public static readonly IChemicalFormula DefaultNTerminusModification = new ChemicalFormula("H");
 
-        private static readonly Dictionary<FragmentType, ChemicalFormula> _fragmentIonCaps = new Dictionary<FragmentType, ChemicalFormula>()
+        private static readonly Dictionary<FragmentType, IChemicalFormula> _fragmentIonCaps = new Dictionary<FragmentType, IChemicalFormula>()
         {
           {FragmentType.a, new ChemicalFormula("C-1H-1O-1")},
           {FragmentType.adot, new ChemicalFormula("C-1O-1")},
@@ -49,8 +49,10 @@ namespace CSMSL.Proteomics
 
         private static readonly Regex _sequenceRegex = new Regex(@"([A-Z])(?:\[([\w\{\}]+)\])?", RegexOptions.Compiled);
         private static readonly Regex _validateSequenceRegex = new Regex("^(" + _sequenceRegex.ToString() + ")+$", RegexOptions.Compiled);
-       // private static readonly AminoAcidDictionary AMINO_ACIDS = AminoAcidDictionary.Instance;
-        internal ChemicalModification[] _modifications;
+
+        internal IChemicalFormula[] _modifications;
+        internal IAminoAcid[] _aminoAcids;
+
         internal List<AminoAcid> _residues;
         private ChemicalFormula _chemicalFormula;
 
@@ -60,24 +62,42 @@ namespace CSMSL.Proteomics
         private StringBuilder _sequenceSB;
 
         public AminoAcidPolymer(string sequence)
-            : this(sequence, DefaultNTerm, DefaultCTerm) { }
+            : this(sequence, DefaultNTerminusModification, DefaultCTerminusModification) { }
 
-        public AminoAcidPolymer(string sequence, ChemicalModification nTerm, ChemicalModification cTerm)
+        public AminoAcidPolymer(string sequence, IChemicalFormula nTerm, IChemicalFormula cTerm)
         {
-            _residues = new List<AminoAcid>(sequence.Length);
-            _modifications = new ChemicalModification[sequence.Length + 2]; // +2 for the n and c term
+            int length = sequence.Length;
+            _aminoAcids = new IAminoAcid[length];
+            _modifications = new IChemicalFormula[length + 2]; // +2 for the n and c term
             NTerminus = nTerm;
             ParseSequence(sequence);
             CTerminus = cTerm;
         }
 
-        internal AminoAcidPolymer(IEnumerable<AminoAcid> residues, ChemicalModification[] mods)
+        public AminoAcidPolymer(AminoAcidPolymer aminoAcidPolymer)
+            : this(aminoAcidPolymer, 0, aminoAcidPolymer.Length) { }      
+
+        public AminoAcidPolymer(AminoAcidPolymer aminoAcidPolymer, int firstResidue, int length)
         {
-            _residues = new List<AminoAcid>(residues);
-            _modifications = mods;
+            if (length + firstResidue > aminoAcidPolymer.Length)
+                length = aminoAcidPolymer.Length - firstResidue;
+            _aminoAcids = new IAminoAcid[length];
+            _modifications = new IChemicalFormula[length + 2];
+            Array.Copy(aminoAcidPolymer._aminoAcids, firstResidue, _aminoAcids, 0, length);
+            Array.Copy(aminoAcidPolymer._modifications, firstResidue + 1, _modifications, 1, length);
+            NTerminus = (firstResidue == 0) ? aminoAcidPolymer.NTerminus : DefaultNTerminusModification;
+            CTerminus = (length + firstResidue == aminoAcidPolymer.Length) ? aminoAcidPolymer.CTerminus : DefaultCTerminusModification;
             _isDirty = true;
             _isSequenceDirty = true;
         }
+
+        //internal AminoAcidPolymer(IEnumerable<AminoAcid> residues, IChemicalFormula[] mods)
+        //{
+        //    //_residues = new List<AminoAcid>(residues);
+        //    _modifications = mods;
+        //    _isDirty = true;
+        //    _isSequenceDirty = true;
+        //}
 
         public ChemicalFormula ChemicalFormula
         {
@@ -91,10 +111,10 @@ namespace CSMSL.Proteomics
             }
         }
 
-        public ChemicalModification CTerminus
+        public IChemicalFormula CTerminus
         {
             get
-            {
+            {                
                 return _modifications[_modifications.Length - 1];
             }
             set
@@ -104,9 +124,12 @@ namespace CSMSL.Proteomics
             }
         }
 
+        /// <summary>
+        /// The number of amino acids in this amino acid polymer
+        /// </summary>
         public int Length
         {
-            get { return _residues.Count; }
+            get { return _aminoAcids.Length; }
         }
 
         public Mass Mass
@@ -114,7 +137,7 @@ namespace CSMSL.Proteomics
             get { return ChemicalFormula.Mass; }
         }
 
-        public ChemicalModification NTerminus
+        public IChemicalFormula NTerminus
         {
             get
             {
@@ -156,7 +179,7 @@ namespace CSMSL.Proteomics
         public int CountResidues(char residueChar)
         {           
             int count = 0;
-            foreach (AminoAcid aar in _residues)
+            foreach (IAminoAcid aar in _aminoAcids)
             {
                 if (aar.Letter.Equals(residueChar))
                     count++;
@@ -164,11 +187,11 @@ namespace CSMSL.Proteomics
             return count;
         }
 
-        public AminoAcid this[int index]
+        public IAminoAcid this[int index]
         {
             get
             {
-                return _residues[index - 1];
+                return _aminoAcids[index - 1];
             }
         }
 
@@ -180,7 +203,7 @@ namespace CSMSL.Proteomics
             }
 
             ChemicalFormula chemFormula = new ChemicalFormula(_fragmentIonCaps[type]);
-            ChemicalModification mod = null;
+            IChemicalFormula mod = null;
             int start = 0;
             int end = number;
             if (type >= FragmentType.x)
@@ -196,7 +219,7 @@ namespace CSMSL.Proteomics
 
             for (int i = start; i < end; i++)
             {
-                chemFormula.Add(_residues[i]);
+                chemFormula.Add(_aminoAcids[i]);
                 if ((mod = _modifications[i + 1]) != null)
                 {
                     chemFormula.Add(mod);
@@ -206,9 +229,9 @@ namespace CSMSL.Proteomics
             return new Fragment(type, number, chemFormula, this);
         }
 
-        public bool ContainsModification(ChemicalModification modification)
+        public bool ContainsModification(IChemicalFormula modification)
         {
-            foreach (ChemicalModification mod in _modifications)
+            foreach (IChemicalFormula mod in _modifications)
             {
                 if (modification.Equals(mod))
                     return true;
@@ -245,53 +268,75 @@ namespace CSMSL.Proteomics
             yield break;
         }
 
-        public void SetModification(ChemicalModification mod, Terminus terminus)
+        /// <summary>
+        /// Sets the modification at the terminus of this amino acid polymer
+        /// </summary>
+        /// <param name="mod">The mod to set</param>
+        /// <param name="terminus">The termini to set the mod at</param>
+        public void SetModification(IChemicalFormula mod, Terminus terminus)
         {
             if ((terminus & Terminus.N) == Terminus.N)
-            {               
-                _modifications[0] = mod;
-                _isDirty = true;
+            {
+                NTerminus = mod;               
             }
             if ((terminus & Terminus.C) == Terminus.C)
             {
-                _modifications[_modifications.Length - 1] = mod;
-                _isDirty = true;
+                CTerminus = mod;             
             }
         }
 
-        public int SetModification(ChemicalModification mod, char letter)
+        /// <summary>
+        /// Clears the modification set at the terminus of this amino acid polymer back
+        /// to the default C or N modifications.
+        /// </summary>
+        /// <param name="terminus"></param>
+        public void ClearModification(Terminus terminus)
         {
-            AminoAcid residue = null;
-            if (AminoAcid.TryGetResidue(letter, out residue))
+            if ((terminus & Terminus.N) == Terminus.N)
             {
-                return SetModification(mod, residue);
+                NTerminus = DefaultNTerminusModification;
             }
-            else
+            if ((terminus & Terminus.C) == Terminus.C)
             {
-                return 0;
+                CTerminus = DefaultCTerminusModification;
             }
         }
-
-        public int SetModification(ChemicalModification mod, AminoAcid residue)
+        
+        public int SetModification(IChemicalFormula mod, char letter)
         {
             int count = 0;
-            for (int i = 0; i < _residues.Count; i++)
+            for (int i = 0; i < _aminoAcids.Length; i++)
             {
-                if (residue.Equals(_residues[i]))
+                if (letter.Equals(_aminoAcids[i].Letter))
                 {
                     _modifications[i + 1] = mod;
                     _isDirty = true;
                     count++;
                 }
             }
-            return count;
+            return count;         
         }
 
-        public void SetModification(ChemicalModification mod, int residueNumber)
+        public int SetModification(IChemicalFormula mod, IAminoAcid residue)
+        {
+            int count = 0;
+            for (int i = 0; i < _aminoAcids.Length; i++)
+            {
+                if (residue.Equals(_aminoAcids[i]))
+                {
+                    _modifications[i + 1] = mod;
+                    _isDirty = true;
+                    count++;
+                }
+            }
+            return count;        
+        }
+
+        public void SetModification(IChemicalFormula mod, int residueNumber)
         {
             if (residueNumber > Length || residueNumber < 1)
             {
-                throw new ArgumentNullException("Residue number not correct");
+                throw new IndexOutOfRangeException(string.Format("Residue number not in the correct range: [{0}-{1}] you specified: {2}", 1, Length, residueNumber));
             }
             _modifications[residueNumber] = mod;
             _isDirty = true;
@@ -315,7 +360,7 @@ namespace CSMSL.Proteomics
 
             if (_sequenceSB == null)
             {
-                _sequenceSB = new StringBuilder(_residues.Count);
+                _sequenceSB = new StringBuilder(_aminoAcids.Length + 2);
             }
             else
             {
@@ -323,13 +368,13 @@ namespace CSMSL.Proteomics
             }
 
             StringBuilder baseSeqSB = new StringBuilder();
-            ChemicalModification mod = null;
+            IChemicalFormula mod = null;
                       
             // Handle N-Terminus
             if ((mod = _modifications[0]) != null)
             {
                 _chemicalFormula.Add(mod);
-                if (mod != DefaultNTerm)
+                if (!mod.Equals(DefaultNTerminusModification))
                 {
                     _sequenceSB.Append('[');
                     _sequenceSB.Append(mod);
@@ -338,9 +383,9 @@ namespace CSMSL.Proteomics
             }
 
             // Handle Amino Acid Residues
-            for (int i = 0; i < _residues.Count; i++)
+            for (int i = 0; i < _aminoAcids.Length; i++)
             {
-                AminoAcid aa = _residues[i];
+                IAminoAcid aa = _aminoAcids[i];
                 _chemicalFormula.Add(aa);
                 _sequenceSB.Append(aa.Letter);
                 baseSeqSB.Append(aa.Letter);
@@ -357,7 +402,7 @@ namespace CSMSL.Proteomics
             if ((mod = _modifications[_modifications.Length - 1]) != null)
             {
                 _chemicalFormula.Add(mod);
-                if (mod != DefaultCTerm)
+                if (!mod.Equals(DefaultCTerminusModification))
                 {
                     _sequenceSB.Append("-[");
                     _sequenceSB.Append(mod);
@@ -373,12 +418,12 @@ namespace CSMSL.Proteomics
         public override int GetHashCode()
         {
             int hCode = 748;
-            foreach (AminoAcid aa in _residues)
+            foreach (IAminoAcid aa in _aminoAcids)
             {
                 hCode ^= aa.GetHashCode();
                 hCode = hCode >> 7;
             }
-            foreach (ChemicalModification mod in _modifications)
+            foreach (IChemicalFormula mod in _modifications)
             {
                 if (mod != null)
                 {
@@ -416,7 +461,7 @@ namespace CSMSL.Proteomics
         {
             AminoAcid residue = null;
             bool inMod = false;
-            int startcount = _residues.Count;
+            int index = 0;
             StringBuilder modSB = new StringBuilder(10);
             StringBuilder baseSeqSB = new StringBuilder(sequence.Length);
             foreach (char letter in sequence)
@@ -429,17 +474,17 @@ namespace CSMSL.Proteomics
                         string modString = modSB.ToString();
                         modSB.Clear();
 
-                        ChemicalModification modification = null;
+                        IChemicalFormula modification = null;
                         switch (modString)
                         {
                             case "#": // Make the modification unverisally heavy (all C12 and N14s are promoted to C13 and N15s)
-                                modification = ChemicalModification.MakeHeavy(_residues[_residues.Count - 1]);
+                                modification = ChemicalModification.MakeHeavy(_aminoAcids[index - 1]);
                                 break;
                             default:
                                 modification = new ChemicalModification(modString);
                                 break;
                         }
-                        _modifications[_residues.Count] = modification;
+                        _modifications[index] = modification;
                     }
                     else
                     {
@@ -448,7 +493,8 @@ namespace CSMSL.Proteomics
                 }
                 else if (AminoAcid.TryGetResidue(letter, out residue))
                 {
-                    _residues.Add(residue);
+                    _aminoAcids[index++] = residue;
+                    //_residues.Add(residue);
                     baseSeqSB.Append(letter);
                 }
                 else
@@ -470,9 +516,9 @@ namespace CSMSL.Proteomics
             }
 
             _sequence = baseSeqSB.ToString();
-            int endCount = _residues.Count;
-            _isDirty = endCount != startcount; // set the dirty flag once, instead of everytime you add a residue
-            Array.Resize(ref _modifications, endCount + 2);
+            Array.Resize(ref _aminoAcids, index);
+            Array.Resize(ref _modifications, index + 2);
+            _isDirty = true;             
         }
 
         #region Statics

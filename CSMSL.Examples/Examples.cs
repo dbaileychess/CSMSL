@@ -58,7 +58,7 @@ namespace CSMSL.Examples
             //VennDiagramExamples();
             
             // Example programs
-            //ExampleTrypticDigest.Start(Protease.Trypsin);
+            ExampleTrypticDigest.Start(Protease.Trypsin);
 
             //Example IO
             //MsIOExamples();
@@ -168,7 +168,7 @@ namespace CSMSL.Examples
             // Simple chemical formula creation
             ChemicalFormula formula1 = new ChemicalFormula("C2H3NO");
             WriteFormulaToConsole(formula1);
-
+                  
             // Input order does not matter
             ChemicalFormula formula2 = new ChemicalFormula("NH3C2O");
             WriteFormulaToConsole(formula2);
