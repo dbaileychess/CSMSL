@@ -22,6 +22,9 @@ using System;
 
 namespace CSMSL.Proteomics
 {
+    /// <summary>
+    /// The terminus of an amino acid polymer N-[Amino Acids]-C
+    /// </summary>
     [Flags]
     public enum Terminus { N = 1, C = 2 }
 }

@@ -24,7 +24,7 @@ using CSMSL.Chemistry;
 
 namespace CSMSL.Proteomics
 {
-    public class AminoAcid : IChemicalFormula, IMass
+    public class AminoAcid : IAminoAcid, IChemicalFormula, IMass
     {
         public static AminoAcid Alanine { get; private set; }
         public static AminoAcid Arginine { get; private set; }

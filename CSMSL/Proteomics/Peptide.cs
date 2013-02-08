@@ -50,6 +50,14 @@ namespace CSMSL.Proteomics
             set { _parent = value; }
         }
 
+        public Peptide(AminoAcidPolymer aminoAcidPolymer)
+            : base(aminoAcidPolymer)
+        {
+            _parent = null;
+            _startResidue = 0;
+            _endResidue = 0;
+        }
+
         public Peptide(string sequence)
             : this(sequence, null, 0) { }
 

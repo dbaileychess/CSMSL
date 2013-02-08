@@ -46,11 +46,114 @@ namespace CSMSL.Tests.Proteomics
         }
 
         [Test]
-        public void PeptideWithModifidedTermni()
+        public void SetAminoAcidModification()
+        {
+            ChemicalFormula formula = new ChemicalFormula("Fe");
+            MockPeptideEveryAminoAcid.SetModification(formula, AminoAcid.Asparagine);
+
+            MockPeptideEveryAminoAcid.ToString().Should().Equal("ACDEFGHIKLMN[Fe]PQRSTVWY");
+        }
+
+        [Test]
+        public void SetAminoAcidCharacterModification()
+        {
+            ChemicalFormula formula = new ChemicalFormula("Fe");
+            MockPeptideEveryAminoAcid.SetModification(formula, 'D');
+
+            MockPeptideEveryAminoAcid.ToString().Should().Equal("ACD[Fe]EFGHIKLMNPQRSTVWY");
+        }
+
+        [Test]
+        public void SetResiduePositionModification()
+        {
+            ChemicalFormula formula = new ChemicalFormula("Fe");
+            MockPeptideEveryAminoAcid.SetModification(formula, 5);
+
+            MockPeptideEveryAminoAcid.ToString().Should().Equal("ACDEF[Fe]GHIKLMNPQRSTVWY");
+        }
+
+        [Test]
+        [ExpectedException(typeof(IndexOutOfRangeException), ExpectedMessage="Residue number not in the correct range: [1-20] you specified: 25")]
+        public void SetResiduePositionModificationOutOfRange()
+        {
+            ChemicalFormula formula = new ChemicalFormula("Fe");
+            MockPeptideEveryAminoAcid.SetModification(formula, 25);           
+        }
+        
+        [Test]
+        public void SetCTerminusMod()
+        {
+            ChemicalFormula formula = new ChemicalFormula("Fe");
+            MockPeptideEveryAminoAcid.SetModification(formula, Terminus.C);
+
+            MockPeptideEveryAminoAcid.CTerminus.Should().Equal(formula);
+        }
+
+        [Test]
+        public void SetCTerminusModStringRepresentation()
+        {
+            ChemicalFormula formula = new ChemicalFormula("Fe");
+            MockPeptideEveryAminoAcid.SetModification(formula, Terminus.C);
+
+            MockPeptideEveryAminoAcid.ToString().Should().Equal("ACDEFGHIKLMNPQRSTVWY-[Fe]");
+        }
+
+        [Test]
+        public void SetCTerminusModStringRepresentationofChemicalModification()
+        {
+            IChemicalFormula formula = new ChemicalModification("Fe", "Test");
+            MockPeptideEveryAminoAcid.SetModification(formula, Terminus.C);
+
+            MockPeptideEveryAminoAcid.ToString().Should().Equal("ACDEFGHIKLMNPQRSTVWY-[Test]");
+        }
+
+        [Test]
+        public void SetNTerminusMod()
+        {
+            ChemicalFormula formula = new ChemicalFormula("Fe");
+            MockPeptideEveryAminoAcid.SetModification(formula, Terminus.N);
+
+            MockPeptideEveryAminoAcid.NTerminus.Should().Equal(formula);
+        }
+
+        [Test]
+        public void SetNAndCTerminusMod()
         {
             MockPeptideEveryAminoAcid.SetModification(new ChemicalModification("Fe"), Terminus.C);
             MockPeptideEveryAminoAcid.SetModification(new ChemicalModification("H2NO"), Terminus.N);
+
             MockPeptideEveryAminoAcid.ToString().Should().Equal("[H2NO]-ACDEFGHIKLMNPQRSTVWY-[Fe]");
+        }
+
+
+        [Test]
+        public void SetSameNAndCTerminusMod()
+        {
+            MockPeptideEveryAminoAcid.SetModification(new ChemicalModification("Fe"), Terminus.C | Terminus.N);
+
+            MockPeptideEveryAminoAcid.ToString().Should().Equal("[Fe]-ACDEFGHIKLMNPQRSTVWY-[Fe]");
+        }
+             
+        [Test]
+        public void ClearNTerminusMod()
+        {
+            ChemicalFormula formula = new ChemicalFormula("Fe");
+            MockPeptideEveryAminoAcid.SetModification(formula, Terminus.N);
+
+            MockPeptideEveryAminoAcid.ClearModification(Terminus.N);
+
+            MockPeptideEveryAminoAcid.NTerminus.Should().Equal(AminoAcidPolymer.DefaultNTerminusModification);
+        }
+
+        [Test]
+        public void ClearCTerminusMod()
+        {
+            ChemicalFormula formula = new ChemicalFormula("Fe");
+            MockPeptideEveryAminoAcid.SetModification(formula, Terminus.C);
+
+            MockPeptideEveryAminoAcid.ClearModification(Terminus.C);
+
+            MockPeptideEveryAminoAcid.CTerminus.Should().Equal(AminoAcidPolymer.DefaultCTerminusModification);
         }
 
         [Test]
@@ -58,6 +161,51 @@ namespace CSMSL.Tests.Proteomics
         {
             Peptide pepA = new Peptide("DEREK");
             Peptide pepB = new Peptide("DEREK");            
+            pepA.Should().Equals(pepB);
+        }
+
+        [Test]
+        public void PeptideInEqualityAminoAcidSwitch()
+        {
+            Peptide pepA = new Peptide("DEREK");
+            Peptide pepB = new Peptide("DEERK");
+            pepA.Should().Not.Equals(pepB);
+        }
+
+        [Test]
+        public void PeptideInEqualityAminoAcidModification()
+        {
+            Peptide pepA = new Peptide("DEREK");
+            Peptide pepB = new Peptide("DEREK");
+            pepB.SetModification(new ChemicalFormula("H2O"), 'R');
+
+            pepA.Should().Not.Equals(pepB);
+        }
+
+        [Test]
+        public void PeptideCloneEquality()
+        {
+            Peptide pepA = new Peptide("DEREK");
+            Peptide pepB = new Peptide(pepA);
+            pepA.Should().Equals(pepB);
+        }
+
+        [Test]
+        public void PeptideCloneNotSameReference()
+        {
+            Peptide pepA = new Peptide("DEREK");
+            Peptide pepB = new Peptide(pepA);
+
+            pepA.Should().Not.Be.SameAs(pepB);
+        }
+
+        [Test]
+        public void PeptideCloneWithModification()
+        {
+            Peptide pepA = new Peptide("DEREK");
+            pepA.SetModification(new ChemicalFormula("H2O"), 'R');
+            Peptide pepB = new Peptide(pepA);
+
             pepA.Should().Equals(pepB);
         }
 
