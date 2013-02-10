@@ -65,6 +65,8 @@ namespace CSMSL.IO
             StringBuilder headerSB = new StringBuilder(80);
             foreach (string line in ReadNextLine())
             {
+                if (string.IsNullOrEmpty(line))
+                    continue;
                 if (Array.IndexOf(Delimiters, line[0]) >= 0)
                 {
                     if (sequenceSB.Length > 0)

@@ -25,7 +25,7 @@ using System.Text.RegularExpressions;
 
 namespace CSMSL.Chemistry
 {
-    public class ChemicalFormula : IMass, IEquatable<ChemicalFormula>
+    public class ChemicalFormula : IMass, IEquatable<ChemicalFormula>, IChemicalFormula
     {      
         /// <summary>
         /// A regular expression for matching chemical formulas such as: C2C{13}3H5NO5
@@ -683,8 +683,9 @@ namespace CSMSL.Chemistry
 
         #endregion
 
-
-
-
+        ChemicalFormula IChemicalFormula.ChemicalFormula
+        {
+            get { return this; }
+        }
     }
 }

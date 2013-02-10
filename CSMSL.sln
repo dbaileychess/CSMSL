@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Agilent", "CSMSL\IO\Agilent
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSMSL.Examples", "CSMSL.Examples\CSMSL.Examples.csproj", "{AFA55374-C851-429F-AC43-CCC0A52C0315}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bruker", "CSMSL\IO\Bruker\Bruker.csproj", "{F1976BEF-8756-46C2-830B-A638FF4A2E8C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -59,6 +61,14 @@ Global
 		{AFA55374-C851-429F-AC43-CCC0A52C0315}.Release|x64.Build.0 = Release|x64
 		{AFA55374-C851-429F-AC43-CCC0A52C0315}.Release|x86.ActiveCfg = Release|x86
 		{AFA55374-C851-429F-AC43-CCC0A52C0315}.Release|x86.Build.0 = Release|x86
+		{F1976BEF-8756-46C2-830B-A638FF4A2E8C}.Debug|x64.ActiveCfg = Debug|x64
+		{F1976BEF-8756-46C2-830B-A638FF4A2E8C}.Debug|x64.Build.0 = Debug|x64
+		{F1976BEF-8756-46C2-830B-A638FF4A2E8C}.Debug|x86.ActiveCfg = Debug|x86
+		{F1976BEF-8756-46C2-830B-A638FF4A2E8C}.Debug|x86.Build.0 = Debug|x86
+		{F1976BEF-8756-46C2-830B-A638FF4A2E8C}.Release|x64.ActiveCfg = Release|x64
+		{F1976BEF-8756-46C2-830B-A638FF4A2E8C}.Release|x64.Build.0 = Release|x64
+		{F1976BEF-8756-46C2-830B-A638FF4A2E8C}.Release|x86.ActiveCfg = Release|x86
+		{F1976BEF-8756-46C2-830B-A638FF4A2E8C}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,0 +1,258 @@
+﻿Group Name: Other  Parameter Name: Instrument Type Unit:  Value: maXis impact
+Group Name: Source  Parameter Name: Capillary Unit:  Value: 2206
+Group Name: Source  Parameter Name: End Plate Unit:  Value: 117
+Group Name: Source  Parameter Name: Corona Unit:  Value: 0
+Group Name: Spectra Acquisition  Parameter Name: Profile Spectrum Spike Filter Active Unit:  Value: Off
+Group Name: Spectra Acquisition  Parameter Name: Profile Spectrum Replaced Spike Number Unit:  Value: 0
+Group Name: Spectra Acquisition  Parameter Name: Profile Spectrum Multiplicator Unit:  Value: 4
+Group Name: Internal  Parameter Name: Mass Spectrometer Status Unit:  Value: Ready
+Group Name: MSMS  Parameter Name: Precursor Charge State Unit:  Value: 0
+Group Name: MSMS  Parameter Name: Isolation active Unit:  Value: Off
+Group Name: MSMS  Parameter Name: Fragmentation Mode Unit:  Value: CID
+Group Name: Mode  Parameter Name: Ion Polarity Unit:  Value: Positive
+Group Name: Configuration  Parameter Name: External Start Unit:  Value: Off
+Group Name: Configuration  Parameter Name: External Start Polarity Unit:  Value: Positive
+Group Name: Configuration  Parameter Name: External Stop Polarity Unit:  Value: Positive
+Group Name: Configuration  Parameter Name: External Ready Polarity Unit:  Value: Positive
+Group Name: Configuration  Parameter Name: External Signal 1 Polarity Unit:  Value: Positive
+Group Name: Configuration  Parameter Name: External Signal 2 Polarity Unit:  Value: Positive
+Group Name: Source  Parameter Name: Source Type Unit:  Value: Captive Spray
+Group Name: Source  Parameter Name: Set Multi Mode Active Ionization Mode Unit:  Value: ESI
+Group Name: Source  Parameter Name: Set Divert Valve Unit:  Value: Waste
+Group Name: Source  Parameter Name: Set Capillary Unit:  Value: 1400
+Group Name: Source  Parameter Name: Set End Plate Offset Unit:  Value: 0
+Group Name: Source  Parameter Name: Set Corona Unit:  Value: 4000
+Group Name: Source  Parameter Name: Set OnVolt Unit:  Value: 800
+Group Name: Source  Parameter Name: Set Charging Voltage Unit:  Value: 0
+Group Name: TOF  Parameter Name: Focus Unit:  Value: Active
+Group Name: TOF  Parameter Name: HVC Configuration Unit:  Value: 8703
+Group Name: TOF  Parameter Name: Temperature Compensation Unit:  Value: On
+Group Name: TOF  Parameter Name: Device Temperature Average Number 1 Unit:  Value: 60
+Group Name: TOF  Parameter Name: Device Temperature Average Number 2 Unit:  Value: 20
+Group Name: Digitizer  Parameter Name: Serial Number Unit:  Value: 60348
+Group Name: Digitizer  Parameter Name: Configuration Mode Unit:  Value: Advanced Averager
+Group Name: Digitizer  Parameter Name: Summation Unit:  Value: 4098
+Group Name: Digitizer  Parameter Name: Sample Points Unit:  Value: 406464
+Group Name: Digitizer  Parameter Name: Input Channel Unit:  Value: 1
+Group Name: Digitizer  Parameter Name: Bandwidth Unit:  Value: Off
+Group Name: Digitizer  Parameter Name: Trigger Coupling Unit:  Value: DC 50 Ohm
+Group Name: Digitizer  Parameter Name: Trigger Slope Unit:  Value: positive
+Group Name: Digitizer  Parameter Name: Trigger Resync Unit:  Value: no resync
+Group Name: Digitizer  Parameter Name: Trigger Always Unit:  Value: On
+Group Name: Digitizer  Parameter Name: Enable Noise Suppression Unit:  Value: On
+Group Name: Digitizer  Parameter Name: Noise Base Enable Unit:  Value: Off
+Group Name: Digitizer  Parameter Name: Regulate Spectra Rate Unit:  Value: Spectra Rate
+Group Name: Processing  Parameter Name: Peak Finder Unit:  Value: SUM PEAK
+Group Name: Processing  Parameter Name: Calculate Integrated Intensity Unit:  Value: On
+Group Name: Processing  Parameter Name: Calculate Baseline Unit:  Value: Off
+Group Name: Processing  Parameter Name: Calculate Peak Area Unit:  Value: Off
+Group Name: Processing  Parameter Name: Calculate Peak Width Unit:  Value: On
+Group Name: Processing  Parameter Name: Calculate Signal To Noise ratio Unit:  Value: Off
+Group Name: Processing  Parameter Name: Calculate Goodness Unit:  Value: Off
+Group Name: Calibration  Parameter Name: TOF Calibration Mode Version Unit:  Value: Version 2
+Group Name: Calibration  Parameter Name: TOF1 Calibration Mode Unit:  Value: Quadratic + HPC
+Group Name: Calibration  Parameter Name: TOF2 Calibration Mode Unit:  Value: Enhanced Quadratic
+Group Name: Calibration  Parameter Name: Mark TOF Calibration Segment Unit:  Value: No
+Group Name: Rolling Average  Parameter Name: Rolling Average Mode Unit:  Value: Off
+Group Name: Rolling Average  Parameter Name: Rolling Averages Unit:  Value: 3
+Group Name: Spectra Acquisition  Parameter Name: Spectra Compressed Unit:  Value: On
+Group Name: Spectra Acquisition  Parameter Name: Save Spectra Unit:  Value: Only Line Spectra
+Group Name: Spectra Acquisition  Parameter Name: Spectra Compression Filter Active Unit:  Value: Off
+Group Name: Spectra Acquisition  Parameter Name: Spectra Compression Filter Level Unit:  Value: Low
+Group Name: Other  Parameter Name: Device Option Unit:  Value: 4099
+Group Name: Other  Parameter Name: Spectra Synchronization Unit:  Value: On
+Group Name: Other  Parameter Name: Fast Capillary Unit:  Value: Active
+Group Name: Other  Parameter Name: Load Instrument parameter of this method Unit:  Value: No
+Group Name: Other  Parameter Name: Parameter Setting Mode Unit:  Value: Expert
+Group Name: Other  Parameter Name: Specified Mass Resolution Unit:  Value: 0
+Group Name: Internal  Parameter Name: User View Mode Unit:  Value: Expert
+Group Name: Collision Cell  Parameter Name: Set QuenchTime Unit:  Value: 5
+Group Name: Collision Cell  Parameter Name: Set Quench Enable Unit:  Value: On
+Group Name: Collision Cell  Parameter Name: Set Quench Always Enable Unit:  Value: On
+Group Name: Collision Cell  Parameter Name: Set Collision Stepping Active Unit:  Value: On
+Group Name: Collision Cell  Parameter Name: Set Collision Stepping Mode Unit:  Value: Basic
+Group Name: Collision Cell  Parameter Name: Set Collision Cell Entrance Fix Unit:  Value: On
+Group Name: MSMS  Parameter Name: Use MS/MS Acquisition Control Option Unit:  Value: On
+Group Name: MSMS  Parameter Name: Set Fallback Charge State Unit:  Value: 2
+Group Name: MSMS  Parameter Name: Use Broad Band CID Option Unit:  Value: Off
+Group Name: MSMS Automatic  Parameter Name: Use Precursor background substraction Unit:  Value: On
+Group Name: MSMS Automatic  Parameter Name: PreCursor Background Averages Unit:  Value: 5
+Group Name: MSMS Automatic  Parameter Name: Set Number Of Precursors Unit:  Value: 3
+Group Name: MSMS Automatic  Parameter Name: Set Precursors sorted by m/z Unit:  Value: Off
+Group Name: MSMS Automatic  Parameter Name: Set Active Exclusion Unit:  Value: On
+Group Name: MSMS Automatic  Parameter Name: Set Exclusion Activation Unit:  Value: 3
+Group Name: MSMS Automatic  Parameter Name: Set Exclusion Release Unit:  Value: 60
+Group Name: MSMS Automatic  Parameter Name: Set Strict Active Exclusion Unit:  Value: Off
+Group Name: MSMS Automatic  Parameter Name: Use a strict group length algorithm Unit:  Value: On
+Group Name: MSMS Automatic  Parameter Name: Set Charged Ions Group Length Unit:  Value: 5
+Group Name: MSMS Automatic  Parameter Name: Set Exclude Unknown Charged Ions Unit:  Value: On
+Group Name: MSMS Automatic  Parameter Name: Set Exclude Single Charged Ions Unit:  Value: On
+Group Name: MSMS Automatic  Parameter Name: Use Prefer Charge Range Unit:  Value: On
+Group Name: MSMS Automatic  Parameter Name: Set Preferred Charge Range Low Unit:  Value: 2
+Group Name: MSMS Automatic  Parameter Name: Set Preferred Charge Range High Unit:  Value: 6
+Group Name: MSMS Automatic  Parameter Name: Set Exclude Or Include Mass Range Mode Unit:  Value: Exclude
+Group Name: MSMS Automatic  Parameter Name: Use Sile Option Unit:  Value: Off
+Group Name: MSMS Automatic  Parameter Name: Set Sile Number Of Top N Unit:  Value: 100
+Group Name: MSMS Automatic  Parameter Name: Set Sile Check Charge Consistency Unit:  Value: Off
+Group Name: MSMS Automatic  Parameter Name: Set Sile Do MSMS Of Unit:  Value: 3
+Group Name: MSMS Automatic  Parameter Name: Set Sile Intensity Ratio Mode Unit:  Value: Use Rule 'And'
+Group Name: MSMS Automatic  Parameter Name: Use Scheduled Precursor List Option Unit:  Value: Off
+Group Name: MSMS Automatic  Parameter Name: Set Number Of Scheduled Precursor List Precursors Unit:  Value: Off
+Group Name: MSMS Automatic  Parameter Name: Acquire MSMS if Scheduled Precursor List Intervals are empty Unit:  Value: Off
+Group Name: MSMS Automatic  Parameter Name: Scheduled Precursor List Time Slice Unit:  Value: 1
+Group Name: MSMS Automatic  Parameter Name: Set Fragmentation Mode Unit:  Value: CID
+Group Name: Source  Parameter Name: High Voltage Switch Unit:  Value: On
+Group Name: Source  Parameter Name: Nebulizer Switch Unit:  Value: On
+Group Name: Source  Parameter Name: Dry Gas Switch Unit:  Value: On
+Group Name: TOF  Parameter Name: High Voltage Switch Unit:  Value: On
+Group Name: TOF  Parameter Name: TOF Ion Polarity Unit:  Value: Positive
+Group Name: Mode  Parameter Name: Scan Mode Unit:  Value: MS
+Group Name: Collision Cell  Parameter Name: Set Collision Gas Supply Switch Unit:  Value: On
+Group Name: Source  Parameter Name: Nebulizer Unit:  Value: 0
+Group Name: Source  Parameter Name: APCI Heater Unit:  Value: 0
+Group Name: Source  Parameter Name: Dry Gas Unit:  Value: 4
+Group Name: Source  Parameter Name: Dry Heater Unit:  Value: 150
+Group Name: TOF  Parameter Name: Pulser Push Unit:  Value: 1796.88
+Group Name: TOF  Parameter Name: Pulser Pull Unit:  Value: 0
+Group Name: TOF  Parameter Name: Corrector Lens Unit:  Value: 6198.56
+Group Name: TOF  Parameter Name: Corrector Fill Unit:  Value: 68.86
+Group Name: TOF  Parameter Name: Corrector Extract Unit:  Value: 469.71
+Group Name: TOF  Parameter Name: Flight Tube Unit:  Value: 9870.26
+Group Name: TOF  Parameter Name: Decelerator Unit:  Value: 691.88
+Group Name: TOF  Parameter Name: Reflector Unit:  Value: 2747.45
+Group Name: TOF  Parameter Name: Voltage Detector Source Unit:  Value: 2.09
+Group Name: TOF  Parameter Name: Detector Source Unit:  Value: -0.076
+Group Name: TOF  Parameter Name: Detector TOF Unit:  Value: 1834.54
+Group Name: TOF  Parameter Name: Device Temperature 1 Unit:  Value: 34.019692354581
+Group Name: TOF  Parameter Name: Device Temperature 2 Unit:  Value: 35.2547848892867
+Group Name: Digitizer  Parameter Name: Digitizer Temperature Unit:  Value: 29
+Group Name: Digitizer  Parameter Name: Digitizer Acquisition Time Unit:  Value: 500
+Group Name: Vacuum System  Parameter Name: Fore Vacuum Unit:  Value: 2.4262542725
+Group Name: Vacuum System  Parameter Name: High Vacuum Unit:  Value: 4.632E-07
+Group Name: Spectra Acquisition  Parameter Name: Spectra Compression Filter Rate Unit:  Value: 1
+Group Name: Transfer  Parameter Name: isCID Energy Unit:  Value: 0
+Group Name: Quadrupole  Parameter Name: Isolation Resolution FWHM Unit:  Value: 0
+Group Name: Collision Cell  Parameter Name: Collision Energy Unit:  Value: 8
+Group Name: MSMS  Parameter Name: Isolation mass Unit:  Value: 322
+Group Name: MSMS  Parameter Name: Actual Summation Factor for MSMS Unit:  Value: 1
+Group Name: Other  Parameter Name: External Signal 1 Unit:  Value: 0
+Group Name: Other  Parameter Name: External Signal 2 Unit:  Value: 0
+Group Name: Collision Cell  Parameter Name: Collision Gas Supply Flowrate Unit:  Value: 0
+Group Name: Configuration  Parameter Name: External Delay Time Unit:  Value: 0
+Group Name: Source  Parameter Name: Set Nebulizer Unit:  Value: 2
+Group Name: Source  Parameter Name: Set APCI Heater Unit:  Value: 200
+Group Name: Source  Parameter Name: Set Dry Gas Unit:  Value: 4
+Group Name: Source  Parameter Name: Set Dry Heater Unit:  Value: 150
+Group Name: Source  Parameter Name: Set Target Mass Start Unit:  Value: 50
+Group Name: Source  Parameter Name: Set Target Mass End Unit:  Value: 2200
+Group Name: TOF  Parameter Name: Set Pulser Push Unit:  Value: 1800
+Group Name: TOF  Parameter Name: Set Pulser Pull Unit:  Value: 30
+Group Name: TOF  Parameter Name: Set Corrector Lens Unit:  Value: 6200
+Group Name: TOF  Parameter Name: Set Corrector Fill Unit:  Value: 69.5
+Group Name: TOF  Parameter Name: Set Corrector Extract Unit:  Value: 470.6
+Group Name: TOF  Parameter Name: Set Decelerator Unit:  Value: 688
+Group Name: TOF  Parameter Name: Set Reflector Unit:  Value: 2750
+Group Name: TOF  Parameter Name: Set Detector Source Unit:  Value: 0
+Group Name: TOF  Parameter Name: Set Detector TOF Unit:  Value: 1834.987302
+Group Name: TOF  Parameter Name: Device Temperature Gradient 1 Unit:  Value: 45.2
+Group Name: TOF  Parameter Name: Device Temperature Gradient 2 Unit:  Value: 22.7
+Group Name: TOF  Parameter Name: Device Reference Temperature 1 Unit:  Value: 34.1606830820142
+Group Name: TOF  Parameter Name: Device Reference Temperature 2 Unit:  Value: 35.5837213602133
+Group Name: Digitizer  Parameter Name: Full Scale Unit:  Value: 0.1
+Group Name: Digitizer  Parameter Name: Vert. Offset Unit:  Value: 0.050156
+Group Name: Digitizer  Parameter Name: Excursion Start Unit:  Value: 4
+Group Name: Digitizer  Parameter Name: Excursion Valid Unit:  Value: 1
+Group Name: Digitizer  Parameter Name: Start Delay Unit:  Value: 17184
+Group Name: Digitizer  Parameter Name: Sample Rate Unit:  Value: 0.25
+Group Name: Digitizer  Parameter Name: Trigger Level Unit:  Value: 1400
+Group Name: Digitizer  Parameter Name: Trigger Offset Unit:  Value: 1.7
+Group Name: Digitizer  Parameter Name: Noise Suppression Threshold Unit:  Value: -0.0024
+Group Name: Digitizer  Parameter Name: Noise Suppression Peak Width Unit:  Value: 3
+Group Name: Digitizer  Parameter Name: Noise Base Unit:  Value: -0.0011
+Group Name: Digitizer  Parameter Name: Extraction Trigger Time Unit:  Value: 122
+Group Name: Digitizer  Parameter Name: Extraction Puls Width Unit:  Value: 5
+Group Name: Digitizer  Parameter Name: Spectra Rate Unit:  Value: 2
+Group Name: Digitizer  Parameter Name: Spectra Sample Time Unit:  Value: 0.499956
+Group Name: Processing  Parameter Name: Baseline Flatness Unit:  Value: 0.14
+Group Name: Processing  Parameter Name: Guessed Noise Unit:  Value: 200
+Group Name: Processing  Parameter Name: Guessed Average Unit:  Value: 100
+Group Name: Processing  Parameter Name: Average Noise Unit:  Value: 1
+Group Name: Processing  Parameter Name: Assumed Peak Summation Width Unit:  Value: 5
+Group Name: Processing  Parameter Name: Threshold Signal To Noise Unit:  Value: 200
+Group Name: Calibration  Parameter Name: TOF1 C0 Unit:  Value: 257.618454
+Group Name: Calibration  Parameter Name: TOF1 C1 Unit:  Value: 156919.002947
+Group Name: Calibration  Parameter Name: TOF1 C2 Unit:  Value: -0.000162
+Group Name: Calibration  Parameter Name: TOF1 Calibration Standard Deviation Unit:  Value: 0.000179
+Group Name: Calibration  Parameter Name: TOF1 Calibration Standard Deviation in PPM Unit:  Value: 0.240492
+Group Name: Calibration  Parameter Name: TOF1 Calibration Score Unit:  Value: 1
+Group Name: Calibration  Parameter Name: TOF2 C0 Unit:  Value: 257.382025975545
+Group Name: Calibration  Parameter Name: TOF2 C1 Unit:  Value: 156911.630852801
+Group Name: Calibration  Parameter Name: TOF2 C2 Unit:  Value: -0.000396702256048832
+Group Name: Calibration  Parameter Name: TOF2 C3 Unit:  Value: 0
+Group Name: Calibration  Parameter Name: TOF2 C4 Unit:  Value: 0.00151201495425553
+Group Name: Calibration  Parameter Name: TOF2 Calibration Standard Deviation Unit:  Value: 0.000296482173142253
+Group Name: Calibration  Parameter Name: TOF2 Calibration Standard Deviation in PPM Unit:  Value: 0.312923719821671
+Group Name: Calibration  Parameter Name: TOF2 Calibration Score Unit:  Value: 1
+Group Name: Mode  Parameter Name: Scan Begin Unit:  Value: 50
+Group Name: Mode  Parameter Name: Scan End Unit:  Value: 2200
+Group Name: Transfer  Parameter Name: Set Deflector Plate Unit:  Value: 213
+Group Name: Transfer  Parameter Name: Set Capillary Exit Unit:  Value: 168
+Group Name: Transfer  Parameter Name: Set Funnel 1 In Unit:  Value: 157
+Group Name: Transfer  Parameter Name: Set Funnel 1 Out Unit:  Value: 39.5
+Group Name: Transfer  Parameter Name: Set Funnel 1 RF Unit:  Value: 400
+Group Name: Transfer  Parameter Name: Set Funnel 1 Base Unit:  Value: 39.5
+Group Name: Transfer  Parameter Name: Set Funnel 2 In Unit:  Value: 39.5
+Group Name: Transfer  Parameter Name: Set Funnel 2 Out Unit:  Value: 39.5
+Group Name: Transfer  Parameter Name: Set Funnel 2 RF Unit:  Value: 400
+Group Name: Transfer  Parameter Name: Set Funnel 2 Base Unit:  Value: 39.5
+Group Name: Transfer  Parameter Name: Set Hexapole Bias Unit:  Value: 38.5
+Group Name: Transfer  Parameter Name: Set Hexapole RF Unit:  Value: 300
+Group Name: Transfer  Parameter Name: Set Hexapole Storage Unit:  Value: 58
+Group Name: Transfer  Parameter Name: Set Hexapole Extraction Unit:  Value: 38
+Group Name: Transfer  Parameter Name: Set Focus 1 - Lens 2 Unit:  Value: 34.0999984741211
+Group Name: Transfer  Parameter Name: Set Focus 1 - Lens 3 Unit:  Value: -25.7999992370605
+Group Name: Transfer  Parameter Name: Set isCID Energy ( MS only ) Unit:  Value: 117.5
+Group Name: Quadrupole  Parameter Name: Set Post Filter Ramp DC Unit:  Value: 33
+Group Name: Quadrupole  Parameter Name: Set Quadrupole Bias Unit:  Value: 33
+Group Name: Quadrupole  Parameter Name: Set RF Only Unit:  Value: 327.559997558594
+Group Name: Quadrupole  Parameter Name: Set Isolation Mass ( MS only ) Unit:  Value: 322
+Group Name: Quadrupole  Parameter Name: Set Isolation Resolution FWHM ( MS only ) Unit:  Value: 0
+Group Name: Quadrupole  Parameter Name: Set Ion Energy Offset Unit:  Value: 5
+Group Name: Quadrupole  Parameter Name: Set Ion Energy ( MS only ) Unit:  Value: 5.5
+Group Name: Collision Cell  Parameter Name: Set Focus 2 - Lens 1 Unit:  Value: 33
+Group Name: Collision Cell  Parameter Name: Set Focus 2 - Lens 2 Unit:  Value: -40
+Group Name: Collision Cell  Parameter Name: Set Focus 2 - Lens 3 Unit:  Value: 30
+Group Name: Collision Cell  Parameter Name: Set Collision Cell Bias Unit:  Value: 25.5
+Group Name: Collision Cell  Parameter Name: Set Collision Cell RF Unit:  Value: 200
+Group Name: Collision Cell  Parameter Name: Set Collision Storage Unit:  Value: 50
+Group Name: Collision Cell  Parameter Name: Set Collision Extraction Unit:  Value: 23
+Group Name: Collision Cell  Parameter Name: Set Transfer Time Unit:  Value: 50
+Group Name: Collision Cell  Parameter Name: Set PrePulseStorage Time Unit:  Value: 5
+Group Name: Collision Cell  Parameter Name: Set Focus 3 - Lens 2 Unit:  Value: 0
+Group Name: Collision Cell  Parameter Name: Set Focus 3 - Lens 3 Unit:  Value: -93.3000030517578
+Group Name: Collision Cell  Parameter Name: Set Focus 3 - Lens 4 Unit:  Value: 0
+Group Name: Collision Cell  Parameter Name: Set Focus 3 - Lens 5 Unit:  Value: -27.6000003814697
+Group Name: Collision Cell  Parameter Name: Set Collision Energy Offset Unit:  Value: 8
+Group Name: Collision Cell  Parameter Name: Set Collision Energy ( MS only ) Unit:  Value: 7.5
+Group Name: Collision Cell  Parameter Name: Set Collision Gas Supply Flowrate Unit:  Value: 35
+Group Name: MSMS  Parameter Name: Set factor for Acquisition Time Unit:  Value: 1
+Group Name: MSMS  Parameter Name: Set Collision Energy for MS/MS bbCID Unit:  Value: 20
+Group Name: MSMS  Parameter Name: Set factor for Acquisition Time Unit:  Value: 1
+Group Name: MSMS Automatic  Parameter Name: Set Abolute Threshold Unit:  Value: 3000
+Group Name: MSMS Automatic  Parameter Name: Set Relative Threshold Unit:  Value: 0
+Group Name: MSMS Automatic  Parameter Name: Set Sile Mass Tolerance Unit:  Value: 0.2
+Group Name: MSMS Automatic  Parameter Name: Set Sile Cross Correlation Unit:  Value: 0.6
+Group Name: MSMS Automatic  Parameter Name: Set Sile Heavy / Light First Rule: Or Unit:  Value: 1.2
+Group Name: MSMS Automatic  Parameter Name: Set Sile Heavy / Light Last Rule: Or Unit:  Value: 0.8
+Group Name: MSMS Automatic  Parameter Name: Set Sile Heavy / Light First Rule: And Unit:  Value: 0.05
+Group Name: MSMS Automatic  Parameter Name: Set Sile Heavy / Light Last Rule: And Unit:  Value: 20
+Group Name: TOF  Parameter Name: Set Flight Tube Unit:  Value: 9900
+Group Name: OTIC  Parameter Name: Firmware Unit:  Value: 5.0.17.0
+Group Name: OTIC  Parameter Name: Firmware Unit:  Value: undefined
+Group Name: Digitizer  Parameter Name: Type Unit:  Value: U1084A_TDC
+Group Name: Digitizer  Parameter Name: Manufacturer Unit:  Value: Acqiris
+Group Name: TOF  Parameter Name: Firmware Unit:  Value: 5.0.17.0
+Group Name: Calibration  Parameter Name: TOF1 HPC Unit:  Value:  V1.0CHPCData  Order 6 vCoeff V1.0VectorDouble 7 0.001036357175618695 -1.09876479731385e-005 3.718562993249466e-008 -5.360125847206908e-011 3.690776198336453e-014 -1.200674823664374e-017 1.482024341733839e-021  c2 -0.0001615911640632629 c0 257.6184920143101 minMass 321.048121 maxMass 2722.894829 bUse 1 endCHPCData 
+Group Name: Calibration  Parameter Name: Used Reference MassList Unit:  Value: Tuning Mix ES-TOF (ESI) (pos)
+Group Name: Calibration  Parameter Name: Last Calibration Date Unit:  Value: 2012-05-03T16:31:24-04:00
+Group Name: Calibration  Parameter Name: Last Calibration User Unit:  Value: BDAL@DE

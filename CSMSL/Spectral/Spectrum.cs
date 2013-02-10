@@ -35,6 +35,12 @@ namespace CSMSL.Spectral
             LoadData(data);
         }
 
+        public Spectrum(double[] mzs, double[] intensities)
+            : base()
+        {
+            LoadData(mzs, intensities);
+        }
+
         public Spectrum(double[] mzs, float[] intensities)
             : base()
         {
@@ -43,6 +49,29 @@ namespace CSMSL.Spectral
 
         public Spectrum(IEnumerable<Peak> peaks)
             : base(peaks) { }
+
+        private void LoadData(double[] mzs, double[] intensities)
+        {
+            if (mzs.Length != intensities.Length)
+            {
+                throw new FormatException("M/Z and Intensities arrays are not the same dimensions");
+            }
+            _count = mzs.Length;
+            _tic = 0;
+            _peaks = new Peak[_count];
+            double maxInt = 0;
+            for (int i = 0; i < _count; i++)
+            {
+                float intensity = (float)intensities[i];
+                _peaks[i] = new Peak(mzs[i], intensity);
+                _tic += intensity;
+                if (intensity > maxInt)
+                {
+                    maxInt = intensity;
+                    _basePeak = _peaks[i];
+                }
+            }
+        }
 
         private void LoadData(double[] mzs, float[] intensities)
         {
