@@ -51,19 +51,19 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="BaseCommon">
-      <HintPath>include\$(PlatformTarget)\BaseCommon.dll</HintPath>
+      <HintPath>include\$(Platform)\BaseCommon.dll</HintPath>
     </Reference>
     <Reference Include="BaseDataAccess">
-      <HintPath>include\$(PlatformTarget)\BaseDataAccess.dll</HintPath>
+      <HintPath>include\$(Platform)\BaseDataAccess.dll</HintPath>
     </Reference>
     <Reference Include="BaseError">
-      <HintPath>include\$(PlatformTarget)\BaseError.dll</HintPath>
+      <HintPath>include\$(Platform)\BaseError.dll</HintPath>
     </Reference>
     <Reference Include="BaseTof">
-      <HintPath>include\$(PlatformTarget)\BaseTof.dll</HintPath>
+      <HintPath>include\$(Platform)\BaseTof.dll</HintPath>
     </Reference>
     <Reference Include="MassSpecDataReader">
-      <HintPath>include\$(PlatformTarget)\MassSpecDataReader.dll</HintPath>
+      <HintPath>include\$(Platform)\MassSpecDataReader.dll</HintPath>
     </Reference>
     <Reference Include="System" />
   </ItemGroup>
