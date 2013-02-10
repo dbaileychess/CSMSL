@@ -71,7 +71,7 @@ namespace CSMSL.Examples
 
             List<MsDataFile> exampleRawFiles = new List<MsDataFile>();
             exampleRawFiles.Add(new ThermoRawFile("Resources/ThermoRawFileMS1MS2.raw"));
-            //exampleRawFiles.Add(new AgilentDDirectory("Resources/AgilentDDirectoryMS1MS2.d"));   
+            exampleRawFiles.Add(new AgilentDDirectory("Resources/AgilentDDirectoryMS1MS2.d"));   
             //exampleRawFiles.Add(new BrukerDDirectory(@"E:\Software\Third Parties\BRUKER sample data & executable\BRUKER sample data & executable\10 fmol BSA_01_637.d"));
             foreach(MsDataFile dataFile in exampleRawFiles)  
             {
