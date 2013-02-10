@@ -28,7 +28,7 @@ namespace CSMSL.Examples
 {
     public class ExampleTrypticDigest
     {
-        public static void Start(IProtease protease, int maxMissed = 3)
+        public static void Start(IProtease protease, int maxMissed = 3, int minLength = 5, int maxLength = 35)
         {
             Console.WriteLine("**Start Digestion**");
             Stopwatch watch = new Stopwatch();
@@ -40,7 +40,7 @@ namespace CSMSL.Examples
             {
                 foreach (Protein protein in reader.ReadNextProtein())
                 {
-                    foreach (Peptide peptide in protein.Digest(protease, maxMissed, 5, 35))
+                    foreach (Peptide peptide in protein.Digest(protease, maxMissed, minLength, maxLength))
                     {
                         peps.Add(peptide);
                         allMzs.Add(peptide.Mass.ToMz(1)); // forces the calculation of the mass and thus chemical formula

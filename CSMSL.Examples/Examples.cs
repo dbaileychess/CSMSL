@@ -51,17 +51,17 @@ namespace CSMSL.Examples
         private static void StartExamples()
         {
             // Examples coding
-            ChemicalFormulaExamples();
+            //ChemicalFormulaExamples();
             //PeptideExamples();
 
             // Example Objects
             //VennDiagramExamples();
             
             // Example programs
-            //ExampleTrypticDigest.Start(Protease.Trypsin);
+            ExampleTrypticDigest.Start(Protease.Trypsin);
 
             //Example IO
-            MsIOExamples();
+            //MsIOExamples();
         }
 
         private static void MsIOExamples()

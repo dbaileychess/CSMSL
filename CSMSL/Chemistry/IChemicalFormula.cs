@@ -20,7 +20,7 @@
 
 namespace CSMSL.Chemistry
 {
-    public interface IChemicalFormula
+    public interface IChemicalFormula : IMass
     {
         /// <summary>
         /// The chemical formula of this object

@@ -39,10 +39,10 @@ namespace CSMSL.Tests.Proteomics
         [Test]
         public void CountNumberOfResidues()
         {
-            MockTrypticPeptide.CountResidues('S').Should().Equal(7);
-            MockTrypticPeptide.CountResidues('Q').Should().Equal(0);
-            MockTrypticPeptide.CountResidues('T').Should().Equal(2);
-            MockTrypticPeptide.CountResidues('G').Should().Equal(1);
+            MockTrypticPeptide.ResidueCount('S').Should().Equal(7);
+            MockTrypticPeptide.ResidueCount('Q').Should().Equal(0);
+            MockTrypticPeptide.ResidueCount('T').Should().Equal(2);
+            MockTrypticPeptide.ResidueCount('G').Should().Equal(1);
         }
 
         [Test]
@@ -157,6 +157,23 @@ namespace CSMSL.Tests.Proteomics
         }
 
         [Test]
+        public void EmptyPeptideLengthIsZero()
+        {
+            Peptide pepA = new Peptide();
+
+            pepA.Length.Should().Equal(0);
+        }
+
+        [Test]
+        public void EmptyPeptideSequenceIsEmpty()
+        {
+            Peptide pepA = new Peptide();
+
+            pepA.Sequence.Should().Be.Empty();
+        }
+
+
+        [Test]
         public void PeptideEquality()
         {
             Peptide pepA = new Peptide("DEREK");
@@ -197,6 +214,22 @@ namespace CSMSL.Tests.Proteomics
             Peptide pepB = new Peptide(pepA);
 
             pepA.Should().Not.Be.SameAs(pepB);
+        }
+
+        [Test]
+        public void PeptideCloneWithModifications()
+        {
+            Peptide pepA = new Peptide("DER[Fe]EK");
+            Peptide pepB = new Peptide(pepA);
+            pepB.ToString().Should().Equal("DER[Fe]EK");
+        }
+
+        [Test]
+        public void PeptideCloneWithoutModifications()
+        {
+            Peptide pepA = new Peptide("DER[Fe]EK");
+            Peptide pepB = new Peptide(pepA, false);
+            pepB.ToString().Should().Equal("DEREK");
         }
 
         [Test]

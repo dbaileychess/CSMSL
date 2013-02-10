@@ -50,8 +50,24 @@ namespace CSMSL.Proteomics
             set { _parent = value; }
         }
 
-        public Peptide(AminoAcidPolymer aminoAcidPolymer, int firstResidue, int length)
-            : base(aminoAcidPolymer, firstResidue, length)
+        public Peptide()
+            : base()
+        {
+            _parent = null;
+            _startResidue = 0;
+            _endResidue = 0;
+        }
+
+        public Peptide(AminoAcidPolymer aminoAcidPolymer, bool includeModifications = true)
+            : base(aminoAcidPolymer, includeModifications)
+        {
+            _parent = aminoAcidPolymer;
+            _startResidue = 0;
+            _endResidue = _startResidue + Length - 1;
+        }
+
+        public Peptide(AminoAcidPolymer aminoAcidPolymer, int firstResidue, int length, bool includeModifications = true)
+            : base(aminoAcidPolymer, firstResidue, length, includeModifications)
         {
             _parent = aminoAcidPolymer;
             _startResidue = firstResidue;
