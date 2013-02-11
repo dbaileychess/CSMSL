@@ -213,6 +213,20 @@ namespace CSMSL.Chemistry
                 _isotopes[i] += formula._isotopes[i];
             }
 
+            // Force update of the largest isotope
+            // if the largest isotope got cleared
+            if (_isotopes[_largestIsotopeID] == 0)
+            {         
+                int index = _largestIsotopeID - 1;
+                while (index > 0)
+                {
+                    if (_isotopes[index] != 0)
+                        break;
+                    index--;
+                }
+                _largestIsotopeID = index;
+            }
+
             _isDirty = true;
             _isFormulaDirty = true;
         }
@@ -225,6 +239,11 @@ namespace CSMSL.Chemistry
         public void Add(Element element, int count)
         {
             Add(element.PrincipalIsotope, count);
+        }
+
+        public void Add(string symbol, int count)
+        {
+            Add(Element.PeriodicTable[symbol].PrincipalIsotope, count);
         }
                
         /// <summary>
@@ -253,7 +272,22 @@ namespace CSMSL.Chemistry
                 }
             }
            
-            _isotopes[id] += count;            
+            _isotopes[id] += count;
+
+            // Force update of the largest isotope
+            // if the largest isotope got cleared
+            if (_isotopes[_largestIsotopeID] == 0)
+            {
+                int index = _largestIsotopeID - 1;
+                while (index > 0)
+                {
+                    if (_isotopes[index] != 0)
+                        break;
+                    index--;
+                }
+                _largestIsotopeID = index;
+            }
+
             _isDirty = true;
             _isFormulaDirty = true;
         }
@@ -273,7 +307,7 @@ namespace CSMSL.Chemistry
             // Resize this formula array to match the size of the incoming one
             if (id > _isotopes.Length)
             {
-                _largestIsotopeID = formula._largestIsotopeID;
+                _largestIsotopeID = id;
                 Array.Resize(ref _isotopes, id + 1);
             }
 
@@ -283,8 +317,27 @@ namespace CSMSL.Chemistry
                 _isotopes[i] -= formula._isotopes[i];
             }
 
+            // Force update of the largest isotope
+            // if the largest isotope got cleared
+            if (_isotopes[_largestIsotopeID] == 0)
+            {
+                int index = _largestIsotopeID - 1;
+                while (index > 0)
+                {
+                    if (_isotopes[index] != 0)
+                        break;
+                    index--;
+                }
+                _largestIsotopeID = index;
+            }
+
             _isDirty = true;
             _isFormulaDirty = true;
+        }
+
+        public void Remove(string symbol, int count)
+        {
+            Add(Element.PeriodicTable[symbol].PrincipalIsotope, -count);
         }
 
         public void Remove(Isotope isotope, int count)
@@ -497,7 +550,7 @@ namespace CSMSL.Chemistry
            
             HashSet<int> elements = new HashSet<int>();
 
-            int newLargestIsotopeID = 0;
+           // int newLargestIsotopeID = 0;
 
             for (int i = 0; i <= _largestIsotopeID; i++)
             {  
@@ -505,10 +558,10 @@ namespace CSMSL.Chemistry
                 if (count == 0)
                     continue;
 
-                if (i > newLargestIsotopeID)
-                {
-                    newLargestIsotopeID = i;
-                }
+                //if (i > newLargestIsotopeID)
+                //{
+                //    newLargestIsotopeID = i;
+                //}
 
                 Isotope isotope = Element.PeriodicTable[i];
                 Element element = isotope.Element;
@@ -523,7 +576,7 @@ namespace CSMSL.Chemistry
                 _mass.Average += count * element.AverageMass;                
             }
 
-            _largestIsotopeID = newLargestIsotopeID;
+           // _largestIsotopeID = newLargestIsotopeID;
 
             _elementCount = elements.Count;
                    

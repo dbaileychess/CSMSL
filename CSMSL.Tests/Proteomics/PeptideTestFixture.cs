@@ -172,6 +172,14 @@ namespace CSMSL.Tests.Proteomics
             pepA.Sequence.Should().Be.Empty();
         }
 
+        [Test]
+        public void EmptyPeptideFormulaIsH2O()
+        {
+            Peptide pepA = new Peptide();
+            ChemicalFormula h2o = new ChemicalFormula("H2O");
+
+            pepA.ChemicalFormula.Should().Equal(h2o);
+        }
 
         [Test]
         public void PeptideEquality()

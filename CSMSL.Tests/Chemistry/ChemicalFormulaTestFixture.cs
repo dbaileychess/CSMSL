@@ -105,7 +105,7 @@ namespace CSMSL.Tests.Chemistry
             ChemicalFormula formulaA = new ChemicalFormula("C2H3NO");
             formulaA.Add(NullChemicalFormula);
 
-            formulaA.Should().Equal(formulaA);
+            formulaA.Should().Equal(formulaA);            
         }
 
         [Test]
@@ -151,6 +151,18 @@ namespace CSMSL.Tests.Chemistry
             formulaA.Add(Element.PeriodicTable["H"][1], -2);
 
             formulaA.Should().Equal(formulaB);
+        }
+
+        [Test]
+        public void AddNegativeFormulaToFormula()
+        {
+            ChemicalFormula formulaA = new ChemicalFormula("C2H3NO");
+            ChemicalFormula formulaB = new ChemicalFormula("C-1H-2");
+            ChemicalFormula formulaC = new ChemicalFormula("CHNO");
+
+            formulaA.Add(formulaB);
+
+            formulaA.Should().Equal(formulaC);
         }
 
         [Test]
@@ -262,6 +274,17 @@ namespace CSMSL.Tests.Chemistry
             ChemicalFormula formulaB = new ChemicalFormula("C2H5NO");
 
             formulaA.Remove(Element.PeriodicTable["H"][1], -2);
+
+            formulaA.Should().Equal(formulaB);
+        }
+
+        [Test]
+        public void RemoveIsotopeFromFromulaEquality()
+        {
+            ChemicalFormula formulaA = new ChemicalFormula("C2H3NO");
+            ChemicalFormula formulaB = new ChemicalFormula("C2H3O");
+
+            formulaA.Remove("N", 1);
 
             formulaA.Should().Equal(formulaB);
         }
@@ -443,6 +466,42 @@ namespace CSMSL.Tests.Chemistry
             CAM.Count("N").Should().Equal(1);
             CAM.Count("H", 1).Should().Equal(3);
             CAM.Count("N", 15).Should().Equal(0);
+        }
+
+        [Test]
+        public void ParsingFormulaRepeatedElements()
+        {
+            ChemicalFormula formulaA = new ChemicalFormula("CH3NOC");
+            ChemicalFormula formulaB = new ChemicalFormula("C2H3NO");
+
+            formulaA.Should().Equal(formulaB);
+        }
+
+        [Test]
+        public void ParsingFormulaNoNumbers()
+        {
+            ChemicalFormula formulaA = new ChemicalFormula("CCHHHNO");
+            ChemicalFormula formulaB = new ChemicalFormula("C2H3NO");
+
+            formulaA.Should().Equal(formulaB);
+        }
+
+        [Test]
+        public void ParsingFormulaNoNumbersRandomOrder()
+        {
+            ChemicalFormula formulaA = new ChemicalFormula("OCHHCHN");
+            ChemicalFormula formulaB = new ChemicalFormula("C2H3NO");
+
+            formulaA.Should().Equal(formulaB);
+        }
+
+        [Test]
+        public void ParsingFormulaRepeatedElementsCancelEachOther()
+        {
+            ChemicalFormula formulaA = new ChemicalFormula("C2H3NOC-2");
+            ChemicalFormula formulaB = new ChemicalFormula("H3NO");
+
+            formulaA.Should().Equal(formulaB);
         }
 
         [Test]

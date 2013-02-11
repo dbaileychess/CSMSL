@@ -28,9 +28,16 @@ using CSMSL.Chemistry;
 namespace CSMSL.Proteomics
 {
 
-    public abstract class AminoAcidPolymer : IChemicalFormula, IEquatable<AminoAcidPolymer>
+    public abstract class AminoAcidPolymer : IChemicalFormula, IEquatable<AminoAcidPolymer>, IMass
     {
+        /// <summary>
+        /// The default chemical formula modification of the C terminus
+        /// </summary>
         public static readonly ChemicalFormula DefaultCTerminusModification = new ChemicalFormula("OH");
+
+        /// <summary>
+        /// The default chemical formula modification of the N terminus
+        /// </summary>
         public static readonly ChemicalFormula DefaultNTerminusModification = new ChemicalFormula("H");
 
         private static readonly Dictionary<FragmentType, IChemicalFormula> _fragmentIonCaps = new Dictionary<FragmentType, IChemicalFormula>()
@@ -66,8 +73,8 @@ namespace CSMSL.Proteomics
         {
             _aminoAcids = new IAminoAcid[0];
             _modifications = new IChemicalFormula[2];
-            NTerminus = DefaultNTerminusModification;
-            CTerminus = DefaultNTerminusModification;
+            _modifications[0] = DefaultNTerminusModification;
+            _modifications[1] = DefaultCTerminusModification;
             _isDirty = true;
             _isSequenceDirty = true;
         }
@@ -184,8 +191,7 @@ namespace CSMSL.Proteomics
         }
         
 
-        internal string _sequence;
-
+        private string _sequence;
         public string Sequence
         {
             get
@@ -267,7 +273,12 @@ namespace CSMSL.Proteomics
 
         public Fragment CalculateFragment(FragmentType type, int number)
         {
-            if (type == FragmentType.None || number < 1 || number > Length)
+            if (number < 1 || number > Length)
+            {
+                throw new IndexOutOfRangeException();
+            }
+
+            if (type == FragmentType.None)
             {
                 return null;
             }
@@ -457,8 +468,9 @@ namespace CSMSL.Proteomics
             {
                 IAminoAcid aa = _aminoAcids[i];
                 _chemicalFormula.Add(aa);
-                _sequenceSB.Append(aa.Letter);
-                baseSeqSB.Append(aa.Letter);
+                char letter = aa.Letter;
+                _sequenceSB.Append(letter);
+                baseSeqSB.Append(letter);
                 if ((mod = _modifications[i + 1]) != null)  // Mods are 1-based for the N and C-terminus
                 {
                     _chemicalFormula.Add(mod);
@@ -583,8 +595,7 @@ namespace CSMSL.Proteomics
                 }
                 else if (AminoAcid.TryGetResidue(letter, out residue))
                 {
-                    _aminoAcids[index++] = residue;
-                    //_residues.Add(residue);
+                    _aminoAcids[index++] = residue;                 
                     baseSeqSB.Append(letter);
                 }
                 else
