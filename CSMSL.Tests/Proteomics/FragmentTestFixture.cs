@@ -37,6 +37,14 @@ namespace CSMSL.Tests.Proteomics
             Fragment fragment = MockPeptideEveryAminoAcid.CalculateFragment(FragmentType.b, 25);            
         }
 
+        [Test]
+        public void FragmentName()
+        {
+            Fragment fragment = MockPeptideEveryAminoAcid.CalculateFragment(FragmentType.a, 1);
+    
+            fragment.ToString().Should().Equal("a1");
+        }
+
         [Test]       
         public void FragmentChemicalFormulaAIon()
         {

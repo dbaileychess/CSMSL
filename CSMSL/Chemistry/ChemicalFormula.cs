@@ -77,6 +77,17 @@ namespace CSMSL.Chemistry
         }
 
         /// <summary>
+        /// Create an empty chemical formula with space for the largest ID
+        /// </summary>
+        private ChemicalFormula(int largestID)
+        {
+            _isotopes = new int[largestID + 1];
+            _largestIsotopeID = largestID;
+            _isFormulaDirty = true;
+            _isDirty = true;
+        }
+
+        /// <summary>
         /// Create an chemical formula from the given string representation
         /// </summary>
         /// <param name="chemicalFormula">The string representation of the chemical formula</param>
@@ -216,15 +227,8 @@ namespace CSMSL.Chemistry
             // Force update of the largest isotope
             // if the largest isotope got cleared
             if (_isotopes[_largestIsotopeID] == 0)
-            {         
-                int index = _largestIsotopeID - 1;
-                while (index > 0)
-                {
-                    if (_isotopes[index] != 0)
-                        break;
-                    index--;
-                }
-                _largestIsotopeID = index;
+            {
+                FindLargestIsotope();
             }
 
             _isDirty = true;
@@ -278,14 +282,7 @@ namespace CSMSL.Chemistry
             // if the largest isotope got cleared
             if (_isotopes[_largestIsotopeID] == 0)
             {
-                int index = _largestIsotopeID - 1;
-                while (index > 0)
-                {
-                    if (_isotopes[index] != 0)
-                        break;
-                    index--;
-                }
-                _largestIsotopeID = index;
+                FindLargestIsotope();
             }
 
             _isDirty = true;
@@ -321,14 +318,7 @@ namespace CSMSL.Chemistry
             // if the largest isotope got cleared
             if (_isotopes[_largestIsotopeID] == 0)
             {
-                int index = _largestIsotopeID - 1;
-                while (index > 0)
-                {
-                    if (_isotopes[index] != 0)
-                        break;
-                    index--;
-                }
-                _largestIsotopeID = index;
+                FindLargestIsotope();
             }
 
             _isDirty = true;
@@ -584,6 +574,18 @@ namespace CSMSL.Chemistry
             _isDirty = false;
         }
 
+        private void FindLargestIsotope()
+        {           
+            int index = _largestIsotopeID;
+            while (index > 0)
+            {
+                if (_isotopes[index] != 0)
+                    break;
+                index--;
+            }
+            _largestIsotopeID = index; 
+        }
+
         private void CleanUpFormula()
         {
             string carbonPart = "";
@@ -732,6 +734,39 @@ namespace CSMSL.Chemistry
             ChemicalFormula newFormula = new ChemicalFormula(left);
             newFormula.Add(right);
             return newFormula;
+        }
+
+        public static ChemicalFormula Combine(params IChemicalFormula[] formulas)
+        {
+            int largestID = 0;
+            foreach (IChemicalFormula formula in formulas)
+            {
+                if (formula.ChemicalFormula._largestIsotopeID > largestID)
+                {
+                    largestID = formula.ChemicalFormula._largestIsotopeID;
+                }
+            }
+
+            ChemicalFormula returnFormula = new ChemicalFormula(largestID);
+            foreach (IChemicalFormula formula in formulas)
+            {
+                for (int i = 0; i <= largestID; i++)
+                {
+                    returnFormula._isotopes[i] += formula.ChemicalFormula._isotopes[i];
+                }
+            }
+
+            // Force update of the largest isotope
+            // if the largest isotope got cleared
+            if (returnFormula._isotopes[largestID] == 0)
+            {
+                returnFormula.FindLargestIsotope();
+            }
+
+            returnFormula._isDirty = true;
+            returnFormula._isFormulaDirty = true;
+
+            return returnFormula;
         }
 
         #endregion

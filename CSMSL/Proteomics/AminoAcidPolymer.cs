@@ -284,9 +284,10 @@ namespace CSMSL.Proteomics
             }
 
             ChemicalFormula chemFormula = new ChemicalFormula(_fragmentIonCaps[type]);
-            IChemicalFormula mod = null;
+          
             int start = 0;
             int end = number;
+
             if (type >= FragmentType.x)
             {
                 start = Length - number;
@@ -297,13 +298,13 @@ namespace CSMSL.Proteomics
             {
                 chemFormula.Add(this.NTerminus);
             }
-
+          
             for (int i = start; i < end; i++)
             {
                 chemFormula.Add(_aminoAcids[i]);
-                if ((mod = _modifications[i + 1]) != null)
+                if (_modifications[i + 1] != null)
                 {
-                    chemFormula.Add(mod);
+                    chemFormula.Add(_modifications[i + 1]);
                 }
             }
 
