@@ -610,22 +610,22 @@ namespace CSMSL.Tests.Chemistry
             EmptyFormula.AtomCount.Should().Equal(0);
         }
 
-        [Test]
-        public void CombineChemicalFormulas()
-        {
-            ChemicalFormula formulaA = new ChemicalFormula("H2O");
-            ChemicalFormula formulaB = new ChemicalFormula("C2H3NO");
-            ChemicalFormula formulaC = new ChemicalFormula("C5H2NO");
-            ChemicalFormula formulaD = new ChemicalFormula("H2SO4");
-            ChemicalFormula formulaE = new ChemicalFormula("N2O2C");
-            ChemicalFormula formulaF = new ChemicalFormula("CCCCC");
+        //[Test]
+        //public void CombineChemicalFormulas()
+        //{
+        //    ChemicalFormula formulaA = new ChemicalFormula("H2O");
+        //    ChemicalFormula formulaB = new ChemicalFormula("C2H3NO");
+        //    ChemicalFormula formulaC = new ChemicalFormula("C5H2NO");
+        //    ChemicalFormula formulaD = new ChemicalFormula("H2SO4");
+        //    ChemicalFormula formulaE = new ChemicalFormula("N2O2C");
+        //    ChemicalFormula formulaF = new ChemicalFormula("CCCCC");
 
-            ChemicalFormula formulaG = new ChemicalFormula("C13H9N4O9S");
+        //    ChemicalFormula formulaG = new ChemicalFormula("C13H9N4O9S");
 
-            ChemicalFormula formulaH = ChemicalFormula.Combine(formulaA, formulaB, formulaC, formulaD, formulaE, formulaF);
+        //    ChemicalFormula formulaH = ChemicalFormula.Combine(formulaA, formulaB, formulaC, formulaD, formulaE, formulaF);
 
-            formulaG.Should().Equal(formulaH);
-        }
+        //    formulaG.Should().Equal(formulaH);
+        //}
 
         [Test]
         [ExpectedException(typeof(KeyNotFoundException))]

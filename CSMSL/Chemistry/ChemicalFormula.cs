@@ -216,11 +216,11 @@ namespace CSMSL.Chemistry
                     // Resize this formula array to match the size of the incoming one
                     Array.Resize(ref _isotopes, id + 1);
                 }
-            }          
+            }
 
             // Update each isotope
             for (int i = 0; i <= id; i++)
-            {              
+            {
                 _isotopes[i] += formula._isotopes[i];
             }
 
@@ -736,26 +736,36 @@ namespace CSMSL.Chemistry
             return newFormula;
         }
 
-        public static ChemicalFormula Combine(params IChemicalFormula[] formulas)
+        public static ChemicalFormula Combine(IEnumerable<IChemicalFormula> formulas)
         {
             int largestID = 0;
-            foreach (IChemicalFormula formula in formulas)
-            {
-                if (formula.ChemicalFormula._largestIsotopeID > largestID)
+            int[] isotopes = new int[300];
+            foreach (IChemicalFormula iformula in formulas)
+            {             
+                if (iformula == null)
+                    continue;
+
+                ChemicalFormula formula = iformula.ChemicalFormula;
+                if (formula == null)
+                    continue;
+
+                int length = formula._largestIsotopeID;
+
+                if (length > largestID)
                 {
-                    largestID = formula.ChemicalFormula._largestIsotopeID;
+                    largestID = length;
+                }
+
+                int[] otherIsotopes = formula._isotopes;
+                for (int i = 0; i <= length; i++)
+                {
+                    isotopes[i] += otherIsotopes[i];
                 }
             }
 
             ChemicalFormula returnFormula = new ChemicalFormula(largestID);
-            foreach (IChemicalFormula formula in formulas)
-            {
-                for (int i = 0; i <= largestID; i++)
-                {
-                    returnFormula._isotopes[i] += formula.ChemicalFormula._isotopes[i];
-                }
-            }
-
+            Array.Copy(isotopes, returnFormula._isotopes, largestID + 1);
+           
             // Force update of the largest isotope
             // if the largest isotope got cleared
             if (returnFormula._isotopes[largestID] == 0)

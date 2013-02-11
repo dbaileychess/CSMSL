@@ -124,7 +124,7 @@ namespace CSMSL.Proteomics
             _name = name;
             _letter = oneLetterAbbreviation;
             _symbol = threeLetterAbbreviation;
-            _chemicalFormula = chemicalFormula;
+            _chemicalFormula = chemicalFormula;         
         }
       
         public ChemicalFormula ChemicalFormula

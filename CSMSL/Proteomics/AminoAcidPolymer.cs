@@ -147,8 +147,7 @@ namespace CSMSL.Proteomics
             }
             set
             {
-                _modifications[_modifications.Length - 1] = value;
-                _isSequenceDirty = true;
+                _modifications[_modifications.Length - 1] = value;               
                 _isDirty = true;
             }
         }
@@ -168,8 +167,7 @@ namespace CSMSL.Proteomics
             }
             set
             {
-                _modifications[0] = value;
-                _isSequenceDirty = true;
+                _modifications[0] = value;               
                 _isDirty = true;
             }
         }
@@ -439,6 +437,8 @@ namespace CSMSL.Proteomics
             {
                 _chemicalFormula.Clear();
             }
+            //_chemicalFormula = CSMSL.Chemistry.ChemicalFormula.Combine(_aminoAcids);
+            //_chemicalFormula.Add(CSMSL.Chemistry.ChemicalFormula.Combine(_modifications));
 
             if (_sequenceSB == null)
             {
@@ -455,26 +455,26 @@ namespace CSMSL.Proteomics
             // Handle N-Terminus
             if ((mod = _modifications[0]) != null)
             {
-                _chemicalFormula.Add(mod);
+                _chemicalFormula.Add(mod.ChemicalFormula);
                 if (!mod.Equals(DefaultNTerminusModification))
                 {
                     _sequenceSB.Append('[');
                     _sequenceSB.Append(mod);
                     _sequenceSB.Append("]-");
                 }
-            }
-
+            }            
+            
             // Handle Amino Acid Residues
             for (int i = 0; i < _aminoAcids.Length; i++)
             {
                 IAminoAcid aa = _aminoAcids[i];
-                _chemicalFormula.Add(aa);
+                _chemicalFormula.Add(aa.ChemicalFormula);
                 char letter = aa.Letter;
                 _sequenceSB.Append(letter);
                 baseSeqSB.Append(letter);
                 if ((mod = _modifications[i + 1]) != null)  // Mods are 1-based for the N and C-terminus
                 {
-                    _chemicalFormula.Add(mod);
+                    _chemicalFormula.Add(mod.ChemicalFormula);
                     _sequenceSB.Append('[');
                     _sequenceSB.Append(mod);
                     _sequenceSB.Append(']');
@@ -484,7 +484,7 @@ namespace CSMSL.Proteomics
             // Handle C-Terminus
             if ((mod = _modifications[_modifications.Length - 1]) != null)
             {
-                _chemicalFormula.Add(mod);
+                _chemicalFormula.Add(mod.ChemicalFormula);
                 if (!mod.Equals(DefaultCTerminusModification))
                 {
                     _sequenceSB.Append("-[");
@@ -618,6 +618,8 @@ namespace CSMSL.Proteomics
             }
 
             _sequence = baseSeqSB.ToString();
+            _isSequenceDirty = false;
+             
             Array.Resize(ref _aminoAcids, index);
             Array.Resize(ref _modifications, index + 2);
             _isDirty = true;             
