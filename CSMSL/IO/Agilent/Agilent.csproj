@@ -62,21 +62,24 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="BaseDataAccess">
-      <HintPath>include\$(Platform)\BaseDataAccess.dll</HintPath>
+    <Reference Include="BaseCommon, Version=4.0.479.5, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-    </Reference>
-    <Reference Include="BaseCommon">
       <HintPath>include\$(Platform)\BaseCommon.dll</HintPath>
-      <SpecificVersion>False</SpecificVersion>
     </Reference>
-    <Reference Include="BaseError">
+    <Reference Include="BaseDataAccess, Version=4.0.479.9, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>include\$(Platform)\BaseDataAccess.dll</HintPath>
+    </Reference>
+    <Reference Include="BaseError, Version=4.0.479.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>include\$(Platform)\BaseError.dll</HintPath>
     </Reference>
-    <Reference Include="BaseTof">
+    <Reference Include="BaseTof, Version=1.0.4132.26773, Culture=neutral, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>include\$(Platform)\BaseTof.dll</HintPath>
     </Reference>
-    <Reference Include="MassSpecDataReader">
+    <Reference Include="MassSpecDataReader, Version=4.0.479.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>include\$(Platform)\MassSpecDataReader.dll</HintPath>
     </Reference>
     <Reference Include="System" />

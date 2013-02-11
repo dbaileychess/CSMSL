@@ -80,6 +80,11 @@ namespace CSMSL.Proteomics
             return new Peptide(this, firstResidue, length);
         }
 
+        public override bool Equals(AminoAcidPolymer other)
+        {
+            return base.Equals(other);
+        }
+
         public override string ToString()
         {
             return base.ToString();

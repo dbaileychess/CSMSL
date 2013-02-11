@@ -1,4 +1,5 @@
 ﻿using Agilent.MassSpectrometry.DataAnalysis;
+using Agilent.MassSpectrometry.DataAnalysis.Utilities;
 using CSMSL.IO;
 using CSMSL.Spectral;
 using System.IO;

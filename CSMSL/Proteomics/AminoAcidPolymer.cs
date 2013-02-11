@@ -19,6 +19,7 @@
 ///////////////////////////////////////////////////////////////////////////
 
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -74,9 +75,19 @@ namespace CSMSL.Proteomics
             CTerminus = cTerm;
         }
 
+        /// <summary>
+        /// Clone a complete copy of another amino acid polymer
+        /// </summary>
+        /// <param name="aminoAcidPolymer">The amino acid polymer to clone</param>
         public AminoAcidPolymer(AminoAcidPolymer aminoAcidPolymer)
             : this(aminoAcidPolymer, 0, aminoAcidPolymer.Length) { }      
 
+        /// <summary>
+        /// Clone a part of another amino acid polymer
+        /// </summary>
+        /// <param name="aminoAcidPolymer">The amino acid polymer to clone</param>
+        /// <param name="firstResidue">The first residue to start cloning from</param>
+        /// <param name="length">The number of amino acids to clone</param>
         public AminoAcidPolymer(AminoAcidPolymer aminoAcidPolymer, int firstResidue, int length)
         {
             if (length + firstResidue > aminoAcidPolymer.Length)
@@ -90,14 +101,6 @@ namespace CSMSL.Proteomics
             _isDirty = true;
             _isSequenceDirty = true;
         }
-
-        //internal AminoAcidPolymer(IEnumerable<AminoAcid> residues, IChemicalFormula[] mods)
-        //{
-        //    //_residues = new List<AminoAcid>(residues);
-        //    _modifications = mods;
-        //    _isDirty = true;
-        //    _isSequenceDirty = true;
-        //}
 
         public ChemicalFormula ChemicalFormula
         {
@@ -413,8 +416,7 @@ namespace CSMSL.Proteomics
             _sequence = baseSeqSB.ToString();
             _isDirty = false;
         }
-
-
+        
         public override int GetHashCode()
         {
             int hCode = 748;
@@ -448,10 +450,17 @@ namespace CSMSL.Proteomics
             if (this.Length != other.Length) return false;         
             if (this.NTerminus != other.NTerminus || this.CTerminus != other.CTerminus)
                 return false;
+            
             int length = this.Length;
             for (int i = 1; i <= length; i++)
             {
-                if (this[i] != other[i] || this._modifications[i] != other._modifications[i])
+                IChemicalFormula thisMod = this._modifications[i];
+                IChemicalFormula otherMod = this._modifications[i];
+                if (thisMod == null)
+                {
+
+                }
+                if (!this._aminoAcids[i-1].Equals(other._aminoAcids[i-1]) || this._modifications[i] != other._modifications[i])
                     return false;
             }
             return true;

@@ -161,7 +161,7 @@ namespace CSMSL.Tests.Proteomics
         {
             Peptide pepA = new Peptide("DEREK");
             Peptide pepB = new Peptide("DEREK");            
-            pepA.Should().Equals(pepB);
+            pepA.Equals(pepB).Should().Be.True();
         }
 
         [Test]
@@ -169,7 +169,7 @@ namespace CSMSL.Tests.Proteomics
         {
             Peptide pepA = new Peptide("DEREK");
             Peptide pepB = new Peptide("DEERK");
-            pepA.Should().Not.Equals(pepB);
+            pepA.Equals(pepB).Should().Be.False();        
         }
 
         [Test]
@@ -179,7 +179,7 @@ namespace CSMSL.Tests.Proteomics
             Peptide pepB = new Peptide("DEREK");
             pepB.SetModification(new ChemicalFormula("H2O"), 'R');
 
-            pepA.Should().Not.Equals(pepB);
+            pepA.Equals(pepB).Should().Be.False();    
         }
 
         [Test]
@@ -187,7 +187,7 @@ namespace CSMSL.Tests.Proteomics
         {
             Peptide pepA = new Peptide("DEREK");
             Peptide pepB = new Peptide(pepA);
-            pepA.Should().Equals(pepB);
+            pepA.Should().Equal(pepB);
         }
 
         [Test]
@@ -206,7 +206,7 @@ namespace CSMSL.Tests.Proteomics
             pepA.SetModification(new ChemicalFormula("H2O"), 'R');
             Peptide pepB = new Peptide(pepA);
 
-            pepA.Should().Equals(pepB);
+            pepA.Should().Equal(pepB);
         }
 
         [Test]
@@ -215,16 +215,29 @@ namespace CSMSL.Tests.Proteomics
             Peptide pepA = new Peptide("DEREK");
             Peptide pepB = new Peptide(pepA, 1, 3);
             Peptide pepC = new Peptide("ERE");
-            pepB.Should().Equals(pepC);
+            pepB.Should().Equal(pepC);
         }
 
         [Test]
-        public void PeptideParitalCloneInternalWithModificationInternal()
+        public void PeptideParitalClonelWithInternalModification()
         {
             Peptide pepA = new Peptide("DER[Fe]EK");
             Peptide pepB = new Peptide(pepA, 2, 3);
             Peptide pepC = new Peptide("R[Fe]EK");
-            pepB.Should().Equals(pepC);
+            pepB.Should().Equal(pepC);
+        }
+        
+        [Test]
+        public void PeptideParitalCloneInternalWithCTerminusModification()
+        {
+            Peptide pepA = new Peptide("DEREK");  
+            pepA.SetModification(new ChemicalFormula("H2O"), Terminus.C);
+            Peptide pepB = new Peptide(pepA, 2, 4);
+
+            Peptide pepC = new Peptide("REK");
+            pepC.SetModification(new ChemicalFormula("H2O"), Terminus.C);
+
+            pepB.Should().Equal(pepC);            
         }
 
     }

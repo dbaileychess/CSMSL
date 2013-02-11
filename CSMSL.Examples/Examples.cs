@@ -58,7 +58,7 @@ namespace CSMSL.Examples
             //VennDiagramExamples();
             
             // Example programs
-            ExampleTrypticDigest.Start(Protease.Trypsin);
+            //ExampleTrypticDigest.Start(Protease.Trypsin);
 
             //Example IO
             //MsIOExamples();
@@ -66,14 +66,14 @@ namespace CSMSL.Examples
 
         private static void MsIOExamples()
         {
-            Console.WriteLine("**MS I/O Examples**");
-                     
+            Console.WriteLine("**MS I/O Examples**");                   
+
             Console.WriteLine("{0,-4} {1,3} {2,-6:F4} {3,-5} {4,7} {5,-10} {6}", "SN", "Msn", "RT", "Polarity", "# Peaks", "Analyzer", "M/Z Range");         
 
             List<MsDataFile> exampleRawFiles = new List<MsDataFile>();
             exampleRawFiles.Add(new ThermoRawFile("Resources/ThermoRawFileMS1MS2.raw"));
-            //exampleRawFiles.Add(new AgilentDDirectory("Resources/AgilentDDirectoryMS1MS2.d"));   
-            exampleRawFiles.Add(new BrukerDDirectory(@"E:\Software\Third Parties\BRUKER sample data & executable\BRUKER sample data & executable\10 fmol BSA_01_637.d"));
+            exampleRawFiles.Add(new AgilentDDirectory("Resources/AgilentDDirectoryMS1MS2.d"));   
+            //exampleRawFiles.Add(new BrukerDDirectory(@"E:\Software\Third Parties\BRUKER sample data & executable\BRUKER sample data & executable\10 fmol BSA_01_637.d"));
             foreach(MsDataFile dataFile in exampleRawFiles)  
             {
                 dataFile.Open();
