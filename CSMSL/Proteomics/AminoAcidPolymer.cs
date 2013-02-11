@@ -27,10 +27,11 @@ using CSMSL.Chemistry;
 
 namespace CSMSL.Proteomics
 {
-    public abstract class AminoAcidPolymer : IChemicalFormula, IMass
+
+    public abstract class AminoAcidPolymer : IChemicalFormula, IEquatable<AminoAcidPolymer>
     {
-        public static readonly IChemicalFormula DefaultCTerminusModification = new ChemicalFormula("OH");
-        public static readonly IChemicalFormula DefaultNTerminusModification = new ChemicalFormula("H");
+        public static readonly ChemicalFormula DefaultCTerminusModification = new ChemicalFormula("OH");
+        public static readonly ChemicalFormula DefaultNTerminusModification = new ChemicalFormula("H");
 
         private static readonly Dictionary<FragmentType, IChemicalFormula> _fragmentIonCaps = new Dictionary<FragmentType, IChemicalFormula>()
         {
@@ -50,17 +51,26 @@ namespace CSMSL.Proteomics
 
         private static readonly Regex _sequenceRegex = new Regex(@"([A-Z])(?:\[([\w\{\}]+)\])?", RegexOptions.Compiled);
         private static readonly Regex _validateSequenceRegex = new Regex("^(" + _sequenceRegex.ToString() + ")+$", RegexOptions.Compiled);
-
+        
         internal IChemicalFormula[] _modifications;
         internal IAminoAcid[] _aminoAcids;
-
-        internal List<AminoAcid> _residues;
+       
         private ChemicalFormula _chemicalFormula;
 
         private bool _isDirty;
         private bool _isSequenceDirty;
 
         private StringBuilder _sequenceSB;
+
+        public AminoAcidPolymer()
+        {
+            _aminoAcids = new IAminoAcid[0];
+            _modifications = new IChemicalFormula[2];
+            NTerminus = DefaultNTerminusModification;
+            CTerminus = DefaultNTerminusModification;
+            _isDirty = true;
+            _isSequenceDirty = true;
+        }
 
         public AminoAcidPolymer(string sequence)
             : this(sequence, DefaultNTerminusModification, DefaultCTerminusModification) { }
@@ -75,29 +85,30 @@ namespace CSMSL.Proteomics
             CTerminus = cTerm;
         }
 
-        /// <summary>
-        /// Clone a complete copy of another amino acid polymer
-        /// </summary>
-        /// <param name="aminoAcidPolymer">The amino acid polymer to clone</param>
-        public AminoAcidPolymer(AminoAcidPolymer aminoAcidPolymer)
-            : this(aminoAcidPolymer, 0, aminoAcidPolymer.Length) { }      
+        public AminoAcidPolymer(AminoAcidPolymer aminoAcidPolymer, bool includeModifications = true)
+            : this(aminoAcidPolymer, 0, aminoAcidPolymer.Length, includeModifications) { }      
 
-        /// <summary>
-        /// Clone a part of another amino acid polymer
-        /// </summary>
-        /// <param name="aminoAcidPolymer">The amino acid polymer to clone</param>
-        /// <param name="firstResidue">The first residue to start cloning from</param>
-        /// <param name="length">The number of amino acids to clone</param>
-        public AminoAcidPolymer(AminoAcidPolymer aminoAcidPolymer, int firstResidue, int length)
+        public AminoAcidPolymer(AminoAcidPolymer aminoAcidPolymer, int firstResidue, int length, bool includeModifications = true)
         {
+            if (firstResidue < 0 || firstResidue > aminoAcidPolymer.Length)
+                throw new IndexOutOfRangeException(string.Format("The first residue index is outside the valid range [{0}-{1}]", 0, aminoAcidPolymer.Length));
+
             if (length + firstResidue > aminoAcidPolymer.Length)
                 length = aminoAcidPolymer.Length - firstResidue;
             _aminoAcids = new IAminoAcid[length];
             _modifications = new IChemicalFormula[length + 2];
             Array.Copy(aminoAcidPolymer._aminoAcids, firstResidue, _aminoAcids, 0, length);
-            Array.Copy(aminoAcidPolymer._modifications, firstResidue + 1, _modifications, 1, length);
-            NTerminus = (firstResidue == 0) ? aminoAcidPolymer.NTerminus : DefaultNTerminusModification;
-            CTerminus = (length + firstResidue == aminoAcidPolymer.Length) ? aminoAcidPolymer.CTerminus : DefaultCTerminusModification;
+            if (includeModifications)
+            {
+                Array.Copy(aminoAcidPolymer._modifications, firstResidue + 1, _modifications, 1, length);
+                NTerminus = (firstResidue == 0) ? aminoAcidPolymer.NTerminus : DefaultNTerminusModification;
+                CTerminus = (length + firstResidue == aminoAcidPolymer.Length) ? aminoAcidPolymer.CTerminus : DefaultCTerminusModification;
+            }
+            else
+            {
+                NTerminus = DefaultNTerminusModification;
+                CTerminus = DefaultCTerminusModification;
+            }
             _isDirty = true;
             _isSequenceDirty = true;
         }
@@ -114,6 +125,13 @@ namespace CSMSL.Proteomics
             }
         }
 
+        /// <summary>
+        /// Gets or sets the modification on the C terminus of this amino acid polymer
+        /// <remarks>
+        /// The default modification is 'HO'
+        /// [N]-PEPTIDE-[C]
+        /// </remarks>
+        /// </summary>
         public IChemicalFormula CTerminus
         {
             get
@@ -123,23 +141,18 @@ namespace CSMSL.Proteomics
             set
             {
                 _modifications[_modifications.Length - 1] = value;
+                _isSequenceDirty = true;
                 _isDirty = true;
             }
         }
 
         /// <summary>
-        /// The number of amino acids in this amino acid polymer
+        /// Gets or sets the modification on the N terminus of this amino acid polymer
+        /// <remarks>
+        /// The default modification is 'H'
+        /// [N]-PEPTIDE-[C]
+        /// </remarks>
         /// </summary>
-        public int Length
-        {
-            get { return _aminoAcids.Length; }
-        }
-
-        public Mass Mass
-        {
-            get { return ChemicalFormula.Mass; }
-        }
-
         public IChemicalFormula NTerminus
         {
             get
@@ -149,9 +162,27 @@ namespace CSMSL.Proteomics
             set
             {
                 _modifications[0] = value;
+                _isSequenceDirty = true;
                 _isDirty = true;
             }
         }
+        
+        /// <summary>
+        /// Gets the number of amino acids in this amino acid polymer
+        /// </summary>
+        public int Length
+        {
+            get { return _aminoAcids.Length; }
+        }
+
+        /// <summary>
+        /// Gets the mass of the amino acid polymer with all modifications included
+        /// </summary>
+        public Mass Mass
+        {
+            get { return ChemicalFormula.Mass; }
+        }
+        
 
         internal string _sequence;
 
@@ -179,7 +210,36 @@ namespace CSMSL.Proteomics
             }
         }
 
-        public int CountResidues(char residueChar)
+        /// <summary>
+        /// Gets the total number of amino acid residues in this amino acid polymer
+        /// </summary>
+        /// <returns>The number of amino acid residues</returns>
+        public int ResidueCount()
+        {
+            return Length;
+        }
+
+        public int ResidueCount(IAminoAcid aminoAcid)
+        {
+            if (aminoAcid == null)
+                return 0;
+
+            int count = 0;
+            foreach (IAminoAcid aar in _aminoAcids)
+            {
+                if (aar.Equals(aminoAcid))
+                    count++;
+            }
+            return count;
+        }
+
+        /// <summary>
+        /// Gets the number of amino acids residues in this amino acid polymer that
+        /// has the specified residue letter
+        /// </summary>
+        /// <param name="residueChar">The residue letter to search for</param>
+        /// <returns>The number of amino acid residues that have the same letter in this polymer</returns>
+        public int ResidueCount(char residueChar)
         {           
             int count = 0;
             foreach (IAminoAcid aar in _aminoAcids)
@@ -190,10 +250,17 @@ namespace CSMSL.Proteomics
             return count;
         }
 
+        /// <summary>
+        /// Gets the IAminoAcid at the specified position (1-based)
+        /// </summary>
+        /// <param name="index">The 1-based index of the amino acid to get</param>
+        /// <returns>The IAminoAcid at the specified position</returns>
         public IAminoAcid this[int index]
         {
             get
             {
+                if (index - 1 > _aminoAcids.Length || index < 1)
+                    throw new IndexOutOfRangeException();
                 return _aminoAcids[index - 1];
             }
         }
@@ -292,7 +359,7 @@ namespace CSMSL.Proteomics
         /// Clears the modification set at the terminus of this amino acid polymer back
         /// to the default C or N modifications.
         /// </summary>
-        /// <param name="terminus"></param>
+        /// <param name="terminus">The termini to clear the mod at</param>
         public void ClearModification(Terminus terminus)
         {
             if ((terminus & Terminus.N) == Terminus.N)
@@ -416,7 +483,7 @@ namespace CSMSL.Proteomics
             _sequence = baseSeqSB.ToString();
             _isDirty = false;
         }
-        
+
         public override int GetHashCode()
         {
             int hCode = 748;
@@ -438,29 +505,42 @@ namespace CSMSL.Proteomics
 
         public override bool Equals(object obj)
         {
-            if(obj == null || !(obj is AminoAcidPolymer)) {
+            if (obj == null)
+            {
                 return false;
             }
-            return this.Equals((AminoAcidPolymer)obj);
+
+            AminoAcidPolymer aap = obj as AminoAcidPolymer;
+            if ((object)aap == null)
+            {
+                return false;
+            }
+            return Equals(aap);
         }
 
-        public virtual bool Equals(AminoAcidPolymer other)
+        public bool Equals(AminoAcidPolymer other)
         {
             if (Object.ReferenceEquals(this, other)) return true;
-            if (this.Length != other.Length) return false;         
-            if (this.NTerminus != other.NTerminus || this.CTerminus != other.CTerminus)
+            if (this.Length != other.Length) return false;
+            if (!this.NTerminus.Equals(other.NTerminus) || !this.CTerminus.Equals(other.CTerminus))
                 return false;
-            
+
             int length = this.Length;
             for (int i = 1; i <= length; i++)
             {
                 IChemicalFormula thisMod = this._modifications[i];
-                IChemicalFormula otherMod = this._modifications[i];
+                IChemicalFormula otherMod = other._modifications[i];
                 if (thisMod == null)
                 {
-
+                    if (otherMod != null)
+                        return false;
                 }
-                if (!this._aminoAcids[i-1].Equals(other._aminoAcids[i-1]) || this._modifications[i] != other._modifications[i])
+                else
+                {
+                    if (!thisMod.Equals(otherMod))
+                        return false;
+                }
+                if (!this._aminoAcids[i - 1].Equals(other._aminoAcids[i - 1]))
                     return false;
             }
             return true;
@@ -587,6 +667,8 @@ namespace CSMSL.Proteomics
         }
 
         #endregion
+
+
 
     }
 }

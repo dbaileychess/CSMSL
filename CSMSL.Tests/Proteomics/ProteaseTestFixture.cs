@@ -78,11 +78,11 @@ namespace CSMSL.Tests.Proteomics
         public void DigestionMaxMissedCleavages()
         {            
             List<Peptide> peptides = ProteinA.Digest(Protease.TrypsinNoProlineRule, maxMissedCleavages: 0);
-            peptides.Should().Contain.One(pep => pep.CountResidues('K') + pep.CountResidues('R') == 0); // one C-terminal Peptide
-            peptides.Should().Not.Contain.Any(pep => (pep.CountResidues('K') + pep.CountResidues('R')) > 1); // no peptide should have more than one K or R
+            peptides.Should().Contain.One(pep => pep.ResidueCount('K') + pep.ResidueCount('R') == 0); // one C-terminal Peptide
+            peptides.Should().Not.Contain.Any(pep => (pep.ResidueCount('K') + pep.ResidueCount('R')) > 1); // no peptide should have more than one K or R
 
             peptides = ProteinA.Digest(Protease.TrypsinNoProlineRule, maxMissedCleavages: 3);
-            peptides.Should().Not.Contain.Any(pep => (pep.CountResidues('K') + pep.CountResidues('R')) > 4);
+            peptides.Should().Not.Contain.Any(pep => (pep.ResidueCount('K') + pep.ResidueCount('R')) > 4);
         }
 
         [Test]

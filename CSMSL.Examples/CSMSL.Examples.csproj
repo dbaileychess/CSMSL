@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>CSMSL.Examples</RootNamespace>
     <AssemblyName>CSMSL.Examples</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
   </PropertyGroup>
@@ -70,10 +70,6 @@
     <ProjectReference Include="..\CSMSL\IO\Agilent\Agilent.csproj">
       <Project>{83c27418-e85c-4270-b9d1-066b9ead5211}</Project>
       <Name>Agilent</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\CSMSL\IO\Bruker\Bruker.csproj">
-      <Project>{f1976bef-8756-46c2-830b-a638ff4a2e8c}</Project>
-      <Name>Bruker</Name>
     </ProjectReference>
     <ProjectReference Include="..\CSMSL\IO\Thermo\Thermo.csproj">
       <Project>{24dc85ff-e97b-4140-9614-77dd8fddd32f}</Project>

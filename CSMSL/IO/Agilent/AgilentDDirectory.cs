@@ -2,6 +2,7 @@
 using Agilent.MassSpectrometry.DataAnalysis.Utilities;
 using CSMSL.IO;
 using CSMSL.Spectral;
+using System;
 using System.IO;
 using System.Text.RegularExpressions;
 
@@ -151,12 +152,36 @@ namespace CSMSL.IO.Agilent
 
         public override int GetSpectrumNumber(double retentionTime)
         {
-            throw new System.NotImplementedException();
+            IBDAChromData tic = _msdr.GetTIC();
+            int index = -1;
+            for(int i = 0; i < tic.TotalDataPoints; i++)
+            {
+                if(index < 0 || Math.Abs(tic.XArray[i] - retentionTime) < Math.Abs(tic.XArray[index] - retentionTime))
+                {
+                    index = i;
+                }
+            }
+            return index + 1;
         }
 
         public override double GetInjectionTime(int spectrumNumber)
         {
-            throw new System.NotImplementedException();
+            IMSScanRecord scan_record = _msdr.GetScanRecord(spectrumNumber - 1);
+            int num_transients = 0;
+            double length_transient = double.NaN;
+            IBDAActualData[] actuals = _msdr.ActualsInformation.GetActualCollection(scan_record.RetentionTime);
+            foreach(IBDAActualData actual in actuals)
+            {
+                if(actual.DisplayName == "Number of Transients")
+                {
+                    num_transients = int.Parse(actual.DisplayValue);
+                }
+                else if(actual.DisplayName == "Length of Transients")
+                {
+                    length_transient = double.Parse(actual.DisplayValue);
+                }
+            }
+            return num_transients * length_transient;  // may be off by a factor of two for extended dynamic range mode
         }
     }
 }
