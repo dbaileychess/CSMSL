@@ -88,6 +88,9 @@ namespace CSMSL.Proteomics
 
         public AminoAcidPolymer(AminoAcidPolymer aminoAcidPolymer, int firstResidue, int length, bool includeModifications = true)
         {
+            if (firstResidue < 0 || firstResidue > aminoAcidPolymer.Length)
+                throw new IndexOutOfRangeException(string.Format("The first residue index is outside the valid range [{0}-{1}]", 0, aminoAcidPolymer.Length));
+
             if (length + firstResidue > aminoAcidPolymer.Length)
                 length = aminoAcidPolymer.Length - firstResidue;
             _aminoAcids = new IAminoAcid[length];
