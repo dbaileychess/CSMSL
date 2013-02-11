@@ -52,8 +52,8 @@ namespace CSMSL.Proteomics
         private static readonly Regex _sequenceRegex = new Regex(@"([A-Z])(?:\[([\w\{\}]+)\])?", RegexOptions.Compiled);
         private static readonly Regex _validateSequenceRegex = new Regex("^(" + _sequenceRegex.ToString() + ")+$", RegexOptions.Compiled);
         
-        internal IChemicalFormula[] _modifications;
-        internal IAminoAcid[] _aminoAcids;
+        private IChemicalFormula[] _modifications;
+        private IAminoAcid[] _aminoAcids;
        
         private ChemicalFormula _chemicalFormula;
 
@@ -482,6 +482,7 @@ namespace CSMSL.Proteomics
 
             _sequence = baseSeqSB.ToString();
             _isDirty = false;
+            _isSequenceDirty = false;
         }
 
         public override int GetHashCode()

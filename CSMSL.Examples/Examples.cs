@@ -58,7 +58,7 @@ namespace CSMSL.Examples
             //VennDiagramExamples();
             
             // Example programs
-            //ExampleTrypticDigest.Start(Protease.Trypsin);
+            ExampleTrypticDigest.Start(Protease.Trypsin);
 
             //Example IO
             //MsIOExamples();
