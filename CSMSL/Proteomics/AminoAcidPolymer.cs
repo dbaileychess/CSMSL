@@ -31,14 +31,14 @@ namespace CSMSL.Proteomics
     public abstract class AminoAcidPolymer : IChemicalFormula, IEquatable<AminoAcidPolymer>, IMass
     {
         /// <summary>
-        /// The default chemical formula modification of the C terminus
+        /// The default chemical formula of the C terminus
         /// </summary>
-        public static readonly ChemicalFormula DefaultCTerminusModification = new ChemicalFormula("OH");
+        public static readonly ChemicalFormula DefaultCTerminus = new ChemicalFormula("OH");
 
         /// <summary>
-        /// The default chemical formula modification of the N terminus
+        /// The default chemical formula of the N terminus
         /// </summary>
-        public static readonly ChemicalFormula DefaultNTerminusModification = new ChemicalFormula("H");
+        public static readonly ChemicalFormula DefaultNTerminus = new ChemicalFormula("H");
 
         private static readonly Dictionary<FragmentType, IChemicalFormula> _fragmentIonCaps = new Dictionary<FragmentType, IChemicalFormula>()
         {
@@ -59,6 +59,8 @@ namespace CSMSL.Proteomics
         private static readonly Regex _sequenceRegex = new Regex(@"([A-Z])(?:\[([\w\{\}]+)\])?", RegexOptions.Compiled);
         private static readonly Regex _validateSequenceRegex = new Regex("^(" + _sequenceRegex.ToString() + ")+$", RegexOptions.Compiled);
         
+        private IChemicalFormula _cTerminus;
+        private IChemicalFormula _nTerminus;
         private IChemicalFormula[] _modifications;
         private IAminoAcid[] _aminoAcids;
        
@@ -73,21 +75,23 @@ namespace CSMSL.Proteomics
         {
             _aminoAcids = new IAminoAcid[0];
             _modifications = new IChemicalFormula[2];
-            _modifications[0] = DefaultNTerminusModification;
-            _modifications[1] = DefaultCTerminusModification;
+            NTerminus = DefaultNTerminus;
+            CTerminus = DefaultCTerminus;
             _isDirty = true;
             _isSequenceDirty = true;
         }
 
         public AminoAcidPolymer(string sequence)
-            : this(sequence, DefaultNTerminusModification, DefaultCTerminusModification) { }
+            : this(sequence, DefaultNTerminus, DefaultCTerminus) { }
 
         public AminoAcidPolymer(string sequence, IChemicalFormula nTerm, IChemicalFormula cTerm)
         {
             int length = sequence.Length;
             _aminoAcids = new IAminoAcid[length];
             _modifications = new IChemicalFormula[length + 2]; // +2 for the n and c term         
-            ParseSequence(sequence, nTerm, cTerm);       
+            NTerminus = nTerm;
+            CTerminus = cTerm;
+            ParseSequence(sequence);       
         }
 
         public AminoAcidPolymer(AminoAcidPolymer aminoAcidPolymer, bool includeModifications = true)
@@ -106,13 +110,13 @@ namespace CSMSL.Proteomics
             if (includeModifications)
             {
                 Array.Copy(aminoAcidPolymer._modifications, firstResidue + 1, _modifications, 1, length);
-                NTerminus = (firstResidue == 0) ? aminoAcidPolymer.NTerminus : DefaultNTerminusModification;
-                CTerminus = (length + firstResidue == aminoAcidPolymer.Length) ? aminoAcidPolymer.CTerminus : DefaultCTerminusModification;
+                NTerminus = (firstResidue == 0) ? aminoAcidPolymer.NTerminus : DefaultNTerminus;
+                CTerminus = (length + firstResidue == aminoAcidPolymer.Length) ? aminoAcidPolymer.CTerminus : DefaultCTerminus;
             }
             else
             {
-                NTerminus = DefaultNTerminusModification;
-                CTerminus = DefaultCTerminusModification;
+                NTerminus = DefaultNTerminus;
+                CTerminus = DefaultCTerminus;
             }
             _isDirty = true;
             _isSequenceDirty = true;
@@ -130,34 +134,43 @@ namespace CSMSL.Proteomics
             }
         }
 
+
         /// <summary>
-        /// Gets or sets the modification on the C terminus of this amino acid polymer
-        /// <remarks>
-        /// The default modification is 'HO'
-        /// [N]-PEPTIDE-[C]
-        /// </remarks>
-        /// </summary>
+        /// Gets or sets the C terminus of this amino acid polymer
+        /// </summary>        
         public IChemicalFormula CTerminus
         {
             get
-            {                
-                return _modifications[_modifications.Length - 1];
+            {               
+                return _cTerminus;              
             }
             set
             {
-                _modifications[_modifications.Length - 1] = value;               
+                _cTerminus = value;               
                 _isDirty = true;
             }
         }
 
         /// <summary>
-        /// Gets or sets the modification on the N terminus of this amino acid polymer
-        /// <remarks>
-        /// The default modification is 'H'
-        /// [N]-PEPTIDE-[C]
-        /// </remarks>
-        /// </summary>
-        public IChemicalFormula NTerminus
+        /// Gets or sets the modification of the C terminus on this amino acid polymer
+        /// </summary>        
+        public IChemicalFormula CTerminusModification
+        {
+            get
+            {
+                return _modifications[_modifications.Length -1];
+            }
+            set
+            {
+                _modifications[_modifications.Length - 1] = value;
+                _isDirty = true;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the modification of the C terminus on this amino acid polymer
+        /// </summary>        
+        public IChemicalFormula NTerminusModification
         {
             get
             {
@@ -165,7 +178,23 @@ namespace CSMSL.Proteomics
             }
             set
             {
-                _modifications[0] = value;               
+                _modifications[0] = value;
+                _isDirty = true;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the N terminus of this amino acid polymer
+        /// </summary>
+        public IChemicalFormula NTerminus
+        {
+            get
+            {
+                return _nTerminus;
+            }
+            set
+            {
+                _nTerminus = value;
                 _isDirty = true;
             }
         }
@@ -355,11 +384,11 @@ namespace CSMSL.Proteomics
         {
             if ((terminus & Terminus.N) == Terminus.N)
             {
-                NTerminus = mod;               
+                NTerminusModification = mod;
             }
             if ((terminus & Terminus.C) == Terminus.C)
             {
-                CTerminus = mod;             
+                CTerminusModification = mod;
             }
         }
 
@@ -372,11 +401,11 @@ namespace CSMSL.Proteomics
         {
             if ((terminus & Terminus.N) == Terminus.N)
             {
-                NTerminus = DefaultNTerminusModification;
+                NTerminusModification = null;
             }
             if ((terminus & Terminus.C) == Terminus.C)
             {
-                CTerminus = DefaultCTerminusModification;
+                CTerminusModification = null;
             }
         }
         
@@ -451,15 +480,13 @@ namespace CSMSL.Proteomics
             IChemicalFormula mod = null;
                       
             // Handle N-Terminus
+            _chemicalFormula.Add(NTerminus.ChemicalFormula);
             if ((mod = _modifications[0]) != null)
             {
                 _chemicalFormula.Add(mod.ChemicalFormula);
-                if (!mod.Equals(DefaultNTerminusModification))
-                {
-                    _sequenceSB.Append('[');
-                    _sequenceSB.Append(mod);
-                    _sequenceSB.Append("]-");
-                }
+                _sequenceSB.Append('[');
+                _sequenceSB.Append(mod);
+                _sequenceSB.Append("]-");            
             }            
             
             // Handle Amino Acid Residues
@@ -480,15 +507,13 @@ namespace CSMSL.Proteomics
             }
 
             // Handle C-Terminus
+            _chemicalFormula.Add(CTerminus.ChemicalFormula);
             if ((mod = _modifications[_modifications.Length - 1]) != null)
             {
                 _chemicalFormula.Add(mod.ChemicalFormula);
-                if (!mod.Equals(DefaultCTerminusModification))
-                {
-                    _sequenceSB.Append("-[");
-                    _sequenceSB.Append(mod);
-                    _sequenceSB.Append(']');
-                }
+                _sequenceSB.Append("-[");
+                _sequenceSB.Append(mod);
+                _sequenceSB.Append(']');               
             }
 
             _sequence = baseSeqSB.ToString();
@@ -558,7 +583,7 @@ namespace CSMSL.Proteomics
             return true;
         }
 
-        private void ParseSequence(string sequence, IChemicalFormula nTerminus, IChemicalFormula cTerminus)
+        private void ParseSequence(string sequence)
         {
             AminoAcid residue = null;
             bool inMod = false;
@@ -648,14 +673,7 @@ namespace CSMSL.Proteomics
              
             Array.Resize(ref _aminoAcids, index);
             Array.Resize(ref _modifications, index + 2);
-
-            // Set defeault N and C terminus if not already parsed in
-            if (_modifications[0] == null)
-                _modifications[0] = nTerminus;
-
-            if (_modifications[index + 1] == null)
-                _modifications[index + 1] = cTerminus;
-        
+                    
             _isDirty = true;             
         }
 

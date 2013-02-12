@@ -30,6 +30,29 @@ namespace CSMSL.Tests.Proteomics
             MockPeptideEveryAminoAcid.Mass.Monoisotopic.Should().Equal(2394.12490682513);
         }
 
+        [Test]
+        public void PeptideMassGlycine()
+        {
+            Peptide pep = new Peptide("G");
+            ChemicalFormula formula = new ChemicalFormula("C2H5NO2");
+            pep.ChemicalFormula.Should().Equal(formula);
+        }
+
+        [Test]
+        public void PeptideMassTryptic()
+        {
+            ChemicalFormula formula = new ChemicalFormula("C37H66N12O21");
+            MockTrypticPeptide.ChemicalFormula.Should().Equal(formula);
+        }
+
+        [Test]
+        public void PeptideMassTrypticNTerminalLabeledFormula()
+        {
+            MockTrypticPeptide.SetModification(ChemicalModification.TMT6plex, Terminus.N);
+            ChemicalFormula formula = new ChemicalFormula("C45C{13}4H86N13N{15}1O23");
+            MockTrypticPeptide.ChemicalFormula.Should().Equal(formula);
+        }
+
         [Test]      
         public void PeptideAminoAcidCount()
         {
@@ -49,56 +72,72 @@ namespace CSMSL.Tests.Proteomics
         public void ParseNTerminalChemicalFormula()
         {
             Peptide peptide = new Peptide("[C2H3NO]-TTGSSSSSSSK");
+            ChemicalFormula formula = new ChemicalFormula("C39H69N13O22");
 
-            peptide.Mass.Monoisotopic.Should().Equal(1070.46018587348);
+            peptide.ChemicalFormula.Should().Equal(formula);
         }
 
         [Test]
         public void ParseCTerminalChemicalFormula()
         {
             Peptide peptide = new Peptide("TTGSSSSSSSK-[C2H3NO]");
+            ChemicalFormula formula = new ChemicalFormula("C39H69N13O22");
 
-            peptide.Mass.Monoisotopic.Should().Equal(1054.46527125392);
+            peptide.ChemicalFormula.Should().Equal(formula);
         }
 
         [Test]
         public void ParseCTerminalChemicalFormulaWithLastResidueMod()
         {
             Peptide peptide = new Peptide("TTGSSSSSSSK[H2O]-[C2H3NO]");
+            ChemicalFormula formula = new ChemicalFormula("C39H71N13O23");
 
-            peptide.Mass.Monoisotopic.Should().Equal(1072.47583593762);
+            peptide.ChemicalFormula.Should().Equal(formula);
+        }
+
+        [Test]
+        public void ParseCTerminalChemicalFormulaWithLastResidueModStringRepresentation()
+        {
+            Peptide peptide = new Peptide("TTGSSSSSSSK[H2O]-[C2H3NO]");
+            ChemicalFormula formula = new ChemicalFormula("C39H71N13O23");
+
+            peptide.SequenceWithModifications.Should().Equal("TTGSSSSSSSK[H2O]-[C2H3NO]");
         }
 
         [Test]
         public void ParseNAndCTerminalChemicalFormula()
         {
             Peptide peptide = new Peptide("[C2H3NO]-TTGSSSSSSSK-[C2H3NO]");
+            ChemicalFormula formula = new ChemicalFormula("C41H72N14O23");
 
-            peptide.Mass.Monoisotopic.Should().Equal(1110.47890994242);
+            peptide.ChemicalFormula.Should().Equal(formula);     
         }
 
         [Test]
         public void ParseNTerminalNamedChemicalModification()
         {
             Peptide peptide = new Peptide("[Carbamidomethyl]-TTGSSSSSSSK");
+            ChemicalFormula formula = new ChemicalFormula("C39H69N13O22");
 
-            peptide.Mass.Monoisotopic.Should().Equal(1070.46018587348);
+            peptide.ChemicalFormula.Should().Equal(formula);
         }
 
         [Test]
         public void ParseCTerminalNamedChemicalModification()
         {
             Peptide peptide = new Peptide("TTGSSSSSSSK-[Carbamidomethyl]");
+            ChemicalFormula formula = new ChemicalFormula("C39H69N13O22");
 
-            peptide.Mass.Monoisotopic.Should().Equal(1054.46527125392);
+            peptide.ChemicalFormula.Should().Equal(formula);
         }
 
         [Test]
         public void ParseNAndCTerminalNamedChemicalModification()
         {
             Peptide peptide = new Peptide("[Carbamidomethyl]-TTGSSSSSSSK-[Carbamidomethyl]");
+            ChemicalFormula formula = new ChemicalFormula("C41H72N14O23");
 
-            peptide.Mass.Monoisotopic.Should().Equal(1110.47890994242);
+            peptide.ChemicalFormula.Should().Equal(formula);     
         }
 
         [Test]
@@ -169,15 +208,6 @@ namespace CSMSL.Tests.Proteomics
         }
         
         [Test]
-        public void SetCTerminusMod()
-        {
-            ChemicalFormula formula = new ChemicalFormula("Fe");
-            MockPeptideEveryAminoAcid.SetModification(formula, Terminus.C);
-
-            MockPeptideEveryAminoAcid.CTerminus.Should().Equal(formula);
-        }
-
-        [Test]
         public void SetCTerminusModStringRepresentation()
         {
             ChemicalFormula formula = new ChemicalFormula("Fe");
@@ -193,15 +223,6 @@ namespace CSMSL.Tests.Proteomics
             MockPeptideEveryAminoAcid.SetModification(formula, Terminus.C);
 
             MockPeptideEveryAminoAcid.ToString().Should().Equal("ACDEFGHIKLMNPQRSTVWY-[Test]");
-        }
-
-        [Test]
-        public void SetNTerminusMod()
-        {
-            ChemicalFormula formula = new ChemicalFormula("Fe");
-            MockPeptideEveryAminoAcid.SetModification(formula, Terminus.N);
-
-            MockPeptideEveryAminoAcid.NTerminus.Should().Equal(formula);
         }
 
         [Test]
@@ -230,7 +251,7 @@ namespace CSMSL.Tests.Proteomics
 
             MockPeptideEveryAminoAcid.ClearModification(Terminus.N);
 
-            MockPeptideEveryAminoAcid.NTerminus.Should().Equal(AminoAcidPolymer.DefaultNTerminusModification);
+            MockPeptideEveryAminoAcid.NTerminus.Should().Equal(AminoAcidPolymer.DefaultNTerminus);
         }
 
         [Test]
@@ -241,7 +262,7 @@ namespace CSMSL.Tests.Proteomics
 
             MockPeptideEveryAminoAcid.ClearModification(Terminus.C);
 
-            MockPeptideEveryAminoAcid.CTerminus.Should().Equal(AminoAcidPolymer.DefaultCTerminusModification);
+            MockPeptideEveryAminoAcid.CTerminus.Should().Equal(AminoAcidPolymer.DefaultCTerminus);
         }
 
         [Test]
