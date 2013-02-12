@@ -46,6 +46,14 @@ namespace CSMSL.Tests.Proteomics
         }
 
         [Test]
+        public void ParseNamedChemicalModification()
+        {            
+            Peptide peptide = new Peptide("T[TMT 6-plex]HGEAK[Acetyl]K[TMT 6-plex]");
+
+            peptide.Mass.Monoisotopic.Should().Equal(1269.74468058495);
+        }
+
+        [Test]
         public void SetAminoAcidModification()
         {
             ChemicalFormula formula = new ChemicalFormula("Fe");

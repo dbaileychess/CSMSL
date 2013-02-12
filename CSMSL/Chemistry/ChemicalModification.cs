@@ -18,6 +18,8 @@
 //  along with CSMSL.  If not, see <http://www.gnu.org/licenses/>.        /
 ///////////////////////////////////////////////////////////////////////////
 
+using System.Collections.Generic;
+
 namespace CSMSL.Chemistry
 {
     public class ChemicalModification : ChemicalFormula
@@ -33,6 +35,37 @@ namespace CSMSL.Chemistry
         public static ChemicalModification ACETYL = new ChemicalModification("C2H2O", "Acetyl");
 
         #endregion
+
+        private static Dictionary<string, ChemicalModification> _modifications;
+
+        static ChemicalModification()
+        {
+            _modifications = new Dictionary<string, ChemicalModification>();
+            iTRAQ4Plex = AddModification("C{13}3C4N{15}NOH12", "iTRAQ 4-plex");
+            iTRAQ8Plex = AddModification("C{13}7C7N{15}N3O3H24", "iTRAQ 8-plex");
+            TMT6plex = AddModification("C{13}4C8N{15}NO2H20", "TMT 6-plex");
+            CAM = AddModification("C2H3NO", "Carbamidomethyl");
+            PHOSPHO = AddModification("HPO3", "Phosphorylation");
+            OX = AddModification("O", "Oxidation");
+            ACETYL = AddModification("C2H2O", "Acetyl");
+        }
+
+        public static ChemicalModification AddModification(string chemicalFormula, string name)
+        {
+            ChemicalModification mod = new ChemicalModification(chemicalFormula, name);
+            _modifications.Add(name, mod);
+            return mod;
+        }
+
+        public static ChemicalModification GetModification(string name)
+        {
+            return _modifications[name];
+        }
+
+        public static bool TryGetModification(string name, out ChemicalModification mod)
+        {
+            return _modifications.TryGetValue(name, out mod);
+        }
         
         private string _name;
 

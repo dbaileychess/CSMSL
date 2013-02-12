@@ -44,7 +44,6 @@ namespace CSMSL.Proteomics
         {
             _proteases = new Dictionary<string, Protease>(12);
 
-
             Trypsin = AddProtease("Trypsin", Terminus.C, @"[K|R](?'cleave')(?!P)");
             TrypsinNoProlineRule = AddProtease("Trypsin No Proline Rule", Terminus.C, @"[K|R](?'cleave')");
             GluC = AddProtease("GluC", Terminus.C, @"E(?'cleave')");
@@ -56,6 +55,11 @@ namespace CSMSL.Proteomics
             AspN = AddProtease("AspN", Terminus.N, @"(?'cleave')[B|D]");
             Thermolysin = AddProtease("Thermolysin", Terminus.N, @"(?<![D|E])(?'cleave')[A|F|I|L|M|V]");
             None = AddProtease("None", Terminus.C, @"[A-Z](?'cleave')");
+        }
+
+        public static IEnumerable<Protease> GetAllProteases()
+        {
+            return _proteases.Values;
         }
 
         public static Protease GetProtease(string name)
