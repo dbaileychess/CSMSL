@@ -46,11 +46,91 @@ namespace CSMSL.Tests.Proteomics
         }
 
         [Test]
-        public void ParseNamedChemicalModification()
+        public void ParseNTerminalChemicalFormula()
+        {
+            Peptide peptide = new Peptide("[C2H3NO]-TTGSSSSSSSK");
+
+            peptide.Mass.Monoisotopic.Should().Equal(1070.46018587348);
+        }
+
+        [Test]
+        public void ParseCTerminalChemicalFormula()
+        {
+            Peptide peptide = new Peptide("TTGSSSSSSSK-[C2H3NO]");
+
+            peptide.Mass.Monoisotopic.Should().Equal(1054.46527125392);
+        }
+
+        [Test]
+        public void ParseCTerminalChemicalFormulaWithLastResidueMod()
+        {
+            Peptide peptide = new Peptide("TTGSSSSSSSK[H2O]-[C2H3NO]");
+
+            peptide.Mass.Monoisotopic.Should().Equal(1072.47583593762);
+        }
+
+        [Test]
+        public void ParseNAndCTerminalChemicalFormula()
+        {
+            Peptide peptide = new Peptide("[C2H3NO]-TTGSSSSSSSK-[C2H3NO]");
+
+            peptide.Mass.Monoisotopic.Should().Equal(1110.47890994242);
+        }
+
+        [Test]
+        public void ParseNTerminalNamedChemicalModification()
+        {
+            Peptide peptide = new Peptide("[Carbamidomethyl]-TTGSSSSSSSK");
+
+            peptide.Mass.Monoisotopic.Should().Equal(1070.46018587348);
+        }
+
+        [Test]
+        public void ParseCTerminalNamedChemicalModification()
+        {
+            Peptide peptide = new Peptide("TTGSSSSSSSK-[Carbamidomethyl]");
+
+            peptide.Mass.Monoisotopic.Should().Equal(1054.46527125392);
+        }
+
+        [Test]
+        public void ParseNAndCTerminalNamedChemicalModification()
+        {
+            Peptide peptide = new Peptide("[Carbamidomethyl]-TTGSSSSSSSK-[Carbamidomethyl]");
+
+            peptide.Mass.Monoisotopic.Should().Equal(1110.47890994242);
+        }
+
+        [Test]
+        public void ParseNamedChemicalNamedChemicalModification()
         {            
             Peptide peptide = new Peptide("T[TMT 6-plex]HGEAK[Acetyl]K[TMT 6-plex]");
 
             peptide.Mass.Monoisotopic.Should().Equal(1269.74468058495);
+        }
+
+        [Test]
+        public void ParseNamedChemicalModificationToString()
+        {
+            Peptide peptide = new Peptide("T[TMT 6-plex]HGEAK[Acetyl]K[TMT 6-plex]");
+
+            peptide.ToString().Should().Equal("T[TMT 6-plex]HGEAK[Acetyl]K[TMT 6-plex]");
+        }
+
+        [Test]
+        public void ParseNamedChemicalModificationRegisterNew()
+        {
+            ChemicalModification.AddModification("C2H3NO", "Test");
+            Peptide peptide = new Peptide("T[TMT 6-plex]HGEAK[Test]K[TMT 6-plex]");
+
+            peptide.Mass.Monoisotopic.Should().Equal(1284.7555796218198);
+        }
+
+        [Test]
+        [ExpectedException(typeof(ArgumentException), ExpectedMessage = "Unable to correctly parse the following modification: TMT 7-plex")]
+        public void ParseNamedChemicalModificationInvalidName()
+        {
+            Peptide peptide = new Peptide("T[TMT 7-plex]HGEAK[Acetyl]K[TMT 6-plex]");           
         }
 
         [Test]

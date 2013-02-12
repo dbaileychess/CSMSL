@@ -86,10 +86,8 @@ namespace CSMSL.Proteomics
         {
             int length = sequence.Length;
             _aminoAcids = new IAminoAcid[length];
-            _modifications = new IChemicalFormula[length + 2]; // +2 for the n and c term
-            NTerminus = nTerm;
-            ParseSequence(sequence);
-            CTerminus = cTerm;
+            _modifications = new IChemicalFormula[length + 2]; // +2 for the n and c term         
+            ParseSequence(sequence, nTerm, cTerm);       
         }
 
         public AminoAcidPolymer(AminoAcidPolymer aminoAcidPolymer, bool includeModifications = true)
@@ -560,11 +558,13 @@ namespace CSMSL.Proteomics
             return true;
         }
 
-        private void ParseSequence(string sequence)
+        private void ParseSequence(string sequence, IChemicalFormula nTerminus, IChemicalFormula cTerminus)
         {
             AminoAcid residue = null;
             bool inMod = false;
-            int index = 0;
+            bool cterminalMod = false; // n or c terminal modification
+            int index = 0;          
+
             StringBuilder modSB = new StringBuilder(10);
             StringBuilder baseSeqSB = new StringBuilder(sequence.Length);
             foreach (char letter in sequence)
@@ -574,6 +574,7 @@ namespace CSMSL.Proteomics
                     if (letter == ']')
                     {
                         inMod = false;
+                      
                         string modString = modSB.ToString();
                         modSB.Clear();
 
@@ -598,7 +599,17 @@ namespace CSMSL.Proteomics
                                 }
                                 break;
                         }
-                        _modifications[index] = modification;
+
+                        if (cterminalMod)
+                        {
+                            _modifications[index + 1] = modification;
+                        }
+                        else
+                        {
+                            _modifications[index] = modification;
+                        }
+
+                        cterminalMod = false;
                     }
                     else
                     {
@@ -609,12 +620,16 @@ namespace CSMSL.Proteomics
                 {
                     _aminoAcids[index++] = residue;                 
                     baseSeqSB.Append(letter);
-                }
+                }                
                 else
                 {
                     if (letter == '[')
                     {
                         inMod = true;
+                    }
+                    else if (letter == '-')
+                    {                      
+                        cterminalMod = (index > 0);
                     }
                     else
                     {
@@ -625,7 +640,7 @@ namespace CSMSL.Proteomics
 
             if (inMod)
             {
-                throw new ArgumentException("Couldn't find the closing ] for a modification in this sequence");
+                throw new ArgumentException("Couldn't find the closing ] for a modification in this sequence: " + sequence);
             }
 
             _sequence = baseSeqSB.ToString();
@@ -633,6 +648,14 @@ namespace CSMSL.Proteomics
              
             Array.Resize(ref _aminoAcids, index);
             Array.Resize(ref _modifications, index + 2);
+
+            // Set defeault N and C terminus if not already parsed in
+            if (_modifications[0] == null)
+                _modifications[0] = nTerminus;
+
+            if (_modifications[index + 1] == null)
+                _modifications[index + 1] = cTerminus;
+        
             _isDirty = true;             
         }
 
