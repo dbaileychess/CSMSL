@@ -218,7 +218,7 @@ namespace CSMSL.Chemistry
                 }
             }
 
-            // Update each isotope
+            // Update each isotope          
             for (int i = 0; i <= id; i++)
             {
                 _isotopes[i] += formula._isotopes[i];
@@ -529,6 +529,18 @@ namespace CSMSL.Chemistry
             Array.Copy(other._isotopes, _isotopes, other._isotopes.Length);
         }
 
+        private void FindLargestIsotope()
+        {
+            int index = _largestIsotopeID;
+            while (index > 0)
+            {
+                if (_isotopes[index] != 0)
+                    break;
+                index--;
+            }
+            _largestIsotopeID = index;
+        }
+
         /// <summary>
         /// Recalculate parameters of the chemical formula
         /// </summary>
@@ -538,21 +550,14 @@ namespace CSMSL.Chemistry
             _isotopeCount = 0;
             _mass = new Mass();                     
            
-            HashSet<int> elements = new HashSet<int>();
-
-           // int newLargestIsotopeID = 0;
+            HashSet<int> elements = new HashSet<int>();         
 
             for (int i = 0; i <= _largestIsotopeID; i++)
             {  
                 int count = _isotopes[i];
                 if (count == 0)
                     continue;
-
-                //if (i > newLargestIsotopeID)
-                //{
-                //    newLargestIsotopeID = i;
-                //}
-
+       
                 Isotope isotope = Element.PeriodicTable[i];
                 Element element = isotope.Element;
                 elements.Add(element.AtomicNumber);
@@ -566,26 +571,12 @@ namespace CSMSL.Chemistry
                 _mass.Average += count * element.AverageMass;                
             }
 
-           // _largestIsotopeID = newLargestIsotopeID;
-
             _elementCount = elements.Count;
                    
             // Mark as clean
             _isDirty = false;
         }
-
-        private void FindLargestIsotope()
-        {           
-            int index = _largestIsotopeID;
-            while (index > 0)
-            {
-                if (_isotopes[index] != 0)
-                    break;
-                index--;
-            }
-            _largestIsotopeID = index; 
-        }
-
+                
         private void CleanUpFormula()
         {
             string carbonPart = "";
