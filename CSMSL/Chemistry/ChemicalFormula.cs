@@ -46,6 +46,9 @@ namespace CSMSL.Chemistry
         /// </summary>
         private bool _isDirty;          
 
+        /// <summary>
+        /// Inidicates if the Hill Notation string representation needs to be recalculated
+        /// </summary>
         private bool _isFormulaDirty;
 
         /// <summary>
@@ -373,9 +376,8 @@ namespace CSMSL.Chemistry
             {
                 return false;
             }
-            _isotopes[isotope.UniqueID] = 0;
-            _isFormulaDirty = true;
-            return _isDirty = true;
+            _isotopes[isotope.UniqueID] = 0;        
+            return _isFormulaDirty = _isDirty = true;
         }
 
         public bool Remove(string symbol)
@@ -551,8 +553,9 @@ namespace CSMSL.Chemistry
             _isotopes = new int[other._isotopes.Length];
             _largestIsotopeID = other._largestIsotopeID;
             Array.Copy(other._isotopes, _isotopes, other._isotopes.Length);
+            _isFormulaDirty = _isDirty = true;
         }
-
+        
         private void FindLargestIsotope()
         {
             int index = _largestIsotopeID;
@@ -729,11 +732,16 @@ namespace CSMSL.Chemistry
 
         public static ChemicalFormula operator *(ChemicalFormula formula, int count)
         {
+            if (count == 0)
+                return new ChemicalFormula();
+
+            int id = formula._largestIsotopeID;
             ChemicalFormula newFormula = new ChemicalFormula(formula);
-            for (int i = 0; i < newFormula._isotopes.Length; i++)
+            for (int i = 0; i < id; i++)
             {
                 newFormula._isotopes[i] *= count;
             }
+            
             newFormula._isDirty = true;
             newFormula._isFormulaDirty = true;
             return newFormula;

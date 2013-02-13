@@ -251,7 +251,18 @@ namespace CSMSL.Tests.Proteomics
 
             MockPeptideEveryAminoAcid.ClearModification(Terminus.N);
 
-            MockPeptideEveryAminoAcid.NTerminus.Should().Equal(AminoAcidPolymer.DefaultNTerminus);
+            MockPeptideEveryAminoAcid.NTerminusModification.Should().Equal(null);
+        }
+
+        [Test]
+        public void ClearCTerminusMod()
+        {
+            ChemicalFormula formula = new ChemicalFormula("Fe");
+            MockPeptideEveryAminoAcid.SetModification(formula, Terminus.C);
+
+            MockPeptideEveryAminoAcid.ClearModification(Terminus.C);
+
+            MockPeptideEveryAminoAcid.NTerminusModification.Should().Equal(null);
         }
 
         [Test]
@@ -264,17 +275,6 @@ namespace CSMSL.Tests.Proteomics
             MockPeptideEveryAminoAcid.ClearModifications();
 
             MockPeptideEveryAminoAcid.SequenceWithModifications.Should().Equal("ACDEFGHIKLMNPQRSTVWY");
-        }
-
-        [Test]
-        public void ClearCTerminusMod()
-        {
-            ChemicalFormula formula = new ChemicalFormula("Fe");
-            MockPeptideEveryAminoAcid.SetModification(formula, Terminus.C);
-
-            MockPeptideEveryAminoAcid.ClearModification(Terminus.C);
-
-            MockPeptideEveryAminoAcid.CTerminus.Should().Equal(AminoAcidPolymer.DefaultCTerminus);
         }
 
         [Test]
