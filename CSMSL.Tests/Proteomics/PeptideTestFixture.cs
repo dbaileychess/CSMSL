@@ -255,6 +255,18 @@ namespace CSMSL.Tests.Proteomics
         }
 
         [Test]
+        public void ClearAllModifications()
+        {
+            MockPeptideEveryAminoAcid.SetModification(ChemicalModification.OX, 'M');
+            MockPeptideEveryAminoAcid.SetModification(ChemicalModification.CAM, 'C');
+            MockPeptideEveryAminoAcid.SetModification(ChemicalModification.TMT6plex, Terminus.N);
+
+            MockPeptideEveryAminoAcid.ClearModifications();
+
+            MockPeptideEveryAminoAcid.SequenceWithModifications.Should().Equal("ACDEFGHIKLMNPQRSTVWY");
+        }
+
+        [Test]
         public void ClearCTerminusMod()
         {
             ChemicalFormula formula = new ChemicalFormula("Fe");

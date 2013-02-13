@@ -228,6 +228,16 @@ namespace CSMSL.Proteomics
                 return _sequence;
             }
         }
+
+        public bool ContainsModification(IChemicalFormula modification)
+        {
+            foreach (IChemicalFormula mod in _modifications)
+            {
+                if (modification.Equals(mod))
+                    return true;
+            }
+            return false;
+        }
             
         public string SequenceWithModifications
         {
@@ -317,35 +327,29 @@ namespace CSMSL.Proteomics
             {
                 start = Length - number;
                 end = Length;
-                chemFormula.Add(this.CTerminus);
+                chemFormula.Add(CTerminus);
+                if(CTerminusModification != null)
+                    chemFormula.Add(CTerminusModification.ChemicalFormula);
             }
             else
             {
-                chemFormula.Add(this.NTerminus);
+                chemFormula.Add(NTerminus);
+                if(NTerminusModification != null)
+                    chemFormula.Add(NTerminusModification.ChemicalFormula);
             }
           
             for (int i = start; i < end; i++)
             {
-                chemFormula.Add(_aminoAcids[i]);
+                chemFormula.Add(_aminoAcids[i].ChemicalFormula);
                 if (_modifications[i + 1] != null)
                 {
-                    chemFormula.Add(_modifications[i + 1]);
+                    chemFormula.Add(_modifications[i + 1].ChemicalFormula);
                 }
             }
 
             return new Fragment(type, number, chemFormula, this);
         }
-
-        public bool ContainsModification(IChemicalFormula modification)
-        {
-            foreach (IChemicalFormula mod in _modifications)
-            {
-                if (modification.Equals(mod))
-                    return true;
-            }
-            return false;
-        }
-
+        
         public IEnumerable<Fragment> CalculateFragments(FragmentType types)
         {
             return CalculateFragments(types, 1, Length - 1);
@@ -357,18 +361,53 @@ namespace CSMSL.Proteomics
             {
                 yield break;
             }
-            max = Math.Min(Length - 1, max);
-            min = Math.Max(1, min);
+
+            if (min < 1 || max > Length - 1)
+            {
+                throw new IndexOutOfRangeException();
+            }
+
             foreach (FragmentType type in Enum.GetValues(typeof(FragmentType)))
             {
                 if (type == FragmentType.None || type == FragmentType.Internal) continue;
                 if ((types & type) == type)
                 {
-                    // Calculate all the fragments given this peptide's length
-                    // TODO make this faster by caching partial chemical formulas
-                    for (int i = min; i <= max; i++)
+                    ChemicalFormula chemFormula = new ChemicalFormula(_fragmentIonCaps[type]);
+
+                    int start = min;
+                    int end = max;
+
+                    if (type >= FragmentType.x)
                     {
-                        yield return CalculateFragment(type, i);
+                        chemFormula.Add(CTerminus);
+                        if (CTerminusModification != null)
+                            chemFormula.Add(CTerminusModification.ChemicalFormula);
+                        for (int i = end; i >= start; i--)
+                        {
+                            chemFormula.Add(_aminoAcids[i].ChemicalFormula);
+                            if (_modifications[i+1] != null)
+                            {
+                                chemFormula.Add(_modifications[i+1].ChemicalFormula);
+                            }
+                            int number = Length - i;
+                            yield return new Fragment(type, number, new ChemicalFormula(chemFormula), this);
+                        }
+                    }
+                    else
+                    {
+                        chemFormula.Add(NTerminus);
+                        if (NTerminusModification != null)
+                            chemFormula.Add(NTerminusModification.ChemicalFormula);
+
+                        for (int i = start; i <= end; i++)
+                        {
+                            chemFormula.Add(_aminoAcids[i - 1].ChemicalFormula);
+                            if (_modifications[i] != null)
+                            {
+                                chemFormula.Add(_modifications[i].ChemicalFormula);
+                            }
+                            yield return new Fragment(type, i, new ChemicalFormula(chemFormula), this);
+                        }
                     }
                 }
             }
@@ -447,6 +486,15 @@ namespace CSMSL.Proteomics
             }
             _modifications[residueNumber] = mod;
             _isDirty = true;
+        }
+
+        /// <summary>
+        /// Clear all modifications from this amino acid polymer.
+        /// Includes N and C terminus modifications.
+        /// </summary>       
+        public void ClearModifications()
+        {
+            Array.Clear(_modifications, 0, _modifications.Length);
         }
 
         public override string ToString()

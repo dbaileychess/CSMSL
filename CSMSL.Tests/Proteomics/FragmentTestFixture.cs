@@ -45,6 +45,34 @@ namespace CSMSL.Tests.Proteomics
             fragment.ToString().Should().Equal("a1");
         }
 
+        [Test]
+        public void FragmentAllBIons()
+        {
+            List<Fragment> fragments = MockPeptideEveryAminoAcid.CalculateFragments(FragmentType.b).ToList();
+
+            fragments.Should().Count.Equals(19);
+        }
+
+        [Test]
+        public void FragmentNTerminalMod()
+        {
+            MockPeptideEveryAminoAcid.SetModification(ChemicalModification.TMT6plex, Terminus.N);
+            Fragment fragment = MockPeptideEveryAminoAcid.CalculateFragment(FragmentType.a, 1);
+            ChemicalFormula formula = new ChemicalFormula("C{13}4C10N{15}N2O2H25");
+            
+            fragment.ChemicalFormula.Should().Equal(formula);
+        }
+
+        [Test]
+        public void FragmentCTerminalMod()
+        {
+            MockPeptideEveryAminoAcid.SetModification(ChemicalModification.TMT6plex, Terminus.C);
+            Fragment fragment = MockPeptideEveryAminoAcid.CalculateFragment(FragmentType.x, 1);
+            ChemicalFormula formula = new ChemicalFormula("C{13}4C18N{15}N2O6H29");
+
+            fragment.ChemicalFormula.Should().Equal(formula);
+        }
+
         [Test]       
         public void FragmentChemicalFormulaAIon()
         {

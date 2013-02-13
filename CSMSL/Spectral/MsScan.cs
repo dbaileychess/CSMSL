@@ -3,20 +3,6 @@ using CSMSL.IO;
 
 namespace CSMSL.Spectral
 {
-    public enum Polarity { Positive = 1, Negative = -1, Neutral = 0 }
-
-    public enum MzAnalyzerType
-    {
-        Unknown = 0,
-        Quadrupole = 1,
-        IonTrap2D = 2,
-        IonTrap3D = 3,
-        Orbitrap = 4,
-        TOF = 5,
-        FTICR = 6,
-        Sector = 7
-    }
-
     public class MsScan : IEquatable<MsScan>, IDisposable
     {
         private Spectrum _spectrum = null;

@@ -112,6 +112,7 @@ namespace CSMSL.Chemistry
             {
                 CopyFrom(other);               
             }
+            _isFormulaDirty = true;
             _isDirty = true;
         }
 
@@ -190,8 +191,15 @@ namespace CSMSL.Chemistry
 
         #region Add/Remove
 
+        /// <summary>
+        /// Add a chemical formula containing object to this chemical formula
+        /// chemical formula
+        /// </summary>
+        /// <param name="item">The object that contains a chemical formula</param>
         public void Add(IChemicalFormula item)
         {
+            if (item == null)
+                return;
             Add(item.ChemicalFormula);
         }
 
@@ -245,6 +253,12 @@ namespace CSMSL.Chemistry
             Add(element.PrincipalIsotope, count);
         }
 
+        /// <summary>
+        /// Add the principal isotope of the element to this chemical formula
+        /// given its chemical symbol
+        /// </summary>
+        /// <param name="symbol">The chemical symbol of the element to add</param>
+        /// <param name="count">The number of the element to add</param>
         public void Add(string symbol, int count)
         {
             Add(Element.PeriodicTable[symbol].PrincipalIsotope, count);
@@ -289,8 +303,15 @@ namespace CSMSL.Chemistry
             _isFormulaDirty = true;
         }
 
+        /// <summary>
+        /// Remove a chemical formula containing object from this chemical formula
+        /// chemical formula
+        /// </summary>
+        /// <param name="item">The object that contains a chemical formula</param>
         public void Remove(IChemicalFormula item)
         {
+            if (item == null)
+                return;
             Remove(item.ChemicalFormula);
         }
 
@@ -305,7 +326,10 @@ namespace CSMSL.Chemistry
             if (id > _isotopes.Length)
             {
                 _largestIsotopeID = id;
-                Array.Resize(ref _isotopes, id + 1);
+                if (id > _isotopes.Length)
+                {
+                    Array.Resize(ref _isotopes, id + 1);
+                }
             }
 
             // Update each isotope
@@ -418,7 +442,7 @@ namespace CSMSL.Chemistry
         /// <returns></returns>
         public int Count(Isotope isotope)
         {
-            if (isotope == null || isotope.UniqueID > _isotopes.Length)
+            if (isotope == null || isotope.UniqueID > _largestIsotopeID)
                 return 0;
             return _isotopes[isotope.UniqueID];
         }

@@ -102,7 +102,9 @@
     <Compile Include="Proteomics\Terminus.cs" />
     <Compile Include="Range.cs" />
     <Compile Include="Spectral\IPeak.cs" />
+    <Compile Include="Spectral\MzAnalyzerType.cs" />
     <Compile Include="Spectral\Peak.cs" />
+    <Compile Include="Spectral\Polarity.cs" />
     <Compile Include="Spectral\Spectrum.cs" />
     <Compile Include="Tolerance.cs" />
     <Compile Include="Util\Combinatorics.cs" />
@@ -123,6 +125,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Analysis\" />
     <Folder Include="Util\Collections\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
