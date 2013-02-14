@@ -29,7 +29,8 @@ namespace CSMSL.Chemistry
     /// The Periodic Table of Elements.
     /// </summary>
     public sealed class PeriodicTable
-    {
+    {    
+
         /// <summary>
         /// The singleton instance of the periodic table
         /// </summary>
@@ -40,6 +41,9 @@ namespace CSMSL.Chemistry
         /// </summary>
         private Dictionary<string, Element> _elements;
 
+        private const int DefaultID = 11;
+        internal const int RecommendedID = 5;
+
         static PeriodicTable() { }
 
         /// <summary>
@@ -48,6 +52,7 @@ namespace CSMSL.Chemistry
         private PeriodicTable()
         {
             _elements = new Dictionary<string, Element>();
+            _uniqueID = DefaultID;
             _isotopes = new Isotope[300];
             LoadElements("Resources/Elements.xml");
             Array.Resize(ref _isotopes, _uniqueID);
@@ -63,8 +68,9 @@ namespace CSMSL.Chemistry
                 return _instance;
             }
         }
+   
+        private int _uniqueID;
 
-        private int _uniqueID = 10;
         private Isotope[] _isotopes;
 
         public Element this[string element]

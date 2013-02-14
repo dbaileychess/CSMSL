@@ -37,9 +37,7 @@ namespace CSMSL.Chemistry
         /// </summary>
         private static readonly Regex _formulaRegex = new Regex(@"([A-Z][a-z]*)(?:\{([0-9]+)\})?(-)?([0-9]+)?", RegexOptions.Compiled);
         private static readonly Regex _validateFormulaRegex = new Regex("^(" + _formulaRegex.ToString() + ")+$", RegexOptions.Compiled);
-        
-        private static readonly int _uniqueIDCount = 10;
-               
+                         
         /// <summary>
         /// Indicates if the internal _isotope array has been modified, requiring necessary
         /// clean up code to be performed.
@@ -72,8 +70,8 @@ namespace CSMSL.Chemistry
         /// Create an empty chemical formula
         /// </summary>
         public ChemicalFormula()
-        {            
-            _isotopes = new int[_uniqueIDCount];
+        {
+            _isotopes = new int[PeriodicTable.RecommendedID];
             _largestIsotopeID = 0;
             _isFormulaDirty = true;
             _isDirty = true;
@@ -108,7 +106,7 @@ namespace CSMSL.Chemistry
             if (other == null)
             {                
                 // create a new blank chemical formula
-                _isotopes = new int[_uniqueIDCount];
+                _isotopes = new int[PeriodicTable.RecommendedID];
                 _largestIsotopeID = 9;                 
             }
             else
@@ -222,7 +220,7 @@ namespace CSMSL.Chemistry
             {
                 _largestIsotopeID = id;
                
-                if (id > _isotopes.Length)
+                if (id >= _isotopes.Length)
                 {
                     // Resize this formula array to match the size of the incoming one
                     Array.Resize(ref _isotopes, id + 1);
@@ -282,7 +280,7 @@ namespace CSMSL.Chemistry
             if (id > _largestIsotopeID)
             {
                 _largestIsotopeID = id;
-                if (id > _isotopes.Length)
+                if (id >= _isotopes.Length)
                 {
                     // Isotope doesn't exist, resize array and set the count (faster than the += below)
                     Array.Resize(ref _isotopes, id + 1);
@@ -329,7 +327,7 @@ namespace CSMSL.Chemistry
             if (id > _isotopes.Length)
             {
                 _largestIsotopeID = id;
-                if (id > _isotopes.Length)
+                if (id >= _isotopes.Length)
                 {
                     Array.Resize(ref _isotopes, id + 1);
                 }
@@ -369,14 +367,31 @@ namespace CSMSL.Chemistry
         /// <returns>True if the isotope was in the chemical formula and removed, false otherwise</returns>
         public bool Remove(Isotope isotope)
         {
-            if (isotope == null || isotope.UniqueID > _largestIsotopeID)
+            if (isotope == null)
                 return false;
 
-            if (_isotopes[isotope.UniqueID] == 0)
+            int id = isotope.UniqueID;
+
+            if (id > _largestIsotopeID)
             {
+                // id not contained, just return false
                 return false;
             }
-            _isotopes[isotope.UniqueID] = 0;        
+            else if (id == _largestIsotopeID)
+            {
+                // id is the largest, set it to 0 and find the new largest
+                _isotopes[id] = 0;
+                FindLargestIsotope();
+            }
+            else if (_isotopes[id] == 0)
+            {
+                return false;               
+            }
+            else
+            {
+                _isotopes[id] = 0;
+            }
+
             return _isFormulaDirty = _isDirty = true;
         }
 
@@ -404,6 +419,7 @@ namespace CSMSL.Chemistry
         public void Clear()
         {
             Array.Clear(_isotopes, 0, _isotopes.Length);
+            _largestIsotopeID = 0;
             _isFormulaDirty = true;
             _isDirty = true;
         }

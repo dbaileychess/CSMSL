@@ -52,13 +52,13 @@ namespace CSMSL.Examples
         {
             // Examples coding
             //ChemicalFormulaExamples();
-            PeptideExamples();
+            //PeptideExamples();
 
             // Example Objects
             //VennDiagramExamples();
             
             // Example programs
-            //ExampleTrypticDigest.Start(Protease.Trypsin);
+            ExampleTrypticDigest.Start(Protease.Trypsin);
 
             //Example IO
             //MsIOExamples();

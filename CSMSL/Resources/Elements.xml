@@ -9,7 +9,7 @@
       <MassNumber>1</MassNumber>
       <RelativeAbundance>0.999885</RelativeAbundance>
     </Isotope>
-    <Isotope>
+    <Isotope uniqueID = "7">
       <Mass>2.0141017778</Mass>
       <MassNumber>2</MassNumber>
       <RelativeAbundance>0.000115</RelativeAbundance>
@@ -319,7 +319,7 @@
       <MassNumber>12</MassNumber>
       <RelativeAbundance>0.9893</RelativeAbundance>
     </Isotope>
-    <Isotope uniqueID = "2">
+    <Isotope uniqueID = "5">
       <Mass>13.0033548378</Mass>
       <MassNumber>13</MassNumber>
       <RelativeAbundance>0.0107</RelativeAbundance>
@@ -396,12 +396,12 @@
       <MassNumber>13</MassNumber>
       <RelativeAbundance>0</RelativeAbundance>
     </Isotope>
-    <Isotope uniqueID = "3">
+    <Isotope uniqueID = "2">
       <Mass>14.0030740048</Mass>
       <MassNumber>14</MassNumber>
       <RelativeAbundance>0.99636</RelativeAbundance>
     </Isotope>
-    <Isotope uniqueID = "4">
+    <Isotope uniqueID = "6">
       <Mass>15.0001088982</Mass>
       <MassNumber>15</MassNumber>
       <RelativeAbundance>0.00364</RelativeAbundance>
@@ -483,7 +483,7 @@
       <MassNumber>15</MassNumber>
       <RelativeAbundance>0</RelativeAbundance>
     </Isotope>
-    <Isotope uniqueID = "5">
+    <Isotope uniqueID = "3">
       <Mass>15.99491461956</Mass>
       <MassNumber>16</MassNumber>
       <RelativeAbundance>0.99757</RelativeAbundance>
@@ -493,7 +493,7 @@
       <MassNumber>17</MassNumber>
       <RelativeAbundance>0.00038</RelativeAbundance>
     </Isotope>
-    <Isotope uniqueID = "6">
+    <Isotope uniqueID = "8">
       <Mass>17.9991610</Mass>
       <MassNumber>18</MassNumber>
       <RelativeAbundance>0.00205</RelativeAbundance>
@@ -1252,7 +1252,7 @@
       <MassNumber>30</MassNumber>
       <RelativeAbundance>0</RelativeAbundance>
     </Isotope>
-    <Isotope uniqueID = "7">
+    <Isotope uniqueID = "9">
       <Mass>30.97376163</Mass>
       <MassNumber>31</MassNumber>
       <RelativeAbundance>1</RelativeAbundance>
@@ -1369,7 +1369,7 @@
       <MassNumber>31</MassNumber>
       <RelativeAbundance>0</RelativeAbundance>
     </Isotope>
-    <Isotope uniqueID = "8">
+    <Isotope uniqueID = "4">
       <Mass>31.97207100</Mass>
       <MassNumber>32</MassNumber>
       <RelativeAbundance>0.9499</RelativeAbundance>
@@ -4000,7 +4000,7 @@
       <MassNumber>79</MassNumber>
       <RelativeAbundance>0</RelativeAbundance>
     </Isotope>
-    <Isotope uniqueID ="9">
+    <Isotope uniqueID ="10">
       <Mass>79.9165213</Mass>
       <MassNumber>80</MassNumber>
       <RelativeAbundance>0.4961</RelativeAbundance>
