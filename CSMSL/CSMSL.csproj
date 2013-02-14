@@ -70,6 +70,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Analysis\Identification\Morpheus.cs" />
+    <Compile Include="Analysis\Quantitation\IsobaricTag.cs" />
     <Compile Include="Chemistry\ChemicalFormula.cs" />
     <Compile Include="Chemistry\ChemicalModification.cs" />
     <Compile Include="Chemistry\Element.cs" />
@@ -125,7 +127,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Analysis\" />
     <Folder Include="Util\Collections\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
