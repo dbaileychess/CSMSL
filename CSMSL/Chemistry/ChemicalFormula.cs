@@ -107,7 +107,7 @@ namespace CSMSL.Chemistry
             {                
                 // create a new blank chemical formula
                 _isotopes = new int[PeriodicTable.RecommendedID];
-                _largestIsotopeID = 9;                 
+                _largestIsotopeID = 0;                 
             }
             else
             {
@@ -194,7 +194,6 @@ namespace CSMSL.Chemistry
 
         /// <summary>
         /// Add a chemical formula containing object to this chemical formula
-        /// chemical formula
         /// </summary>
         /// <param name="item">The object that contains a chemical formula</param>
         public void Add(IChemicalFormula item)
@@ -251,6 +250,8 @@ namespace CSMSL.Chemistry
         /// <param name="count">The number of the element to add</param>
         public void Add(Element element, int count)
         {
+            if (element == null)
+                return;
             Add(element.PrincipalIsotope, count);
         }
 
@@ -262,7 +263,15 @@ namespace CSMSL.Chemistry
         /// <param name="count">The number of the element to add</param>
         public void Add(string symbol, int count)
         {
-            Add(Element.PeriodicTable[symbol].PrincipalIsotope, count);
+            try
+            {
+                Isotope isotope = Element.PeriodicTable[symbol].PrincipalIsotope;
+                Add(isotope, count);
+            }
+            catch (KeyNotFoundException e)
+            {
+                throw new KeyNotFoundException(string.Format("The element symbol '{0}' is not found in the periodic table", symbol), e);
+            }
         }
                
         /// <summary>
@@ -741,6 +750,13 @@ namespace CSMSL.Chemistry
 
         public static ChemicalFormula operator -(ChemicalFormula left, ChemicalFormula right)
         {
+            if (left == null)
+            {
+                if (right == null)
+                    return null;
+                return new ChemicalFormula(right);
+            }
+
             ChemicalFormula newFormula = new ChemicalFormula(left);
             newFormula.Remove(right);
             return newFormula;
@@ -770,6 +786,13 @@ namespace CSMSL.Chemistry
 
         public static ChemicalFormula operator +(ChemicalFormula left, ChemicalFormula right)
         {
+            if (left == null)
+            {
+                if (right == null)
+                    return null;
+                return new ChemicalFormula(right);
+            }
+
             ChemicalFormula newFormula = new ChemicalFormula(left);
             newFormula.Add(right);
             return newFormula;
