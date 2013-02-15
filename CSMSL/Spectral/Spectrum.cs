@@ -45,9 +45,9 @@ namespace CSMSL.Spectral
 
         public List<T> GetPeaks(IRange<double> range)
         {
-            List<T> peaks = null;
-            TryGetPeaks(range.Minimum, range.Maximum, out peaks);
-            return peaks;
+            if (range == null)
+                return new List<T>();
+            return GetPeaks(range.Minimum, range.Maximum);
         }
 
         public List<T> GetPeaks(double minMZ, double maxMZ)

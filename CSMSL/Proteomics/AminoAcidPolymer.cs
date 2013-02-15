@@ -497,7 +497,7 @@ namespace CSMSL.Proteomics
              
         public override int GetHashCode()
         {
-            int hCode = 748;
+            int hCode = 748;            
             foreach (IAminoAcid aa in _aminoAcids)
             {
                 hCode ^= aa.GetHashCode();

@@ -89,8 +89,6 @@ namespace CSMSL.Examples
                         scan.Spectrum.Count,
                         scan.MzAnalyzer,
                         scan.MzRange);
-                    List<MZPeak> peaks = new List<MZPeak>();
-                    scan.Spectrum.TryGetPeaks(500, 510, out peaks);
                 }
                 watch.Stop();
                 Console.WriteLine("File: {0}", dataFile.Name);
@@ -133,6 +131,7 @@ namespace CSMSL.Examples
             // Simple Peptide creation
             Peptide peptide1 = new Peptide("ACDEFGHIKLMNPQRSTVWY");
             WritePeptideToConsole(peptide1);
+                     
 
             // Fragmenting a peptide is simple, you can include as many fragment types as you want
             Console.WriteLine("{0,-4} {1,-20} {2,-5}", "Type", "Formula", "Mass");

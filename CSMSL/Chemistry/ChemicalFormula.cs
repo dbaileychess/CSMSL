@@ -95,7 +95,7 @@ namespace CSMSL.Chemistry
         private ChemicalFormula(int largestID)
         {
             _isotopes = new int[largestID + 1];
-            _largestIsotopeID = largestID;
+            _largestIsotopeID = 0;
             _isFormulaDirty = _isDirty = true;
         }
 
