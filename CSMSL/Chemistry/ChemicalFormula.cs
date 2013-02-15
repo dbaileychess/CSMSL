@@ -25,6 +25,9 @@ using System.Text.RegularExpressions;
 
 namespace CSMSL.Chemistry
 {
+    /// <summary>
+    /// A chemical / molecule consisting of multiple atoms.
+    /// </summary>
     public class ChemicalFormula : IMass, IEquatable<ChemicalFormula>, IChemicalFormula
     {      
         /// <summary>
@@ -36,6 +39,10 @@ namespace CSMSL.Chemistry
         /// Modified from: http://stackoverflow.com/questions/4116786/parsing-a-chemical-formula-from-a-string-in-c
         /// </summary>
         private static readonly Regex _formulaRegex = new Regex(@"([A-Z][a-z]*)(?:\{([0-9]+)\})?(-)?([0-9]+)?", RegexOptions.Compiled);
+
+        /// <summary>
+        /// A wrapper for the formula regex that validates if a string is in the correct chemical formula format or not
+        /// </summary>
         private static readonly Regex _validateFormulaRegex = new Regex("^(" + _formulaRegex.ToString() + ")+$", RegexOptions.Compiled);
                          
         /// <summary>
@@ -64,6 +71,12 @@ namespace CSMSL.Chemistry
         /// </summary>
         private int _largestIsotopeID;
 
+        private Mass _mass;
+        private int _atomCount;
+        private int _elementCount;
+        private int _isotopeCount;
+        private string _chemicalFormulaString;
+
         #region Constructors
 
         /// <summary>
@@ -73,8 +86,7 @@ namespace CSMSL.Chemistry
         {
             _isotopes = new int[PeriodicTable.RecommendedID];
             _largestIsotopeID = 0;
-            _isFormulaDirty = true;
-            _isDirty = true;
+            _isFormulaDirty = _isDirty = true;
         }
 
         /// <summary>
@@ -84,8 +96,7 @@ namespace CSMSL.Chemistry
         {
             _isotopes = new int[largestID + 1];
             _largestIsotopeID = largestID;
-            _isFormulaDirty = true;
-            _isDirty = true;
+            _isFormulaDirty = _isDirty = true;
         }
 
         /// <summary>
@@ -98,9 +109,17 @@ namespace CSMSL.Chemistry
             ParseString(chemicalFormula);
         }
 
+        /// <summary>
+        /// Create an chemical formula from an item that contains a chemical formula
+        /// </summary>
+        /// <param name="item">The item of which a new chemical formula will be made from</param>
         public ChemicalFormula(IChemicalFormula item)
             : this(item.ChemicalFormula) { }
 
+        /// <summary>
+        /// Create a copy of a chemical formula from another chemical formula
+        /// </summary>
+        /// <param name="other">The chemical formula to copy</param>
         public ChemicalFormula(ChemicalFormula other)
         {
             if (other == null)
@@ -111,17 +130,21 @@ namespace CSMSL.Chemistry
             }
             else
             {
-                CopyFrom(other);               
+                int length = other._isotopes.Length;
+                _isotopes = new int[length];
+                _largestIsotopeID = other._largestIsotopeID;
+                Array.Copy(other._isotopes, _isotopes, length);                      
             }
-            _isFormulaDirty = true;
-            _isDirty = true;
+            _isDirty = _isFormulaDirty = true;           
         }
 
         #endregion
 
         #region Properties
 
-        private Mass _mass;
+        /// <summary>
+        /// Gets the mass of this chemical formula
+        /// </summary>
         public Mass Mass
         {
             get
@@ -134,7 +157,9 @@ namespace CSMSL.Chemistry
             }
         }
 
-        private int _atomCount;
+        /// <summary>
+        /// Gets the number of atoms in this chemical formula
+        /// </summary>
         public int AtomCount
         {
             get
@@ -146,8 +171,10 @@ namespace CSMSL.Chemistry
                 return _atomCount;
             }
         }
-
-        private int _elementCount;
+        
+        /// <summary>
+        /// Gets the number of unique chemical elements in this chemical formula
+        /// </summary>
         public int ElementCount
         {
             get
@@ -160,7 +187,9 @@ namespace CSMSL.Chemistry
             }
         }
 
-        private int _isotopeCount;
+        /// <summary>
+        /// Gets the number of unique chemical isotopes in this chemical formula
+        /// </summary>
         public int IsotopeCount
         {
             get
@@ -173,10 +202,9 @@ namespace CSMSL.Chemistry
             }
         }
 
-        private string _chemicalFormulaString;
 
         /// <summary>
-        /// The string representation of the chemical formula in Hill Notation
+        /// Gets the string representation (Hill Notation) of this chemical formula
         /// </summary>
         public string Formula
         {
@@ -239,8 +267,7 @@ namespace CSMSL.Chemistry
                 FindLargestIsotope();
             }
 
-            _isDirty = true;
-            _isFormulaDirty = true;
+            _isFormulaDirty = _isDirty = true;
         }
 
         /// <summary>
@@ -294,8 +321,7 @@ namespace CSMSL.Chemistry
                     // Isotope doesn't exist, resize array and set the count (faster than the += below)
                     Array.Resize(ref _isotopes, id + 1);
                     _isotopes[id] = count;
-                    _isDirty = true;
-                    _isFormulaDirty = true;
+                    _isFormulaDirty = _isDirty = true;                  
                     return;
                 }
             }
@@ -309,13 +335,11 @@ namespace CSMSL.Chemistry
                 FindLargestIsotope();
             }
 
-            _isDirty = true;
-            _isFormulaDirty = true;
+            _isFormulaDirty = _isDirty = true;
         }
 
         /// <summary>
         /// Remove a chemical formula containing object from this chemical formula
-        /// chemical formula
         /// </summary>
         /// <param name="item">The object that contains a chemical formula</param>
         public void Remove(IChemicalFormula item)
@@ -325,6 +349,10 @@ namespace CSMSL.Chemistry
             Remove(item.ChemicalFormula);
         }
 
+        /// <summary>
+        /// Remove a chemical formula from this chemical formula
+        /// </summary>
+        /// <param name="formula">The chemical formula to remove</param>
         public void Remove(ChemicalFormula formula)
         {
             if (formula == null) return;
@@ -355,15 +383,25 @@ namespace CSMSL.Chemistry
                 FindLargestIsotope();
             }
 
-            _isDirty = true;
-            _isFormulaDirty = true;
+            _isFormulaDirty = _isDirty = true;
         }
 
+        /// <summary>
+        /// Remove the principal isotope of the element represented by the symbol
+        /// from this chemical formula
+        /// </summary>
+        /// <param name="symbol">The symbol of the chemical element to remove</param>
+        /// <param name="count">The number of isotopes to remove</param>
         public void Remove(string symbol, int count)
         {
             Add(Element.PeriodicTable[symbol].PrincipalIsotope, -count);
         }
 
+        /// <summary>
+        /// Remove a isotope from this chemical formula
+        /// </summary>
+        /// <param name="isotope">The isotope to remove</param>
+        /// <param name="count">The number of isotopes to remove</param>
         public void Remove(Isotope isotope, int count)
         {
             Add(isotope, -count);
@@ -404,12 +442,24 @@ namespace CSMSL.Chemistry
             return _isFormulaDirty = _isDirty = true;
         }
 
+        /// <summary>
+        /// Remove all the isotopes of an chemical element represented by the symbol
+        /// from this chemical formula
+        /// </summary>
+        /// <param name="symbol">The symbol of the chemical element to remove</param>
+        /// <returns>True if the element was present and removed, false otherwise</returns>
         public bool Remove(string symbol)
         {
             Element element = Element.PeriodicTable[symbol];
             return Remove(element);
         }
-
+        
+        /// <summary>
+        /// Remove all the isotopes of an chemical element from this
+        /// chemical formula
+        /// </summary>
+        /// <param name="element">The chemical element to remove</param>
+        /// <returns>True if the element was present and removed, false otherwise</returns>
         public bool Remove(Element element)
         {
             if (element == null)
@@ -429,8 +479,7 @@ namespace CSMSL.Chemistry
         {
             Array.Clear(_isotopes, 0, _isotopes.Length);
             _largestIsotopeID = 0;
-            _isFormulaDirty = true;
-            _isDirty = true;
+            _isFormulaDirty = _isDirty = true;  
         }
 
         #endregion 
@@ -571,16 +620,7 @@ namespace CSMSL.Chemistry
         }
 
         #region Private Methods
-
-        private void CopyFrom(ChemicalFormula other)
-        {
-            // Copy an existing chemical formula
-            _isotopes = new int[other._isotopes.Length];
-            _largestIsotopeID = other._largestIsotopeID;
-            Array.Copy(other._isotopes, _isotopes, other._isotopes.Length);
-            _isFormulaDirty = _isDirty = true;
-        }
-        
+                 
         private void FindLargestIsotope()
         {
             int index = _largestIsotopeID;
@@ -766,6 +806,9 @@ namespace CSMSL.Chemistry
         {
             if (count == 0)
                 return new ChemicalFormula();
+
+            if (formula == null)
+                return null;
 
             int id = formula._largestIsotopeID;
             ChemicalFormula newFormula = new ChemicalFormula(formula);

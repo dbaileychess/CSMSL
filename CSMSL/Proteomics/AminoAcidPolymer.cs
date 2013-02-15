@@ -40,21 +40,6 @@ namespace CSMSL.Proteomics
         /// </summary>
         public static readonly ChemicalFormula DefaultNTerminus = new ChemicalFormula("H");
 
-        private static readonly Dictionary<FragmentType, IChemicalFormula> _fragmentIonCaps = new Dictionary<FragmentType, IChemicalFormula>()
-        {
-          {FragmentType.a, new ChemicalFormula("C-1H-1O-1")},
-          {FragmentType.adot, new ChemicalFormula("C-1O-1")},
-          {FragmentType.b, new ChemicalFormula("H-1")},
-          {FragmentType.bdot, new ChemicalFormula()},
-          {FragmentType.c, new ChemicalFormula("NH2")},
-          {FragmentType.cdot, new ChemicalFormula("NH3")},
-          {FragmentType.x, new ChemicalFormula("COH-1")},
-          {FragmentType.xdot, new ChemicalFormula("CO")},
-          {FragmentType.y, new ChemicalFormula("H")},
-          {FragmentType.ydot, new ChemicalFormula("H2")},
-          {FragmentType.z, new ChemicalFormula("N-1H-2")},
-          {FragmentType.zdot, new ChemicalFormula("N-1H-1")},
-        };
 
         private static readonly Regex _sequenceRegex = new Regex(@"([A-Z])(?:\[([\w\{\}]+)\])?", RegexOptions.Compiled);
         private static readonly Regex _validateSequenceRegex = new Regex("^(" + _sequenceRegex.ToString() + ")+$", RegexOptions.Compiled);
@@ -309,7 +294,7 @@ namespace CSMSL.Proteomics
                 return null;
             }
 
-            ChemicalFormula chemFormula = new ChemicalFormula(_fragmentIonCaps[type]);
+            ChemicalFormula chemFormula = new ChemicalFormula();
           
             int start = 0;
             int end = number;
@@ -363,7 +348,7 @@ namespace CSMSL.Proteomics
                 if (type == FragmentType.None || type == FragmentType.Internal) continue;
                 if ((types & type) == type)
                 {
-                    ChemicalFormula chemFormula = new ChemicalFormula(_fragmentIonCaps[type]);
+                    ChemicalFormula chemFormula = new ChemicalFormula();
 
                     int start = min;
                     int end = max;

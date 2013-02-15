@@ -52,13 +52,13 @@ namespace CSMSL.Examples
         {
             // Examples coding
             //ChemicalFormulaExamples();
-            //PeptideExamples();
+            PeptideExamples();
 
             // Example Objects
             //VennDiagramExamples();
             
             // Example programs
-            ExampleTrypticDigest.Start(Protease.Trypsin);
+            //ExampleTrypticDigest.Start(Protease.Trypsin);
 
             //Example IO
             //MsIOExamples();
@@ -138,7 +138,7 @@ namespace CSMSL.Examples
             {
                 WriteFragmentToConsole(fragment);
             }
-
+                       
             // Modifications can be applied to any residue or termini
             Console.WriteLine("Lets add some Iron to our peptide...");
             peptide1.SetModification(new NamedChemicalFormula("Fe"), Terminus.C | Terminus.N);
