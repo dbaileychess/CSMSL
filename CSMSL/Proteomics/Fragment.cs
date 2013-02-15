@@ -19,11 +19,30 @@
 ///////////////////////////////////////////////////////////////////////////
 
 using CSMSL.Chemistry;
+using System.Collections.Generic;
 
 namespace CSMSL.Proteomics
 {
     public class Fragment : IChemicalFormula, IMass
     {
+
+        private static readonly Dictionary<FragmentType, ChemicalFormula> _fragmentIonCaps = new Dictionary<FragmentType, ChemicalFormula>()
+        {
+          {FragmentType.a, new ChemicalFormula("C-1H-1O-1")},
+          {FragmentType.adot, new ChemicalFormula("C-1O-1")},
+          {FragmentType.b, new ChemicalFormula("H-1")},
+          {FragmentType.bdot, new ChemicalFormula()},
+          {FragmentType.c, new ChemicalFormula("NH2")},
+          {FragmentType.cdot, new ChemicalFormula("NH3")},
+          {FragmentType.x, new ChemicalFormula("COH-1")},
+          {FragmentType.xdot, new ChemicalFormula("CO")},
+          {FragmentType.y, new ChemicalFormula("H")},
+          {FragmentType.ydot, new ChemicalFormula("H2")},
+          {FragmentType.z, new ChemicalFormula("N-1H-2")},
+          {FragmentType.zdot, new ChemicalFormula("N-1H-1")},
+        };
+        
+
         private ChemicalFormula _chemicalFormula;
         private int _number;
 
@@ -36,13 +55,14 @@ namespace CSMSL.Proteomics
             _type = type;
             _number = number;
             _chemicalFormula = chemicalFormula;
+            _chemicalFormula.Add(_fragmentIonCaps[type]);
             _parent = parent;
         }
 
         public ChemicalFormula ChemicalFormula
         {
             get { return _chemicalFormula; }
-            set { _chemicalFormula = value; }
+            private set { _chemicalFormula = value; }
         }
 
         public Mass Mass
@@ -53,24 +73,25 @@ namespace CSMSL.Proteomics
         public int Number
         {
             get { return _number; }
-            set { _number = value; }
+            private set { _number = value; }
         }
 
         public AminoAcidPolymer Parent
         {
             get { return _parent; }
-            set { _parent = value; }
+            private set { _parent = value; }
         }
 
         public FragmentType Type
         {
             get { return _type; }
-            set { _type = value; }
+            private set { _type = value; }
         }
 
         public override string ToString()
         {
             return string.Format("{0}{1}", System.Enum.GetName(typeof(FragmentType), _type), _number);
         }
+                
     }
 }
