@@ -1,5 +1,5 @@
 ﻿///////////////////////////////////////////////////////////////////////////
-//  Peak.cs - A particular feature on a m/z spectrum                      /
+//  IPeak.cs - An object that contains a m/z peak                         /
 //                                                                        /
 //  Copyright 2012 Derek J. Bailey                                        /
 //  This file is part of CSMSL.                                           /
@@ -18,36 +18,23 @@
 //  along with CSMSL.  If not, see <http://www.gnu.org/licenses/>.        /
 ///////////////////////////////////////////////////////////////////////////
 
+using System;
+
 namespace CSMSL.Spectral
 {
-    public class Peak : IPeak
+    public interface IMZPeak : IPeak
     {
-        public float Intensity { get; set; }
-        public double MZ { get; set; }
+        /// <summary>
+        /// The intensity of this peak
+        /// <remarks>The float type is used here to reduce memory
+        /// since high precision of intensity is not as imporant
+        /// as it is with m/z</remarks>
+        /// </summary>
+        float Intensity { get; }
 
-        public Peak()
-            : this(0, 0) { }
-
-        public Peak(double mz, float intensity)
-        {
-            MZ = mz;
-            Intensity = intensity;
-        }
-
-        public int CompareTo(IPeak other)
-        {
-            return MZ.CompareTo(other.MZ);
-        }
-
-        public bool Equals(IPeak other)
-        {
-            if (object.ReferenceEquals(this, other)) return true;
-            return MZ.Equals(other.MZ) && Intensity.Equals(other.Intensity);
-        }
-
-        public override string ToString()
-        {
-            return string.Format("({0:G5}, {1:G5})", MZ, Intensity);
-        }
+        /// <summary>
+        /// The mass-to-charge of this peak
+        /// </summary>
+        double MZ { get; }
     }
 }

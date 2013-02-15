@@ -52,7 +52,7 @@ namespace CSMSL.Examples
         {
             // Examples coding
             //ChemicalFormulaExamples();
-            PeptideExamples();
+            //PeptideExamples();
 
             // Example Objects
             //VennDiagramExamples();
@@ -61,7 +61,7 @@ namespace CSMSL.Examples
             //ExampleTrypticDigest.Start(Protease.Trypsin);
 
             //Example IO
-            //MsIOExamples();
+            MsIOExamples();
         }
 
         private static void MsIOExamples()
@@ -89,6 +89,8 @@ namespace CSMSL.Examples
                         scan.Spectrum.Count,
                         scan.MzAnalyzer,
                         scan.MzRange);
+                    List<MZPeak> peaks = new List<MZPeak>();
+                    scan.Spectrum.TryGetPeaks(out peaks, 500, 510);
                 }
                 watch.Stop();
                 Console.WriteLine("File: {0}", dataFile.Name);

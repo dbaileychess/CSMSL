@@ -120,7 +120,7 @@ namespace CSMSL.IO.Thermo
             }
         }
 
-        public override Spectrum GetMzSpectrum(int spectrumNumber)
+        public override MZSpectrum GetMzSpectrum(int spectrumNumber)
         {
             MzAnalyzerType mzAnalyzer = GetMzAnalyzer(spectrumNumber);
             double[,] peakData;
@@ -136,16 +136,16 @@ namespace CSMSL.IO.Thermo
                     {
                         peaks.Add(new ThermoLabeledPeak(peakData[0, i], (float)peakData[1, i], (short)peakData[5, i], (float)peakData[4, i]));
                     }
-                    return new Spectrum(peaks);
+                    return new MZSpectrum(peaks);
                 case MzAnalyzerType.IonTrap2D:
                     peakData = GetUnlabeledData(spectrumNumber);
                     count = peakData.GetLength(1);
-                    List<Peak> low_res_peaks = new List<Peak>();
+                    List<MZPeak> low_res_peaks = new List<MZPeak>();
                     for (int i = 0; i < count; i++)
                     {
-                        low_res_peaks.Add(new Peak(peakData[0, i], (float)peakData[1, i]));
+                        low_res_peaks.Add(new MZPeak(peakData[0, i], (float)peakData[1, i]));
                     }
-                    return new Spectrum(low_res_peaks);                    
+                    return new MZSpectrum(low_res_peaks);                    
             }
         }
 

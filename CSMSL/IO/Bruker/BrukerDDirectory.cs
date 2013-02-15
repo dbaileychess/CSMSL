@@ -83,7 +83,7 @@ namespace CSMSL.IO.Bruker
             return Spectral.MzAnalyzerType.TOF;
         }
 
-        public override Spectral.Spectrum GetMzSpectrum(int spectrumNumber)
+        public override Spectral.MZSpectrum GetMzSpectrum(int spectrumNumber)
         {
             IMSSpectrum2 spectra = (IMSSpectrum2)analysis.MSSpectrumCollection[spectrumNumber];
             if (spectra != null)
@@ -94,7 +94,7 @@ namespace CSMSL.IO.Bruker
                     spectra.GetMassIntensityValues(SpectrumTypes.SpectrumType_Line, out masses, out intensities);
                     double[] massesLine = (double[])masses;
                     double[] intensitiesLine = (double[])intensities;
-                    Spectral.Spectrum spectrum = new Spectral.Spectrum(massesLine, intensitiesLine);
+                    Spectral.MZSpectrum spectrum = new Spectral.MZSpectrum(massesLine, intensitiesLine);
                     return spectrum;
                 }
             }           

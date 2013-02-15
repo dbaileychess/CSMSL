@@ -205,7 +205,7 @@ namespace CSMSL.Spectral
                         throw new ArgumentException("A range must be declared for a m/z range chromatogram");
                     }
                     chrom = new MzRangeChromatogram(range, type);
-                    List<Peak> peaks = null;
+                    List<MZPeak> peaks = null;
                     foreach (MsScan scan in scans)
                     {
                         if (scan.Spectrum.TryGetPeaks(out peaks, range))
@@ -220,7 +220,7 @@ namespace CSMSL.Spectral
                     chrom = new Chromatogram(type);
                     foreach (MsScan scan in scans)
                     {
-                        ChromatogramPoint point = new ChromatogramPoint(scan.RetentionTime, scan.Spectrum.TIC);
+                        ChromatogramPoint point = new ChromatogramPoint(scan.RetentionTime, (float)scan.Spectrum.TIC);
                         chrom.AddPoint(point);
                     }
                     break;

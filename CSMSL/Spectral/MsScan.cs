@@ -5,9 +5,9 @@ namespace CSMSL.Spectral
 {
     public class MsScan : IEquatable<MsScan>, IDisposable
     {
-        private Spectrum _spectrum = null;
+        private MZSpectrum _spectrum = null;
 
-        public Spectrum Spectrum
+        public MZSpectrum Spectrum
         {
             get
             {

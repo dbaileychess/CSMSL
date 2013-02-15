@@ -2,7 +2,7 @@
 
 namespace CSMSL.IO.Thermo
 {
-    public class ThermoLabeledPeak : Peak, IPeak
+    public class ThermoLabeledPeak : MZPeak, IMZPeak
     {
         private short _charge;
 
