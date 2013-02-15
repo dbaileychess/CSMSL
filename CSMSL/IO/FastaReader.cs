@@ -24,6 +24,7 @@ using System.IO;
 using System.Text;
 using CSMSL.Proteomics;
 
+
 namespace CSMSL.IO
 {
     public class FastaReader : IDisposable
@@ -31,6 +32,10 @@ namespace CSMSL.IO
         public char[] Delimiters = { '>' };
         private string _fileName;
         private StreamReader _reader;
+
+    
+
+        public int LineNumber { get { return _lineNumber; } }
 
         public Stream BaseStream
         {
@@ -100,10 +105,19 @@ namespace CSMSL.IO
             return _fileName;
         }
 
+        private int _lineNumber;
+
         private IEnumerable<string> ReadNextLine()
         {
-            while (_reader.Peek() >= 0)
+            _lineNumber = 0;
+            
+            while (_reader.Peek() >= 0 )
+            {
+                _lineNumber++;
+               
                 yield return _reader.ReadLine();
+               
+            }
             yield break;
         }
     }
