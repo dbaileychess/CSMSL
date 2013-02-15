@@ -141,12 +141,12 @@ namespace CSMSL.Examples
 
             // Modifications can be applied to any residue or termini
             Console.WriteLine("Lets add some Iron to our peptide...");
-            peptide1.SetModification(new ChemicalModification("Fe"), Terminus.C | Terminus.N);
+            peptide1.SetModification(new NamedChemicalFormula("Fe"), Terminus.C | Terminus.N);
             WritePeptideToConsole(peptide1);            
 
             // A chemicalmodification is a simple wrapper for a chemical formula. You can name your mods if you want
             Console.WriteLine("Add a modification of Oxygen with the name \"Oxidation\" to all Methionines");
-            ChemicalModification oxMod = new ChemicalModification("O", "Oxidation");
+            NamedChemicalFormula oxMod = new NamedChemicalFormula("O", "Oxidation");
             peptide1.SetModification(oxMod, 'M');
             WritePeptideToConsole(peptide1);
 

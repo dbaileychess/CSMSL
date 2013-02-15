@@ -661,20 +661,20 @@ namespace CSMSL.Proteomics
                         string modString = modSB.ToString();
                         modSB.Clear();
 
-                        ChemicalModification modification = null;
+                        NamedChemicalFormula modification = null;
                         switch (modString)
                         {
                             case "#": // Make the modification unverisally heavy (all C12 and N14s are promoted to C13 and N15s)
-                                modification = ChemicalModification.MakeHeavy(_aminoAcids[index - 1]);
+                                modification = NamedChemicalFormula.MakeHeavy(_aminoAcids[index - 1]);
                                 break;
                             default:
-                                if (ChemicalModification.TryGetModification(modString, out modification))
+                                if (NamedChemicalFormula.TryGetModification(modString, out modification))
                                 {
                                     // do nothing
                                 }
                                 else if (ChemicalFormula.IsValidChemicalFormula(modString))
                                 {
-                                    modification = new ChemicalModification(modString);
+                                    modification = new NamedChemicalFormula(modString);
                                 }
                                 else
                                 {

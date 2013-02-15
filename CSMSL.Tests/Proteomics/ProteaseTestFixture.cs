@@ -122,10 +122,10 @@ namespace CSMSL.Tests.Proteomics
         public void DigestionPerservesCTerminalModification()
         {
             Protein prot = new Protein("MMRGFKQRLIKKTTGSSSSSSSKKKDKEKEKEKSSTTSSTSKKPASASSSSHGTTHSSASSTGSKSTTEKGKQSGSVPSQ");
-            prot.SetModification(ChemicalModification.iTRAQ4Plex, Terminus.C);
+            prot.SetModification(NamedChemicalFormula.iTRAQ4Plex, Terminus.C);
 
             Peptide peptide = new Peptide("QSGSVPSQ");
-            peptide.SetModification(ChemicalModification.iTRAQ4Plex, Terminus.C);
+            peptide.SetModification(NamedChemicalFormula.iTRAQ4Plex, Terminus.C);
 
             List<Peptide> peptides = prot.Digest(Protease.Trypsin, 0, 5, 10);
             peptides.Should().Contain.Item(peptide);
