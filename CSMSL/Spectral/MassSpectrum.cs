@@ -24,30 +24,32 @@ using System.Linq;
 
 namespace CSMSL.Spectral
 {
-    public class MZSpectrum : Spectrum<MZPeak>
+    public class MassSpectrum : Spectrum<MZPeak>
     {
-        public MZSpectrum()
+        public MassSpectrum()
             : base() { }
 
-        public MZSpectrum(double[,] data)
+        public MassSpectrum(double[,] data)
             : base()
         {
             LoadData(data);
         }
 
-        public MZSpectrum(double[] mzs, double[] intensities)
+        public MassSpectrum(double[] mzs, double[] intensities)
             : base()
         {
             LoadData(mzs, intensities);
         }
 
-        public MZSpectrum(double[] mzs, float[] intensities)
+        public MassSpectrum(double[] mzs, float[] intensities)
             : base()
         {
             LoadData(mzs, intensities);
         }
 
-        public MZSpectrum(IEnumerable<MZPeak> peaks)
+        public double TotalIonCurrent { get; private set; }
+
+        public MassSpectrum(IEnumerable<MZPeak> peaks)
             : base(peaks) { }
 
         private void LoadData(double[] mzs, double[] intensities)

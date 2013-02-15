@@ -699,6 +699,10 @@ namespace CSMSL.Proteomics
                     {                      
                         cterminalMod = (index > 0);
                     }
+                    else if (letter == ' ')
+                    {
+                        // allow spaces by just skipping them.
+                    }
                     else
                     {
                         throw new ArgumentException(string.Format("Amino Acid Letter {0} does not exist in the Amino Acid Dictionary", letter));

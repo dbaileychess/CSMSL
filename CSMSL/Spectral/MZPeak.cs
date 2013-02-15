@@ -20,45 +20,30 @@
 
 namespace CSMSL.Spectral
 {
-    public class MZPeak : IMZPeak
+    public class MZPeak : IPeak
     {
-        public float Intensity { get; private set; }
+        public double Intensity { get; private set; }
         public double MZ { get; private set; }
-        
+
         public MZPeak()
             : this(0, 0) { }
 
-        public MZPeak(double mz, float intensity)
+        public MZPeak(double mz, double intensity)
         {
             MZ = mz;
             Intensity = intensity;
         }       
 
-        public int CompareTo(IMZPeak other)
-        {
-            return MZ.CompareTo(other.MZ);
-        }
-
-        public bool Equals(IMZPeak other)
+        public bool Equals(IPeak other)
         {
             if (object.ReferenceEquals(this, other)) return true;
-            return MZ.Equals(other.MZ) && Intensity.Equals(other.Intensity);
+            return MZ.Equals(other.X) && Intensity.Equals(other.Y);
         }
 
         public override string ToString()
         {
             return string.Format("({0:G5}, {1:G5})", MZ, Intensity);
-        }
-        
-        public double GetX()
-        {
-            return MZ;
-        }
-
-        public double GetY()
-        {
-            return Intensity;
-        }
+        }        
                 
         public int CompareTo(double other)
         {
@@ -67,7 +52,7 @@ namespace CSMSL.Spectral
 
         public int CompareTo(IPeak other)
         {
-            return MZ.CompareTo(other.GetX());
+            return MZ.CompareTo(other.X);
         }
 
         public int CompareTo(object other)
@@ -78,5 +63,16 @@ namespace CSMSL.Spectral
                 return CompareTo((IPeak)other);
             throw new System.InvalidOperationException("Unable to compare types");
         }
+
+        double IPeak.X
+        {
+            get { return MZ; }
+        }
+
+        double IPeak.Y
+        {
+            get { return Intensity; }
+        }
+
     }
 }

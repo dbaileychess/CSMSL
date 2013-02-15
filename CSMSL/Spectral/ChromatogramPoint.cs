@@ -6,9 +6,9 @@ namespace CSMSL.Spectral
 {
     public class LabeledChromatogramPoint : ChromatogramPoint
     {
-        private List<IMZPeak> _peaks;
+        private List<IPeak> _peaks;
 
-        public List<IMZPeak> MzPeaks
+        public List<IPeak> MzPeaks
         {
             get
             {
@@ -31,15 +31,15 @@ namespace CSMSL.Spectral
             }
         }
 
-        public LabeledChromatogramPoint(double time, IMZPeak peak)
-            : base(time,peak.Intensity)
+        public LabeledChromatogramPoint(double time, IPeak peak)
+            : base(time,(float)peak.Y)
         {           
-            _peaks = new List<IMZPeak>();
+            _peaks = new List<IPeak>();
             _peaks.Add(peak);           
         }
 
-        public LabeledChromatogramPoint(double time, IEnumerable<IMZPeak> peaks)
-            : base(time,peaks.Sum(p => p.Intensity))
+        public LabeledChromatogramPoint(double time, IEnumerable<IPeak> peaks)
+            : base(time,(float)peaks.Sum(p => p.Y))
         {           
             _peaks = peaks.ToList();          
         }

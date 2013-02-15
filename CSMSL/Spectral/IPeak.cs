@@ -7,7 +7,7 @@ namespace CSMSL.Spectral
 {
     public interface IPeak : IComparable<double>, IComparable<IPeak>, IComparable
     {
-        double GetX();
-        double GetY();
+        double X { get; }
+        double Y { get; }
     }    
 }

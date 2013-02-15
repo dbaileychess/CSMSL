@@ -5,7 +5,7 @@ using System.Text;
 
 namespace CSMSL.Spectral
 {
-    public class Spectrum<T> : IDisposable, IEnumerable<T> where T : IPeak
+    public class Spectrum<T> : IEnumerable<T> where T : IPeak
     {
         protected T _basePeak;
         protected int _count;
@@ -46,23 +46,23 @@ namespace CSMSL.Spectral
         public List<T> GetPeaks(IRange<double> range)
         {
             List<T> peaks = null;
-            TryGetPeaks(out peaks, range.Minimum, range.Maximum);
+            TryGetPeaks(range.Minimum, range.Maximum, out peaks);
             return peaks;
         }
 
         public List<T> GetPeaks(double minMZ, double maxMZ)
         {
             List<T> peaks = null;
-            TryGetPeaks(out peaks, minMZ, maxMZ);
+            TryGetPeaks(minMZ, maxMZ, out peaks);
             return peaks;
         }
 
-        public bool TryGetPeaks(out List<T> peaks, IRange<double> range)
+        public bool TryGetPeaks(IRange<double> range, out List<T> peaks)
         {
-            return TryGetPeaks(out peaks, range.Minimum, range.Maximum);
+            return TryGetPeaks(range.Minimum, range.Maximum, out peaks);
         }
 
-        public bool TryGetPeaks(out List<T> peaks, double minX, double maxX)
+        public bool TryGetPeaks(double minX, double maxX, out List<T> peaks)
         {
             int index = Array.BinarySearch(_peaks, minX);
             if (index < 0)
@@ -70,13 +70,14 @@ namespace CSMSL.Spectral
 
             peaks = new List<T>();
             T peak;
-            if (index >= _peaks.Length || (peak = _peaks[index]).GetX() > maxX) return false;
+            if (index >= _peaks.Length || (peak = _peaks[index]).X > maxX) 
+                return false;
 
             do
             {
                 peaks.Add(peak);
                 index++;
-            } while (index < _peaks.Length && (peak = _peaks[index]).GetX() <= maxX);
+            } while (index < _peaks.Length && (peak = _peaks[index]).X <= maxX);
 
             return true;
         }
@@ -92,7 +93,7 @@ namespace CSMSL.Spectral
             double intensity;
             foreach (T peak in peaks)
             {
-                _tic += intensity = peak.GetY();
+                _tic += intensity = peak.Y;
                 if (intensity > maxInt)
                 {
                     maxInt = intensity;
@@ -111,15 +112,9 @@ namespace CSMSL.Spectral
         {
             if (_peaks != null)
                 Array.Clear(_peaks, 0, _peaks.Length);
+            _count = 0;
         }
-
-        public void Dispose()
-        {
-            if (_peaks != null)
-                Array.Clear(_peaks, 0, _peaks.Length);
-            _peaks = null;
-        }
-
+        
         public IEnumerator<T> GetEnumerator()
         {
             return _peaks.AsEnumerable().GetEnumerator();

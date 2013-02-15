@@ -2,7 +2,7 @@
 
 namespace CSMSL.IO.Thermo
 {
-    public class ThermoLabeledPeak : MZPeak, IMZPeak
+    public class ThermoLabeledPeak : MZPeak
     {
         private short _charge;
 
@@ -18,7 +18,7 @@ namespace CSMSL.IO.Thermo
             get { return _noise; }
         }
                 
-        public float SN
+        public double SN
         {
             get
             {

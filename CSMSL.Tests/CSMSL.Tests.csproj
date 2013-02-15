@@ -74,6 +74,7 @@
     <Compile Include="Proteomics\ProteaseTestFixture.cs" />
     <Compile Include="RangeTestFixture.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Spectral\SpectrumTestFixture.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\CSMSL\CSMSL.csproj">

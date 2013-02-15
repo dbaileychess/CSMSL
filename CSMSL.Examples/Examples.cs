@@ -90,7 +90,7 @@ namespace CSMSL.Examples
                         scan.MzAnalyzer,
                         scan.MzRange);
                     List<MZPeak> peaks = new List<MZPeak>();
-                    scan.Spectrum.TryGetPeaks(out peaks, 500, 510);
+                    scan.Spectrum.TryGetPeaks(500, 510, out peaks);
                 }
                 watch.Stop();
                 Console.WriteLine("File: {0}", dataFile.Name);

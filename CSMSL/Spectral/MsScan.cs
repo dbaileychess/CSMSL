@@ -5,9 +5,9 @@ namespace CSMSL.Spectral
 {
     public class MsScan : IEquatable<MsScan>, IDisposable
     {
-        private MZSpectrum _spectrum = null;
+        private MassSpectrum _spectrum = null;
 
-        public MZSpectrum Spectrum
+        public MassSpectrum Spectrum
         {
             get
             {
@@ -137,9 +137,7 @@ namespace CSMSL.Spectral
 
         public void Dispose()
         {
-            ParentFile._scans[SpectrumNumber] = null; // clear the cache in the parent file
-            if (_spectrum != null)
-                _spectrum.Dispose();
+            ParentFile._scans[SpectrumNumber] = null; // clear the cache in the parent file      
             _spectrum = null;           
         }
     }

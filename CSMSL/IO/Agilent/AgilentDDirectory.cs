@@ -84,10 +84,10 @@ namespace CSMSL.IO.Agilent
             }
         }
 
-        public override Spectral.MZSpectrum GetMzSpectrum(int spectrumNumber)
+        public override Spectral.MassSpectrum GetMzSpectrum(int spectrumNumber)
         {
             IBDASpecData spectrum = _msdr.GetSpectrum(spectrumNumber - 1);
-            return new MZSpectrum(spectrum.XArray, spectrum.YArray);
+            return new MassSpectrum(spectrum.XArray, spectrum.YArray);
         }
 
         public override MzAnalyzerType GetMzAnalyzer(int spectrumNumber)

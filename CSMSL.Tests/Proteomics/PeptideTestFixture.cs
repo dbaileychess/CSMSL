@@ -166,6 +166,15 @@ namespace CSMSL.Tests.Proteomics
         }
 
         [Test]
+        public void ParseSequenceWithSpaces()
+        {
+            Peptide peptide1 = new Peptide("TTGSSS SSS SK");
+            Peptide peptide2 = new Peptide("TTGSSSSSSSK");
+
+            peptide1.Should().Equal(peptide2);
+        }
+
+        [Test]
         [ExpectedException(typeof(ArgumentException), ExpectedMessage = "Unable to correctly parse the following modification: TMT 7-plex")]
         public void ParseNamedChemicalModificationInvalidName()
         {
@@ -201,10 +210,18 @@ namespace CSMSL.Tests.Proteomics
 
         [Test]
         [ExpectedException(typeof(IndexOutOfRangeException), ExpectedMessage="Residue number not in the correct range: [1-20] you specified: 25")]
-        public void SetResiduePositionModificationOutOfRange()
+        public void SetResiduePositionModificationOutOfRangeUpper()
         {
             ChemicalFormula formula = new ChemicalFormula("Fe");
             MockPeptideEveryAminoAcid.SetModification(formula, 25);           
+        }
+
+        [Test]
+        [ExpectedException(typeof(IndexOutOfRangeException), ExpectedMessage = "Residue number not in the correct range: [1-20] you specified: 0")]
+        public void SetResiduePositionModificationOutOfRangeLower()
+        {
+            ChemicalFormula formula = new ChemicalFormula("Fe");
+            MockPeptideEveryAminoAcid.SetModification(formula, 0);
         }
         
         [Test]
@@ -262,7 +279,7 @@ namespace CSMSL.Tests.Proteomics
 
             MockPeptideEveryAminoAcid.ClearModification(Terminus.C);
 
-            MockPeptideEveryAminoAcid.NTerminusModification.Should().Equal(null);
+            MockPeptideEveryAminoAcid.CTerminusModification.Should().Equal(null);
         }
 
         [Test]

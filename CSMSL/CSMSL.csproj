@@ -104,11 +104,10 @@
     <Compile Include="Proteomics\Protein.cs" />
     <Compile Include="Proteomics\Terminus.cs" />
     <Compile Include="Range.cs" />
-    <Compile Include="Spectral\IMZPeak.cs" />
     <Compile Include="Spectral\MzAnalyzerType.cs" />
     <Compile Include="Spectral\MZPeak.cs" />
     <Compile Include="Spectral\Polarity.cs" />
-    <Compile Include="Spectral\MZSpectrum.cs" />
+    <Compile Include="Spectral\MassSpectrum.cs" />
     <Compile Include="Spectral\Spectrum.cs" />
     <Compile Include="Tolerance.cs" />
     <Compile Include="Util\Combinatorics.cs" />
