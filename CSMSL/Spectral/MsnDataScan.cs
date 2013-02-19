@@ -7,7 +7,7 @@ using CSMSL.Proteomics;
 
 namespace CSMSL.Spectral
 {
-    public class MsnDataScan : MSDataScan
+    public class MsnDataScan : MSDataScan, IMassSpectrum
     {
         public MsnDataScan(int spectrumNumber, int msnOrder, MSDataFile parentFile = null)
             : base(spectrumNumber, msnOrder, parentFile) { }

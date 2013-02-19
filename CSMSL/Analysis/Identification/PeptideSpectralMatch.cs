@@ -7,11 +7,11 @@ using CSMSL.Spectral;
 
 namespace CSMSL.Analysis.Identification
 {
-    public class PeptideSpectralMatch : IFalseDiscovery<double>
+    public class PeptideSpectralMatch : IFalseDiscovery<double>, IMassSpectrum
     {
         public AminoAcidPolymer Peptide { get; private set; }
 
-        public MsnDataScan Spectrum { get; private set; }
+        public MSDataScan Spectrum { get; private set; }
         
         /// <summary>
         /// The score of the match between the peptide and spectrum.
@@ -25,6 +25,11 @@ namespace CSMSL.Analysis.Identification
         double IFalseDiscovery<double>.FDRScoreMetric
         {
             get { return Score; }
+        }
+
+        MassSpectrum IMassSpectrum.MassSpectrum
+        {
+            get { return Spectrum.MassSpectrum; }
         }
     }
 }

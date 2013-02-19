@@ -76,6 +76,7 @@
     <Compile Include="Analysis\ExperimentalDesign\Replicate.cs" />
     <Compile Include="Analysis\ExperimentalDesign\TechnicalReplicate.cs" />
     <Compile Include="Analysis\Identification\Morpheus.cs" />
+    <Compile Include="Analysis\Identification\MSSearchEngine.cs" />
     <Compile Include="Analysis\Identification\PeptideSpectralMatch.cs" />
     <Compile Include="Analysis\Identification\PeptideSpectralMatchScoreType.cs" />
     <Compile Include="Analysis\Quantitation\IsobaricTag.cs" />
@@ -100,6 +101,7 @@
     <Compile Include="Spectral\Chromatogram.cs" />
     <Compile Include="Spectral\ChromatogramPoint.cs" />
     <Compile Include="Spectral\ChromatographicPeak.cs" />
+    <Compile Include="Spectral\IMassSpectrum.cs" />
     <Compile Include="Spectral\IPeak.cs" />
     <Compile Include="Spectral\MsnDataScan.cs" />
     <Compile Include="Spectral\MSDataScan.cs" />

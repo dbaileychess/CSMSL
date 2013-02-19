@@ -24,7 +24,7 @@ using System.Linq;
 
 namespace CSMSL.Spectral
 {
-    public class MassSpectrum : Spectrum<MZPeak>
+    public class MassSpectrum : Spectrum<MZPeak>, IMassSpectrum
     {
         protected MZPeak _basePeak;
         protected double _tic;
@@ -104,6 +104,11 @@ namespace CSMSL.Spectral
                     _basePeak = _peaks[i];
                 }
             }
+        }
+
+        MassSpectrum IMassSpectrum.MassSpectrum
+        {
+            get { return this; }
         }
     }   
     

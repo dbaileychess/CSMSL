@@ -3,11 +3,11 @@ using CSMSL.IO;
 
 namespace CSMSL.Spectral
 {
-    public class MSDataScan : IEquatable<MSDataScan>, IDisposable
+    public class MSDataScan : IEquatable<MSDataScan>, IDisposable, IMassSpectrum
     {
         private MassSpectrum _spectrum = null;
 
-        public MassSpectrum Spectrum
+        public MassSpectrum MassSpectrum
         {
             get
             {

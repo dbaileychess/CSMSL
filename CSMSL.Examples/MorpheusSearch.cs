@@ -6,6 +6,7 @@ using System.Diagnostics;
 using CSMSL.IO;
 using CSMSL.Chemistry;
 using CSMSL.Proteomics;
+using CSMSL.Spectral;
 using CSMSL.Analysis.Identification;
 
 namespace CSMSL.Examples
@@ -33,8 +34,9 @@ namespace CSMSL.Examples
                 }
             }
 
-            Morpheus engine = new Morpheus();
-
+            MSSearchEngine engine = new Morpheus();
+                      
+           
             watch.Stop();           
             Console.WriteLine("Time elapsed: {0}", watch.Elapsed);
             Console.WriteLine("Memory used: {0:N0} MB", System.Environment.WorkingSet / (1024 * 1024));

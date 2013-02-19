@@ -86,15 +86,15 @@ namespace CSMSL.Examples
                 watch.Start();
                 foreach (MSDataScan scan in dataFile)
                 {
-                    List<MZPeak> peaks = null;
-                    scan.Spectrum.TryGetPeaks(500, 510, out peaks);
+                    List<MZPeak> peaks = null;                 
+                    scan.MassSpectrum.TryGetPeaks(500, 510, out peaks);
                     Console.WriteLine(peaks.Count);
                     Console.WriteLine("{0,-4} {1,3} {2,-6:F4} {3,-5} {4,7} {5,-10} {6}",
                         scan.SpectrumNumber,
                         scan.MsnOrder,
                         scan.RetentionTime,
                         scan.Polarity,
-                        scan.Spectrum.Count,
+                        scan.MassSpectrum.Count,
                         scan.MzAnalyzer,                      
                         scan.MzRange);     
                 }

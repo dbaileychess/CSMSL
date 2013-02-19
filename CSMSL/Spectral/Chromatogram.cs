@@ -194,7 +194,7 @@ namespace CSMSL.Spectral
                     chrom = new Chromatogram(type);
                     foreach (MSDataScan scan in scans)
                     {
-                        LabeledChromatogramPoint point = new LabeledChromatogramPoint(scan.RetentionTime, scan.Spectrum.BasePeak);
+                        LabeledChromatogramPoint point = new LabeledChromatogramPoint(scan.RetentionTime, scan.MassSpectrum.BasePeak);
                         chrom.AddPoint(point);
                     }
                     break;
@@ -208,7 +208,7 @@ namespace CSMSL.Spectral
                     List<MZPeak> peaks = new List<MZPeak>();
                     foreach (MSDataScan scan in scans)
                     {
-                        if (scan.Spectrum.TryGetPeaks(range, out peaks))
+                        if (scan.MassSpectrum.TryGetPeaks(range, out peaks))
                         {
                             //LabeledChromatogramPoint point = new LabeledChromatogramPoint(scan.RetentionTime, peaks);
                             //chrom.AddPoint(point);
@@ -220,7 +220,7 @@ namespace CSMSL.Spectral
                     chrom = new Chromatogram(type);
                     foreach (MSDataScan scan in scans)
                     {
-                        ChromatogramPoint point = new ChromatogramPoint(scan.RetentionTime, (float)scan.Spectrum.TotalIonCurrent);
+                        ChromatogramPoint point = new ChromatogramPoint(scan.RetentionTime, (float)scan.MassSpectrum.TotalIonCurrent);
                         chrom.AddPoint(point);
                     }
                     break;

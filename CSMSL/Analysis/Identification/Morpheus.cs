@@ -31,13 +31,23 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using CSMSL.Spectral;
 
 namespace CSMSL.Analysis.Identification
 {
     /// <summary>
     /// High-resolution Proteomic Search Algorithm
     /// </summary>
-    public class Morpheus
+    public class Morpheus : MSSearchEngine
     {
+        public override List<PeptideSpectralMatch> Search(IMassSpectrum massSpectrum)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override List<PeptideSpectralMatch> Search(IEnumerable<IMassSpectrum> massSpectra)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
