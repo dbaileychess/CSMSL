@@ -8,7 +8,7 @@ using System.Text.RegularExpressions;
 
 namespace CSMSL.IO.Agilent
 {
-    public class AgilentDDirectory : MsDataFile
+    public class AgilentDDirectory : MSDataFile
     {
         private IMsdrDataReader _msdr;
 
@@ -87,24 +87,27 @@ namespace CSMSL.IO.Agilent
         public override Spectral.MassSpectrum GetMzSpectrum(int spectrumNumber)
         {
             IBDASpecData spectrum = _msdr.GetSpectrum(spectrumNumber - 1);
-            return new MassSpectrum(spectrum.XArray, spectrum.YArray);
+            int length = spectrum.YArray.GetLength(0);
+            double[] intensities = new double[length];
+            Array.Copy(spectrum.YArray, intensities, length);
+            return new MassSpectrum(spectrum.XArray, intensities);
         }
 
-        public override MzAnalyzerType GetMzAnalyzer(int spectrumNumber)
+        public override MZAnalyzerType GetMzAnalyzer(int spectrumNumber)
         {
             IBDASpecData spectrum = _msdr.GetSpectrum(spectrumNumber - 1);
             switch(spectrum.DeviceType)
             {
                 case DeviceType.IonTrap:
-                    return MzAnalyzerType.IonTrap3D;
+                    return MZAnalyzerType.IonTrap3D;
                 case DeviceType.Quadrupole:
                 case DeviceType.TandemQuadrupole:
-                    return MzAnalyzerType.Quadrupole;
+                    return MZAnalyzerType.Quadrupole;
                 case DeviceType.QuadrupoleTimeOfFlight:
                 case DeviceType.TimeOfFlight:
-                    return MzAnalyzerType.TOF;
+                    return MZAnalyzerType.TOF;
                 default:
-                    return MzAnalyzerType.Unknown;
+                    return MZAnalyzerType.Unknown;
             }
         }
 

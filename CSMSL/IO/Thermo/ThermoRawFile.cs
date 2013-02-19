@@ -8,7 +8,7 @@ using MSFileReaderLib;
 
 namespace CSMSL.IO.Thermo
 {   
-    public class ThermoRawFile : MsDataFile
+    public class ThermoRawFile : MSDataFile
     {
         private enum RawLabelDataColumn
         {
@@ -122,13 +122,13 @@ namespace CSMSL.IO.Thermo
 
         public override MassSpectrum GetMzSpectrum(int spectrumNumber)
         {
-            MzAnalyzerType mzAnalyzer = GetMzAnalyzer(spectrumNumber);
+            MZAnalyzerType mzAnalyzer = GetMzAnalyzer(spectrumNumber);
             double[,] peakData;
             int count;
             switch (mzAnalyzer)
             {
                 default:
-                case MzAnalyzerType.Orbitrap:
+                case MZAnalyzerType.Orbitrap:
                     peakData = GetLabeledData(spectrumNumber);
                     count = peakData.GetLength(1);
                     List<ThermoLabeledPeak> peaks = new List<ThermoLabeledPeak>();
@@ -137,7 +137,7 @@ namespace CSMSL.IO.Thermo
                         peaks.Add(new ThermoLabeledPeak(peakData[0, i], (float)peakData[1, i], (short)peakData[5, i], (float)peakData[4, i]));
                     }
                     return new MassSpectrum(peaks);
-                case MzAnalyzerType.IonTrap2D:
+                case MZAnalyzerType.IonTrap2D:
                     peakData = GetUnlabeledData(spectrumNumber);
                     count = peakData.GetLength(1);
                     List<MZPeak> low_res_peaks = new List<MZPeak>();
@@ -169,7 +169,7 @@ namespace CSMSL.IO.Thermo
             return (double[,])labels; 
         }        
 
-        public override MzAnalyzerType GetMzAnalyzer(int spectrumNumber)
+        public override MZAnalyzerType GetMzAnalyzer(int spectrumNumber)
         {
             int mzanalyzer = 0;
             if(_rawConnection != null)
@@ -177,18 +177,18 @@ namespace CSMSL.IO.Thermo
             switch ((ThermoMzAnalyzer)mzanalyzer)
             {
                 case ThermoMzAnalyzer.FTMS:
-                    return MzAnalyzerType.Orbitrap;
+                    return MZAnalyzerType.Orbitrap;
                 case ThermoMzAnalyzer.ITMS:
-                    return MzAnalyzerType.IonTrap2D;
+                    return MZAnalyzerType.IonTrap2D;
                 case ThermoMzAnalyzer.Sector:
-                    return MzAnalyzerType.Sector;
+                    return MZAnalyzerType.Sector;
                 case ThermoMzAnalyzer.TOFMS:
-                    return MzAnalyzerType.TOF;
+                    return MZAnalyzerType.TOF;
                 case ThermoMzAnalyzer.TQMS:
                 case ThermoMzAnalyzer.SQMS:
                 case ThermoMzAnalyzer.None:
                 default:
-                    return MzAnalyzerType.Unknown;
+                    return MZAnalyzerType.Unknown;
             }              
         }
 

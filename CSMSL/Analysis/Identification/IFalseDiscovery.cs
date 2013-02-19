@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace CSMSL.Util.Statistics
+namespace CSMSL.Analysis.Identification
 {
     /// <summary>
     /// An interface to filter lists based on the detection of decoy hits that are known to be wrong

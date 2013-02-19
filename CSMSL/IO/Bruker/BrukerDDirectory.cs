@@ -8,7 +8,7 @@ using EDAL;
 
 namespace CSMSL.IO.Bruker
 {
-    public class BrukerDDirectory : MsDataFile
+    public class BrukerDDirectory : MSDataFile
     {       
         IMSAnalysis2 analysis;
 
@@ -78,9 +78,9 @@ namespace CSMSL.IO.Bruker
             return 0;
         }
 
-        public override Spectral.MzAnalyzerType GetMzAnalyzer(int spectrumNumber)
+        public override Spectral.MZAnalyzerType GetMzAnalyzer(int spectrumNumber)
         {
-            return Spectral.MzAnalyzerType.TOF;
+            return Spectral.MZAnalyzerType.TOF;
         }
 
         public override Spectral.MassSpectrum GetMzSpectrum(int spectrumNumber)

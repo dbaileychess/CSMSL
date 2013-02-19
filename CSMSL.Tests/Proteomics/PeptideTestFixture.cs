@@ -142,7 +142,7 @@ namespace CSMSL.Tests.Proteomics
 
         [Test]
         public void ParseNamedChemicalNamedChemicalModification()
-        {            
+        { 
             Peptide peptide = new Peptide("T[TMT 6-plex]HGEAK[Acetyl]K[TMT 6-plex]");
 
             peptide.Mass.Monoisotopic.Should().Equal(1269.74468058495);
@@ -189,7 +189,7 @@ namespace CSMSL.Tests.Proteomics
 
             MockPeptideEveryAminoAcid.ToString().Should().Equal("ACDEFGHIKLMN[Fe]PQRSTVWY");
         }
-
+        
         [Test]
         public void SetAminoAcidCharacterModification()
         {

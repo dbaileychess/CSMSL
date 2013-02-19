@@ -6,9 +6,9 @@ using CSMSL.Proteomics;
 
 namespace CSMSL.IO
 {
-    public abstract class MsDataFile : IDisposable, IEquatable<MsDataFile>, IEnumerable<MsScan>
+    public abstract class MSDataFile : IDisposable, IEquatable<MSDataFile>, IEnumerable<MSDataScan>
     {
-        internal MsScan[] _scans = null;
+        internal MSDataScan[] _scans = null;
 
         private string _filePath;
 
@@ -22,7 +22,7 @@ namespace CSMSL.IO
 
         private string _name;
 
-        public MsDataFile(string filePath, MsDataFileType filetype = MsDataFileType.UnKnown, bool openImmediately = false)
+        public MSDataFile(string filePath, MsDataFileType filetype = MsDataFileType.UnKnown, bool openImmediately = false)
         {
             if (!File.Exists(filePath) && !Directory.Exists(filePath))
             {
@@ -91,7 +91,7 @@ namespace CSMSL.IO
             get { return _name; }
         }
 
-        public MsScan this[int spectrumNumber]
+        public MSDataScan this[int spectrumNumber]
         {
             get
             {
@@ -108,7 +108,7 @@ namespace CSMSL.IO
         {
             if (_scans != null)
             {
-                foreach (MsScan scan in _scans)
+                foreach (MSDataScan scan in _scans)
                 {
                     if (scan != null)
                         scan.Dispose();
@@ -119,13 +119,13 @@ namespace CSMSL.IO
             }
         }
 
-        public bool Equals(MsDataFile other)
+        public bool Equals(MSDataFile other)
         {
             if (ReferenceEquals(this, other)) return true;
             return this.FilePath.Equals(other.FilePath);
         }
 
-        public IEnumerator<MsScan> GetEnumerator()
+        public IEnumerator<MSDataScan> GetEnumerator()
         {
             return GetMsScans().GetEnumerator();
         }
@@ -139,17 +139,17 @@ namespace CSMSL.IO
 
         public abstract int GetMsnOrder(int spectrumNumber);
 
-        public virtual MsScan GetMsScan(int spectrumNumber)
+        public virtual MSDataScan GetMsScan(int spectrumNumber)
         {
             if (_scans == null)
             {
-                _scans = new MsScan[LastSpectrumNumber + 1];
+                _scans = new MSDataScan[LastSpectrumNumber + 1];
             }
 
             if (_scans[spectrumNumber] == null)
             {
                 int msn = GetMsnOrder(spectrumNumber);
-                _scans[spectrumNumber] = (msn > 1) ? new MsnScan(spectrumNumber, msn, this) : new MsScan(spectrumNumber, msn, this);
+                _scans[spectrumNumber] = (msn > 1) ? new MsnDataScan(spectrumNumber, msn, this) : new MSDataScan(spectrumNumber, msn, this);
             }
             return _scans[spectrumNumber];
         }
@@ -158,7 +158,7 @@ namespace CSMSL.IO
 
         public abstract Range GetMzRange(int spectrumNumber);
 
-        public IEnumerable<MsScan> GetMsScans()
+        public IEnumerable<MSDataScan> GetMsScans()
         {
             return GetMsScans(FirstSpectrumNumber, LastSpectrumNumber);
         }
@@ -167,7 +167,7 @@ namespace CSMSL.IO
 
         public abstract double GetIsolationWidth(int spectrumNumber, int msnOrder = 2);
 
-        public IEnumerable<MsScan> GetMsScans(int firstSpectrumNumber, int lastSpectrumNumber)
+        public IEnumerable<MSDataScan> GetMsScans(int firstSpectrumNumber, int lastSpectrumNumber)
         {
             for (int spectrumNumber = firstSpectrumNumber; spectrumNumber <= lastSpectrumNumber; spectrumNumber++)
             {
@@ -176,12 +176,12 @@ namespace CSMSL.IO
             yield break;
         }
 
-        public IEnumerable<MsScan> GetMsScans(IRange<int> range)
+        public IEnumerable<MSDataScan> GetMsScans(IRange<int> range)
         {
             return GetMsScans(range.Minimum, range.Maximum);
         }
 
-        public abstract MzAnalyzerType GetMzAnalyzer(int spectrumNumber);
+        public abstract MZAnalyzerType GetMzAnalyzer(int spectrumNumber);
 
         public abstract MassSpectrum GetMzSpectrum(int spectrumNumber);
 

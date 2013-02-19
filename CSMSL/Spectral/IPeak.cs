@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace CSMSL.Spectral
 {
@@ -11,12 +8,12 @@ namespace CSMSL.Spectral
     public interface IPeak : IComparable<double>, IComparable<IPeak>, IComparable
     {
         /// <summary>
-        /// The X value
+        /// The X value of this peak
         /// </summary>
         double X { get; }
 
         /// <summary>
-        /// The Y value
+        /// The Y value of this peak
         /// </summary>
         double Y { get; }
     }    

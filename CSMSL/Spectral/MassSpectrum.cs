@@ -26,69 +26,58 @@ namespace CSMSL.Spectral
 {
     public class MassSpectrum : Spectrum<MZPeak>
     {
-        public MassSpectrum()
-            : base() { }
+        protected MZPeak _basePeak;
+        protected double _tic;
 
-        public MassSpectrum(double[,] data)
-            : base()
+        public MZPeak BasePeak
+        {
+            get
+            {
+                return _basePeak;
+            }
+        }
+
+        public double TotalIonCurrent
+        {
+            get
+            {
+                return _tic;
+            }
+        }
+
+        public MassSpectrum() { }        
+
+        public MassSpectrum(double[,] data)          
         {
             LoadData(data);
         }
 
-        public MassSpectrum(double[] mzs, double[] intensities)
-            : base()
+        public MassSpectrum(double[] mzs, double[] intensities)          
         {
             LoadData(mzs, intensities);
-        }
-
-        public MassSpectrum(double[] mzs, float[] intensities)
-            : base()
-        {
-            LoadData(mzs, intensities);
-        }
-
-        public double TotalIonCurrent { get; private set; }
+        }        
 
         public MassSpectrum(IEnumerable<MZPeak> peaks)
-            : base(peaks) { }
+            : base(peaks)
+        {
+            _tic = peaks.Sum(peak => peak.Intensity);
+        }
 
         private void LoadData(double[] mzs, double[] intensities)
         {
-            if (mzs.Length != intensities.Length)
+            int length;
+            if ((length = mzs.Length) != intensities.Length)
             {
                 throw new FormatException("M/Z and Intensities arrays are not the same dimensions");
             }
-            _count = mzs.Length;
+            _count = length;
             _tic = 0;
             _peaks = new MZPeak[_count];
             double maxInt = 0;
             for (int i = 0; i < _count; i++)
             {
-                float intensity = (float)intensities[i];
+                double intensity = intensities[i];
                 _peaks[i] = new MZPeak(mzs[i], intensity);
-                _tic += intensity;
-                if (intensity > maxInt)
-                {
-                    maxInt = intensity;
-                    _basePeak = _peaks[i];
-                }
-            }
-        }
-
-        private void LoadData(double[] mzs, float[] intensities)
-        {
-            if (mzs.Length != intensities.Length)
-            {
-                throw new FormatException("M/Z and Intensities arrays are not the same dimensions");
-            }
-            _count = mzs.Length;
-            _tic = 0;
-            _peaks = new MZPeak[_count];
-            double maxInt = 0;
-            for (int i = 0; i < _count; i++)
-            {
-                float intensity = intensities[i];
-                _peaks[i] = new MZPeak(mzs[i], intensity);           
                 _tic += intensity;
                 if (intensity > maxInt)
                 {
@@ -106,7 +95,7 @@ namespace CSMSL.Spectral
             double maxInt = 0;
             for (int i = 0; i < _count; i++)
             {
-                float intensity = (float)data[i, 1];
+                double intensity = data[i, 1];
                 _peaks[i] = new MZPeak(data[i, 0], intensity);
                 _tic += intensity;
                 if (intensity > maxInt)

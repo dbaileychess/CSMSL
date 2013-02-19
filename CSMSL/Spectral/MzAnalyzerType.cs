@@ -1,6 +1,6 @@
 ﻿namespace CSMSL.Spectral
 {
-    public enum MzAnalyzerType
+    public enum MZAnalyzerType
     {
         Unknown = 0,
         Quadrupole = 1,

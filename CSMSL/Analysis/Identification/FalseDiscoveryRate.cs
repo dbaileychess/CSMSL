@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace CSMSL.Util.Statistics
+namespace CSMSL.Analysis.Identification
 {
     /// <summary>
     /// An extension method to perform False Discovery Rate Filtering (FDR) on any type of lists.

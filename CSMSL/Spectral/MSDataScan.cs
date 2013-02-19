@@ -3,7 +3,7 @@ using CSMSL.IO;
 
 namespace CSMSL.Spectral
 {
-    public class MsScan : IEquatable<MsScan>, IDisposable
+    public class MSDataScan : IEquatable<MSDataScan>, IDisposable
     {
         private MassSpectrum _spectrum = null;
 
@@ -20,7 +20,7 @@ namespace CSMSL.Spectral
             }
         }
 
-        public MsDataFile ParentFile = null;
+        public MSDataFile ParentFile = null;
 
         private int _spectrumNumber;
 
@@ -85,13 +85,13 @@ namespace CSMSL.Spectral
             }
         }
 
-        private MzAnalyzerType _mzAnalyzer = MzAnalyzerType.Unknown;
+        private MZAnalyzerType _mzAnalyzer = MZAnalyzerType.Unknown;
 
-        public MzAnalyzerType MzAnalyzer
+        public MZAnalyzerType MzAnalyzer
         {
             get
             {
-                if (_mzAnalyzer == MzAnalyzerType.Unknown)
+                if (_mzAnalyzer == MZAnalyzerType.Unknown)
                 {
                     _mzAnalyzer = ParentFile.GetMzAnalyzer(SpectrumNumber);
                 }
@@ -112,7 +112,7 @@ namespace CSMSL.Spectral
             }
         }
 
-        public MsScan(int spectrumNumber,int msnOrder = 1, MsDataFile parentFile = null)
+        public MSDataScan(int spectrumNumber,int msnOrder = 1, MSDataFile parentFile = null)
         {
             SpectrumNumber = spectrumNumber;
             MsnOrder = msnOrder;
@@ -129,7 +129,7 @@ namespace CSMSL.Spectral
             return ParentFile.GetHashCode() ^ SpectrumNumber;
         }
 
-        public bool Equals(MsScan other)
+        public bool Equals(MSDataScan other)
         {
             if (ReferenceEquals(this, other)) return true;
             return SpectrumNumber.Equals(other.SpectrumNumber) && ParentFile.Equals(other.ParentFile);

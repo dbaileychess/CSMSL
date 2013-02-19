@@ -5,28 +5,22 @@ using System.Text;
 
 namespace CSMSL.Spectral
 {
-    public class Spectrum<T> : IEnumerable<T> where T : IPeak
+    public class Spectrum<T> where T : IPeak
     {
-        protected T _basePeak;
         protected int _count;
         protected T[] _peaks;       
-        protected double _tic;
 
-        protected Spectrum() { }
+        protected Spectrum() 
+        {
+            _count = 0;         
+        }
 
-        public Spectrum(IEnumerable<T> peaks)
+        public Spectrum(IEnumerable<T> peaks)            
+            : this()
         {
             LoadPeaks(peaks);
         }
-
-        public T BasePeak
-        {
-            get
-            {
-                return _basePeak;
-            }
-        }
-
+        
         public int Count
         {
             get
@@ -34,15 +28,7 @@ namespace CSMSL.Spectral
                 return _count;
             }
         }
-
-        public double TIC
-        {
-            get
-            {
-                return _tic;
-            }
-        }
-
+        
         public List<T> GetPeaks(IRange<double> range)
         {
             if (range == null)
@@ -84,23 +70,8 @@ namespace CSMSL.Spectral
 
         private void LoadPeaks(IEnumerable<T> peaks)
         {
-            _count = peaks.Count();
-            _peaks = new T[_count];           
-            _tic = 0;
-
-            double maxInt = 0;
-            int i = 0;
-            double intensity;
-            foreach (T peak in peaks)
-            {
-                _tic += intensity = peak.Y;
-                if (intensity > maxInt)
-                {
-                    maxInt = intensity;
-                    _basePeak = peak;
-                }               
-                _peaks[i++] = peak;
-            }
+            _peaks = peaks.ToArray();
+            _count = _peaks.Length;       
         }
 
         public override string ToString()
@@ -114,15 +85,6 @@ namespace CSMSL.Spectral
                 Array.Clear(_peaks, 0, _peaks.Length);
             _count = 0;
         }
-        
-        public IEnumerator<T> GetEnumerator()
-        {
-            return _peaks.AsEnumerable().GetEnumerator();
-        }
-
-        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
-        {
-            return _peaks.GetEnumerator();
-        }
+       
     }
 }

@@ -184,7 +184,7 @@ namespace CSMSL.Spectral
 
     public static class Extension
     {
-        public static Chromatogram GetChromatogram(this IEnumerable<MsScan> scans, ChromatogramType type = ChromatogramType.BasePeak, Range range = null)
+        public static Chromatogram GetChromatogram(this IEnumerable<MSDataScan> scans, ChromatogramType type = ChromatogramType.BasePeak, Range range = null)
         {
             Chromatogram chrom;
             switch (type)
@@ -192,7 +192,7 @@ namespace CSMSL.Spectral
                 default:
                 case ChromatogramType.BasePeak:
                     chrom = new Chromatogram(type);
-                    foreach (MsScan scan in scans)
+                    foreach (MSDataScan scan in scans)
                     {
                         LabeledChromatogramPoint point = new LabeledChromatogramPoint(scan.RetentionTime, scan.Spectrum.BasePeak);
                         chrom.AddPoint(point);
@@ -206,21 +206,21 @@ namespace CSMSL.Spectral
                     }
                     chrom = new MzRangeChromatogram(range, type);
                     List<MZPeak> peaks = new List<MZPeak>();
-                    foreach (MsScan scan in scans)
+                    foreach (MSDataScan scan in scans)
                     {
                         if (scan.Spectrum.TryGetPeaks(range, out peaks))
                         {
-                            LabeledChromatogramPoint point = new LabeledChromatogramPoint(scan.RetentionTime, peaks);
-                            chrom.AddPoint(point);
+                            //LabeledChromatogramPoint point = new LabeledChromatogramPoint(scan.RetentionTime, peaks);
+                            //chrom.AddPoint(point);
                         }
                     }
                     break;
 
                 case ChromatogramType.TotalIonCurrent:
                     chrom = new Chromatogram(type);
-                    foreach (MsScan scan in scans)
+                    foreach (MSDataScan scan in scans)
                     {
-                        ChromatogramPoint point = new ChromatogramPoint(scan.RetentionTime, (float)scan.Spectrum.TIC);
+                        ChromatogramPoint point = new ChromatogramPoint(scan.RetentionTime, (float)scan.Spectrum.TotalIonCurrent);
                         chrom.AddPoint(point);
                     }
                     break;

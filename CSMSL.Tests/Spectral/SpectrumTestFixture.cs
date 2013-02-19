@@ -12,7 +12,7 @@ namespace CSMSL.Tests.Spectral
     [Category("Spectral")]
     public sealed class SpectrumTestFixture
     {
-        private Spectrum<MZPeak> mzSpectrum1000;
+        private MassSpectrum mzSpectrum1000;
         private Random random;
 
         [SetUp]
@@ -27,7 +27,7 @@ namespace CSMSL.Tests.Spectral
                 peaks.Add(new MZPeak(mz, intensity));
             }
             peaks.Sort();
-            mzSpectrum1000 = new Spectrum<MZPeak>(peaks);
+            mzSpectrum1000 = new MassSpectrum(peaks);
         }
 
         [Test]
@@ -39,7 +39,7 @@ namespace CSMSL.Tests.Spectral
         [Test]
         public void SpectrumTIC()
         {
-            mzSpectrum1000.TIC.Should().Equal(483469778.88814604);
+            mzSpectrum1000.TotalIonCurrent.Should().Equal(483469778.88814604);
         }
 
         [Test]
