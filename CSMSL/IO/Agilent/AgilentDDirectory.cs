@@ -139,10 +139,10 @@ namespace CSMSL.IO.Agilent
             return Proteomics.DissociationType.CID;
         }
 
-        public override Range GetMzRange(int spectrumNumber)
+        public override MassRange GetMzRange(int spectrumNumber)
         {
             IBDASpecData spectrum = _msdr.GetSpectrum(spectrumNumber - 1);
-            return new Range(spectrum.MeasuredMassRange.Start, spectrum.MeasuredMassRange.End);
+            return new MassRange(spectrum.MeasuredMassRange.Start, spectrum.MeasuredMassRange.End);
         }
 
         public override short GetPrecusorCharge(int spectrumNumber, int msnOrder = 2)

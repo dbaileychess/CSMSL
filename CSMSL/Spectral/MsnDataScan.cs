@@ -25,8 +25,8 @@ namespace CSMSL.Spectral
             }
         }
 
-        private Range _isolationRange = null;
-        public Range IsolationRange
+        private MassRange _isolationRange = null;
+        public MassRange IsolationRange
         {
             get
             {
@@ -34,7 +34,7 @@ namespace CSMSL.Spectral
                 {
                     double prec_mz = PrecursorMz;
                     double half_width = ParentFile.GetIsolationWidth(SpectrumNumber, MsnOrder) / 2;
-                    _isolationRange = new Range(prec_mz - half_width, prec_mz + half_width);
+                    _isolationRange = new MassRange(prec_mz - half_width, prec_mz + half_width);
                 }
                 return _isolationRange;
             }

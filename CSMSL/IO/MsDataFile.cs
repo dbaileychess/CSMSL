@@ -156,7 +156,7 @@ namespace CSMSL.IO
 
         public abstract short GetPrecusorCharge(int spectrumNumber, int msnOrder = 2);
 
-        public abstract Range GetMzRange(int spectrumNumber);
+        public abstract MassRange GetMzRange(int spectrumNumber);
 
         public IEnumerable<MSDataScan> GetMsScans()
         {

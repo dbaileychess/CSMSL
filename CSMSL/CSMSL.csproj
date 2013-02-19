@@ -70,6 +70,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Analysis\ExperimentalDesign\BiologicalReplicate.cs" />
+    <Compile Include="Analysis\ExperimentalDesign\ExperimentalCondition.cs" />
+    <Compile Include="Analysis\ExperimentalDesign\ExperimentalSet.cs" />
+    <Compile Include="Analysis\ExperimentalDesign\Replicate.cs" />
+    <Compile Include="Analysis\ExperimentalDesign\TechnicalReplicate.cs" />
     <Compile Include="Analysis\Identification\Morpheus.cs" />
     <Compile Include="Analysis\Identification\PeptideSpectralMatch.cs" />
     <Compile Include="Analysis\Identification\PeptideSpectralMatchScoreType.cs" />
@@ -87,6 +92,8 @@
     <Compile Include="IO\FastaReader.cs" />
     <Compile Include="IO\FastaWriter.cs" />
     <Compile Include="IO\MSDataFile.cs" />
+    <Compile Include="MassRange.cs" />
+    <Compile Include="MassToleranceType.cs" />
     <Compile Include="Proteomics\DissociationType.cs" />
     <Compile Include="Proteomics\IAminoAcid.cs" />
     <Compile Include="Proteomics\IProtease.cs" />
@@ -113,7 +120,7 @@
     <Compile Include="Spectral\Polarity.cs" />
     <Compile Include="Spectral\MassSpectrum.cs" />
     <Compile Include="Spectral\Spectrum.cs" />
-    <Compile Include="Tolerance.cs" />
+    <Compile Include="MassTolerance.cs" />
     <Compile Include="Util\Combinatorics.cs" />
     <Compile Include="Util\LinearRegression.cs" />
     <Compile Include="Analysis\Identification\FalseDiscoveryRate.cs" />

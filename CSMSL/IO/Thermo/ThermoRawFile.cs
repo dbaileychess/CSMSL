@@ -218,7 +218,7 @@ namespace CSMSL.IO.Thermo
             return (DissociationType)type;
         }
 
-        public override Range GetMzRange(int spectrumNumber)
+        public override MassRange GetMzRange(int spectrumNumber)
         {
             int number_of_packets = -1;
             double start_time = double.NaN;
@@ -234,7 +234,7 @@ namespace CSMSL.IO.Thermo
                 _rawConnection.GetScanHeaderInfoForScanNum(spectrumNumber, ref number_of_packets, ref start_time, ref low_mass, ref high_mass,
                     ref total_ion_current, ref base_peak_mass, ref base_peak_intensity, ref number_of_channels, ref uniform_time, ref frequency);
 
-            return new Range(low_mass, high_mass);
+            return new MassRange(low_mass, high_mass);
         }
 
         public override short GetPrecusorCharge(int spectrumNumber, int msnOrder = 2)

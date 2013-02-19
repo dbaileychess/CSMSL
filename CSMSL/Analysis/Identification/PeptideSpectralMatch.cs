@@ -12,7 +12,10 @@ namespace CSMSL.Analysis.Identification
         public AminoAcidPolymer Peptide { get; private set; }
 
         public MsnDataScan Spectrum { get; private set; }
-
+        
+        /// <summary>
+        /// The score of the match between the peptide and spectrum.
+        /// </summary>
         public double Score { get; private set; }
 
         public PeptideSpectralMatchScoreType ScoreType { get; private set; }

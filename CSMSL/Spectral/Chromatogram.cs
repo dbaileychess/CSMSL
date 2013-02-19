@@ -19,9 +19,9 @@ namespace CSMSL.Spectral
 
     public class MzRangeChromatogram : Chromatogram
     {
-        private Range _range;
+        private MassRange _range;
 
-        public Range MzRange
+        public MassRange MzRange
         {
             get
             {
@@ -29,7 +29,7 @@ namespace CSMSL.Spectral
             }
         }
 
-        public MzRangeChromatogram(Range range, ChromatogramType type = ChromatogramType.BasePeak)
+        public MzRangeChromatogram(MassRange range, ChromatogramType type = ChromatogramType.BasePeak)
             : base(type)
         {
             _range = range;
@@ -156,19 +156,19 @@ namespace CSMSL.Spectral
             return _curve.Values.GetEnumerator();
         }
 
-        public Range DetectPeakBounds()
+        public MassRange DetectPeakBounds()
         {
             return DetectPeakBounds((float)(1.0 / Math.E));
         }
-            
-        public Range DetectPeakBounds(float fraction)
+
+        public MassRange DetectPeakBounds(float fraction)
         {
             return DetectPeakBounds(BasePeak, BasePeak.Intensity * fraction);
         }
 
-        public Range DetectPeakBounds(ChromatogramPoint point, float intensityThreshold)
+        public MassRange DetectPeakBounds(ChromatogramPoint point, float intensityThreshold)
         {
-            Range bounds = new Range();           
+            MassRange bounds = new MassRange();           
             int index = _curve.IndexOfValue(point);
             int i = index;            
             while (i > 0 && _curve.Values[i].Intensity >= intensityThreshold)  
@@ -184,7 +184,7 @@ namespace CSMSL.Spectral
 
     public static class Extension
     {
-        public static Chromatogram GetChromatogram(this IEnumerable<MSDataScan> scans, ChromatogramType type = ChromatogramType.BasePeak, Range range = null)
+        public static Chromatogram GetChromatogram(this IEnumerable<MSDataScan> scans, ChromatogramType type = ChromatogramType.BasePeak, MassRange range = null)
         {
             Chromatogram chrom;
             switch (type)

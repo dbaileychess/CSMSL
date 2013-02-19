@@ -57,12 +57,12 @@ namespace CSMSL.IO.Bruker
             return (short)parameter.ParameterValue;            
         }
 
-        public override Range GetMzRange(int spectrumNumber)
+        public override MassRange GetMzRange(int spectrumNumber)
         {
             IMSSpectrum spectrum = analysis.MSSpectrumCollection[spectrumNumber];         
             double firstMass = (double)spectrum.MSSpectrumParameterCollection["Set Target Mass Start"].ParameterValue;
             double lastMass = (double)spectrum.MSSpectrumParameterCollection["Set Target Mass End"].ParameterValue;
-            return new Range(firstMass, lastMass);
+            return new MassRange(firstMass, lastMass);
         }
 
         public override double GetPrecusorMz(int spectrumNumber, int msnOrder = 2)

@@ -99,8 +99,8 @@ namespace CSMSL.Spectral
             }
         }
 
-        private Range _mzRange = null;
-        public Range MzRange
+        private MassRange _mzRange = null;
+        public MassRange MzRange
         {
             get
             {

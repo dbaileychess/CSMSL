@@ -10,8 +10,8 @@ namespace CSMSL.Tests
         [Test]
         public void RangeSubRange()
         {
-            Range a = new Range(5, 7);
-            Range b = new Range(0, 10);
+            MassRange a = new MassRange(5, 7);
+            MassRange b = new MassRange(0, 10);
             a.IsSubRange(b).Should().Be.True();
         }
 

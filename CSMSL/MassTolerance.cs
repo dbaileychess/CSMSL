@@ -22,11 +22,9 @@ using System;
 
 namespace CSMSL
 {
-    public enum ToleranceType { PPM, DA, MMU }
-
-    public class Tolerance
+    public class MassTolerance
     {
-        private ToleranceType _type;
+        private MassToleranceType _type;
         private double _value;
 
         /// <summary>
@@ -34,16 +32,16 @@ namespace CSMSL
         /// </summary>
         /// <param name="type"></param>
         /// <param name="value"></param>
-        public Tolerance(ToleranceType type, double value)
+        public MassTolerance(MassToleranceType type, double value)
         {
             _type = type;
             _value = value;
         }
 
-        public Tolerance(ToleranceType type, double experimental, double theoretical)
+        public MassTolerance(MassToleranceType type, double experimental, double theoretical)
             : this(type, GetTolerance(experimental, theoretical, type)) { }
 
-        public ToleranceType Type
+        public MassToleranceType Type
         {
             get { return _type; }
             set { _type = value; }
@@ -55,15 +53,15 @@ namespace CSMSL
             set { _value = value; }
         }
 
-        public static double GetTolerance(double experimental, double theoretical, ToleranceType type)
+        public static double GetTolerance(double experimental, double theoretical, MassToleranceType type)
         {
             switch (type)
             {
-                case ToleranceType.MMU:
+                case MassToleranceType.MMU:
                     return (experimental - theoretical) * 1000.0;
-                case ToleranceType.PPM:
+                case MassToleranceType.PPM:
                     return (experimental - theoretical) / theoretical * 1000000.0;
-                case ToleranceType.DA:
+                case MassToleranceType.DA:
                 default:
                     return experimental - theoretical;
             }
@@ -71,7 +69,7 @@ namespace CSMSL
 
         public override string ToString()
         {
-            return string.Format("{0:f4} {1}", _value, Enum.GetName(typeof(ToleranceType), _type));
+            return string.Format("{0:f4} {1}", _value, Enum.GetName(typeof(MassToleranceType), _type));
         }
     }
 }
