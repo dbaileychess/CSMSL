@@ -63,7 +63,10 @@ namespace CSMSL.Examples
             //ExampleTrypticDigest.Start(Protease.Trypsin);
 
             //Example IO
-            MsIOExamples();
+            //MsIOExamples();
+
+            // MS/MS searching
+            MorpheusSearch.Start(Protease.Trypsin);
         }
 
         private static void MsIOExamples()

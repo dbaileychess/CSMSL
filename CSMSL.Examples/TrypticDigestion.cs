@@ -26,7 +26,7 @@ using CSMSL.Proteomics;
 
 namespace CSMSL.Examples
 {
-    public class ExampleTrypticDigest
+    public class TrypticDigestion
     {
         public static void Start(IProtease protease, int maxMissed = 3, int minLength = 5, int maxLength = 35)
         {

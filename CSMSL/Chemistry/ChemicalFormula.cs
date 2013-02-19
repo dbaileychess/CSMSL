@@ -584,12 +584,18 @@ namespace CSMSL.Chemistry
 
         public override int GetHashCode()
         {
+            if (_isotopes == null)
+                return 0;
+
             int hCode = 7;
-            for (int i = 0; i < _largestIsotopeID; i++)
+            unchecked
             {
-                hCode += _isotopes[i] << (i + 1);
+                for (int i = 0; i < _largestIsotopeID; i++)
+                {
+                    hCode *= _isotopes[i] << (i + 1);
+                }
+                return hCode;
             }
-            return hCode;
         }
 
         public override bool Equals(object obj)

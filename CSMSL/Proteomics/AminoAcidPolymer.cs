@@ -52,6 +52,7 @@ namespace CSMSL.Proteomics
         private bool _isDirty;
         private bool _isSequenceDirty;
         private StringBuilder _sequenceSB;
+        private int _length;
 
         #region Constructors
 
@@ -63,6 +64,7 @@ namespace CSMSL.Proteomics
             CTerminus = DefaultCTerminus;
             _isDirty = true;
             _isSequenceDirty = true;
+            _length = 0;
         }
 
         public AminoAcidPolymer(string sequence)
@@ -75,7 +77,7 @@ namespace CSMSL.Proteomics
             _modifications = new IChemicalFormula[length + 2]; // +2 for the n and c term         
             NTerminus = nTerm;
             CTerminus = cTerm;
-            ParseSequence(sequence);       
+            ParseSequence(sequence);      
         }
 
         public AminoAcidPolymer(AminoAcidPolymer aminoAcidPolymer, bool includeModifications = true)
@@ -88,6 +90,7 @@ namespace CSMSL.Proteomics
 
             if (length + firstResidue > aminoAcidPolymer.Length)
                 length = aminoAcidPolymer.Length - firstResidue;
+            _length = length;
             _aminoAcids = new IAminoAcid[length];
             _modifications = new IChemicalFormula[length + 2];
             Array.Copy(aminoAcidPolymer._aminoAcids, firstResidue, _aminoAcids, 0, length);
@@ -127,11 +130,11 @@ namespace CSMSL.Proteomics
         {
             get
             {
-                return _modifications[_modifications.Length - 1];
+                return _modifications[_length + 1];
             }
             set
             {
-                _modifications[_modifications.Length - 1] = value;
+                _modifications[_length + 1] = value;
                 _isDirty = true;
             }
         }
@@ -189,7 +192,7 @@ namespace CSMSL.Proteomics
         /// </summary>
         public int Length
         {
-            get { return _aminoAcids.Length; }
+            get { return _length; }
         }
 
         /// <summary>
@@ -274,7 +277,7 @@ namespace CSMSL.Proteomics
         {
             get
             {
-                if (index - 1 > _aminoAcids.Length || index < 1)
+                if (index - 1 > _length || index < 1)
                     throw new IndexOutOfRangeException();
                 return _aminoAcids[index - 1];
             }
@@ -284,7 +287,7 @@ namespace CSMSL.Proteomics
 
         public Fragment CalculateFragment(FragmentType type, int number)
         {
-            if (number < 1 || number > Length)
+            if (number < 1 || number > _length)
             {
                 throw new IndexOutOfRangeException();
             }
@@ -442,7 +445,7 @@ namespace CSMSL.Proteomics
         public int SetModification(IChemicalFormula mod, char letter)
         {
             int count = 0;
-            for (int i = 0; i < _aminoAcids.Length; i++)
+            for (int i = 0; i < _length; i++)
             {
                 if (letter.Equals(_aminoAcids[i].Letter))
                 {
@@ -457,7 +460,7 @@ namespace CSMSL.Proteomics
         public int SetModification(IChemicalFormula mod, IAminoAcid residue)
         {
             int count = 0;
-            for (int i = 0; i < _aminoAcids.Length; i++)
+            for (int i = 0; i < _length; i++)
             {
                 if (residue.Equals(_aminoAcids[i]))
                 {
@@ -471,7 +474,7 @@ namespace CSMSL.Proteomics
 
         public void SetModification(IChemicalFormula mod, int residueNumber)
         {
-            if (residueNumber > Length || residueNumber < 1)
+            if (residueNumber > _length || residueNumber < 1)
             {
                 throw new IndexOutOfRangeException(string.Format("Residue number not in the correct range: [{0}-{1}] you specified: {2}", 1, Length, residueNumber));
             }
@@ -485,7 +488,7 @@ namespace CSMSL.Proteomics
         /// </summary>       
         public void ClearModifications()
         {
-            Array.Clear(_modifications, 0, _modifications.Length);
+            Array.Clear(_modifications, 0, _length + 2);
         }
 
         #endregion
@@ -497,21 +500,9 @@ namespace CSMSL.Proteomics
              
         public override int GetHashCode()
         {
-            int hCode = 748;            
-            foreach (IAminoAcid aa in _aminoAcids)
-            {
-                hCode ^= aa.GetHashCode();
-                hCode = hCode >> 7;
-            }
-            foreach (IChemicalFormula mod in _modifications)
-            {
-                if (mod != null)
-                {
-                    hCode ^= mod.GetHashCode();
-                    hCode = hCode << 3;
-                }
-            }
-            return hCode;
+            if (_aminoAcids == null && _modifications == null)
+                return 0;            
+            return ChemicalFormula.GetHashCode();          
         }
 
         public override bool Equals(object obj)
@@ -574,7 +565,7 @@ namespace CSMSL.Proteomics
 
             if (_sequenceSB == null)
             {
-                _sequenceSB = new StringBuilder(_aminoAcids.Length + 2);
+                _sequenceSB = new StringBuilder(_length + 2);
             }
             else
             {
@@ -595,7 +586,7 @@ namespace CSMSL.Proteomics
             }
 
             // Handle Amino Acid Residues
-            for (int i = 0; i < _aminoAcids.Length; i++)
+            for (int i = 0; i < _length; i++)
             {
                 IAminoAcid aa = _aminoAcids[i];
                 _chemicalFormula.Add(aa.ChemicalFormula);
@@ -613,7 +604,7 @@ namespace CSMSL.Proteomics
 
             // Handle C-Terminus
             _chemicalFormula.Add(CTerminus.ChemicalFormula);
-            if ((mod = _modifications[_modifications.Length - 1]) != null)
+            if ((mod = _modifications[_length + 1]) != null)
             {
                 _chemicalFormula.Add(mod.ChemicalFormula);
                 _sequenceSB.Append("-[");
@@ -720,7 +711,7 @@ namespace CSMSL.Proteomics
              
             Array.Resize(ref _aminoAcids, index);
             Array.Resize(ref _modifications, index + 2);
-                    
+            _length = index;        
             _isDirty = true;             
         }
 
