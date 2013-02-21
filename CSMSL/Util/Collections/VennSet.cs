@@ -21,7 +21,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace CSMSL.Util
+namespace CSMSL.Util.Collections
 {
     public class VennSet<T> : HashSet<T> where T : IEquatable<T>
     {

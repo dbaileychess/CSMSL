@@ -25,12 +25,13 @@ using System.Linq;
 using CSMSL;
 using CSMSL.Chemistry;
 using CSMSL.Proteomics;
-using CSMSL.Util;
+using CSMSL.Util.Collections;
 using CSMSL.IO.Agilent;
 using CSMSL.IO.Thermo;
 //using CSMSL.IO.Bruker;
 using CSMSL.IO;
 using CSMSL.Spectral;
+using CSMSL.Analysis.Quantitation;
 
 namespace CSMSL.Examples
 {
@@ -46,14 +47,21 @@ namespace CSMSL.Examples
             Console.WriteLine("==================");
             Console.WriteLine(watch.Elapsed);
             Console.ReadKey();
-        }
+        }                
 
         private static void StartExamples()
         {
             // Examples coding
+            Peptide pep = new Peptide("DEREK");
+            IsotopologueSet isos = new IsotopologueSet("Example");
+            isos.AddIsotopologue(new Isotopologue("C2H2H{2}1NO"));
+            isos.AddIsotopologue(new Isotopologue("C2H3NO"));
 
+            pep.CTerminusModification = isos;
             //ChemicalFormulaExamples();
             //PeptideExamples();
+
+
 
 
             // Example Objects
@@ -143,7 +151,7 @@ namespace CSMSL.Examples
 
             // Fragmenting a peptide is simple, you can include as many fragment types as you want
             Console.WriteLine("{0,-4} {1,-20} {2,-5}", "Type", "Formula", "Mass");
-            foreach (Fragment fragment in peptide1.CalculateFragments(FragmentType.b | FragmentType.y))
+            foreach (Fragment fragment in peptide1.CalculateFragments(FragmentTypes.b | FragmentTypes.y))
             {
                 WriteFragmentToConsole(fragment);
             }
@@ -161,7 +169,7 @@ namespace CSMSL.Examples
 
             // If you fragment a modified peptide, the modifications stay part of the fragments
             Console.WriteLine("{0,-4} {1,-20} {2,-5}", "Type", "Formula", "Mass");
-            foreach (Fragment fragment in peptide1.CalculateFragments(FragmentType.b, 3, 5))
+            foreach (Fragment fragment in peptide1.CalculateFragments(FragmentTypes.b, 3, 5))
             {
                 WriteFragmentToConsole(fragment);
             }

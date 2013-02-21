@@ -285,14 +285,14 @@ namespace CSMSL.Proteomics
 
         #region Fragmentation
 
-        public Fragment CalculateFragment(FragmentType type, int number)
+        public Fragment CalculateFragment(FragmentTypes type, int number)
         {
             if (number < 1 || number > _length)
             {
                 throw new IndexOutOfRangeException();
             }
 
-            if (type == FragmentType.None)
+            if (type == FragmentTypes.None)
             {
                 return null;
             }
@@ -302,7 +302,7 @@ namespace CSMSL.Proteomics
             int start = 0;
             int end = number;
 
-            if (type >= FragmentType.x)
+            if (type >= FragmentTypes.x)
             {
                 start = Length - number;
                 end = Length;
@@ -329,14 +329,14 @@ namespace CSMSL.Proteomics
             return new Fragment(type, number, chemFormula, this);
         }
         
-        public IEnumerable<Fragment> CalculateFragments(FragmentType types)
+        public IEnumerable<Fragment> CalculateFragments(FragmentTypes types)
         {
             return CalculateFragments(types, 1, Length - 1);
         }
 
-        public IEnumerable<Fragment> CalculateFragments(FragmentType types, int min, int max)
+        public IEnumerable<Fragment> CalculateFragments(FragmentTypes types, int min, int max)
         {
-            if (types == FragmentType.None)
+            if (types == FragmentTypes.None)
             {
                 yield break;
             }
@@ -346,9 +346,9 @@ namespace CSMSL.Proteomics
                 throw new IndexOutOfRangeException();
             }
 
-            foreach (FragmentType type in Enum.GetValues(typeof(FragmentType)))
+            foreach (FragmentTypes type in Enum.GetValues(typeof(FragmentTypes)))
             {
-                if (type == FragmentType.None || type == FragmentType.Internal) continue;
+                if (type == FragmentTypes.None || type == FragmentTypes.Internal) continue;
                 if ((types & type) == type)
                 {
                     ChemicalFormula chemFormula = new ChemicalFormula();
@@ -356,7 +356,7 @@ namespace CSMSL.Proteomics
                     int start = min;
                     int end = max;
 
-                    if (type >= FragmentType.x)
+                    if (type >= FragmentTypes.x)
                     {
                         chemFormula.Add(CTerminus);
                         if (CTerminusModification != null)
@@ -522,8 +522,7 @@ namespace CSMSL.Proteomics
 
         public bool Equals(AminoAcidPolymer other)
         {
-            if (Object.ReferenceEquals(this, other)) return true;
-            if (this.Length != other.Length) return false;
+            if (this._length != other._length) return false; 
             if (!this.NTerminus.Equals(other.NTerminus) || !this.CTerminus.Equals(other.CTerminus))
                 return false;
 

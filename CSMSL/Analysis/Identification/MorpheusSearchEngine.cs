@@ -1,5 +1,5 @@
 ﻿///////////////////////////////////////////////////////////////////////////
-//  Morpehus.cs - Peptide Spectral Identification Algorithm               /
+//  MorpehusSearchEngine.cs - Peptide Spectral Identification Algorithm   /
 //                                                                        /
 //  Please cite the following publication when using these algorithms     /
 //  in a publication:                                                     /
@@ -38,16 +38,16 @@ namespace CSMSL.Analysis.Identification
     /// <summary>
     /// High-resolution Proteomic Search Algorithm
     /// </summary>
-    public class Morpheus : MSSearchEngine
+    public class MorpheusSearchEngine : MSSearchEngine
     {
         public override List<PeptideSpectralMatch> Search(IMassSpectrum massSpectrum)
-        {
-            throw new NotImplementedException();
+        {            
+            return new List<PeptideSpectralMatch>();
         }
 
         public override List<PeptideSpectralMatch> Search(IEnumerable<IMassSpectrum> massSpectra)
         {
-            throw new NotImplementedException();
+            return new List<PeptideSpectralMatch>();
         }
     }
 }

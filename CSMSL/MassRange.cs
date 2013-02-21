@@ -110,5 +110,10 @@ namespace CSMSL
             }
         }
 
+        public static MassRange FromPPM(double mean, double ppmTolerance)
+        {
+            return new MassRange(mean, new MassTolerance(MassToleranceType.PPM, ppmTolerance));
+        }
+
     }
 }

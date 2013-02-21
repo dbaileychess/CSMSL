@@ -75,11 +75,13 @@
     <Compile Include="Analysis\ExperimentalDesign\ExperimentalSet.cs" />
     <Compile Include="Analysis\ExperimentalDesign\Replicate.cs" />
     <Compile Include="Analysis\ExperimentalDesign\TechnicalReplicate.cs" />
-    <Compile Include="Analysis\Identification\Morpheus.cs" />
+    <Compile Include="Analysis\Identification\MorpheusSearchEngine.cs" />
     <Compile Include="Analysis\Identification\MSSearchEngine.cs" />
     <Compile Include="Analysis\Identification\PeptideSpectralMatch.cs" />
     <Compile Include="Analysis\Identification\PeptideSpectralMatchScoreType.cs" />
     <Compile Include="Analysis\Quantitation\IsobaricTag.cs" />
+    <Compile Include="Analysis\Quantitation\Isotopologue.cs" />
+    <Compile Include="Analysis\Quantitation\IsotopologueSet.cs" />
     <Compile Include="Analysis\Quantitation\QuantifiedPeptideSpectralMatch.cs" />
     <Compile Include="Chemistry\ChemicalFormula.cs" />
     <Compile Include="Chemistry\NamedChemicalFormula.cs" />
@@ -111,7 +113,7 @@
     <Compile Include="Proteomics\AminoAcidPolymer.cs" />
     <Compile Include="Proteomics\AminoAcid.cs" />
     <Compile Include="Proteomics\Fragment.cs" />
-    <Compile Include="Proteomics\FragmentType.cs" />
+    <Compile Include="Proteomics\FragmentTypes.cs" />
     <Compile Include="Proteomics\Peptide.cs" />
     <Compile Include="Proteomics\Protease.cs" />
     <Compile Include="Proteomics\Protein.cs" />
@@ -123,12 +125,15 @@
     <Compile Include="Spectral\MassSpectrum.cs" />
     <Compile Include="Spectral\Spectrum.cs" />
     <Compile Include="MassTolerance.cs" />
+    <Compile Include="Util\Collections\BinaryTree.cs" />
+    <Compile Include="Util\Collections\BinaryTreeNode.cs" />
+    <Compile Include="Util\Collections\SortedMaxSizedContainer.cs" />
     <Compile Include="Util\Combinatorics.cs" />
     <Compile Include="Util\LinearRegression.cs" />
     <Compile Include="Analysis\Identification\FalseDiscoveryRate.cs" />
     <Compile Include="Analysis\Identification\IFalseDiscovery.cs" />
-    <Compile Include="Util\VennDiagram.cs" />
-    <Compile Include="Util\VennSet.cs" />
+    <Compile Include="Util\Collections\VennDiagram.cs" />
+    <Compile Include="Util\Collections\VennSet.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Resources\Elements.xml">

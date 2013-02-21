@@ -28,6 +28,22 @@ namespace CSMSL.Spectral
                 return _count;
             }
         }
+
+        public bool ContainsPeaks(IRange<double> range)
+        {
+            return ContainsPeaks(range.Minimum, range.Maximum);
+        }
+
+        public bool ContainsPeaks(double min, double max)
+        {
+            int index = Array.BinarySearch(_peaks, min);
+            if (index < 0)
+                index = ~index;
+
+            if (index >= _peaks.Length || _peaks[index].X > max)
+                return false;
+            return true;          
+        }
         
         public List<T> GetPeaks(IRange<double> range)
         {
