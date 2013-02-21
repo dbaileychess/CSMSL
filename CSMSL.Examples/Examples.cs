@@ -68,13 +68,16 @@ namespace CSMSL.Examples
             //VennDiagramExamples();
             
             // Example programs
-            TrypticDigestion.Start(Protease.Trypsin);
+            //TrypticDigestion.Start(Protease.Trypsin);
 
             //Example IO
             //MsIOExamples();
 
+            // Omssa Reader
+            OmssaReader.Start();
+
             // MS/MS searching
-            MorpheusSearch.Start(Protease.Trypsin);
+            //MorpheusSearch.Start(Protease.Trypsin);
         }
 
         private static void MsIOExamples()
