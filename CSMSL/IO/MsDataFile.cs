@@ -86,6 +86,8 @@ namespace CSMSL.IO
             }
         }
 
+      
+
         public string Name
         {
             get { return _name; }
@@ -190,6 +192,8 @@ namespace CSMSL.IO
         public abstract double GetRetentionTime(int spectrumNumber);
 
         public abstract double GetInjectionTime(int spectrumNumber);
+
+        public abstract double GetResolution(int spectrumNumber);
 
         /// <summary>
         /// Open up a connection to the underlying MS data stream

@@ -2,18 +2,18 @@
 
 namespace CSMSL.IO.Thermo
 {
-    public class ThermoLabeledPeak : MZPeak
+    public class ThermoLabeledPeak : MZPeak, ILabeledPeak
     {
-        private short _charge;
+        private int _charge;
 
-        public short Charge
+        public int Charge
         {
             get { return _charge; }
         }
 
-        private float _noise;
+        private double _noise;
 
-        public float Noise
+        public double Noise
         {
             get { return _noise; }
         }
@@ -40,11 +40,21 @@ namespace CSMSL.IO.Thermo
             return string.Format("{0} {1} SN = {2:F2}",base.ToString(), charge, SN);
         }
 
-        public ThermoLabeledPeak(double mz, float intensity, short charge, float noise)
+        public ThermoLabeledPeak(double mz, double intensity, int charge, double noise)
             : base(mz, intensity)
         {
             _charge = charge;
             _noise = noise;
+        }
+
+        public double GetSignalToNoise()
+        {
+            return SN;
+        }
+
+        public double GetDenormalizedIntensity(double injectionTime)
+        {
+            return Intensity * injectionTime;
         }
     }
 }

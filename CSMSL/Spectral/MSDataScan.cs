@@ -36,6 +36,24 @@ namespace CSMSL.Spectral
             }
         }
 
+        private double _resolution = double.NaN;
+        public double Resolution
+        {
+            get
+            {
+                if (double.IsNaN(_resolution))
+                {
+                    if (ParentFile.IsOpen)
+                        _resolution = ParentFile.GetResolution(SpectrumNumber);
+                }
+                return _resolution;
+            }
+            protected set
+            {
+                _resolution = value;
+            }
+        }
+
         private int _msnOrder = -1;
 
         public int MsnOrder

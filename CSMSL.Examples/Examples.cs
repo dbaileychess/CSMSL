@@ -77,7 +77,7 @@ namespace CSMSL.Examples
 
             List<MSDataFile> exampleRawFiles = new List<MSDataFile>();
             exampleRawFiles.Add(new ThermoRawFile("Resources/ThermoRawFileMS1MS2.raw"));
-            exampleRawFiles.Add(new AgilentDDirectory("Resources/AgilentDDirectoryMS1MS2.d"));   
+            //exampleRawFiles.Add(new AgilentDDirectory("Resources/AgilentDDirectoryMS1MS2.d"));   
             //exampleRawFiles.Add(new BrukerDDirectory(@"E:\Software\Third Parties\BRUKER sample data & executable\BRUKER sample data & executable\10 fmol BSA_01_637.d"));
             foreach(MSDataFile dataFile in exampleRawFiles)  
             {
@@ -86,7 +86,7 @@ namespace CSMSL.Examples
                 watch.Start();
                 foreach (MSDataScan scan in dataFile)
                 {
-                    List<MZPeak> peaks = null;                 
+                    List<MZPeak> peaks = null;           
                     scan.MassSpectrum.TryGetPeaks(500, 510, out peaks);
                     Console.WriteLine(peaks.Count);
                     Console.WriteLine("{0,-4} {1,3} {2,-6:F4} {3,-5} {4,7} {5,-10} {6}",

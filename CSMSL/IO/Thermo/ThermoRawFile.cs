@@ -274,5 +274,10 @@ namespace CSMSL.IO.Thermo
             double injectionTime = Convert.ToDouble(scan_trailer["Ion Injection Time (ms):"]);
             return injectionTime;
         }
+
+        public override double GetResolution(int spectrumNumber)
+        {
+            return (double)GetExtraValue(spectrumNumber, "FT Resolution:");
+        }
     }
 }
