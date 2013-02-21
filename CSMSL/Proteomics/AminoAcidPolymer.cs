@@ -424,8 +424,44 @@ namespace CSMSL.Proteomics
                 CTerminusModification = mod;
             }
         }
-
+        
         /// <summary>
+        /// Sets the modification at specific sites on this amino acid polymer
+        /// </summary>
+        /// <param name="mod">The modification to set</param>
+        /// <param name="sites">The sites to set the modification at</param>
+        /// <returns>The number of modifications added to this amino acid polymer</returns>
+        public virtual int SetModification(IChemicalFormula mod, ModificationSites sites)
+        {
+            int count = 0;
+
+            if ((sites & ModificationSites.NPep) == ModificationSites.NPep)
+            {
+                NTerminusModification = mod;
+                count++;
+            }
+
+            for (int i = 0; i < _length; i++)
+            {
+                ModificationSites site = _aminoAcids[i].Site;
+                if ((sites & site) == site)
+                {
+                    _modifications[i + 1] = mod;                   
+                    count++;
+                }
+            }
+
+            if ((sites & ModificationSites.PepC) == ModificationSites.PepC)
+            {
+                CTerminusModification = mod;
+                count++;
+            }
+
+            if(count > 0)
+                _isDirty = true;
+            return count;
+        }
+
         /// Clears the modification set at the terminus of this amino acid polymer back
         /// to the default C or N modifications.
         /// </summary>

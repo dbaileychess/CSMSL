@@ -9,6 +9,7 @@ using CSMSL.Proteomics;
 using CSMSL.Spectral;
 using CSMSL.IO.Thermo;
 using CSMSL.IO;
+using CSMSL.Util.Collections;
 using CSMSL.Analysis.Identification;
 
 namespace CSMSL.Examples
@@ -38,11 +39,12 @@ namespace CSMSL.Examples
             MSSearchEngine engine = new MorpheusSearchEngine();
             engine.PrecursorMassTolerance = MassTolerance.FromPPM(100);
             engine.ProductMassTolerance = MassTolerance.FromPPM(10);
+         
             engine.LoadPeptides(peptides);
             using (MSDataFile msDataFile = new ThermoRawFile("Resources/ThermoRawFileMS1MS2.raw", true))
             {
-                List<PeptideSpectralMatch> psms = engine.Search(msDataFile.Where(scan => scan.MsnOrder > 1));
-
+                SortedMaxSizedContainer<PeptideSpectralMatch> psms = engine.Search(msDataFile.Where(scan => scan.MsnOrder > 1));
+                
                 //foreach (MSDataScan scan in msDataFile.Where(scan => scan.MsnOrder > 1))
                 //{
                 //    List<PeptideSpectralMatch> psms = engine.Search(scan);

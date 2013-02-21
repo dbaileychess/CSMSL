@@ -100,6 +100,7 @@
     <Compile Include="Proteomics\DissociationType.cs" />
     <Compile Include="Proteomics\IAminoAcid.cs" />
     <Compile Include="Proteomics\IProtease.cs" />
+    <Compile Include="Proteomics\ModificationSites.cs" />
     <Compile Include="Spectral\Chromatogram.cs" />
     <Compile Include="Spectral\ChromatogramPoint.cs" />
     <Compile Include="Spectral\ChromatographicPeak.cs" />
