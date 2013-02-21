@@ -1,22 +1,24 @@
 # Overview
-C\# Mass Spectrometry Library (CSMSL) is a .NET-based framework for working with proteomic data. There are many tools available for MS analysis on the internet, but most are geared to end users and are challenging to adapt to a specific need. CSMSL looks to provide an easy-to-use, powerful, feature-rich library of .NET C\# objects and methods to enable even novice programmers the ability to analyze proteomic data quickly. Simplicity is key, calculating the mass of the peptide sequence "CSMSL" only requires the following two lines:
+C\# Mass Spectrometry Library (CSMSL) is a .NET-based framework for working with proteomic data. There are many tools available for MS analysis on the internet, but most are geared to end users and are challenging to adapt to a specific need. CSMSL is designed to provide an easy-to-use, powerful, feature-rich library of .NET C\# objects and methods to enable even novice programmers the ability to analyze proteomic data quickly. Simplicity is key, calculating the mass of the peptide sequence "CSMSL" only requires the following two lines:
 ```csharp
 Peptide peptide = new Peptide("CSMSL");
 Console.WriteLine(peptide.Mass.Monoisotopic);
 //produces : 539.20835516707
 ```
-In addition to simply syntax, CSMSL is designed with performance in mind, allowing even computationally intensive calculations to be completed quickly. For [example](https://github.com/dbaileychess/CSMSL/blob/master/Examples/ExampleTrypticDigest.cs), a complete yeast database (6,627 proteins) can be loaded from a .fasta file, digested with trypsin (up to 3 missed cleavages) in under 3 seconds. If we include the calculation for the +1 m/z of each of the 913,740 resulting peptides, the total time only goes up to 9 seconds (this includes full chemical formula determination). While CSMSL is not expected to meet the performance of advanced compiled languages (e.g. C/C++, Fortran, etc...), its adequate performance plus simplicity of use are sure to be helpful in analyzing data in new and creative ways without significant overhead.
+In addition to simply syntax, CSMSL is designed with performance in mind, allowing even computationally intensive calculations to be completed quickly. For [example](https://github.com/dbaileychess/CSMSL/blob/master/CSMSL.Examples/TrypticDigestion.cs), a complete yeast database (6,627 proteins) can be loaded from a .fasta file, digested with trypsin (up to 3 missed cleavages, 5 to 35 amino acids in length) in under 2 seconds. If we include the calculation for the +1 m/z of each of the 913,740 resulting peptides, the total time only goes up to 4 seconds (this includes full chemical formula determination). While CSMSL is not expected to meet the performance of advanced compiled languages (e.g. C/C++, Fortran, etc...), its adequate performance plus simplicity of use are sure to be helpful in analyzing data in new and creative ways without significant overhead.
 
-Future goals include providing native support for reading and writing common m/z formats (mzXML, .sqlite, etc...) as well as cross-vendor support.
+Future goals include providing native support for reading and writing common m/z formats (mzXML, .sqlite, etc...) as well as cross-vendor support. We have initial support for Thermo .Raw files and Agilent .d directories. 
+
+We strive for a well-tested framework to ensure data quality. We are in the process of making unit tests for all of the publically exposed classes to ensure valid results throughout development. Theses unit tests are located in the [CSMSL.Test](https://github.com/dbaileychess/CSMSL/tree/master/CSMSL.Tests) project. 
 
 CSMSL is seeking contributors to improve all aspects of this library. Whether you are a programmer or scientist, everyone can have helpful insights in expanding the scope of this library.
 
 ## Examples
-Functional coding examples are a great way to dive into any programming language/library. We provide a number of example programs using CSMSL (under [Examples\\ExamplesCSMSL.csproj](https://github.com/dbaileychess/CSMSL/tree/master/Examples)) so that people can learn the tools and experiment with different features. Below are a subset of short code examples to get a flavor of options available.
+Functional coding examples are a great way to dive into any programming language/library. We provide a number of example programs using CSMSL (under [CSMSL.Examples.csproj](https://github.com/dbaileychess/CSMSL/tree/master/CSMSL.Examples)) so that people can learn the tools and experiment with different features. Below are a subset of short code examples to get a flavor of options available.
 
 ### Chemical Formulas
 ---------------------
-Chemical formulas are the foundation ofmany other classes in CSMSL (e.g. Peptide, Fragments, Proteins, Modifications, etc..) and are the main way that masses are calculated for those objects. Thorough understanding of chemical formulas and how they are used is important in using CSMSL effectively. 
+Chemical formulas are the foundation of many other classes in CSMSL (e.g. Peptide, Fragments, Proteins, Modifications, etc..) and are the main way that masses are calculated for those objects. Thorough understanding of chemical formulas and how they are used is important in using CSMSL effectively. 
 
 Creation of a chemical formula is simple as well as accessing different properties of it, such as mass:
 ```csharp
@@ -38,7 +40,7 @@ formula1.Remove(formula3);
 Console.WriteLine("Formula {0} mass is {1}", formula1, formula1.Mass.Monoisotopic);
 // produces: "Formula C-6H3NO mass is -38.97853627943"
 ```
-Data wise, formulas are a set of isotopes, allowing for the possibility of making them with isotopes that are not the most common (i.e. Carbon 13) using the following notation: \<Element Symbol\>{\<Mass Number\>}
+Interanlly, chemical formulas are a set of isotopes, allowing for the possibility of making them with isotopes that are not the most common (i.e. Carbon 13) using the following notation: \<Element Symbol\>{\<Mass Number\>}
 ```csharp
 ChemicalFormula formula1 = new ChemicalFormula("C2H3NO");
 ChemicalFormula formula2 = new ChemicalFormula("C{13}CH3NO");
@@ -90,9 +92,9 @@ Most proteomic data is contained within binary files produced by the mass spectr
 
 Since CSMSL is about simplicity, so are our I/O objects. To open a connection to a Thermo raw file and print out each scan #, the following is performed:
 ```csharp
-using (MsDataFile dataFile = new ThermoRawFile("somerawfile.raw", true))
+using (MSDataFile dataFile = new ThermoRawFile("somerawfile.raw", true))
 {                     
-  foreach (MsScan scan in dataFile)
+  foreach (MSDataScan scan in dataFile)
   {             
     Console.WriteLine("Scan #{0}",scan.SpectrumNumber);
   }
@@ -100,9 +102,9 @@ using (MsDataFile dataFile = new ThermoRawFile("somerawfile.raw", true))
 ```
 In combination with System.Linq, advanced filtering is easily acheived (only return MS/MS scans):
 ```csharp
-using (MsDataFile dataFile = new ThermoRawFile("somerawfile.raw", true))
+using (MSDataFile dataFile = new ThermoRawFile("somerawfile.raw", true))
 {                     
-  foreach (MsScan scan in dataFile.Where(scan => scan.MsnOrder > 1))
+  foreach (MSDataScan scan in dataFile.Where(scan => scan.MsnOrder > 1))
   {             
     Console.WriteLine("Scan #{0}",scan.SpectrumNumber);
   }
@@ -110,9 +112,9 @@ using (MsDataFile dataFile = new ThermoRawFile("somerawfile.raw", true))
 ```
 It is even easy to read other vendor formats without a major change in the code. To accomplish the same analysis with Agilent's .d files, the code is only changed once:
 ```csharp
-using (MsDataFile dataFile = new AgilentDDirectory("somerawfile.d", true))
+using (MSDataFile dataFile = new AgilentDDirectory("somerawfile.d", true))
 {                     
-  foreach (MsScan scan in dataFile.Where(scan => scan.MsnOrder > 1))
+  foreach (MSDataScan scan in dataFile.Where(scan => scan.MsnOrder > 1))
   {             
     Console.WriteLine("Scan #{0}",scan.SpectrumNumber);
   }
