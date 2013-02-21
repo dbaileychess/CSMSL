@@ -23,7 +23,7 @@ using System.Collections.Generic;
 using System.Text;
 using Combinatorics.Collections;
 
-namespace CSMSL.Util
+namespace CSMSL.Util.Collections
 {
     public class VennDiagram<T> :
         IEnumerable<VennSet<T>>

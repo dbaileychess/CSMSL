@@ -189,6 +189,33 @@ namespace CSMSL.Tests.Proteomics
 
             MockPeptideEveryAminoAcid.ToString().Should().Equal("ACDEFGHIKLMN[Fe]PQRSTVWY");
         }
+
+        [Test]
+        public void SetAminoAcidModificationStronglyTyped()
+        {
+            ChemicalFormula formula = new ChemicalFormula("Fe");
+            MockPeptideEveryAminoAcid.SetModification(formula, ModificationSites.N);
+
+            MockPeptideEveryAminoAcid.ToString().Should().Equal("ACDEFGHIKLMN[Fe]PQRSTVWY");
+        }
+
+        [Test]
+        public void SetAminoAcidModificationStronglyTypedMultipleLocations()
+        {
+            ChemicalFormula formula = new ChemicalFormula("Fe");
+            MockPeptideEveryAminoAcid.SetModification(formula, ModificationSites.N | ModificationSites.F | ModificationSites.V);
+
+            MockPeptideEveryAminoAcid.ToString().Should().Equal("ACDEF[Fe]GHIKLMN[Fe]PQRSTV[Fe]WY");
+        }
+
+        [Test]
+        public void SetAminoAcidModificationStronglyTypedTermini()
+        {
+            ChemicalFormula formula = new ChemicalFormula("Fe");
+            MockPeptideEveryAminoAcid.SetModification(formula, ModificationSites.NPep | ModificationSites.PepC);
+
+            MockPeptideEveryAminoAcid.ToString().Should().Equal("[Fe]-ACDEFGHIKLMNPQRSTVWY-[Fe]");
+        }
         
         [Test]
         public void SetAminoAcidCharacterModification()

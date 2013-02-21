@@ -23,7 +23,7 @@ using System;
 namespace CSMSL.Proteomics
 {
     [Flags]
-    public enum FragmentType
+    public enum FragmentTypes
     {
         None = 0,
         a = 1,

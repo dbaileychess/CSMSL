@@ -1,5 +1,5 @@
 ﻿///////////////////////////////////////////////////////////////////////////
-//  Morpehus.cs - Peptide Spectral Identification Algorithm               /
+//  MorpehusSearchEngine.cs - Peptide Spectral Identification Algorithm   /
 //                                                                        /
 //  Please cite the following publication when using these algorithms     /
 //  in a publication:                                                     /
@@ -32,20 +32,36 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using CSMSL.Spectral;
+using CSMSL.Util.Collections;
 
 namespace CSMSL.Analysis.Identification
 {
     /// <summary>
     /// High-resolution Proteomic Search Algorithm
     /// </summary>
-    public class Morpheus : MSSearchEngine
+    public class MorpheusSearchEngine : MSSearchEngine
     {
-        public override List<PeptideSpectralMatch> Search(IMassSpectrum massSpectrum)
+        public override SortedMaxSizedContainer<PeptideSpectralMatch> Search(IMassSpectrum massSpectrum)
+        {
+            return new SortedMaxSizedContainer<PeptideSpectralMatch>(MaxMatchesPerSpectrum);
+        }
+
+        public override SortedMaxSizedContainer<PeptideSpectralMatch> Search(IEnumerable<IMassSpectrum> massSpectra)
+        {
+            return new SortedMaxSizedContainer<PeptideSpectralMatch>(MaxMatchesPerSpectrum);
+        }
+
+        public MorpheusSearchEngine()
+        {
+            DefaultPSMScoreType = PeptideSpectralMatchScoreType.Morpheus;
+        }
+
+        public override SortedMaxSizedContainer<PeptideSpectralMatch> Search(Proteomics.AminoAcidPolymer peptide)
         {
             throw new NotImplementedException();
         }
 
-        public override List<PeptideSpectralMatch> Search(IEnumerable<IMassSpectrum> massSpectra)
+        public override SortedMaxSizedContainer<PeptideSpectralMatch> Search(IEnumerable<Proteomics.AminoAcidPolymer> peptides)
         {
             throw new NotImplementedException();
         }

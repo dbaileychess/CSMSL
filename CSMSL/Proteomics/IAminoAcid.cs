@@ -7,5 +7,6 @@ namespace CSMSL.Proteomics
     {
         char Letter { get; }
         string Symbol { get; }
+        ModificationSites Site { get; }
     }
 }

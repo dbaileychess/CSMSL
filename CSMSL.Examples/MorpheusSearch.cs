@@ -7,6 +7,9 @@ using CSMSL.IO;
 using CSMSL.Chemistry;
 using CSMSL.Proteomics;
 using CSMSL.Spectral;
+using CSMSL.IO.Thermo;
+using CSMSL.IO;
+using CSMSL.Util.Collections;
 using CSMSL.Analysis.Identification;
 
 namespace CSMSL.Examples
@@ -27,16 +30,27 @@ namespace CSMSL.Examples
                 foreach (Protein protein in reader.ReadNextProtein())
                 {
                     foreach (Peptide peptide in protein.Digest(protease, maxMissed, minLength, maxLength))
-                    {
-                        //hashCodes.Add(peptide.GetHashCode());
+                    {                      
                         peptides.Add(peptide);                       
                     }          
                 }
             }
 
-            MSSearchEngine engine = new Morpheus();
-                      
-           
+            MSSearchEngine engine = new MorpheusSearchEngine();
+            engine.PrecursorMassTolerance = MassTolerance.FromPPM(100);
+            engine.ProductMassTolerance = MassTolerance.FromPPM(10);
+         
+            engine.LoadPeptides(peptides);
+            using (MSDataFile msDataFile = new ThermoRawFile("Resources/ThermoRawFileMS1MS2.raw", true))
+            {
+                SortedMaxSizedContainer<PeptideSpectralMatch> psms = engine.Search(msDataFile.Where(scan => scan.MsnOrder > 1));
+                
+                //foreach (MSDataScan scan in msDataFile.Where(scan => scan.MsnOrder > 1))
+                //{
+                //    List<PeptideSpectralMatch> psms = engine.Search(scan);
+                //    Console.WriteLine("{0} {1}", scan.SpectrumNumber, psms.Count);
+                //}
+            }
             watch.Stop();           
             Console.WriteLine("Time elapsed: {0}", watch.Elapsed);
             Console.WriteLine("Memory used: {0:N0} MB", System.Environment.WorkingSet / (1024 * 1024));

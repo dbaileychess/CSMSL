@@ -26,20 +26,20 @@ namespace CSMSL.Proteomics
     public class Fragment : IChemicalFormula, IMass
     {
 
-        private static readonly Dictionary<FragmentType, ChemicalFormula> _fragmentIonCaps = new Dictionary<FragmentType, ChemicalFormula>()
+        private static readonly Dictionary<FragmentTypes, ChemicalFormula> _fragmentIonCaps = new Dictionary<FragmentTypes, ChemicalFormula>()
         {
-          {FragmentType.a, new ChemicalFormula("C-1H-1O-1")},
-          {FragmentType.adot, new ChemicalFormula("C-1O-1")},
-          {FragmentType.b, new ChemicalFormula("H-1")},
-          {FragmentType.bdot, new ChemicalFormula()},
-          {FragmentType.c, new ChemicalFormula("NH2")},
-          {FragmentType.cdot, new ChemicalFormula("NH3")},
-          {FragmentType.x, new ChemicalFormula("COH-1")},
-          {FragmentType.xdot, new ChemicalFormula("CO")},
-          {FragmentType.y, new ChemicalFormula("H")},
-          {FragmentType.ydot, new ChemicalFormula("H2")},
-          {FragmentType.z, new ChemicalFormula("N-1H-2")},
-          {FragmentType.zdot, new ChemicalFormula("N-1H-1")},
+          {FragmentTypes.a, new ChemicalFormula("C-1H-1O-1")},
+          {FragmentTypes.adot, new ChemicalFormula("C-1O-1")},
+          {FragmentTypes.b, new ChemicalFormula("H-1")},
+          {FragmentTypes.bdot, new ChemicalFormula()},
+          {FragmentTypes.c, new ChemicalFormula("NH2")},
+          {FragmentTypes.cdot, new ChemicalFormula("NH3")},
+          {FragmentTypes.x, new ChemicalFormula("COH-1")},
+          {FragmentTypes.xdot, new ChemicalFormula("CO")},
+          {FragmentTypes.y, new ChemicalFormula("H")},
+          {FragmentTypes.ydot, new ChemicalFormula("H2")},
+          {FragmentTypes.z, new ChemicalFormula("N-1H-2")},
+          {FragmentTypes.zdot, new ChemicalFormula("N-1H-1")},
         };
         
 
@@ -48,9 +48,9 @@ namespace CSMSL.Proteomics
 
         private AminoAcidPolymer _parent;
 
-        private FragmentType _type;
+        private FragmentTypes _type;
 
-        public Fragment(FragmentType type, int number, ChemicalFormula chemicalFormula, AminoAcidPolymer parent)
+        public Fragment(FragmentTypes type, int number, ChemicalFormula chemicalFormula, AminoAcidPolymer parent)
         {
             _type = type;
             _number = number;
@@ -82,7 +82,7 @@ namespace CSMSL.Proteomics
             private set { _parent = value; }
         }
 
-        public FragmentType Type
+        public FragmentTypes Type
         {
             get { return _type; }
             private set { _type = value; }
@@ -90,7 +90,7 @@ namespace CSMSL.Proteomics
 
         public override string ToString()
         {
-            return string.Format("{0}{1}", System.Enum.GetName(typeof(FragmentType), _type), _number);
+            return string.Format("{0}{1}", System.Enum.GetName(typeof(FragmentTypes), _type), _number);
         }
                 
     }
