@@ -60,10 +60,7 @@ namespace CSMSL.Examples
             pep.CTerminusModification = isos;
             //ChemicalFormulaExamples();
             //PeptideExamples();
-
-
-
-
+                      
             // Example Objects
             //VennDiagramExamples();
             

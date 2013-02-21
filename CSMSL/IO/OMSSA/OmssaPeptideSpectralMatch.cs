@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using CSMSL.Proteomics;
 using CSMSL.Analysis.Identification;
 using CsvHelper.Configuration;
+using CsvHelper.TypeConversion;
 
 namespace CSMSL.IO.OMSSA
 {
@@ -20,10 +22,10 @@ namespace CSMSL.IO.OMSSA
         
         [CsvField(Name = " Theo Mass")]
         public double TheoreticalMass { get; set; }
-
-        [CsvField(Name = " Peptide")]
+             
+        [CsvField(Name = " Peptide")]     
         public string Sequence { get; set; }
-
+ 
         [CsvField(Name = " Defline")]
         public string Defline { get; set; }
 
@@ -46,7 +48,7 @@ namespace CSMSL.IO.OMSSA
         public int StartResidue { get; set; }
 
         [CsvField(Name = " Stop")]
-        public int StopResidue { get; set; }
+        public int StopResidue { get; set; }       
 
         [CsvField(Name = " gi")]
         public int GI { get; set; }

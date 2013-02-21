@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Diagnostics;
 using CSMSL.IO.OMSSA;
-
+using CSMSL.Analysis.Identification;
 
 namespace CSMSL.Examples
 {
@@ -14,11 +14,17 @@ namespace CSMSL.Examples
         {
             Console.WriteLine("**Start OMSSA Reader**");
             long startMem = System.Environment.WorkingSet;
-            Stopwatch watch = new Stopwatch();
-          
-            watch.Start();          
-            OmssaCsvReader reader = new OmssaCsvReader("Resources/Omssa_yeast.csv");
-            List<OmssaPeptideSpectralMatch> psms = reader.Read().ToList();
+            Stopwatch watch = new Stopwatch();          
+            watch.Start();
+            List<PeptideSpectralMatch> psms;
+            using (OmssaCsvReader reader = new OmssaCsvReader())
+            {
+                reader.LoadProteins("Resources/yeast_uniprot_120226.fasta");
+              
+                psms = reader.ReadPsmsFrom("Resources/Omssa_yeast.csv").ToList();
+            }
+         
+            
             watch.Stop();
             Console.WriteLine("{0:N0} psms were read in", psms.Count);
             Console.WriteLine("Time elapsed: {0}", watch.Elapsed);

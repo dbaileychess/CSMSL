@@ -595,9 +595,7 @@ namespace CSMSL.Proteomics
             {
                 _chemicalFormula.Clear();
             }
-            //_chemicalFormula = CSMSL.Chemistry.ChemicalFormula.Combine(_aminoAcids);
-            //_chemicalFormula.Add(CSMSL.Chemistry.ChemicalFormula.Combine(_modifications));
-
+         
             if (_sequenceSB == null)
             {
                 _sequenceSB = new StringBuilder(_length + 2);
