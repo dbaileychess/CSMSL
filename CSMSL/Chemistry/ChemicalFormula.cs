@@ -543,7 +543,6 @@ namespace CSMSL.Chemistry
 
         public int Count(string symbol)
         {
-
             Element element = Element.PeriodicTable[symbol];
             return Count(element);
         }
