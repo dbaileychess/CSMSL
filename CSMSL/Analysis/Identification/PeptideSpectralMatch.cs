@@ -9,18 +9,18 @@ namespace CSMSL.Analysis.Identification
 {
     public class PeptideSpectralMatch : IFalseDiscovery<double>, IMassSpectrum
     {
-        public AminoAcidPolymer Peptide { get; private set; }
+        public virtual Peptide Peptide { get; set; }
 
-        public MsnDataScan Spectrum { get; private set; }
+        public virtual MsnDataScan Spectrum { get; set; }
         
         /// <summary>
         /// The score of the match between the peptide and spectrum.
         /// </summary>
-        public double Score { get; private set; }
+        public virtual double Score { get; set; }
 
-        public PeptideSpectralMatchScoreType ScoreType { get; private set; }
+        public virtual PeptideSpectralMatchScoreType ScoreType { get; set; }
 
-        public bool IsDecoy { get; private set; }
+        public virtual bool IsDecoy { get;  set; }
         
         double IFalseDiscovery<double>.FDRScoreMetric
         {
