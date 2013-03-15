@@ -26,7 +26,7 @@ using CSMSL;
 using CSMSL.Chemistry;
 using CSMSL.Proteomics;
 using CSMSL.Util.Collections;
-using CSMSL.IO.Agilent;
+//using CSMSL.IO.Agilent;
 using CSMSL.IO.Thermo;
 //using CSMSL.IO.Bruker;
 using CSMSL.IO;

@@ -68,10 +68,6 @@
       <Project>{3c8c9f05-9c19-4251-95fa-05d7edc8cae6}</Project>
       <Name>CSMSL</Name>
     </ProjectReference>
-    <ProjectReference Include="..\CSMSL\IO\Agilent\Agilent.csproj">
-      <Project>{83c27418-e85c-4270-b9d1-066b9ead5211}</Project>
-      <Name>Agilent</Name>
-    </ProjectReference>
     <ProjectReference Include="..\CSMSL\IO\Thermo\Thermo.csproj">
       <Project>{24dc85ff-e97b-4140-9614-77dd8fddd32f}</Project>
       <Name>Thermo</Name>

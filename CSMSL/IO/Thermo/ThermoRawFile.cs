@@ -277,7 +277,8 @@ namespace CSMSL.IO.Thermo
 
         public override double GetResolution(int spectrumNumber)
         {
-            return (double)GetExtraValue(spectrumNumber, "FT Resolution:");
+            double resolution = Convert.ToDouble(GetExtraValue(spectrumNumber, "FT Resolution:"));
+            return resolution;
         }
     }
 }
