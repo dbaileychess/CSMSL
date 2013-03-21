@@ -56,6 +56,9 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Moq">
+      <HintPath>..\packages\Moq.4.0.10827\lib\NET40\Moq.dll</HintPath>
+    </Reference>
     <Reference Include="nunit.framework, Version=2.6.2.12296, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
       <HintPath>..\packages\NUnit.2.6.2\lib\nunit.framework.dll</HintPath>
     </Reference>
@@ -65,8 +68,12 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Data.Linq" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Analysis\Quantitation\QuantifiedPeakTestFixture.cs" />
+    <Compile Include="Analysis\Quantitation\QuantifiedPeptideTestFixture.cs" />
+    <Compile Include="Analysis\Quantitation\QuantifiedScanTestFixture.cs" />
     <Compile Include="Chemistry\ChemicalFormulaTestFixture.cs" />
     <Compile Include="Chemistry\MassTestFixture.cs" />
     <Compile Include="Proteomics\FragmentTestFixture.cs" />

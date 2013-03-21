@@ -24,7 +24,7 @@ namespace CSMSL.Spectral
 
         private int _spectrumNumber;
 
-        public int SpectrumNumber
+        public virtual int SpectrumNumber
         {
             get
             {
@@ -72,7 +72,15 @@ namespace CSMSL.Spectral
             }
         }
 
+        public virtual double InjectionTime
+        {
+            get;
+            set;
+        }
+
         private double _retentionTime = double.NaN;
+
+
 
         public double RetentionTime
         {
@@ -127,6 +135,11 @@ namespace CSMSL.Spectral
                 }
                 return _mzRange;
             }
+        }
+
+        public MSDataScan()
+        {
+
         }
 
         public MSDataScan(int spectrumNumber,int msnOrder = 1, MSDataFile parentFile = null)

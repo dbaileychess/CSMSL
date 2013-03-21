@@ -71,7 +71,6 @@ Global
 		{AFA55374-C851-429F-AC43-CCC0A52C0315}.Release|x64.Build.0 = Release|x64
 		{AFA55374-C851-429F-AC43-CCC0A52C0315}.Release|x86.ActiveCfg = Release|x86
 		{AFA55374-C851-429F-AC43-CCC0A52C0315}.Release|x86.Build.0 = Release|x86
-<<<<<<< HEAD
 		{4E32FB84-71FA-4240-AA94-8B72E25C86F3}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
 		{4E32FB84-71FA-4240-AA94-8B72E25C86F3}.Debug|Mixed Platforms.Build.0 = Debug|x86
 		{4E32FB84-71FA-4240-AA94-8B72E25C86F3}.Debug|x64.ActiveCfg = Debug|x86
@@ -82,24 +81,18 @@ Global
 		{4E32FB84-71FA-4240-AA94-8B72E25C86F3}.Release|x64.ActiveCfg = Release|x86
 		{4E32FB84-71FA-4240-AA94-8B72E25C86F3}.Release|x86.ActiveCfg = Release|x86
 		{4E32FB84-71FA-4240-AA94-8B72E25C86F3}.Release|x86.Build.0 = Release|x86
-=======
-		{F1976BEF-8756-46C2-830B-A638FF4A2E8C}.Debug|x64.ActiveCfg = Debug|x64
-		{F1976BEF-8756-46C2-830B-A638FF4A2E8C}.Debug|x64.Build.0 = Debug|x64
-		{F1976BEF-8756-46C2-830B-A638FF4A2E8C}.Debug|x86.ActiveCfg = Debug|x86
-		{F1976BEF-8756-46C2-830B-A638FF4A2E8C}.Debug|x86.Build.0 = Debug|x86
-		{F1976BEF-8756-46C2-830B-A638FF4A2E8C}.Release|x64.ActiveCfg = Release|x64
-		{F1976BEF-8756-46C2-830B-A638FF4A2E8C}.Release|x64.Build.0 = Release|x64
-		{F1976BEF-8756-46C2-830B-A638FF4A2E8C}.Release|x86.ActiveCfg = Release|x86
-		{F1976BEF-8756-46C2-830B-A638FF4A2E8C}.Release|x86.Build.0 = Release|x86
+		{45A71E18-42E8-41A4-9479-2852C4186993}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{45A71E18-42E8-41A4-9479-2852C4186993}.Debug|Mixed Platforms.Build.0 = Debug|x86
 		{45A71E18-42E8-41A4-9479-2852C4186993}.Debug|x64.ActiveCfg = Debug|x64
 		{45A71E18-42E8-41A4-9479-2852C4186993}.Debug|x64.Build.0 = Debug|x64
 		{45A71E18-42E8-41A4-9479-2852C4186993}.Debug|x86.ActiveCfg = Debug|x86
 		{45A71E18-42E8-41A4-9479-2852C4186993}.Debug|x86.Build.0 = Debug|x86
+		{45A71E18-42E8-41A4-9479-2852C4186993}.Release|Mixed Platforms.ActiveCfg = Release|x86
+		{45A71E18-42E8-41A4-9479-2852C4186993}.Release|Mixed Platforms.Build.0 = Release|x86
 		{45A71E18-42E8-41A4-9479-2852C4186993}.Release|x64.ActiveCfg = Release|x64
 		{45A71E18-42E8-41A4-9479-2852C4186993}.Release|x64.Build.0 = Release|x64
 		{45A71E18-42E8-41A4-9479-2852C4186993}.Release|x86.ActiveCfg = Release|x86
 		{45A71E18-42E8-41A4-9479-2852C4186993}.Release|x86.Build.0 = Release|x86
->>>>>>> 5274efae5063266c05e22767c68c75e7832d1297
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
