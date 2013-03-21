@@ -89,7 +89,7 @@ namespace CSMSL.Spectral
             _peaks = peaks.ToArray();
             _count = _peaks.Length;       
         }
-
+        
         public override string ToString()
         {
             return string.Format("{0:G0} Peaks", Count);

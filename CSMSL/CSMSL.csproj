@@ -70,11 +70,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Analysis\ExperimentalDesign\BiologicalReplicate.cs" />
     <Compile Include="Analysis\ExperimentalDesign\ExperimentalCondition.cs" />
     <Compile Include="Analysis\ExperimentalDesign\ExperimentalSet.cs" />
     <Compile Include="Analysis\ExperimentalDesign\Replicate.cs" />
-    <Compile Include="Analysis\ExperimentalDesign\TechnicalReplicate.cs" />
+    <Compile Include="Analysis\ExperimentalDesign\Sample.cs" />
     <Compile Include="Analysis\Identification\MorpheusSearchEngine.cs" />
     <Compile Include="Analysis\Identification\MSSearchEngine.cs" />
     <Compile Include="Analysis\Identification\PeptideSpectralMatch.cs" />

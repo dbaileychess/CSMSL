@@ -5,7 +5,12 @@ using System.Text;
 
 namespace CSMSL.Analysis.ExperimentalDesign
 {
-    public class TechnicalReplicate : Replicate
+    public class Sample
     {
+        public string Name { get; set; }
+
+        public string Description { get; set; }
+
+
     }
 }

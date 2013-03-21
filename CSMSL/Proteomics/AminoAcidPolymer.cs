@@ -508,6 +508,11 @@ namespace CSMSL.Proteomics
             return count;        
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="mod"></param>
+        /// <param name="residueNumber">(1-based) residue number</param>
         public void SetModification(IChemicalFormula mod, int residueNumber)
         {
             if (residueNumber > _length || residueNumber < 1)
