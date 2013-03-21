@@ -38,7 +38,7 @@ namespace CSMSL.IO.Thermo
 
         public override void Open()
         {
-            if (!IsOpen)
+            if (!IsOpen || _rawConnection == null)
             {
                 _rawConnection = (IXRawfile5)new MSFileReader_XRawfile();
                 _rawConnection.Open(FilePath);

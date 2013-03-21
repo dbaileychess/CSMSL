@@ -8,7 +8,6 @@ using CSMSL.Chemistry;
 using CSMSL.Proteomics;
 using CSMSL.Spectral;
 using CSMSL.IO.Thermo;
-using CSMSL.IO;
 using CSMSL.Util.Collections;
 using CSMSL.Analysis.Identification;
 
