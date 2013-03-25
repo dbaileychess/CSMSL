@@ -80,6 +80,7 @@
     <Compile Include="Analysis\Identification\PeptideSpectralMatch.cs" />
     <Compile Include="Analysis\Identification\PeptideSpectralMatchScoreType.cs" />
     <Compile Include="Analysis\Quantitation\Channel.cs" />
+    <Compile Include="Analysis\Quantitation\IntensityWeightingType.cs" />
     <Compile Include="Analysis\Quantitation\IsobaricTag.cs" />
     <Compile Include="Analysis\Quantitation\Isotopologue.cs" />
     <Compile Include="Analysis\Quantitation\IsotopologueSet.cs" />

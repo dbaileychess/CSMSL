@@ -18,8 +18,6 @@ namespace CSMSL.Tests.Analysis.Quantitation
     public sealed class QuantifiedScanTestFixture
     {
         private QuantifiedScan QuantScan1;
-        private Peptide Peptide1;
-        private QuantifiedPeptide QuantPeptide1;
         private MSDataScan dataScan;
         private QuantifiedPeak QuantPeak1;
         private QuantifiedPeak QuantPeak2;
@@ -42,9 +40,7 @@ namespace CSMSL.Tests.Analysis.Quantitation
             mock.Setup(scan => scan.InjectionTime).Returns(12.3);       
             dataScan = mock.Object;
 
-            Peptide1 = new Peptide("TTGSSSSSSSK");
-            QuantPeptide1 = new QuantifiedPeptide(Peptide1);
-            QuantScan1 = new QuantifiedScan(dataScan, 2, QuantPeptide1);
+            QuantScan1 = new QuantifiedScan(dataScan, 2);
 
             QuantPeak1 = new QuantifiedPeak(126.0, 1, 10.0, 1.0);
             QuantPeak2 = new QuantifiedPeak(127.0, 1, 5.0, 1.0);

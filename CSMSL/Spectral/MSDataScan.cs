@@ -55,7 +55,7 @@ namespace CSMSL.Spectral
         }
 
         private int _msnOrder = -1;
-        public int MsnOrder
+        public virtual int MsnOrder
         {
             get
             {
