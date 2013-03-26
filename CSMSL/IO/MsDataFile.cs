@@ -33,13 +33,7 @@ namespace CSMSL.IO
             if (openImmediately) Open();
         }
 
-        public enum MsDataFileType
-        {
-            UnKnown = 0,
-            ThermoRawFile = 1,
-            AgilentRawFile = 2,
-            BrukerRawFile = 3
-        }
+
 
         public string FilePath
         {
@@ -85,6 +79,8 @@ namespace CSMSL.IO
                 return _lastSpectrumNumber;
             }
         }
+
+      
 
         public string Name
         {
@@ -190,6 +186,8 @@ namespace CSMSL.IO
         public abstract double GetRetentionTime(int spectrumNumber);
 
         public abstract double GetInjectionTime(int spectrumNumber);
+
+        public abstract double GetResolution(int spectrumNumber);
 
         /// <summary>
         /// Open up a connection to the underlying MS data stream

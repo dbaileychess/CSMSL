@@ -68,8 +68,12 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Data.Linq" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Analysis\Quantitation\QuantifiedPeakTestFixture.cs" />
+    <Compile Include="Analysis\Quantitation\QuantifiedPeptideTestFixture.cs" />
+    <Compile Include="Analysis\Quantitation\QuantifiedScanTestFixture.cs" />
     <Compile Include="Chemistry\ChemicalFormulaTestFixture.cs" />
     <Compile Include="Chemistry\MassTestFixture.cs" />
     <Compile Include="Proteomics\FragmentTestFixture.cs" />

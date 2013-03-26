@@ -67,6 +67,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Data.Linq" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
@@ -78,10 +79,15 @@
     <Compile Include="Analysis\Identification\MSSearchEngine.cs" />
     <Compile Include="Analysis\Identification\PeptideSpectralMatch.cs" />
     <Compile Include="Analysis\Identification\PeptideSpectralMatchScoreType.cs" />
+    <Compile Include="Analysis\Quantitation\Channel.cs" />
+    <Compile Include="Analysis\Quantitation\IntensityWeightingType.cs" />
     <Compile Include="Analysis\Quantitation\IsobaricTag.cs" />
     <Compile Include="Analysis\Quantitation\Isotopologue.cs" />
     <Compile Include="Analysis\Quantitation\IsotopologueSet.cs" />
+    <Compile Include="Analysis\Quantitation\QuantifiedPeak.cs" />
+    <Compile Include="Analysis\Quantitation\QuantifiedPeptide.cs" />
     <Compile Include="Analysis\Quantitation\QuantifiedPeptideSpectralMatch.cs" />
+    <Compile Include="Analysis\Quantitation\QuantifiedScan.cs" />
     <Compile Include="Chemistry\ChemicalFormula.cs" />
     <Compile Include="Chemistry\NamedChemicalFormula.cs" />
     <Compile Include="Chemistry\Element.cs" />
@@ -94,6 +100,8 @@
     <Compile Include="IO\FastaReader.cs" />
     <Compile Include="IO\FastaWriter.cs" />
     <Compile Include="IO\MSDataFile.cs" />
+    <Compile Include="IO\MsDataFileType.cs" />
+    <Compile Include="IO\Mzml.cs" />
     <Compile Include="MassRange.cs" />
     <Compile Include="MassToleranceType.cs" />
     <Compile Include="Proteomics\DissociationType.cs" />
@@ -103,6 +111,7 @@
     <Compile Include="Spectral\Chromatogram.cs" />
     <Compile Include="Spectral\ChromatogramPoint.cs" />
     <Compile Include="Spectral\ChromatographicPeak.cs" />
+    <Compile Include="Spectral\ILabeledPeak.cs" />
     <Compile Include="Spectral\IMassSpectrum.cs" />
     <Compile Include="Spectral\IPeak.cs" />
     <Compile Include="Spectral\MsnDataScan.cs" />
