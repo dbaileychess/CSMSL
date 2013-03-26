@@ -32,11 +32,8 @@ namespace CSMSL.Analysis.Quantitation
 
         public PeptideSpectralMatch BestPSM
         {
-            get
-            {
-                List<PeptideSpectralMatch> sortedPSMs = PSMs.OrderBy(psm => psm.Score).ToList();
-                return sortedPSMs[0];
-            }
+            get;
+            set;
         }
 
         public QuantifiedPeptide(Peptide peptide)
@@ -56,6 +53,29 @@ namespace CSMSL.Analysis.Quantitation
             if (PSMs.Contains(psm))
             {
                 throw new ArgumentException("peptide spectral match already exists");
+            }
+
+            // Check for new best PSM
+            if (PsmCount > 0)
+            {
+                if (psm.ScoreType == PeptideSpectralMatchScoreType.EValue)
+                {
+                    if (psm.Score < BestPSM.Score)
+                    {
+                        BestPSM = psm;
+                    }
+                }
+                else if (psm.ScoreType == PeptideSpectralMatchScoreType.XCorr || psm.ScoreType == PeptideSpectralMatchScoreType.Morpheus)
+                {
+                    if (psm.Score > BestPSM.Score)
+                    {
+                        BestPSM = psm;
+                    }
+                }
+            }
+            else
+            {
+                BestPSM = psm;
             }
 
             PSMs.Add(psm);
