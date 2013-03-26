@@ -10,23 +10,22 @@ namespace CSMSL.Analysis.Quantitation
 {
     public class QuantifiedScan : IEquatable<QuantifiedScan>
     {
-        static int NumIsotopes = 3;
+        public static int NumIsotopes = 3;
         static QuantifiedPeak empty = new QuantifiedPeak();
-        MSDataScan DataScan;
-        public int Charge;
+        public MSDataScan DataScan;
+        public int Charge { get; set; }
         public Dictionary<Channel, QuantifiedPeak>[] QuantifiedPeaks;
-        QuantifiedPeptide QuantifiedPeptideParent;
+        internal QuantifiedPeptide QuantifiedPeptideParent { get; set; }
 
-        public QuantifiedScan(MSDataScan dataScan, int charge, QuantifiedPeptide parent)
+        public QuantifiedScan(MSDataScan dataScan, int charge = 0)
 	    {
 		    DataScan = dataScan;
-		    Charge = charge;
-		    QuantifiedPeptideParent = parent;
 		    QuantifiedPeaks = new Dictionary<Channel, QuantifiedPeak>[NumIsotopes];
 		    for (int i = 0; i < NumIsotopes; i++)
 		    {
 			    QuantifiedPeaks[i] = new Dictionary<Channel, QuantifiedPeak>();
 		    }
+            Charge = charge;
 	    }
 
         public void AddQuant(Channel channel, QuantifiedPeak peak, int isotope = 0)
@@ -111,7 +110,7 @@ namespace CSMSL.Analysis.Quantitation
 
         public bool Equals(QuantifiedScan other)
         {
-            return DataScan == other.DataScan;
+            return DataScan == other.DataScan && Charge == other.Charge;
         }
     }
 }

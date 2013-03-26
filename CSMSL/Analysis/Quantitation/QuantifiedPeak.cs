@@ -7,7 +7,6 @@ namespace CSMSL.Analysis.Quantitation
 {
     public class QuantifiedPeak
     {
-        static double SignalToNoiseThreshold = 3.0;
         public double ExpMz;
 	    double TheoMz;
 	    double Resolution;
@@ -50,15 +49,22 @@ namespace CSMSL.Analysis.Quantitation
             }
         }
 
-        public double DenormalizedIntensity(bool NoiseBandCap = false)
+        public double DenormalizedIntensity(bool noiseBandCap = false, double signalToNoiseThreshold = 3.0)
         {
-            if (!NoiseBandCap)
+            if (!noiseBandCap)
             {
-                return Intensity * InjectionTime;
+                if (SignalToNoise >= signalToNoiseThreshold)
+                {
+                    return Intensity * InjectionTime;
+                }
+                else
+                {
+                    return 0;
+                }
             }
             else
             {
-                if (SignalToNoise >= SignalToNoiseThreshold)
+                if (SignalToNoise >= signalToNoiseThreshold)
                 {
                     return Intensity * InjectionTime;
                 }

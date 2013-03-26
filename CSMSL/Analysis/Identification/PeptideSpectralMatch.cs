@@ -7,7 +7,7 @@ using CSMSL.Spectral;
 
 namespace CSMSL.Analysis.Identification
 {
-    public class PeptideSpectralMatch : IFalseDiscovery<double>, IMassSpectrum
+    public class PeptideSpectralMatch : IFalseDiscovery<double>, IMassSpectrum, IEquatable<MSDataScan>
     {
         public virtual Peptide Peptide { get; set; }
 
@@ -30,6 +30,11 @@ namespace CSMSL.Analysis.Identification
         MassSpectrum IMassSpectrum.MassSpectrum
         {
             get { return Spectrum.MassSpectrum; }
+        }
+
+        public bool Equals(MSDataScan other)
+        {
+            return this.Spectrum.Equals(other);
         }
     }
 }

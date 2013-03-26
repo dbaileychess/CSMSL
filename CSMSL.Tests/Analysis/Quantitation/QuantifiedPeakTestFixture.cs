@@ -37,7 +37,7 @@ namespace CSMSL.Tests.Analysis.Quantitation
 
             Peptide1 = new Peptide("TTGSSSSSSSK");
             QuantPeptide1 = new QuantifiedPeptide(Peptide1);
-            QuantScan1 = new QuantifiedScan(dataScan, 2, QuantPeptide1);
+            QuantScan1 = new QuantifiedScan(dataScan);
 
             QuantPeak1 = new QuantifiedPeak(126.0, 1, 10.0, 1.0);
             QuantPeak2 = new QuantifiedPeak(127.0, 1, 5.0, 1.0);

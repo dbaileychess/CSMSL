@@ -11,6 +11,8 @@ namespace CSMSL.Spectral
     {
         public MsnDataScan(int spectrumNumber, int msnOrder, MSDataFile parentFile = null)
             : base(spectrumNumber, msnOrder, parentFile) { }
+
+        public MsnDataScan() { }
     
         private double _precursorMz = double.NaN;
         public double PrecursorMz
@@ -41,7 +43,7 @@ namespace CSMSL.Spectral
         }
 
         private short _precursorCharge = 0;
-        public short PrecursorCharge
+        public virtual short PrecursorCharge
         {
             get
             {
