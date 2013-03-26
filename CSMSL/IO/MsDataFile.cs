@@ -33,13 +33,7 @@ namespace CSMSL.IO
             if (openImmediately) Open();
         }
 
-        public enum MsDataFileType
-        {
-            UnKnown = 0,
-            ThermoRawFile = 1,
-            AgilentRawFile = 2,
-            BrukerRawFile = 3
-        }
+
 
         public string FilePath
         {

@@ -5,18 +5,21 @@ namespace CSMSL.Spectral
 {
     public class MSDataScan : IEquatable<MSDataScan>, IDisposable, IMassSpectrum
     {
-        private MassSpectrum _spectrum = null;
+        private MassSpectrum _massSpectrum = null;
 
+        /// <summary>
+        /// The mass spectrum associated with the scan
+        /// </summary>
         public MassSpectrum MassSpectrum
         {
             get
             {
-                if (_spectrum == null)
+                if (_massSpectrum == null)
                 {
                     if (ParentFile.IsOpen)
-                        _spectrum = ParentFile.GetMzSpectrum(SpectrumNumber);
+                        _massSpectrum = ParentFile.GetMzSpectrum(SpectrumNumber);
                 }
-                return _spectrum;
+                return _massSpectrum;
             }
         }
 
@@ -30,7 +33,7 @@ namespace CSMSL.Spectral
             {
                 return _spectrumNumber;
             }
-            private set
+            protected set
             {
                 _spectrumNumber = value;
             }
@@ -80,8 +83,6 @@ namespace CSMSL.Spectral
 
         private double _retentionTime = double.NaN;
 
-
-
         public double RetentionTime
         {
             get
@@ -93,10 +94,13 @@ namespace CSMSL.Spectral
                 }
                 return _retentionTime;
             }
+            protected set
+            {
+                _retentionTime = value;
+            }
         }
 
         private Polarity _polarity = Polarity.Neutral;
-
         public Polarity Polarity
         {
             get
@@ -107,6 +111,10 @@ namespace CSMSL.Spectral
                         _polarity = ParentFile.GetPolarity(SpectrumNumber);
                 }
                 return _polarity;
+            }
+            protected set
+            {
+                _polarity = value;
             }
         }
 
@@ -121,6 +129,10 @@ namespace CSMSL.Spectral
                     _mzAnalyzer = ParentFile.GetMzAnalyzer(SpectrumNumber);
                 }
                 return _mzAnalyzer;
+            }
+            set
+            {
+                _mzAnalyzer = value;
             }
         }
 
@@ -168,7 +180,7 @@ namespace CSMSL.Spectral
         public void Dispose()
         {
             ParentFile._scans[SpectrumNumber] = null; // clear the cache in the parent file      
-            _spectrum = null;           
+            _massSpectrum = null;           
         }
     }
 }
