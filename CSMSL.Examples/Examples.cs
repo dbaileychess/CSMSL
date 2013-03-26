@@ -52,18 +52,6 @@ namespace CSMSL.Examples
         private static void StartExamples()
         {
             // Examples coding
-            Peptide pep = new Peptide("DEREK");
-            IsotopologueSet isos = new IsotopologueSet("Example");
-            isos.AddIsotopologue(new Isotopologue("C2H2H{2}1NO"));
-            isos.AddIsotopologue(new Isotopologue("C2H3NO"));
-
-            Peptide pep2 = new Peptide("KIRSS[HPO3]PRE[CH2]AK[CH2]");
-            double mz = pep2.Mass.ToMz(3);
-
-            var formA = new ChemicalFormula("H-4H{2}4");
-            var formB = new ChemicalFormula("C-6C{13}6N-2N{15}2");
-
-            pep.CTerminusModification = isos;
             //ChemicalFormulaExamples();
             //PeptideExamples();
                       
@@ -77,7 +65,7 @@ namespace CSMSL.Examples
             //MsIOExamples();
 
             // Omssa Reader
-            OmssaReader.Start();
+            //OmssaReader.Start();
 
             // MS/MS searching
             //MorpheusSearch.Start(Protease.Trypsin);
