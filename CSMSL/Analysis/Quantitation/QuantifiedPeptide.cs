@@ -57,11 +57,11 @@ namespace CSMSL.Analysis.Quantitation
             double totalIntensitySum = 0;
             foreach (QuantifiedScan scan in QuantifiedScans)
             {
-                for (int i = 0; i < QuantifiedScan.NumIsotopes; i++)
-                {
-                    peak = scan.GetQuantifiedPeak(channel, i);
-                    totalIntensitySum += peak.DenormalizedIntensity(noiseBandCap);
-                }
+                //for (int i = 0; i < QuantifiedScan.NumIsotopes; i++)
+                //{
+                //    peak = scan.GetQuantifiedPeak(channel, i);
+                //    totalIntensitySum += peak.DenormalizedIntensity(noiseBandCap);
+                //}
             }
 
             return totalIntensitySum;
