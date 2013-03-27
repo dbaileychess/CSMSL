@@ -102,6 +102,7 @@
     <Compile Include="IO\MSDataFile.cs" />
     <Compile Include="IO\MsDataFileType.cs" />
     <Compile Include="IO\Mzml.cs" />
+    <Compile Include="IO\mzMLSchema.cs" />
     <Compile Include="MassRange.cs" />
     <Compile Include="MassToleranceType.cs" />
     <Compile Include="Proteomics\DissociationType.cs" />

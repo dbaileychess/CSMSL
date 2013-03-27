@@ -128,6 +128,7 @@ namespace CSMSL.Analysis.Quantitation
 
             foreach (QuantifiedScan scan in QuantifiedScans)
             {
+
                 for (int i = 0; i < QuantifiedScan.NumIsotopes; i++)
                 {
                     try
@@ -150,6 +151,7 @@ namespace CSMSL.Analysis.Quantitation
                         continue;
                     }
                 }
+
             }
 
             intensities.Sort();

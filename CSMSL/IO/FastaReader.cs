@@ -33,14 +33,13 @@ namespace CSMSL.IO
         private string _fileName;
         private StreamReader _reader;
 
-    
-
         public int LineNumber { get { return _lineNumber; } }
 
         public Stream BaseStream
         {
             get { return _reader.BaseStream; }
         }
+       
 
         public FastaReader(string fileName)
         {
@@ -91,11 +90,15 @@ namespace CSMSL.IO
             yield break;
         }
 
+
         public IEnumerable<Protein> ReadNextProtein()
         {
+
+            
             foreach (Fasta f in ReadNextFasta())
             {
                 yield return new Protein(f.Sequence, f.Description);
+
             }
             yield break;
         }
@@ -120,5 +123,7 @@ namespace CSMSL.IO
             }
             yield break;
         }
+
+      
     }
 }

@@ -1,18 +1,57 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Diagnostics;
+using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using System.IO;
+using System.Threading.Tasks;
+using System.Collections.Generic;
+using System.Text.RegularExpressions;
+//using pwiz.CLI.msdata;
+//using pwiz.CLI.analysis;
+//using pwiz.CLI.util;
+using CSMSL.Spectral;
+using CSMSL.Proteomics;
+using System.Xml.Serialization;
+using System.Xml;
 
 namespace CSMSL.IO
 {
     public class Mzml : MSDataFile
     {
+        private static XmlSerializer _serializer = new XmlSerializer(typeof(indexedmzML));
 
-         public Mzml(string filePath, bool openImmediately = false)
+        private indexedmzML _mzMLConnection;
+        
+        public Mzml(string filePath, bool openImmediately = false)
             : base(filePath, MsDataFileType.Mzml, openImmediately) { }
+
+        public override void Open()
+        {
+            if (!IsOpen ||_mzMLConnection == null)
+            {
+                indexedmzML mzMLConnection = _serializer.Deserialize(new FileStream(FilePath, FileMode.Open)) as indexedmzML;
+                _mzMLConnection = mzMLConnection;
+                base.Open();
+            }
+        }
+
+        public override void Dispose()
+        {
+            if (_mzMLConnection != null)
+            {
+                //_mzMLConnection.Close();
+                _mzMLConnection = null;
+            }
+            base.Dispose();
+        }        
+        
 
         public override Proteomics.DissociationType GetDissociationType(int spectrumNumber, int msnOrder = 2)
         {
+            
             throw new NotImplementedException();
         }
 
@@ -43,6 +82,9 @@ namespace CSMSL.IO
 
         public override Spectral.MZAnalyzerType GetMzAnalyzer(int spectrumNumber)
         {
+            
+           
+            
             throw new NotImplementedException();
         }
 
@@ -85,5 +127,6 @@ namespace CSMSL.IO
         {
             throw new NotImplementedException();
         }
+
     }
 }

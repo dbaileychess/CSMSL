@@ -51,10 +51,10 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="CsvHelper">
-      <HintPath>..\..\..\packages\CsvHelper.1.14.0\lib\net40-client\CsvHelper.dll</HintPath>
+      <HintPath>..\..\..\packages\CsvHelper.1.17.0\lib\net40-client\CsvHelper.dll</HintPath>
     </Reference>
     <Reference Include="LumenWorks.Framework.IO">
-      <HintPath>C:\Users\Derek\Documents\CoonWare\external\Fast CSV Reader\LumenWorks.Framework.IO.dll</HintPath>
+      <HintPath>..\..\..\packages\LumenWorks.Framework.IO.3.8.0\lib\net20\LumenWorks.Framework.IO.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -70,9 +70,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\..\CSMSL.csproj">
       <Project>{3c8c9f05-9c19-4251-95fa-05d7edc8cae6}</Project>
       <Name>CSMSL</Name>
@@ -82,6 +79,9 @@
     <Content Include="Resources\mods.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
