@@ -134,10 +134,13 @@
     <Content Include="Resources\Omssa_yeast.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Resources\ThermoRawFileMS1MS2.mzML">
+    <Content Include="Resources\tiny.pwiz.1.1.mzML">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Resources\tiny.pwiz.1.1.mzML">
+    <Content Include="Resources\ThermoRawFileMS1MS2_Centroided.mzML">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\ThermoRawFileMS1MS2_Profile.mzML">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
