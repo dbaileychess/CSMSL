@@ -53,9 +53,6 @@
     <Reference Include="CsvHelper">
       <HintPath>..\..\..\packages\CsvHelper.1.17.0\lib\net40-client\CsvHelper.dll</HintPath>
     </Reference>
-    <Reference Include="LumenWorks.Framework.IO">
-      <HintPath>..\..\..\packages\LumenWorks.Framework.IO.3.8.0\lib\net20\LumenWorks.Framework.IO.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
