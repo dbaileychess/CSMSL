@@ -21,14 +21,14 @@ namespace CSMSL.Examples
 
             List<MSDataFile> exampleRawFiles = new List<MSDataFile>();
             exampleRawFiles.Add(new ThermoRawFile("Resources/ThermoRawFileMS1MS2.raw"));
-            exampleRawFiles.Add(new Mzml("Resources/ThermoRawFileMS1MS2.mzML"));
+            exampleRawFiles.Add(new Mzml("Resources/ThermoRawFileMS1MS2_Profile.mzML"));
+            exampleRawFiles.Add(new Mzml("Resources/ThermoRawFileMS1MS2_Centroided.mzML"));
             exampleRawFiles.Add(new Mzml("Resources/tiny.pwiz.1.1.mzML"));
             //exampleRawFiles.Add(new AgilentDDirectory("Resources/AgilentDDirectoryMS1MS2.d"));   
             //exampleRawFiles.Add(new BrukerDDirectory(@"E:\Software\Third Parties\BRUKER sample data & executable\BRUKER sample data & executable\10 fmol BSA_01_637.d"));
-            //ex
             foreach (MSDataFile dataFile in exampleRawFiles)
             {
-                dataFile.Open();
+                dataFile.Open();               
                 Stopwatch watch = new Stopwatch();
                 watch.Start();
                 foreach (MSDataScan scan in dataFile)
