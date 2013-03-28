@@ -14,6 +14,7 @@ using CSMSL.Proteomics;
 using System.Xml.Serialization;
 using System.Xml;
 using zlib;
+using Ionic.Zlib;
 
 namespace CSMSL.IO
 {
@@ -302,7 +303,7 @@ namespace CSMSL.IO
         {
             if (zlibCompressed)
             {
-                bytes = DecompressData(bytes);
+                bytes = ZlibStream.UncompressBuffer(bytes); 
             }
 
             double[] convertedArray = new double[bytes.Length / 8];
@@ -312,29 +313,6 @@ namespace CSMSL.IO
                 convertedArray[i] = BitConverter.ToDouble(bytes, i * 8);
             }
             return convertedArray;
-        }
-
-        private static byte[] DecompressData(byte[] inData)
-        {         
-            using (MemoryStream outMemoryStream = new MemoryStream())
-            using (ZOutputStream outZStream = new ZOutputStream(outMemoryStream))
-            using (Stream inMemoryStream = new MemoryStream(inData))
-            {
-                CopyStream(inMemoryStream, outZStream);
-                outZStream.finish();
-                return outMemoryStream.ToArray();
-            }
-        }
-
-        private static void CopyStream(Stream input, Stream output)
-        {
-            byte[] buffer = new byte[2000];
-            int len;
-            while ((len = input.Read(buffer, 0, 2000)) > 0)
-            {
-                output.Write(buffer, 0, len);
-            }
-            output.Flush();
         }
 
     }
