@@ -13,6 +13,7 @@ using CSMSL.Spectral;
 using CSMSL.Proteomics;
 using System.Xml.Serialization;
 using System.Xml;
+using zlib;
 
 namespace CSMSL.IO
 {
@@ -296,18 +297,45 @@ namespace CSMSL.IO
             }
             throw new ArgumentNullException("Could not determine spectrum number");
         }
-
-        public double[] ConvertBase64ToDoubles(byte[] bytes)
+                
+        private static double[] ConvertBase64ToDoubles(byte[] bytes, bool zlibCompressed = false)
         {
-            int lengthInBytes = 8;
-            
-            double[] convertedArray = new double[bytes.Length / lengthInBytes];
+            if (zlibCompressed)
+            {
+                bytes = DecompressData(bytes);
+            }
+
+            double[] convertedArray = new double[bytes.Length / 8];
 
             for (int i = convertedArray.GetLowerBound(0); i <= convertedArray.GetUpperBound(0); i++)
             {
-                convertedArray[i] = BitConverter.ToDouble(bytes, i * lengthInBytes);
+                convertedArray[i] = BitConverter.ToDouble(bytes, i * 8);
             }
             return convertedArray;
         }
+
+        private static byte[] DecompressData(byte[] inData)
+        {         
+            using (MemoryStream outMemoryStream = new MemoryStream())
+            using (ZOutputStream outZStream = new ZOutputStream(outMemoryStream))
+            using (Stream inMemoryStream = new MemoryStream(inData))
+            {
+                CopyStream(inMemoryStream, outZStream);
+                outZStream.finish();
+                return outMemoryStream.ToArray();
+            }
+        }
+
+        private static void CopyStream(Stream input, Stream output)
+        {
+            byte[] buffer = new byte[2000];
+            int len;
+            while ((len = input.Read(buffer, 0, 2000)) > 0)
+            {
+                output.Write(buffer, 0, len);
+            }
+            output.Flush();
+        }
+
     }
 }
