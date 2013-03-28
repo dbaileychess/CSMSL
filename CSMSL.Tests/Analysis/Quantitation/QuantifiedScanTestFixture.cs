@@ -49,12 +49,12 @@ namespace CSMSL.Tests.Analysis.Quantitation
             QuantPeak5 = new QuantifiedPeak(130.0, 1, 0.0, 1.0);
             QuantPeak6 = new QuantifiedPeak(131.0, 1, 5.0, 1.0);
 
-            Channel1 = new Channel("TMT-126", 126.0, 1);
-            Channel2 = new Channel("TMT-127", 127.0, 1);
-            Channel3 = new Channel("TMT-128", 128.0, 1);
-            Channel4 = new Channel("TMT-129", 129.0, 1);
-            Channel5 = new Channel("TMT-130", 130.0, 1);
-            Channel6 = new Channel("TMT-131", 131.0, 1);      
+            Channel1 = new Channel("TMT-126");
+            Channel2 = new Channel("TMT-127");
+            Channel3 = new Channel("TMT-128");
+            Channel4 = new Channel("TMT-129");
+            Channel5 = new Channel("TMT-130");
+            Channel6 = new Channel("TMT-131");      
         }
 
         [Test]
@@ -98,7 +98,7 @@ namespace CSMSL.Tests.Analysis.Quantitation
         public void PeakMzEquals()
         {
             QuantScan1.AddQuant(Channel3, QuantPeak3);
-            QuantScan1.GetQuantifiedPeak(Channel3, 0).ExpMz.Should().Equal(128.0);
+            QuantScan1.GetQuantifiedPeak(Channel3, 0).Mz.Should().Equal(128.0);
         }
 
         [Test]
@@ -113,7 +113,7 @@ namespace CSMSL.Tests.Analysis.Quantitation
         {
             QuantPeak3 = null;
             QuantScan1.AddQuant(Channel3, QuantPeak3, 1);
-            QuantScan1.GetQuantifiedPeak(Channel3, 1).ExpMz.Should().Equal(0.0);
+            QuantScan1.GetQuantifiedPeak(Channel3, 1).Mz.Should().Equal(0.0);
         }
 
         [Test]

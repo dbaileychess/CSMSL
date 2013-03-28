@@ -5,11 +5,13 @@ using System.Text;
 using CSMSL.Proteomics;
 using CSMSL.Analysis.Identification;
 using CSMSL.Spectral;
+using CSMSL.Analysis.ExperimentalDesign;
 
 namespace CSMSL.Analysis.Quantitation
 {
     public class QuantifiedPeptide
     {
+        internal ExperimentalSet ParentExperimentalSet;
         List<PeptideSpectralMatch> PSMs;
         public List<QuantifiedScan> QuantifiedScans;
         Peptide Peptide;
