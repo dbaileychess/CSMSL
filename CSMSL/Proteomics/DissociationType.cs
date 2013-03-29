@@ -13,6 +13,7 @@
         SA = 7,
         PTR = 8,
         NETD = 9,
-        NPTR = 10
+        NPTR = 10,
+        CI = 11
     }
 }
