@@ -123,6 +123,31 @@ namespace CSMSL.Tests.Analysis.ExperimentalDesign
             Experiment1.AddSample(Sample1, TMT127);
         }
 
+        [Test]
+        [ExpectedException(typeof(ArgumentException))]
+        public void AddSampleToInvalidExperimentChannel()
+        {
+            Sample1 = new Sample(ConditionA);
+            Sample2 = new Sample(ConditionB);
+            Experiment1.AddSample(Sample1, TMT126);
+            Experiment1.AddSample(Sample2, TMT126);
+        }
+
+        [Test]
+        public void AddSampleToExperimentCondition()
+        {
+            Exp1Channels();
+            Exp1Samples();
+            Exp2Channels();
+            Exp2Samples();
+            Exp3Channels();
+            Exp3Samples();
+
+            Experiment1.Conditions[ConditionA].Count.Should().Equal(1);
+            Experiment2.Conditions[ConditionA].Count.Should().Equal(3);
+            Experiment3.Conditions[ConditionA].Count.Should().Equal(2);
+        }
+
         private void Exp1Channels()
         {
             Experiment1.AddChannel(TMT126);
@@ -179,12 +204,12 @@ namespace CSMSL.Tests.Analysis.ExperimentalDesign
             Sample5 = new Sample(ConditionB);
             Sample6 = new Sample(ConditionB);
 
-            Experiment1.AddSample(Sample1, TMT126);
-            Experiment1.AddSample(Sample2, TMT127);
-            Experiment1.AddSample(Sample3, TMT128);
-            Experiment1.AddSample(Sample4, TMT129);
-            Experiment1.AddSample(Sample5, TMT130);
-            Experiment1.AddSample(Sample6, TMT131);
+            Experiment2.AddSample(Sample1, TMT126);
+            Experiment2.AddSample(Sample2, TMT127);
+            Experiment2.AddSample(Sample3, TMT128);
+            Experiment2.AddSample(Sample4, TMT129);
+            Experiment2.AddSample(Sample5, TMT130);
+            Experiment2.AddSample(Sample6, TMT131);
         }
 
         private void Exp3Samples()
@@ -196,12 +221,12 @@ namespace CSMSL.Tests.Analysis.ExperimentalDesign
             Sample5 = new Sample(ConditionB);
             Sample6 = new Sample(ConditionC);
 
-            Experiment1.AddSample(Sample1, TMT126);
-            Experiment1.AddSample(Sample2, TMT127);
-            Experiment1.AddSample(Sample3, TMT128);
-            Experiment1.AddSample(Sample4, TMT129);
-            Experiment1.AddSample(Sample5, TMT130);
-            Experiment1.AddSample(Sample6, TMT131);
+            Experiment3.AddSample(Sample1, TMT126);
+            Experiment3.AddSample(Sample2, TMT127);
+            Experiment3.AddSample(Sample3, TMT128);
+            Experiment3.AddSample(Sample4, TMT129);
+            Experiment3.AddSample(Sample5, TMT130);
+            Experiment3.AddSample(Sample6, TMT131);
         }
     }
 }

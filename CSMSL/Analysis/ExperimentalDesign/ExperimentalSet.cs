@@ -70,21 +70,13 @@ namespace CSMSL.Analysis.ExperimentalDesign
             List<Sample> conditionSamples = null;
             if (Conditions.TryGetValue(sample.Condition, out conditionSamples))
             {
-                if (conditionSamples == null)
-                {
-                    conditionSamples = new List<Sample>();
-                }
-                else if (conditionSamples.Contains(sample))
-                {
-                    throw new ArgumentException("duplicate sample");
-                }
-
                 conditionSamples.Add(sample);
-
             }
             else
             {
-                Conditions.Add(sample.Condition, new List<Sample>());
+                conditionSamples = new List<Sample>();
+                conditionSamples.Add(sample);
+                Conditions.Add(sample.Condition, conditionSamples);
             }
         }
     }
