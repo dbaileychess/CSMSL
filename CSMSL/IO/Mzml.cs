@@ -7,13 +7,11 @@ using System.Linq;
 using System.Text;
 using System.IO;
 using System.Threading.Tasks;
-using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using CSMSL.Spectral;
 using CSMSL.Proteomics;
 using System.Xml.Serialization;
 using System.Xml;
-using zlib;
 using Ionic.Zlib;
 
 namespace CSMSL.IO
