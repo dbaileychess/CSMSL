@@ -95,6 +95,11 @@ namespace CSMSL.Analysis.Quantitation
             return peak;
         }
 
+        public double GetTheoMz(Channel channel, int isotope = 0)
+        {
+            return double.NaN;
+        }
+
         public int ChannelCount
         {
             get

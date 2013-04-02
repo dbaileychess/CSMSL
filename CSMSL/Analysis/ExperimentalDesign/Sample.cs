@@ -11,6 +11,24 @@ namespace CSMSL.Analysis.ExperimentalDesign
 
         public string Description { get; set; }
 
+        public ExperimentalCondition Condition { get; set; }
+
+        public Sample(ExperimentalCondition condition, string name = "", string description = "")
+        {
+            Condition = condition;
+            Name = name;
+            Description = description;
+
+            if (Name.Length == 0)
+            {
+                Name = Condition.Name;
+            }
+
+            if (Description.Length == 0)
+            {
+                Description = Condition.Description;
+            }
+        }
 
     }
 }

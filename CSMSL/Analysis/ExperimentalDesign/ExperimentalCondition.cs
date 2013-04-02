@@ -11,5 +11,10 @@ namespace CSMSL.Analysis.ExperimentalDesign
 
         public string Description { get; private set; }
 
+        public ExperimentalCondition(string name, string description)
+        {
+            Name = name;
+            Description = description;
+        }
     }
 }

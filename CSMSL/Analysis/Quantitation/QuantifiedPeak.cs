@@ -7,8 +7,7 @@ namespace CSMSL.Analysis.Quantitation
 {
     public class QuantifiedPeak
     {
-        public double ExpMz;
-	    double TheoMz;
+        public double Mz;
 	    double Resolution;
         int Charge;
 	    double Intensity;
@@ -19,9 +18,9 @@ namespace CSMSL.Analysis.Quantitation
             get;
         }
 		
-	    public QuantifiedPeak(double exp = 0, int charge = 0, double intensity = 0, double noise = 0, double resolution = 0)
+	    public QuantifiedPeak(double mz = 0, int charge = 0, double intensity = 0, double noise = 0, double resolution = 0)
 	    {
-		    ExpMz = exp;
+		    Mz = mz;
             Charge = charge;
 		    Intensity = intensity;
 		    Noise = noise;
