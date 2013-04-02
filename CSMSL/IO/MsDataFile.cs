@@ -61,6 +61,10 @@ namespace CSMSL.IO
                 }
                 return _firstSpectrumNumber;
             }
+            set
+            {
+                _firstSpectrumNumber = value;
+            }
         }
 
         public bool IsOpen { 
@@ -103,16 +107,11 @@ namespace CSMSL.IO
         public virtual void Dispose()
         {
             if (_scans != null)
-            {
-                foreach (MSDataScan scan in _scans)
-                {
-                    if (scan != null)
-                        scan.Dispose();
-                }
-                Array.Clear(_scans, 0, _scans.Length);
-                _scans = null;
-                _isOpen = false;
+            {               
+                ClearCachedScans();
+                _scans = null;                
             }
+            _isOpen = false;
         }
 
         public bool Equals(MSDataFile other)
@@ -157,22 +156,36 @@ namespace CSMSL.IO
 
         public virtual void ClearCachedScans()
         {
+            if (_scans == null)
+                return;
             Array.Clear(_scans, 0, _scans.Length);
         }
 
         private MSDataScan _getMsScanHelper(int spectrumNumber)
-        {
+        {           
             MSDataScan scan;
             int msn = GetMsnOrder(spectrumNumber);
             if (msn > 1)
             {
-                scan = new MsnDataScan(spectrumNumber, msn, this);
+                MsnDataScan msnscan = new MsnDataScan(spectrumNumber, msn, this);
+                msnscan.PrecursorMz = GetPrecusorMz(spectrumNumber, msn);               
+                msnscan.IsolationRange = GetIsolationRange(spectrumNumber, msn);
+                msnscan.DissociationType = GetDissociationType(spectrumNumber, msn);
+                msnscan.PrecursorCharge = GetPrecusorCharge(spectrumNumber, msn);
+                scan = msnscan;
             }
             else
             {
                 scan = new MSDataScan(spectrumNumber, msn, this);
             }
             scan.MassSpectrum = GetMzSpectrum(spectrumNumber);
+            scan.Resolution = GetResolution(spectrumNumber);
+            scan.InjectionTime = GetInjectionTime(spectrumNumber);
+            scan.RetentionTime = GetRetentionTime(spectrumNumber);
+            scan.Polarity = GetPolarity(spectrumNumber);
+            scan.MzAnalyzer = GetMzAnalyzer(spectrumNumber);
+            scan.MzRange = GetMzRange(spectrumNumber);
+
             return scan;            
         }
 
@@ -188,6 +201,13 @@ namespace CSMSL.IO
         public abstract double GetPrecusorMz(int spectrumNumber, int msnOrder = 2);
 
         public abstract double GetIsolationWidth(int spectrumNumber, int msnOrder = 2);
+
+        public virtual MassRange GetIsolationRange(int spectrumNumber, int msnOrder = 2)
+        {
+            double precursormz = GetPrecusorMz(spectrumNumber, msnOrder);
+            double half_width = GetIsolationWidth(spectrumNumber, msnOrder) / 2;
+            return new MassRange(precursormz - half_width, precursormz + half_width);
+        }
 
         public IEnumerable<MSDataScan> GetMsScans(int firstSpectrumNumber, int lastSpectrumNumber)
         {

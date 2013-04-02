@@ -18,12 +18,12 @@ namespace CSMSL.Spectral
         public double PrecursorMz
         {
             get
-            {
-                if (double.IsNaN(_precursorMz) && ParentFile != null)
-                {                    
-                    _precursorMz = ParentFile.GetPrecusorMz(SpectrumNumber, MsnOrder);
-                }
+            {              
                 return _precursorMz;
+            }
+            internal set
+            {
+                _precursorMz = value;
             }
         }
 
@@ -31,14 +31,12 @@ namespace CSMSL.Spectral
         public MassRange IsolationRange
         {
             get
-            {
-                if (_isolationRange == null && ParentFile != null)
-                {
-                    double prec_mz = PrecursorMz;
-                    double half_width = ParentFile.GetIsolationWidth(SpectrumNumber, MsnOrder) / 2;
-                    _isolationRange = new MassRange(prec_mz - half_width, prec_mz + half_width);
-                }
+            {               
                 return _isolationRange;
+            }
+            internal set
+            {
+                _isolationRange = value;
             }
         }
 
@@ -46,12 +44,12 @@ namespace CSMSL.Spectral
         public virtual short PrecursorCharge
         {
             get
-            {
-                if (_precursorCharge == 0)
-                {
-                    _precursorCharge = ParentFile.GetPrecusorCharge(SpectrumNumber, MsnOrder);
-                }
+            {              
                 return _precursorCharge;
+            }
+            internal set
+            {
+                _precursorCharge = value;
             }
         }
 
@@ -59,12 +57,12 @@ namespace CSMSL.Spectral
         public DissociationType DissociationType
         {
             get
-            {
-                if (_dissociationType == DissociationType.UnKnown)
-                {
-                    _dissociationType = ParentFile.GetDissociationType(SpectrumNumber, MsnOrder);
-                }
+            {               
                 return _dissociationType;
+            }
+            internal set
+            {
+                _dissociationType = value;
             }
         }
 
