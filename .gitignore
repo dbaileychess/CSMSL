@@ -45,3 +45,8 @@ ehthumbs.db
 # TESTS #
 #########
 TestResults/
+
+# Nuget #
+#########
+packages/*
+!packages/repositories.config
