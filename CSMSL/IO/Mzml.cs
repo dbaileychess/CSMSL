@@ -55,7 +55,7 @@ namespace CSMSL.IO
         private mzMLType _mzMLConnection;
         
         public Mzml(string filePath, bool openImmediately = false)
-            : base(filePath, MsDataFileType.Mzml, openImmediately) { }
+            : base(filePath, MSDataFileType.Mzml, openImmediately) { }
 
         public override void Open()
         {
@@ -166,8 +166,7 @@ namespace CSMSL.IO
                 if(cv.accession.Equals(_highestObservedMass))
                 {
                     high = double.Parse(cv.value);
-                }
-                
+                }                
             }
             if (double.IsNaN(low) || double.IsNaN(high))
             {

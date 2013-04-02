@@ -14,12 +14,16 @@ namespace CSMSL.Spectral
         {
             get
             {
-                if (_massSpectrum == null)
-                {
-                    if (ParentFile.IsOpen)
-                        _massSpectrum = ParentFile.GetMzSpectrum(SpectrumNumber);
-                }
+                //if (_massSpectrum == null)
+                //{
+                //    if (ParentFile.IsOpen)
+                //        _massSpectrum = ParentFile.GetMzSpectrum(SpectrumNumber);
+                //}
                 return _massSpectrum;
+            }
+            set
+            {
+                _massSpectrum = value;
             }
         }
 

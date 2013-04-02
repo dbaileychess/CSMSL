@@ -34,7 +34,7 @@ namespace CSMSL.IO.Thermo
         private IXRawfile5 _rawConnection;
 
         public ThermoRawFile(string filePath, bool openImmediately = false)
-            : base(filePath, MsDataFileType.ThermoRawFile, openImmediately) { }
+            : base(filePath, MSDataFileType.ThermoRawFile, openImmediately) { }
 
         public override void Open()
         {

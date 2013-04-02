@@ -12,7 +12,7 @@ namespace CSMSL.IO
 
         private string _filePath;
 
-        private MsDataFileType _fileType;
+        private MSDataFileType _fileType;
 
         private int _firstSpectrumNumber = -1;
 
@@ -22,7 +22,7 @@ namespace CSMSL.IO
 
         private string _name;
 
-        public MSDataFile(string filePath, MsDataFileType filetype = MsDataFileType.UnKnown, bool openImmediately = false)
+        public MSDataFile(string filePath, MSDataFileType filetype = MSDataFileType.UnKnown, bool openImmediately = false)
         {
             if (!File.Exists(filePath) && !Directory.Exists(filePath))
             {
@@ -45,7 +45,7 @@ namespace CSMSL.IO
             }
         }
 
-        public MsDataFileType FileType
+        public MSDataFileType FileType
         {
             get { return _fileType; }
             private set { _fileType = value; }
@@ -135,6 +135,11 @@ namespace CSMSL.IO
 
         public abstract int GetMsnOrder(int spectrumNumber);
 
+        /// <summary>
+        /// Get the MS Scan at the specific spectrum number.
+        /// </summary>
+        /// <param name="spectrumNumber">The spectrum number to get the MS Scan at</param>      
+        /// <returns></returns>
         public virtual MSDataScan GetMsScan(int spectrumNumber)
         {
             if (_scans == null)
@@ -144,10 +149,31 @@ namespace CSMSL.IO
 
             if (_scans[spectrumNumber] == null)
             {
-                int msn = GetMsnOrder(spectrumNumber);
-                _scans[spectrumNumber] = (msn > 1) ? new MsnDataScan(spectrumNumber, msn, this) : new MSDataScan(spectrumNumber, msn, this);
+                return _scans[spectrumNumber] = _getMsScanHelper(spectrumNumber);                
             }
+
             return _scans[spectrumNumber];
+        }
+
+        public virtual void ClearCachedScans()
+        {
+            Array.Clear(_scans, 0, _scans.Length);
+        }
+
+        private MSDataScan _getMsScanHelper(int spectrumNumber)
+        {
+            MSDataScan scan;
+            int msn = GetMsnOrder(spectrumNumber);
+            if (msn > 1)
+            {
+                scan = new MsnDataScan(spectrumNumber, msn, this);
+            }
+            else
+            {
+                scan = new MSDataScan(spectrumNumber, msn, this);
+            }
+            scan.MassSpectrum = GetMzSpectrum(spectrumNumber);
+            return scan;            
         }
 
         public abstract short GetPrecusorCharge(int spectrumNumber, int msnOrder = 2);
@@ -199,7 +225,7 @@ namespace CSMSL.IO
 
         public override string ToString()
         {
-            return string.Format("{0} ({1})", Name, Enum.GetName(typeof(MsDataFileType), FileType));
+            return string.Format("{0} ({1})", Name, Enum.GetName(typeof(MSDataFileType), FileType));
         }
 
         protected abstract int GetFirstSpectrumNumber();

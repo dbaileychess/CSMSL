@@ -5,7 +5,7 @@ using System.Text;
 
 namespace CSMSL.IO
 {
-    public enum MsDataFileType
+    public enum MSDataFileType
     {
         UnKnown = 0,
         Mzml = 1,
