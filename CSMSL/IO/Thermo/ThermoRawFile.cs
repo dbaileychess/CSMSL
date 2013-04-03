@@ -280,5 +280,6 @@ namespace CSMSL.IO.Thermo
             double resolution = Convert.ToDouble(GetExtraValue(spectrumNumber, "FT Resolution:"));
             return resolution;
         }
+
     }
 }

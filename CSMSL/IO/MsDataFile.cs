@@ -148,7 +148,7 @@ namespace CSMSL.IO
 
             if (_scans[spectrumNumber] == null)
             {
-                return _scans[spectrumNumber] = _getMsScanHelper(spectrumNumber);                
+                return _scans[spectrumNumber] = GetMSDataScan(spectrumNumber);                
             }
 
             return _scans[spectrumNumber];
@@ -161,7 +161,7 @@ namespace CSMSL.IO
             Array.Clear(_scans, 0, _scans.Length);
         }
 
-        private MSDataScan _getMsScanHelper(int spectrumNumber)
+        protected virtual MSDataScan GetMSDataScan(int spectrumNumber)
         {           
             MSDataScan scan;
             int msn = GetMsnOrder(spectrumNumber);

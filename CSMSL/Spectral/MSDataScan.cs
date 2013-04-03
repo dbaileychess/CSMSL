@@ -3,9 +3,9 @@ using CSMSL.IO;
 
 namespace CSMSL.Spectral
 {
-    public class MSDataScan : IEquatable<MSDataScan>, IDisposable, IMassSpectrum
+    public class MSDataScan : IEquatable<MSDataScan>, IMassSpectrum
     {
-        public MSDataFile ParentFile = null;
+        public MSDataFile ParentFile { get; private set; }
 
         private MassSpectrum _massSpectrum = null;
 
@@ -138,6 +138,10 @@ namespace CSMSL.Spectral
 
         public override string ToString()
         {
+            if (ParentFile == null)
+            {
+                return string.Format("Scan #{0}");
+            }
             return string.Format("Scan #{0} from {1}", SpectrumNumber, ParentFile);
         }
 
@@ -150,12 +154,6 @@ namespace CSMSL.Spectral
         {
             if (ReferenceEquals(this, other)) return true;
             return SpectrumNumber.Equals(other.SpectrumNumber) && ParentFile.Equals(other.ParentFile);
-        }
-
-        public void Dispose()
-        {
-            ParentFile._scans[SpectrumNumber] = null; // clear the cache in the parent file      
-            _massSpectrum = null;           
-        }
+        }      
     }
 }

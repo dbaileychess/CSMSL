@@ -64,7 +64,7 @@ namespace CSMSL.Spectral
             {
                 _dissociationType = value;
             }
-        }
-
+        }      
+       
     }
 }
