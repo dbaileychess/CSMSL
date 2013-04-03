@@ -22,7 +22,7 @@ using System;
 
 namespace CSMSL.Chemistry
 {
-    public class Mass : IComparable<Mass>, IEquatable<Mass>
+    public class Mass : IComparable<Mass>, IEquatable<Mass>, IMass
     {
         /// <summary>
         /// The mass of all the isotopes (in unified atomic mass units)
@@ -84,6 +84,10 @@ namespace CSMSL.Chemistry
             return Monoisotopic.GetHashCode() ^ Average.GetHashCode();
         }
 
+        Mass IMass.Mass
+        {
+            get { return this; }
+        }
 
         #region Static Methods
 
@@ -133,6 +137,8 @@ namespace CSMSL.Chemistry
         }
 
         #endregion Static Methods
+
+
 
 
     }

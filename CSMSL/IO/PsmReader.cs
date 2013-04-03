@@ -16,12 +16,12 @@ namespace CSMSL.IO
         {
             FilePath = filePath;
             _proteins = new Dictionary<string, Protein>();
-            _fixedMods = new List<Tuple<IChemicalFormula, ModificationSites>>();
+            _fixedMods = new List<Tuple<IMass, ModificationSites>>();
         }
                        
         protected Dictionary<string, Protein> _proteins;
 
-        protected List<Tuple<IChemicalFormula, ModificationSites>> _fixedMods;
+        protected List<Tuple<IMass, ModificationSites>> _fixedMods;
 
         public abstract IEnumerable<PeptideSpectralMatch> ReadNextPsm();
 
@@ -47,14 +47,14 @@ namespace CSMSL.IO
             AddFixedModification(new ChemicalFormula(chemicalFormula), sites);
         }
 
-        public void AddFixedModification(IChemicalFormula modification, ModificationSites sites)
+        public void AddFixedModification(IMass modification, ModificationSites sites)
         {
-            _fixedMods.Add(new Tuple<IChemicalFormula, ModificationSites>(modification, sites));
+            _fixedMods.Add(new Tuple<IMass, ModificationSites>(modification, sites));
         }
 
         protected virtual void SetFixedMods(AminoAcidPolymer peptide)
         {
-            foreach (Tuple<IChemicalFormula, ModificationSites> mods in _fixedMods)
+            foreach (Tuple<IMass, ModificationSites> mods in _fixedMods)
             {
                 peptide.SetModification(mods.Item1, mods.Item2);
             }

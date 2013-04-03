@@ -50,13 +50,16 @@ namespace CSMSL.Proteomics
 
         private FragmentTypes _type;
 
-        public Fragment(FragmentTypes type, int number, ChemicalFormula chemicalFormula, AminoAcidPolymer parent)
+        private Mass _mass;
+
+        public Fragment(FragmentTypes type, int number, Mass mass, ChemicalFormula chemicalFormula, AminoAcidPolymer parent)
         {
             _type = type;
             _number = number;
             _chemicalFormula = chemicalFormula;
             _chemicalFormula.Add(_fragmentIonCaps[type]);
             _parent = parent;
+            _mass = mass;
         }
 
         public ChemicalFormula ChemicalFormula
@@ -67,7 +70,7 @@ namespace CSMSL.Proteomics
 
         public Mass Mass
         {
-            get { return _chemicalFormula.Mass; }
+            get { return _mass; }
         }
 
         public int Number
