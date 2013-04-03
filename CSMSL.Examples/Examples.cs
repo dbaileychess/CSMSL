@@ -62,10 +62,10 @@ namespace CSMSL.Examples
             //TrypticDigestion.Start(Protease.Trypsin);
 
             //Example IO
-            MsDataFileExamples.Start();
+            //MsDataFileExamples.Start();
 
             // Omssa Reader
-            //OmssaReader.Start();
+            OmssaReader.Start();
 
             // MS/MS searching
             //MorpheusSearch.Start(Protease.Trypsin);

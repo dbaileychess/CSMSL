@@ -6,7 +6,7 @@ using CSMSL.Chemistry;
 
 namespace CSMSL.Analysis.Quantitation
 {
-    public class IsotopologueSet: IChemicalFormula, IMass, IEnumerable<Isotopologue>
+    public class IsotopologueSet: IChemicalFormula, IEnumerable<Isotopologue>
     {
         public string Name { get; set; }
 

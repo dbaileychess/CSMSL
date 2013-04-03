@@ -3,8 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Diagnostics;
-//using CSMSL.IO.OMSSA;
+using CSMSL.IO.OMSSA;
+using CSMSL.IO;
 using CSMSL.Analysis.Identification;
+using CSMSL.Proteomics;
+using CSMSL.Chemistry;
 
 namespace CSMSL.Examples
 {
@@ -12,24 +15,24 @@ namespace CSMSL.Examples
     {
         public static void Start()
         {
-            //Console.WriteLine("**Start OMSSA Reader**");
-            //long startMem = System.Environment.WorkingSet;
-            //Stopwatch watch = new Stopwatch();          
-            //watch.Start();
-            //List<PeptideSpectralMatch> psms;
-            //using (OmssaCsvReader reader = new OmssaCsvReader())
-            //{
-            //    reader.LoadProteins("Resources/yeast_uniprot_120226.fasta");
-              
-            //    psms = reader.ReadPsmsFrom("Resources/Omssa_yeast.csv").ToList();
-            //}
-         
-            
-            //watch.Stop();
-            //Console.WriteLine("{0:N0} psms were read in", psms.Count);
-            //Console.WriteLine("Time elapsed: {0}", watch.Elapsed);
-            //Console.WriteLine("Memory used: {0:N0} MB", (System.Environment.WorkingSet - startMem) / (1024 * 1024));
-            //Console.WriteLine("**End Digestion**");
+            Console.WriteLine("**Start OMSSA Reader**");
+            long startMem = System.Environment.WorkingSet;
+            Stopwatch watch = new Stopwatch();
+            watch.Start();
+            List<PeptideSpectralMatch> psms;
+            using (PsmReader reader = new OmssaCsvPsmReader("Resources/Omssa_yeast.csv"))
+            {               
+                reader.LoadProteins("Resources/yeast_uniprot_120226.fasta");
+                reader.AddFixedModification(NamedChemicalFormula.Carbamidomethyl, ModificationSites.C);
+                reader.AddFixedModification(NamedChemicalFormula.TMT6plex, ModificationSites.NPep | ModificationSites.K);
+                psms = reader.ReadNextPsm().OrderBy(psm => psm.Score).ToList();
+            }
+
+            watch.Stop();
+            Console.WriteLine("{0:N0} psms were read in", psms.Count);
+            Console.WriteLine("Time elapsed: {0}", watch.Elapsed);
+            Console.WriteLine("Memory used: {0:N0} MB", (System.Environment.WorkingSet - startMem) / (1024 * 1024));
+            Console.WriteLine("**End OMSSA Reader**");
         }
 
 

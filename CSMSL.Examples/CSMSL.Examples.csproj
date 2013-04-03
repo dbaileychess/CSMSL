@@ -70,6 +70,10 @@
       <Project>{3c8c9f05-9c19-4251-95fa-05d7edc8cae6}</Project>
       <Name>CSMSL</Name>
     </ProjectReference>
+    <ProjectReference Include="..\CSMSL\IO\OMSSA\OMSSA.csproj">
+      <Project>{45a71e18-42e8-41a4-9479-2852c4186993}</Project>
+      <Name>OMSSA</Name>
+    </ProjectReference>
     <ProjectReference Include="..\CSMSL\IO\Thermo\Thermo.csproj">
       <Project>{24dc85ff-e97b-4140-9614-77dd8fddd32f}</Project>
       <Name>Thermo</Name>

@@ -64,7 +64,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="OmssaCsvReader.cs" />
+    <Compile Include="OmssaCsvPsmReader.cs" />
     <Compile Include="OmssaPeptideSpectralMatch.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
