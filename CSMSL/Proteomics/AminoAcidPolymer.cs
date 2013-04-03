@@ -195,12 +195,21 @@ namespace CSMSL.Proteomics
             get { return _length; }
         }
 
+        private Mass _mass;
+
         /// <summary>
         /// Gets the mass of the amino acid polymer with all modifications included
         /// </summary>
         public Mass Mass
         {
-            get { return ChemicalFormula.Mass; }
+            get
+            {
+                if (_isDirty)
+                {
+                    CleanUp();
+                }
+                return _mass; //ChemicalFormula.Mass;
+            } 
         }
         
         private string _sequence;
@@ -608,16 +617,20 @@ namespace CSMSL.Proteomics
             else
             {
                 _sequenceSB.Clear();
-            }
-
+            }   
+         
+            _mass = new Mass();
+            
             StringBuilder baseSeqSB = new StringBuilder();
             IChemicalFormula mod = null;
 
             // Handle N-Terminus
             _chemicalFormula.Add(NTerminus.ChemicalFormula);
+            _mass += NTerminus.Mass;
             if ((mod = _modifications[0]) != null)
             {
                 _chemicalFormula.Add(mod.ChemicalFormula);
+                _mass += mod.Mass;
                 _sequenceSB.Append('[');
                 _sequenceSB.Append(mod);
                 _sequenceSB.Append("]-");
@@ -628,12 +641,14 @@ namespace CSMSL.Proteomics
             {
                 IAminoAcid aa = _aminoAcids[i];
                 _chemicalFormula.Add(aa.ChemicalFormula);
+                _mass += aa.Mass;
                 char letter = aa.Letter;
                 _sequenceSB.Append(letter);
                 baseSeqSB.Append(letter);
                 if ((mod = _modifications[i + 1]) != null)  // Mods are 1-based for the N and C-terminus
                 {
                     _chemicalFormula.Add(mod.ChemicalFormula);
+                    _mass += mod.Mass;
                     _sequenceSB.Append('[');
                     _sequenceSB.Append(mod);
                     _sequenceSB.Append(']');
@@ -642,9 +657,11 @@ namespace CSMSL.Proteomics
 
             // Handle C-Terminus
             _chemicalFormula.Add(CTerminus.ChemicalFormula);
+            _mass += CTerminus.Mass;
             if ((mod = _modifications[_length + 1]) != null)
             {
                 _chemicalFormula.Add(mod.ChemicalFormula);
+                _mass += mod.Mass;
                 _sequenceSB.Append("-[");
                 _sequenceSB.Append(mod);
                 _sequenceSB.Append(']');

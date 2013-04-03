@@ -591,6 +591,42 @@ namespace CSMSL.Tests.Chemistry
         }
 
         [Test]
+        public void ParsingFormulaWithInternalSpaces()
+        {
+            ChemicalFormula formulaA = new ChemicalFormula("C2 H3 N O");
+            ChemicalFormula formulaB = new ChemicalFormula("C2H3NO");
+
+            formulaA.Should().Equal(formulaB);
+        }
+
+        [Test]
+        public void ParsingFormulaWithSpacesAtEnd()
+        {
+            ChemicalFormula formulaA = new ChemicalFormula("C2H3NO  ");
+            ChemicalFormula formulaB = new ChemicalFormula("C2H3NO");
+
+            formulaA.Should().Equal(formulaB);
+        }
+
+        [Test]
+        public void ParsingFormulaWithSpacesAtBeginning()
+        {
+            ChemicalFormula formulaA = new ChemicalFormula("    C2H3NO");
+            ChemicalFormula formulaB = new ChemicalFormula("C2H3NO");
+
+            formulaA.Should().Equal(formulaB);
+        }
+
+        [Test]
+        public void ParsingFormulaWithSpaces()
+        {
+            ChemicalFormula formulaA = new ChemicalFormula("  C2 H3 N O  ");
+            ChemicalFormula formulaB = new ChemicalFormula("C2H3NO");
+
+            formulaA.Should().Equal(formulaB);
+        }
+
+        [Test]
         public void ParsingFormulaNoNumbersRandomOrder()
         {
             ChemicalFormula formulaA = new ChemicalFormula("OCHHCHN");
