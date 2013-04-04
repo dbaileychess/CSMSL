@@ -11,23 +11,25 @@ namespace CSMSL.Analysis.ExperimentalDesign
 
         public string Description { get; set; }
 
-        public ExperimentalCondition Condition { get; set; }
+        private List<ExperimentalCondition> _conditions;
 
-        public Sample(ExperimentalCondition condition, string name = "", string description = "")
+        public ExperimentalCondition AddCondition(string name, string description = "")
         {
-            Condition = condition;
+            ExperimentalCondition condition = new ExperimentalCondition(this, name, description);
+            _conditions.Add(condition);
+            return condition;
+        }
+
+        public Sample(string name, string description = "")
+        {         
             Name = name;
             Description = description;
+            _conditions = new List<ExperimentalCondition>();
+        }
 
-            if (Name.Length == 0)
-            {
-                Name = Condition.Name;
-            }
-
-            if (Description.Length == 0)
-            {
-                Description = Condition.Description;
-            }
+        public override string ToString()
+        {
+            return Name;
         }
 
     }

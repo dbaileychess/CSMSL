@@ -57,7 +57,7 @@
   </MSModSpec>
   <MSModSpec>
     <MSModSpec_mod>
-      <MSMod value="carbamidomethylc">3</MSMod>
+      <MSMod value="carbamidomethylc" formula="C2H3NO">3</MSMod>
     </MSModSpec_mod>
     <MSModSpec_type>
       <MSModType value="modaa">0</MSModType>

@@ -12,6 +12,10 @@ namespace CSMSL.Analysis.Identification
         public virtual Peptide Peptide { get; set; }
 
         public virtual MsnDataScan Spectrum { get; set; }
+
+        public virtual int SpectrumNumber { get; set; }
+
+        public virtual string FileName { get; set; }
         
         /// <summary>
         /// The score of the match between the peptide and spectrum.
@@ -29,7 +33,17 @@ namespace CSMSL.Analysis.Identification
 
         MassSpectrum IMassSpectrum.MassSpectrum
         {
-            get { return Spectrum.MassSpectrum; }
+            get
+            {
+                if (Spectrum == null)
+                    return null;
+                return Spectrum.MassSpectrum;
+            }
+        }
+
+        public override string ToString()
+        {
+            return string.Format("{0} (SN: {1} Score: {2:G3} {3})", Peptide, SpectrumNumber, Score, Enum.GetName(typeof(PeptideSpectralMatchScoreType), ScoreType));
         }
 
         public bool Equals(MSDataScan other)

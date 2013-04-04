@@ -14,21 +14,21 @@ namespace CSMSL.Analysis.Quantitation
         static QuantifiedPeak empty = new QuantifiedPeak();
         public MSDataScan DataScan;
         public int Charge { get; set; }
-        public Dictionary<Channel, QuantifiedPeak>[] QuantifiedPeaks;
+        public Dictionary<IQuantitationChannel, QuantifiedPeak>[] QuantifiedPeaks;
         internal QuantifiedPeptide QuantifiedPeptideParent { get; set; }
 
         public QuantifiedScan(MSDataScan dataScan, int charge = 0)
 	    {
 		    DataScan = dataScan;
-		    QuantifiedPeaks = new Dictionary<Channel, QuantifiedPeak>[NumIsotopes];
+		    QuantifiedPeaks = new Dictionary<IQuantitationChannel, QuantifiedPeak>[NumIsotopes];
 		    for (int i = 0; i < NumIsotopes; i++)
 		    {
-			    QuantifiedPeaks[i] = new Dictionary<Channel, QuantifiedPeak>();
+			    QuantifiedPeaks[i] = new Dictionary<IQuantitationChannel, QuantifiedPeak>();
 		    }
             Charge = charge;
 	    }
 
-        public void AddQuant(Channel channel, QuantifiedPeak peak, int isotope = 0)
+        public void AddQuant(IQuantitationChannel IQuantitationChannel, QuantifiedPeak peak, int isotope = 0)
         {
             // Check for an invalid isotope
             if (isotope < 0 || isotope >= NumIsotopes)
@@ -36,15 +36,15 @@ namespace CSMSL.Analysis.Quantitation
                 throw new IndexOutOfRangeException("invalid isotope");
             }
 
-            // Check for invalid channel
-            if (channel == null)
+            // Check for invalid IQuantitationChannel
+            if (IQuantitationChannel == null)
             {
-                throw new NullReferenceException("null channel");
+                throw new NullReferenceException("null IQuantitationChannel");
             }
             QuantifiedPeak duplicate = null;
-            if (QuantifiedPeaks[isotope].TryGetValue(channel, out duplicate))
+            if (QuantifiedPeaks[isotope].TryGetValue(IQuantitationChannel, out duplicate))
             {
-                throw new DuplicateKeyException("duplicate channel");
+                throw new DuplicateKeyException("duplicate IQuantitationChannel");
             }
             
             // Check for a null peak
@@ -54,7 +54,7 @@ namespace CSMSL.Analysis.Quantitation
             }
 
             peak.QuantScanParent = this;
-            QuantifiedPeaks[isotope].Add(channel, peak);
+            QuantifiedPeaks[isotope].Add(IQuantitationChannel, peak);
         }
 
         public double InjectionTime
@@ -73,34 +73,35 @@ namespace CSMSL.Analysis.Quantitation
             }
         }
 
-        public QuantifiedPeak GetQuantifiedPeak(Channel channel, int isotope = 0)
+        public bool TryGetQuantifiedPeak(IQuantitationChannel IQuantitationChannel, out QuantifiedPeak peak, int isotope = 0)
         {
-            QuantifiedPeak peak = null;
+            peak = null;
             // Check for an invalid isotope
-            if (isotope < 0 || isotope >= NumIsotopes)
+            if (isotope < 0 || isotope >= NumIsotopes || IQuantitationChannel == null)
             {
-                throw new IndexOutOfRangeException("invalid isotope");
+                return false;
+                //throw new IndexOutOfRangeException("invalid isotope");
             }
 
-            // Check for invalid channel
-            if (channel == null)
+            // Check for invalid IQuantitationChannel
+            //if (IQuantitationChannel == null)
+            //{
+            //    throw new NullReferenceException("null IQuantitationChannel");
+            //}
+            if (QuantifiedPeaks[isotope].TryGetValue(IQuantitationChannel, out peak))
             {
-                throw new NullReferenceException("null channel");
-            }
-            if (!QuantifiedPeaks[isotope].TryGetValue(channel, out peak))
-            {
-                throw new KeyNotFoundException("channel not found");
+                return true;               
             }
 
-            return peak;
+            return false;
         }
 
-        public double GetTheoMz(Channel channel, int isotope = 0)
+        public double GetTheoMz(IQuantitationChannel IQuantitationChannel, int isotope = 0)
         {
             return double.NaN;
         }
 
-        public int ChannelCount
+        public int IQuantitationChannelCount
         {
             get
             {

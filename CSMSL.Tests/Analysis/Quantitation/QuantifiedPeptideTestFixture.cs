@@ -9,6 +9,7 @@ using Moq;
 using CSMSL.Analysis.Quantitation;
 using CSMSL.Spectral;
 using CSMSL.Proteomics;
+using CSMSL.Chemistry;
 using CSMSL.Analysis.Identification;
 
 namespace CSMSL.Tests.Analysis.Quantitation
@@ -62,12 +63,12 @@ namespace CSMSL.Tests.Analysis.Quantitation
         private QuantifiedPeak QuantPeakTMT16;
         private QuantifiedPeak QuantPeakTMT17;
         private QuantifiedPeak QuantPeakTMT18;
-        private Channel ChannelTMT1;
-        private Channel ChannelTMT2;
-        private Channel ChannelTMT3;
-        private Channel ChannelTMT4;
-        private Channel ChannelTMT5;
-        private Channel ChannelTMT6;
+        private IQuantitationChannel IQuantitationChannelTMT1;
+        private IQuantitationChannel IQuantitationChannelTMT2;
+        private IQuantitationChannel IQuantitationChannelTMT3;
+        private IQuantitationChannel IQuantitationChannelTMT4;
+        private IQuantitationChannel IQuantitationChannelTMT5;
+        private IQuantitationChannel IQuantitationChannelTMT6;
 
         // NeuCode peptide
         private QuantifiedScan QuantScanNeuCode1;
@@ -102,8 +103,8 @@ namespace CSMSL.Tests.Analysis.Quantitation
         private QuantifiedPeak QuantPeakNeuCode16;
         private QuantifiedPeak QuantPeakNeuCode17;
         private QuantifiedPeak QuantPeakNeuCode18;
-        private Channel ChannelNeuCode1;
-        private Channel ChannelNeuCode2;
+        private IQuantitationChannel IQuantitationChannelNeuCode1;
+        private IQuantitationChannel IQuantitationChannelNeuCode2;
 
         [SetUp]
         public void SetUp()
@@ -192,31 +193,31 @@ namespace CSMSL.Tests.Analysis.Quantitation
             QuantPeakTMT17 = new QuantifiedPeak(130.2, 1, 0.0, 2.0);
             QuantPeakTMT18 = new QuantifiedPeak(131.2, 1, 4.4, 2.0);
 
-            ChannelTMT1 = new Channel("TMT-126");
-            ChannelTMT2 = new Channel("TMT-127");
-            ChannelTMT3 = new Channel("TMT-128");
-            ChannelTMT4 = new Channel("TMT-129");
-            ChannelTMT5 = new Channel("TMT-130");
-            ChannelTMT6 = new Channel("TMT-131");
+            IQuantitationChannelTMT1 = new IsobaricTag(NamedChemicalFormula.TMT6plex, "TMT-126");
+            IQuantitationChannelTMT2 = new IsobaricTag(NamedChemicalFormula.TMT6plex, "TMT-127");
+            IQuantitationChannelTMT3 = new IsobaricTag(NamedChemicalFormula.TMT6plex, "TMT-128");
+            IQuantitationChannelTMT4 = new IsobaricTag(NamedChemicalFormula.TMT6plex, "TMT-129");
+            IQuantitationChannelTMT5 = new IsobaricTag(NamedChemicalFormula.TMT6plex, "TMT-130");
+            IQuantitationChannelTMT6 = new IsobaricTag(NamedChemicalFormula.TMT6plex, "TMT-131");
 
-            QuantScanTMT1.AddQuant(ChannelTMT1, QuantPeakTMT1);
-            QuantScanTMT1.AddQuant(ChannelTMT2, QuantPeakTMT2);
-            QuantScanTMT1.AddQuant(ChannelTMT3, QuantPeakTMT3);
-            QuantScanTMT1.AddQuant(ChannelTMT4, QuantPeakTMT4);
-            QuantScanTMT1.AddQuant(ChannelTMT5, QuantPeakTMT5);
-            QuantScanTMT1.AddQuant(ChannelTMT6, QuantPeakTMT6);
-            QuantScanTMT2.AddQuant(ChannelTMT1, QuantPeakTMT7);
-            QuantScanTMT2.AddQuant(ChannelTMT2, QuantPeakTMT8);
-            QuantScanTMT2.AddQuant(ChannelTMT3, QuantPeakTMT9);
-            QuantScanTMT2.AddQuant(ChannelTMT4, QuantPeakTMT10);
-            QuantScanTMT2.AddQuant(ChannelTMT5, QuantPeakTMT11);
-            QuantScanTMT2.AddQuant(ChannelTMT6, QuantPeakTMT12);
-            QuantScanTMT3.AddQuant(ChannelTMT1, QuantPeakTMT13);
-            QuantScanTMT3.AddQuant(ChannelTMT2, QuantPeakTMT14);
-            QuantScanTMT3.AddQuant(ChannelTMT3, QuantPeakTMT15);
-            QuantScanTMT3.AddQuant(ChannelTMT4, QuantPeakTMT16);
-            QuantScanTMT3.AddQuant(ChannelTMT5, QuantPeakTMT17);
-            QuantScanTMT3.AddQuant(ChannelTMT6, QuantPeakTMT18);
+            QuantScanTMT1.AddQuant(IQuantitationChannelTMT1, QuantPeakTMT1);
+            QuantScanTMT1.AddQuant(IQuantitationChannelTMT2, QuantPeakTMT2);
+            QuantScanTMT1.AddQuant(IQuantitationChannelTMT3, QuantPeakTMT3);
+            QuantScanTMT1.AddQuant(IQuantitationChannelTMT4, QuantPeakTMT4);
+            QuantScanTMT1.AddQuant(IQuantitationChannelTMT5, QuantPeakTMT5);
+            QuantScanTMT1.AddQuant(IQuantitationChannelTMT6, QuantPeakTMT6);
+            QuantScanTMT2.AddQuant(IQuantitationChannelTMT1, QuantPeakTMT7);
+            QuantScanTMT2.AddQuant(IQuantitationChannelTMT2, QuantPeakTMT8);
+            QuantScanTMT2.AddQuant(IQuantitationChannelTMT3, QuantPeakTMT9);
+            QuantScanTMT2.AddQuant(IQuantitationChannelTMT4, QuantPeakTMT10);
+            QuantScanTMT2.AddQuant(IQuantitationChannelTMT5, QuantPeakTMT11);
+            QuantScanTMT2.AddQuant(IQuantitationChannelTMT6, QuantPeakTMT12);
+            QuantScanTMT3.AddQuant(IQuantitationChannelTMT1, QuantPeakTMT13);
+            QuantScanTMT3.AddQuant(IQuantitationChannelTMT2, QuantPeakTMT14);
+            QuantScanTMT3.AddQuant(IQuantitationChannelTMT3, QuantPeakTMT15);
+            QuantScanTMT3.AddQuant(IQuantitationChannelTMT4, QuantPeakTMT16);
+            QuantScanTMT3.AddQuant(IQuantitationChannelTMT5, QuantPeakTMT17);
+            QuantScanTMT3.AddQuant(IQuantitationChannelTMT6, QuantPeakTMT18);
 
             QuantPeakNeuCode1 = new QuantifiedPeak(443.092, 3, 100.0, 10.0);
             QuantPeakNeuCode2 = new QuantifiedPeak(443.103, 3, 50.0, 10.0);
@@ -237,27 +238,27 @@ namespace CSMSL.Tests.Analysis.Quantitation
             QuantPeakNeuCode17 = new QuantifiedPeak(443.754, 3, 0.0, 20.0);
             QuantPeakNeuCode18 = new QuantifiedPeak(443.764, 3, 40.4, 20.0);
 
-            ChannelNeuCode1 = new Channel("NeuCode-K-13C6,15N2");
-            ChannelNeuCode2 = new Channel("NeuCode-K-2H8");
+            IQuantitationChannelNeuCode1 = new Isotopologue("C-6 C{13}6 N-2 N{15}2", "NeuCode-K-13C6,15N2");
+            IQuantitationChannelNeuCode2 = new Isotopologue("H-8 H{2}8", "NeuCode-K-2H8");
 
-            QuantScanNeuCode1.AddQuant(ChannelNeuCode1, QuantPeakNeuCode1, 0);
-            QuantScanNeuCode1.AddQuant(ChannelNeuCode2, QuantPeakNeuCode2, 0);
-            QuantScanNeuCode1.AddQuant(ChannelNeuCode1, QuantPeakNeuCode3, 1);
-            QuantScanNeuCode1.AddQuant(ChannelNeuCode2, QuantPeakNeuCode4, 1);
-            QuantScanNeuCode1.AddQuant(ChannelNeuCode1, QuantPeakNeuCode5, 2);
-            QuantScanNeuCode1.AddQuant(ChannelNeuCode2, QuantPeakNeuCode6, 2);
-            QuantScanNeuCode2.AddQuant(ChannelNeuCode1, QuantPeakNeuCode7, 0);
-            QuantScanNeuCode2.AddQuant(ChannelNeuCode2, QuantPeakNeuCode8, 0);
-            QuantScanNeuCode2.AddQuant(ChannelNeuCode1, QuantPeakNeuCode9, 1);
-            QuantScanNeuCode2.AddQuant(ChannelNeuCode2, QuantPeakNeuCode10, 1);
-            QuantScanNeuCode2.AddQuant(ChannelNeuCode1, QuantPeakNeuCode11, 2);
-            QuantScanNeuCode2.AddQuant(ChannelNeuCode2, QuantPeakNeuCode12, 2);
-            QuantScanNeuCode3.AddQuant(ChannelNeuCode1, QuantPeakNeuCode13, 0);
-            QuantScanNeuCode3.AddQuant(ChannelNeuCode2, QuantPeakNeuCode14, 0);
-            QuantScanNeuCode3.AddQuant(ChannelNeuCode1, QuantPeakNeuCode15, 1);
-            QuantScanNeuCode3.AddQuant(ChannelNeuCode2, QuantPeakNeuCode16, 1);
-            QuantScanNeuCode3.AddQuant(ChannelNeuCode1, QuantPeakNeuCode17, 2);
-            QuantScanNeuCode3.AddQuant(ChannelNeuCode2, QuantPeakNeuCode18, 2);
+            QuantScanNeuCode1.AddQuant(IQuantitationChannelNeuCode1, QuantPeakNeuCode1, 0);
+            QuantScanNeuCode1.AddQuant(IQuantitationChannelNeuCode2, QuantPeakNeuCode2, 0);
+            QuantScanNeuCode1.AddQuant(IQuantitationChannelNeuCode1, QuantPeakNeuCode3, 1);
+            QuantScanNeuCode1.AddQuant(IQuantitationChannelNeuCode2, QuantPeakNeuCode4, 1);
+            QuantScanNeuCode1.AddQuant(IQuantitationChannelNeuCode1, QuantPeakNeuCode5, 2);
+            QuantScanNeuCode1.AddQuant(IQuantitationChannelNeuCode2, QuantPeakNeuCode6, 2);
+            QuantScanNeuCode2.AddQuant(IQuantitationChannelNeuCode1, QuantPeakNeuCode7, 0);
+            QuantScanNeuCode2.AddQuant(IQuantitationChannelNeuCode2, QuantPeakNeuCode8, 0);
+            QuantScanNeuCode2.AddQuant(IQuantitationChannelNeuCode1, QuantPeakNeuCode9, 1);
+            QuantScanNeuCode2.AddQuant(IQuantitationChannelNeuCode2, QuantPeakNeuCode10, 1);
+            QuantScanNeuCode2.AddQuant(IQuantitationChannelNeuCode1, QuantPeakNeuCode11, 2);
+            QuantScanNeuCode2.AddQuant(IQuantitationChannelNeuCode2, QuantPeakNeuCode12, 2);
+            QuantScanNeuCode3.AddQuant(IQuantitationChannelNeuCode1, QuantPeakNeuCode13, 0);
+            QuantScanNeuCode3.AddQuant(IQuantitationChannelNeuCode2, QuantPeakNeuCode14, 0);
+            QuantScanNeuCode3.AddQuant(IQuantitationChannelNeuCode1, QuantPeakNeuCode15, 1);
+            QuantScanNeuCode3.AddQuant(IQuantitationChannelNeuCode2, QuantPeakNeuCode16, 1);
+            QuantScanNeuCode3.AddQuant(IQuantitationChannelNeuCode1, QuantPeakNeuCode17, 2);
+            QuantScanNeuCode3.AddQuant(IQuantitationChannelNeuCode2, QuantPeakNeuCode18, 2);
         }
 
         private void AddAllPSMs()
@@ -361,7 +362,7 @@ namespace CSMSL.Tests.Analysis.Quantitation
         }
 
         [Test]
-        public void SumChannelIntensity()
+        public void SumIQuantitationChannelIntensity()
         {
             double value1 = 0.0;
             double value2 = 225.00;
@@ -370,15 +371,15 @@ namespace CSMSL.Tests.Analysis.Quantitation
 
             QuantPeptide1.AddQuantifiedScan(QuantScanTMT1);
             QuantPeptide1.AddQuantifiedScan(QuantScanTMT2);
-            QuantPeptide1.GetChannelIntensity(ChannelTMT5, IntensityWeightingType.Summed).Should().Be.InRange(value1 - tolerance, value1 + tolerance);
+            QuantPeptide1.GetIQuantitationChannelIntensity(IQuantitationChannelTMT5, IntensityWeightingType.Summed).Should().Be.InRange(value1 - tolerance, value1 + tolerance);
 
             QuantPeptide2.AddQuantifiedScan(QuantScanNeuCode1);
-            QuantPeptide2.GetChannelIntensity(ChannelNeuCode2, IntensityWeightingType.Summed).Should().Be.InRange(value2 - tolerance, value2 + tolerance);
+            QuantPeptide2.GetIQuantitationChannelIntensity(IQuantitationChannelNeuCode2, IntensityWeightingType.Summed).Should().Be.InRange(value2 - tolerance, value2 + tolerance);
         
         }
 
         [Test]
-        public void SumChannelIntensityNBC()
+        public void SumIQuantitationChannelIntensityNBC()
         {
             double value1 = 94.5;
             double value2 = 315.0;
@@ -387,32 +388,32 @@ namespace CSMSL.Tests.Analysis.Quantitation
 
             QuantPeptide1.AddQuantifiedScan(QuantScanTMT1);
             QuantPeptide1.AddQuantifiedScan(QuantScanTMT2);
-            QuantPeptide1.GetChannelIntensity(ChannelTMT5, IntensityWeightingType.Summed, true).Should().Be.InRange(value1 - tolerance, value1 + tolerance);
+            QuantPeptide1.GetIQuantitationChannelIntensity(IQuantitationChannelTMT5, IntensityWeightingType.Summed, true).Should().Be.InRange(value1 - tolerance, value1 + tolerance);
 
             QuantPeptide2.AddQuantifiedScan(QuantScanNeuCode1);
-            QuantPeptide2.GetChannelIntensity(ChannelNeuCode1, IntensityWeightingType.Summed, true).Should().Be.InRange(value2 - tolerance, value2 + tolerance);
+            QuantPeptide2.GetIQuantitationChannelIntensity(IQuantitationChannelNeuCode1, IntensityWeightingType.Summed, true).Should().Be.InRange(value2 - tolerance, value2 + tolerance);
         }
 
+        //[Test]
+        //[ExpectedException(typeof(DivideByZeroException))]
+        //public void AverageIQuantitationChannelIntensity()
+        //{
+        //    double value2 = 193.5525;
+
+        //    AddAllPSMs();
+
+        //    QuantPeptide2.AddQuantifiedScan(QuantScanNeuCode1);
+        //    QuantPeptide2.AddQuantifiedScan(QuantScanNeuCode2);
+        //    QuantPeptide2.GetIQuantitationChannelIntensity(IQuantitationChannelNeuCode1, IntensityWeightingType.Average).Should().Be.InRange(value2 - tolerance, value2 + tolerance);
+
+        //    QuantPeptide1.AddQuantifiedScan(QuantScanTMT1);
+        //    QuantPeptide1.AddQuantifiedScan(QuantScanTMT2);
+        //    QuantPeptide1.AddQuantifiedScan(QuantScanTMT3);
+        //    QuantPeptide1.GetIQuantitationChannelIntensity(IQuantitationChannelTMT5, IntensityWeightingType.Average);
+        //}
+
         [Test]
-        [ExpectedException(typeof(DivideByZeroException))]
-        public void AverageChannelIntensity()
-        {
-            double value2 = 193.5525;
-
-            AddAllPSMs();
-
-            QuantPeptide2.AddQuantifiedScan(QuantScanNeuCode1);
-            QuantPeptide2.AddQuantifiedScan(QuantScanNeuCode2);
-            QuantPeptide2.GetChannelIntensity(ChannelNeuCode1, IntensityWeightingType.Average).Should().Be.InRange(value2 - tolerance, value2 + tolerance);
-
-            QuantPeptide1.AddQuantifiedScan(QuantScanTMT1);
-            QuantPeptide1.AddQuantifiedScan(QuantScanTMT2);
-            QuantPeptide1.AddQuantifiedScan(QuantScanTMT3);
-            QuantPeptide1.GetChannelIntensity(ChannelTMT5, IntensityWeightingType.Average);
-        }
-
-        [Test]
-        public void AverageChannelIntensityNBC()
+        public void AverageIQuantitationChannelIntensityNBC()
         {
             double value1 = 48.6333333333333;
             double value2 = 228.073333333333;
@@ -420,13 +421,13 @@ namespace CSMSL.Tests.Analysis.Quantitation
             AddAllPSMs();
             AddAllQuantScans();
 
-            QuantPeptide1.GetChannelIntensity(ChannelTMT5, IntensityWeightingType.Average, true).Should().Be.InRange(value1 - tolerance, value1 + tolerance);
+            QuantPeptide1.GetIQuantitationChannelIntensity(IQuantitationChannelTMT5, IntensityWeightingType.Average, true).Should().Be.InRange(value1 - tolerance, value1 + tolerance);
             
-            QuantPeptide2.GetChannelIntensity(ChannelNeuCode1, IntensityWeightingType.Average, true).Should().Be.InRange(value2 - tolerance, value2 + tolerance);
+            QuantPeptide2.GetIQuantitationChannelIntensity(IQuantitationChannelNeuCode1, IntensityWeightingType.Average, true).Should().Be.InRange(value2 - tolerance, value2 + tolerance);
         }
 
         [Test]
-        public void MedianChannelIntensity()
+        public void MedianIQuantitationChannelIntensity()
         {
             double value1 = 0;
             double value2 = 174.495;
@@ -436,15 +437,15 @@ namespace CSMSL.Tests.Analysis.Quantitation
             QuantPeptide1.AddQuantifiedScan(QuantScanTMT1);
             QuantPeptide1.AddQuantifiedScan(QuantScanTMT2);
             QuantPeptide1.AddQuantifiedScan(QuantScanTMT3);
-            QuantPeptide1.GetChannelIntensity(ChannelTMT5, IntensityWeightingType.Median).Should().Be.InRange(value1 - tolerance, value1 + tolerance);
+            QuantPeptide1.GetIQuantitationChannelIntensity(IQuantitationChannelTMT5, IntensityWeightingType.Median).Should().Be.InRange(value1 - tolerance, value1 + tolerance);
             
             QuantPeptide2.AddQuantifiedScan(QuantScanNeuCode1);
             QuantPeptide2.AddQuantifiedScan(QuantScanNeuCode2);
-            QuantPeptide2.GetChannelIntensity(ChannelNeuCode1, IntensityWeightingType.Median).Should().Be.InRange(value2 - tolerance, value2 + tolerance);            
+            QuantPeptide2.GetIQuantitationChannelIntensity(IQuantitationChannelNeuCode1, IntensityWeightingType.Median).Should().Be.InRange(value2 - tolerance, value2 + tolerance);            
         }
 
         [Test]
-        public void MedianChannelIntensityNBC()
+        public void MedianIQuantitationChannelIntensityNBC()
         {
             double value1 = 51.4;
             double value2 = 150.0;
@@ -452,9 +453,9 @@ namespace CSMSL.Tests.Analysis.Quantitation
             AddAllPSMs();
             AddAllQuantScans();
 
-            QuantPeptide1.GetChannelIntensity(ChannelTMT5, IntensityWeightingType.Median, true).Should().Be.InRange(value1 - tolerance, value1 + tolerance);
+            QuantPeptide1.GetIQuantitationChannelIntensity(IQuantitationChannelTMT5, IntensityWeightingType.Median, true).Should().Be.InRange(value1 - tolerance, value1 + tolerance);
 
-            QuantPeptide2.GetChannelIntensity(ChannelNeuCode1, IntensityWeightingType.Median, true).Should().Be.InRange(value2 - tolerance, value2 + tolerance);
+            QuantPeptide2.GetIQuantitationChannelIntensity(IQuantitationChannelNeuCode1, IntensityWeightingType.Median, true).Should().Be.InRange(value2 - tolerance, value2 + tolerance);
         }
 
         [Test]
@@ -466,9 +467,9 @@ namespace CSMSL.Tests.Analysis.Quantitation
             AddAllPSMs();
             AddAllQuantScans();
 
-            QuantPeptide1.GetOverallRatio(ChannelTMT2, ChannelTMT1, IntensityWeightingType.Summed).Should().Be.InRange(value1 - tolerance, value1 + tolerance);
+            QuantPeptide1.GetOverallRatio(IQuantitationChannelTMT2, IQuantitationChannelTMT1, IntensityWeightingType.Summed).Should().Be.InRange(value1 - tolerance, value1 + tolerance);
 
-            QuantPeptide2.GetOverallRatio(ChannelNeuCode2, ChannelNeuCode1, IntensityWeightingType.Summed).Should().Be.InRange(value2 - tolerance, value2 + tolerance);
+            QuantPeptide2.GetOverallRatio(IQuantitationChannelNeuCode2, IQuantitationChannelNeuCode1, IntensityWeightingType.Summed).Should().Be.InRange(value2 - tolerance, value2 + tolerance);
         }
 
         [Test]
@@ -480,9 +481,9 @@ namespace CSMSL.Tests.Analysis.Quantitation
             AddAllPSMs();
             AddAllQuantScans();
 
-            QuantPeptide1.GetOverallRatio(ChannelTMT2, ChannelTMT1, IntensityWeightingType.Average).Should().Be.InRange(value1 - tolerance, value1 + tolerance);
+            QuantPeptide1.GetOverallRatio(IQuantitationChannelTMT2, IQuantitationChannelTMT1, IntensityWeightingType.Average).Should().Be.InRange(value1 - tolerance, value1 + tolerance);
 
-            QuantPeptide2.GetOverallRatio(ChannelNeuCode2, ChannelNeuCode1, IntensityWeightingType.Average).Should().Be.InRange(value2 - tolerance, value2 + tolerance);
+            QuantPeptide2.GetOverallRatio(IQuantitationChannelNeuCode2, IQuantitationChannelNeuCode1, IntensityWeightingType.Average).Should().Be.InRange(value2 - tolerance, value2 + tolerance);
         }
 
         [Test]
@@ -494,9 +495,9 @@ namespace CSMSL.Tests.Analysis.Quantitation
             AddAllPSMs();
             AddAllQuantScans();
 
-            QuantPeptide1.GetOverallRatio(ChannelTMT2, ChannelTMT1, IntensityWeightingType.Median).Should().Be.InRange(value1 - tolerance, value1 + tolerance);
+            QuantPeptide1.GetOverallRatio(IQuantitationChannelTMT2, IQuantitationChannelTMT1, IntensityWeightingType.Median).Should().Be.InRange(value1 - tolerance, value1 + tolerance);
 
-            QuantPeptide2.GetOverallRatio(ChannelNeuCode2, ChannelNeuCode1, IntensityWeightingType.Median).Should().Be.InRange(value2 - tolerance, value2 + tolerance);
+            QuantPeptide2.GetOverallRatio(IQuantitationChannelNeuCode2, IQuantitationChannelNeuCode1, IntensityWeightingType.Median).Should().Be.InRange(value2 - tolerance, value2 + tolerance);
         }
 
         [Test]
@@ -508,9 +509,9 @@ namespace CSMSL.Tests.Analysis.Quantitation
             AddAllPSMs();
             AddAllQuantScans();
 
-            QuantPeptide1.GetOverallRatio(ChannelTMT2, ChannelTMT1, IntensityWeightingType.Summed, true).Should().Be.InRange(value1 - tolerance, value1 + tolerance);
+            QuantPeptide1.GetOverallRatio(IQuantitationChannelTMT2, IQuantitationChannelTMT1, IntensityWeightingType.Summed, true).Should().Be.InRange(value1 - tolerance, value1 + tolerance);
 
-            QuantPeptide2.GetOverallRatio(ChannelNeuCode2, ChannelNeuCode1, IntensityWeightingType.Summed, true).Should().Be.InRange(value2 - tolerance, value2 + tolerance);
+            QuantPeptide2.GetOverallRatio(IQuantitationChannelNeuCode2, IQuantitationChannelNeuCode1, IntensityWeightingType.Summed, true).Should().Be.InRange(value2 - tolerance, value2 + tolerance);
         }
 
         [Test]
@@ -522,9 +523,9 @@ namespace CSMSL.Tests.Analysis.Quantitation
             AddAllPSMs();
             AddAllQuantScans();
 
-            QuantPeptide1.GetOverallRatio(ChannelTMT2, ChannelTMT1, IntensityWeightingType.Average, true).Should().Be.InRange(value1 - tolerance, value1 + tolerance);
+            QuantPeptide1.GetOverallRatio(IQuantitationChannelTMT2, IQuantitationChannelTMT1, IntensityWeightingType.Average, true).Should().Be.InRange(value1 - tolerance, value1 + tolerance);
 
-            QuantPeptide2.GetOverallRatio(ChannelNeuCode2, ChannelNeuCode1, IntensityWeightingType.Average, true).Should().Be.InRange(value2 - tolerance, value2 + tolerance);
+            QuantPeptide2.GetOverallRatio(IQuantitationChannelNeuCode2, IQuantitationChannelNeuCode1, IntensityWeightingType.Average, true).Should().Be.InRange(value2 - tolerance, value2 + tolerance);
         }
 
         [Test]
@@ -536,9 +537,9 @@ namespace CSMSL.Tests.Analysis.Quantitation
             AddAllPSMs();
             AddAllQuantScans();
 
-            QuantPeptide1.GetOverallRatio(ChannelTMT2, ChannelTMT1, IntensityWeightingType.Median, true).Should().Be.InRange(value1 - tolerance, value1 + tolerance);
+            QuantPeptide1.GetOverallRatio(IQuantitationChannelTMT2, IQuantitationChannelTMT1, IntensityWeightingType.Median, true).Should().Be.InRange(value1 - tolerance, value1 + tolerance);
 
-            QuantPeptide2.GetOverallRatio(ChannelNeuCode2, ChannelNeuCode1, IntensityWeightingType.Median, true).Should().Be.InRange(value2 - tolerance, value2 + tolerance);
+            QuantPeptide2.GetOverallRatio(IQuantitationChannelNeuCode2, IQuantitationChannelNeuCode1, IntensityWeightingType.Median, true).Should().Be.InRange(value2 - tolerance, value2 + tolerance);
         }
         
         [Test]
@@ -550,9 +551,9 @@ namespace CSMSL.Tests.Analysis.Quantitation
             AddAllPSMs();
             AddAllQuantScans();
             
-            QuantPeptide1.GetIndividualRatio(ChannelTMT2, ChannelTMT1, IntensityWeightingType.Average).Should().Be.InRange(value1 - tolerance, value1 + tolerance);
+            QuantPeptide1.GetIndividualRatio(IQuantitationChannelTMT2, IQuantitationChannelTMT1, IntensityWeightingType.Average).Should().Be.InRange(value1 - tolerance, value1 + tolerance);
 
-            QuantPeptide2.GetIndividualRatio(ChannelNeuCode2, ChannelNeuCode1, IntensityWeightingType.Average).Should().Be.InRange(value2 - tolerance, value2 + tolerance);
+            QuantPeptide2.GetIndividualRatio(IQuantitationChannelNeuCode2, IQuantitationChannelNeuCode1, IntensityWeightingType.Average).Should().Be.InRange(value2 - tolerance, value2 + tolerance);
         }
 
         [Test]
@@ -564,9 +565,9 @@ namespace CSMSL.Tests.Analysis.Quantitation
             AddAllPSMs();
             AddAllQuantScans();
 
-            QuantPeptide1.GetIndividualRatio(ChannelTMT2, ChannelTMT1, IntensityWeightingType.Median).Should().Be.InRange(value1 - tolerance, value1 + tolerance);
+            QuantPeptide1.GetIndividualRatio(IQuantitationChannelTMT2, IQuantitationChannelTMT1, IntensityWeightingType.Median).Should().Be.InRange(value1 - tolerance, value1 + tolerance);
 
-            QuantPeptide2.GetIndividualRatio(ChannelNeuCode2, ChannelNeuCode1, IntensityWeightingType.Median).Should().Be.InRange(value2 - tolerance, value2 + tolerance);
+            QuantPeptide2.GetIndividualRatio(IQuantitationChannelNeuCode2, IQuantitationChannelNeuCode1, IntensityWeightingType.Median).Should().Be.InRange(value2 - tolerance, value2 + tolerance);
         }
 
         [Test]
@@ -578,9 +579,9 @@ namespace CSMSL.Tests.Analysis.Quantitation
             AddAllPSMs();
             AddAllQuantScans();
 
-            QuantPeptide1.GetRatioVariation(ChannelTMT2, ChannelTMT1).Should().Be.InRange(value1 - tolerance, value1 + tolerance);
+            QuantPeptide1.GetRatioVariation(IQuantitationChannelTMT2, IQuantitationChannelTMT1).Should().Be.InRange(value1 - tolerance, value1 + tolerance);
 
-            QuantPeptide2.GetRatioVariation(ChannelNeuCode2, ChannelNeuCode1).Should().Be.InRange(value2 - tolerance, value2 + tolerance);
+            QuantPeptide2.GetRatioVariation(IQuantitationChannelNeuCode2, IQuantitationChannelNeuCode1).Should().Be.InRange(value2 - tolerance, value2 + tolerance);
         }
 
         [Test]
@@ -592,9 +593,9 @@ namespace CSMSL.Tests.Analysis.Quantitation
             AddAllPSMs();
             AddAllQuantScans();
 
-            QuantPeptide1.GetIndividualRatio(ChannelTMT2, ChannelTMT1, IntensityWeightingType.Average, true).Should().Be.InRange(value1 - tolerance, value1 + tolerance);
+            QuantPeptide1.GetIndividualRatio(IQuantitationChannelTMT2, IQuantitationChannelTMT1, IntensityWeightingType.Average, true).Should().Be.InRange(value1 - tolerance, value1 + tolerance);
 
-            QuantPeptide2.GetIndividualRatio(ChannelNeuCode2, ChannelNeuCode1, IntensityWeightingType.Average, true).Should().Be.InRange(value2 - tolerance, value2 + tolerance);
+            QuantPeptide2.GetIndividualRatio(IQuantitationChannelNeuCode2, IQuantitationChannelNeuCode1, IntensityWeightingType.Average, true).Should().Be.InRange(value2 - tolerance, value2 + tolerance);
         }
 
         [Test]
@@ -606,7 +607,7 @@ namespace CSMSL.Tests.Analysis.Quantitation
             AddAllPSMs();
             AddAllQuantScans();
 
-            QuantPeptide1.GetIndividualRatio(ChannelTMT2, ChannelTMT1, IntensityWeightingType.Median, true).Should().Be.InRange(value1 - tolerance, value1 + tolerance);
+            QuantPeptide1.GetIndividualRatio(IQuantitationChannelTMT2, IQuantitationChannelTMT1, IntensityWeightingType.Median, true).Should().Be.InRange(value1 - tolerance, value1 + tolerance);
         }
 
         [Test]
@@ -618,8 +619,8 @@ namespace CSMSL.Tests.Analysis.Quantitation
             AddAllPSMs();
             AddAllQuantScans();
 
-            QuantPeptide1.GetRatioVariation(ChannelTMT2, ChannelTMT1, true).Should().Be.InRange(value1 - tolerance, value1 + tolerance);
-            QuantPeptide2.GetRatioVariation(ChannelNeuCode2, ChannelNeuCode1, true).Should().Be.InRange(value2 - tolerance, value2 + tolerance);
+            QuantPeptide1.GetRatioVariation(IQuantitationChannelTMT2, IQuantitationChannelTMT1, true).Should().Be.InRange(value1 - tolerance, value1 + tolerance);
+            QuantPeptide2.GetRatioVariation(IQuantitationChannelNeuCode2, IQuantitationChannelNeuCode1, true).Should().Be.InRange(value2 - tolerance, value2 + tolerance);
         }
     }
 }

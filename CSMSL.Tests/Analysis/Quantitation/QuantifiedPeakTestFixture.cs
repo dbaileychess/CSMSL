@@ -8,6 +8,7 @@ using Moq;
 using CSMSL.Analysis.Quantitation;
 using CSMSL.Spectral;
 using CSMSL.Proteomics;
+using CSMSL.Chemistry;
 
 namespace CSMSL.Tests.Analysis.Quantitation
 {
@@ -62,28 +63,28 @@ namespace CSMSL.Tests.Analysis.Quantitation
         [Test]
         public void InjectionTimeEquals()
         {
-            QuantScan1.AddQuant(new Channel("TMT-126"), QuantPeak1);
+            QuantScan1.AddQuant(new IsobaricTag(NamedChemicalFormula.TMT6plex, "TMT-126"), QuantPeak1);
             QuantPeak1.InjectionTime.Should().Equal(12.3);
         }
 
         [Test]
         public void DenormalizedIntensityEquals()
         {
-            QuantScan1.AddQuant(new Channel("TMT-127"), QuantPeak2);
+            QuantScan1.AddQuant(new IsobaricTag(NamedChemicalFormula.TMT6plex, "TMT-127"), QuantPeak2);
             QuantPeak2.DenormalizedIntensity().Should().Equal(61.5);
         }
 
         [Test]
         public void DenormalizedIntensityNoiseBandCappedTrueEquals()
         {
-            QuantScan1.AddQuant(new Channel("TMT-130"), QuantPeak5);
+            QuantScan1.AddQuant(new IsobaricTag(NamedChemicalFormula.TMT6plex, "TMT-130"), QuantPeak5);
             QuantPeak5.DenormalizedIntensity(true).Should().Equal(12.3);
         }
 
         [Test]
         public void DenormalizedIntensityNoiseBandCappedFalseEquals()
         {
-            QuantScan1.AddQuant(new Channel("TMT-130"), QuantPeak5);
+            QuantScan1.AddQuant(new IsobaricTag(NamedChemicalFormula.TMT6plex, "TMT-130"), QuantPeak5);
             QuantPeak5.DenormalizedIntensity().Should().Equal(0.0);
         }
     }

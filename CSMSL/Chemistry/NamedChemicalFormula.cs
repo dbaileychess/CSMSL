@@ -18,6 +18,7 @@
 //  along with CSMSL.  If not, see <http://www.gnu.org/licenses/>.        /
 ///////////////////////////////////////////////////////////////////////////
 
+using System;
 using System.Collections.Generic;
 
 namespace CSMSL.Chemistry
@@ -26,7 +27,7 @@ namespace CSMSL.Chemistry
     /// A chemical formula that contains a common name.
     /// (e.g. H2O is often called Water)
     /// </summary>
-    public class NamedChemicalFormula : ChemicalFormula
+    public class NamedChemicalFormula : ChemicalFormula, IEquatable<NamedChemicalFormula>
     {
         #region Common Reagents / Modifications
 
@@ -155,6 +156,23 @@ namespace CSMSL.Chemistry
             formula.Remove(c12, c12_count);
             formula.Remove(n14, n14_count);
             return new NamedChemicalFormula(formula.ToString(), "#");
+        }
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode() ^ Name.GetHashCode();
+        }
+
+        public bool Equals(NamedChemicalFormula other)
+        {
+            if (base.Equals(other))
+            {
+                return Name.Equals(other.Name);
+            }
+            else
+            {
+                return false;
+            }
         }
     }
 }

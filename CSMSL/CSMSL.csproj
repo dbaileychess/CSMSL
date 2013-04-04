@@ -82,8 +82,8 @@
     <Compile Include="Analysis\Identification\MSSearchEngine.cs" />
     <Compile Include="Analysis\Identification\PeptideSpectralMatch.cs" />
     <Compile Include="Analysis\Identification\PeptideSpectralMatchScoreType.cs" />
-    <Compile Include="Analysis\Quantitation\Channel.cs" />
     <Compile Include="Analysis\Quantitation\IntensityWeightingType.cs" />
+    <Compile Include="Analysis\Quantitation\IQuantitationChannel.cs" />
     <Compile Include="Analysis\Quantitation\IsobaricTag.cs" />
     <Compile Include="Analysis\Quantitation\Isotopologue.cs" />
     <Compile Include="Analysis\Quantitation\IsotopologueSet.cs" />
@@ -106,6 +106,7 @@
     <Compile Include="IO\MsDataFileType.cs" />
     <Compile Include="IO\Mzml.cs" />
     <Compile Include="IO\mzMLSchema.cs" />
+    <Compile Include="IO\PsmReader.cs" />
     <Compile Include="MassRange.cs" />
     <Compile Include="MassToleranceType.cs" />
     <Compile Include="Proteomics\DissociationType.cs" />

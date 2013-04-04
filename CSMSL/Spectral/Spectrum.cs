@@ -84,6 +84,11 @@ namespace CSMSL.Spectral
             return true;
         }
 
+        public void RemovePeaks(IEnumerable<IRange<double>> ranges)
+        {
+
+        }
+
         private void LoadPeaks(IEnumerable<T> peaks)
         {
             _peaks = peaks.ToArray();

@@ -72,6 +72,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Analysis\ExperimentalDesign\ExperimentalSetTestFixture.cs" />
+    <Compile Include="Analysis\Quantitation\IsotopologueSetTestFixture.cs" />
     <Compile Include="Analysis\Quantitation\QuantifiedPeakTestFixture.cs" />
     <Compile Include="Analysis\Quantitation\QuantifiedPeptideTestFixture.cs" />
     <Compile Include="Analysis\Quantitation\QuantifiedScanTestFixture.cs" />

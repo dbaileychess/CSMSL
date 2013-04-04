@@ -3,8 +3,10 @@ using CSMSL.IO;
 
 namespace CSMSL.Spectral
 {
-    public class MSDataScan : IEquatable<MSDataScan>, IDisposable, IMassSpectrum
+    public class MSDataScan : IEquatable<MSDataScan>, IMassSpectrum
     {
+        public MSDataFile ParentFile { get; private set; }
+
         private MassSpectrum _massSpectrum = null;
 
         /// <summary>
@@ -14,16 +16,13 @@ namespace CSMSL.Spectral
         {
             get
             {
-                if (_massSpectrum == null)
-                {
-                    if (ParentFile.IsOpen)
-                        _massSpectrum = ParentFile.GetMzSpectrum(SpectrumNumber);
-                }
                 return _massSpectrum;
             }
-        }
-
-        public MSDataFile ParentFile = null;
+            internal set
+            {
+                _massSpectrum = value;
+            }
+        }       
 
         private int _spectrumNumber;
 
@@ -33,7 +32,7 @@ namespace CSMSL.Spectral
             {
                 return _spectrumNumber;
             }
-            protected set
+            internal set
             {
                 _spectrumNumber = value;
             }
@@ -43,15 +42,10 @@ namespace CSMSL.Spectral
         public double Resolution
         {
             get
-            {
-                if (double.IsNaN(_resolution))
-                {
-                    if (ParentFile.IsOpen)
-                        _resolution = ParentFile.GetResolution(SpectrumNumber);
-                }
+            {           
                 return _resolution;
             }
-            protected set
+            internal set
             {
                 _resolution = value;
             }
@@ -61,15 +55,10 @@ namespace CSMSL.Spectral
         public virtual int MsnOrder
         {
             get
-            {
-                if (_msnOrder < 0)
-                {
-                    if (ParentFile.IsOpen)
-                        _msnOrder = ParentFile.GetMsnOrder(SpectrumNumber);
-                }
+            {              
                 return _msnOrder;
             }
-            protected set
+            internal set
             {
                 _msnOrder = value;
             }
@@ -86,15 +75,10 @@ namespace CSMSL.Spectral
         public double RetentionTime
         {
             get
-            {
-                if (double.IsNaN(_retentionTime))
-                {
-                    if (ParentFile.IsOpen)
-                        _retentionTime = ParentFile.GetRetentionTime(SpectrumNumber);
-                }
+            {              
                 return _retentionTime;
             }
-            protected set
+            internal set
             {
                 _retentionTime = value;
             }
@@ -104,15 +88,10 @@ namespace CSMSL.Spectral
         public Polarity Polarity
         {
             get
-            {
-                if (_polarity == Polarity.Neutral)
-                {
-                    if (ParentFile.IsOpen)
-                        _polarity = ParentFile.GetPolarity(SpectrumNumber);
-                }
+            {               
                 return _polarity;
             }
-            protected set
+            internal set
             {
                 _polarity = value;
             }
@@ -123,14 +102,10 @@ namespace CSMSL.Spectral
         public MZAnalyzerType MzAnalyzer
         {
             get
-            {
-                if (_mzAnalyzer == MZAnalyzerType.Unknown)
-                {
-                    _mzAnalyzer = ParentFile.GetMzAnalyzer(SpectrumNumber);
-                }
+            {              
                 return _mzAnalyzer;
             }
-            set
+            internal set
             {
                 _mzAnalyzer = value;
             }
@@ -140,12 +115,12 @@ namespace CSMSL.Spectral
         public MassRange MzRange
         {
             get
-            {
-                if (_mzRange == null)
-                {
-                    _mzRange = ParentFile.GetMzRange(SpectrumNumber);
-                }
+            {               
                 return _mzRange;
+            }
+            internal set
+            {
+                _mzRange = value;
             }
         }
 
@@ -154,7 +129,7 @@ namespace CSMSL.Spectral
 
         }
 
-        public MSDataScan(int spectrumNumber,int msnOrder = 1, MSDataFile parentFile = null)
+        public MSDataScan(int spectrumNumber, int msnOrder = 1, MSDataFile parentFile = null)
         {
             SpectrumNumber = spectrumNumber;
             MsnOrder = msnOrder;
@@ -163,6 +138,10 @@ namespace CSMSL.Spectral
 
         public override string ToString()
         {
+            if (ParentFile == null)
+            {
+                return string.Format("Scan #{0}");
+            }
             return string.Format("Scan #{0} from {1}", SpectrumNumber, ParentFile);
         }
 
@@ -175,12 +154,6 @@ namespace CSMSL.Spectral
         {
             if (ReferenceEquals(this, other)) return true;
             return SpectrumNumber.Equals(other.SpectrumNumber) && ParentFile.Equals(other.ParentFile);
-        }
-
-        public void Dispose()
-        {
-            ParentFile._scans[SpectrumNumber] = null; // clear the cache in the parent file      
-            _massSpectrum = null;           
-        }
+        }      
     }
 }

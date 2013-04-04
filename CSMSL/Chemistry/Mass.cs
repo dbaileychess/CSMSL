@@ -22,7 +22,7 @@ using System;
 
 namespace CSMSL.Chemistry
 {
-    public class Mass : IComparable<Mass>, IEquatable<Mass>
+    public class Mass : IComparable<Mass>, IEquatable<Mass>, IMass
     {
         /// <summary>
         /// The mass of all the isotopes (in unified atomic mass units)
@@ -84,7 +84,22 @@ namespace CSMSL.Chemistry
             return Monoisotopic.GetHashCode() ^ Average.GetHashCode();
         }
 
+        Mass IMass.Mass
+        {
+            get { return this; }
+        }
+
         #region Static Methods
+
+        public static Mass operator +(Mass left, Mass right)
+        {
+            return new Mass(left.Monoisotopic + right.Monoisotopic, left.Average + right.Average);
+        }
+
+        public static Mass operator /(Mass left, int right)
+        {
+            return new Mass(left.Monoisotopic / right, left.Average / right);
+        }
 
         /// <summary>
         /// Calculates the mass of a given m/z and charge, assuming a proton is the charge donator
@@ -122,6 +137,8 @@ namespace CSMSL.Chemistry
         }
 
         #endregion Static Methods
+
+
 
 
     }

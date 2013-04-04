@@ -59,13 +59,13 @@ namespace CSMSL.Examples
             //VennDiagramExamples();
             
             // Example programs
-            TrypticDigestion.Start(Protease.Trypsin);
+            //TrypticDigestion.Start(Protease.Trypsin);
 
             //Example IO
             //MsDataFileExamples.Start();
 
             // Omssa Reader
-            //OmssaReader.Start();
+            OmssaReader.Start();
 
             // MS/MS searching
             //MorpheusSearch.Start(Protease.Trypsin);
