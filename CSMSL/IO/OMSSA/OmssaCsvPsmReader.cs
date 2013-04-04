@@ -9,6 +9,7 @@ using CSMSL.Proteomics;
 using CSMSL.Analysis.Identification;
 using CSMSL.IO;
 using CSMSL.Chemistry;
+using CSMSL.Spectral;
 using System.Xml;
 
 namespace CSMSL.IO.OMSSA
@@ -55,7 +56,7 @@ namespace CSMSL.IO.OMSSA
                 mods.Add(name, mod);
             }
             return mods;
-        }
+        }               
 
         private void SetDynamicMods(AminoAcidPolymer peptide, string modifications)
         {
@@ -70,14 +71,16 @@ namespace CSMSL.IO.OMSSA
 
                 if (int.TryParse(modParts[1], out location))
                 {
-                    if ((_userDynamicMods != null && _userDynamicMods.TryGetValue(modParts[0], out mod)) || _dynamicMods.TryGetValue(modParts[0], out mod))
-                    {
-                        peptide.SetModification(mod, location);
-                    }
-                    else
-                    {
-                        throw new ArgumentException("Could not find the following OMSSA modification: " + modParts[0]);
-                    }
+                    SetVariableMods(peptide, modParts[0], location);
+
+                    //if ((_userDynamicMods != null && _userDynamicMods.TryGetValue(modParts[0], out mod)) || _dynamicMods.TryGetValue(modParts[0], out mod))
+                    //{
+                    //    peptide.SetModification(mod, location);
+                    //}
+                    //else
+                    //{
+                    //    throw new ArgumentException("Could not find the following OMSSA modification: " + modParts[0]);
+                    //}
                 }
                 else
                 {
@@ -89,6 +92,7 @@ namespace CSMSL.IO.OMSSA
         public override IEnumerable<PeptideSpectralMatch> ReadNextPsm()
         {
             Protein prot;
+            MSDataFile dataFile;
             foreach (OmssaPeptideSpectralMatch omssaPSM in _reader.GetRecords<OmssaPeptideSpectralMatch>())
             {
                 Peptide peptide = new Peptide(omssaPSM.Sequence.ToUpper());
@@ -107,6 +111,13 @@ namespace CSMSL.IO.OMSSA
                 psm.IsDecoy = omssaPSM.Defline.StartsWith("DECOY");
                 psm.SpectrumNumber = omssaPSM.SpectrumNumber;
                 psm.FileName = omssaPSM.FileName;
+
+                string[] filenameparts = psm.FileName.Split('.');
+                if (_dataFiles.TryGetValue(filenameparts[0], out dataFile))
+                {
+                    psm.Spectrum = dataFile[psm.SpectrumNumber] as MsnDataScan;
+                }
+
                 yield return psm;
             }
         }          

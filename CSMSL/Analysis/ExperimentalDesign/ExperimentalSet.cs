@@ -9,42 +9,52 @@ namespace CSMSL.Analysis.ExperimentalDesign
 {
     public class ExperimentalSet
     {
-        public List<Channel> Channels;
-        public Dictionary<Sample, Channel> Samples;
+        public List<IQuantitationChannel> IQuantitationChannels;
+        public Dictionary<Sample, IQuantitationChannel> Samples;
         public Dictionary<ExperimentalCondition, List<Sample>> Conditions;
+
+        private Dictionary<IQuantitationChannel, ExperimentalCondition> _data;
+
 
         public ExperimentalSet()
         {
-            Channels = new List<Channel>();
-            Samples = new Dictionary<Sample, Channel>();
+            IQuantitationChannels = new List<IQuantitationChannel>();
+            Samples = new Dictionary<Sample, IQuantitationChannel>();
             Conditions = new Dictionary<ExperimentalCondition, List<Sample>>();
+            _data = new Dictionary<IQuantitationChannel, ExperimentalCondition>();
         }
 
-        public void AddChannel(Channel channel)
+        public void Add(ExperimentalCondition condition, IQuantitationChannel IQuantitationChannel)
         {
-            if (channel == null)
+            _data.Add(IQuantitationChannel, condition);
+        }
+
+
+        public void AddIQuantitationChannel(IQuantitationChannel IQuantitationChannel)
+        {
+            if (IQuantitationChannel == null)
             {
-                throw new ArgumentNullException("null channel");
+                throw new ArgumentNullException("null IQuantitationChannel");
             }
 
-            if (Channels.Contains(channel))
+            if (IQuantitationChannels.Contains(IQuantitationChannel))
             {
-                throw new ArgumentException("duplicate channel");
+                throw new ArgumentException("duplicate IQuantitationChannel");
             }
 
-            Channels.Add(channel);
+            IQuantitationChannels.Add(IQuantitationChannel);
         }
         
-        public void AddSample(Sample sample, Channel channel)
+        public void AddSample(Sample sample, IQuantitationChannel IQuantitationChannel)
         {
             if (sample == null)
             {
                 throw new ArgumentNullException("null sample");
             }
 
-            if (channel == null)
+            if (IQuantitationChannel == null)
             {
-                throw new ArgumentNullException("null channel");
+                throw new ArgumentNullException("null IQuantitationChannel");
             }
 
             if (Samples.ContainsKey(sample))
@@ -54,30 +64,30 @@ namespace CSMSL.Analysis.ExperimentalDesign
 
             try
             {
-                AddChannel(channel);
+                AddIQuantitationChannel(IQuantitationChannel);
             }
             catch (ArgumentException)
             {
-                // Channel already in list --> make sure it is not associated with another sample
-                if (Samples.ContainsValue(channel))
+                // IQuantitationChannel already in list --> make sure it is not associated with another sample
+                if (Samples.ContainsValue(IQuantitationChannel))
                 {
-                    throw new ArgumentException("channel already associated with another sample");
+                    throw new ArgumentException("IQuantitationChannel already associated with another sample");
                 }
             }
 
-            Samples.Add(sample, channel);
+            Samples.Add(sample, IQuantitationChannel);
 
-            List<Sample> conditionSamples = null;
-            if (Conditions.TryGetValue(sample.Condition, out conditionSamples))
-            {
-                conditionSamples.Add(sample);
-            }
-            else
-            {
-                conditionSamples = new List<Sample>();
-                conditionSamples.Add(sample);
-                Conditions.Add(sample.Condition, conditionSamples);
-            }
+            //List<Sample> conditionSamples = null;
+            //if (Conditions.TryGetValue(sample.Condition, out conditionSamples))
+            //{
+            //    conditionSamples.Add(sample);
+            //}
+            //else
+            //{
+            //    conditionSamples = new List<Sample>();
+            //    conditionSamples.Add(sample);
+            //    Conditions.Add(sample.Condition, conditionSamples);
+            //}
         }
     }
 }

@@ -49,6 +49,7 @@ namespace CSMSL.IO
         public void AddMSDataFile(MSDataFile dataFile)
         {
             _dataFiles.Add(dataFile.Name, dataFile);
+            dataFile.Open();
         }
 
         public void AddVariableModification(string chemicalFormula, string name)
@@ -81,11 +82,11 @@ namespace CSMSL.IO
 
         protected virtual void SetVariableMods(AminoAcidPolymer peptide, string modname, int residue)
         {
-
-            foreach (Tuple<IMass, ModificationSites> mods in _fixedMods)
+            IMass mod;
+            if (_variableMods.TryGetValue(modname, out mod))
             {
-                peptide.SetModification(mods.Item1, mods.Item2);
-            }
+                peptide.SetModification(mod, residue);
+            }            
         }
 
         protected bool _disposed;

@@ -43,10 +43,16 @@ namespace CSMSL.Analysis.Quantitation
             _totalFormula = new ChemicalFormula();
         }
 
-        public void AddIsotopologue(Isotopologue isotopologue)
+        public Isotopologue AddIsotopologue(Isotopologue isotopologue)
         {
             _isotopologues.Add(isotopologue.Mass.Monoisotopic, isotopologue);            
             _totalFormula.Add(isotopologue);
+            return isotopologue;
+        }
+
+        public Isotopologue AddIsotopologue(string chemicalFormula, string name)
+        {
+            return AddIsotopologue(new Isotopologue(chemicalFormula, name));            
         }
 
         public Isotopologue LightestIsotopologue

@@ -8,6 +8,7 @@ using Should.Fluent;
 using Moq;
 using CSMSL.Analysis.Quantitation;
 using CSMSL.Spectral;
+using CSMSL.Chemistry;
 using CSMSL.Proteomics;
 
 namespace CSMSL.Tests.Analysis.Quantitation
@@ -25,12 +26,12 @@ namespace CSMSL.Tests.Analysis.Quantitation
         private QuantifiedPeak QuantPeak4;
         private QuantifiedPeak QuantPeak5;
         private QuantifiedPeak QuantPeak6;
-        private Channel Channel1;
-        private Channel Channel2;
-        private Channel Channel3;
-        private Channel Channel4;
-        private Channel Channel5;
-        private Channel Channel6;
+        private IQuantitationChannel IQuantitationChannel1;
+        private IQuantitationChannel IQuantitationChannel2;
+        private IQuantitationChannel IQuantitationChannel3;
+        private IQuantitationChannel IQuantitationChannel4;
+        private IQuantitationChannel IQuantitationChannel5;
+        private IQuantitationChannel IQuantitationChannel6;
 
         [SetUp]
         public void SetUp()
@@ -49,12 +50,12 @@ namespace CSMSL.Tests.Analysis.Quantitation
             QuantPeak5 = new QuantifiedPeak(130.0, 1, 0.0, 1.0);
             QuantPeak6 = new QuantifiedPeak(131.0, 1, 5.0, 1.0);
 
-            Channel1 = new Channel("TMT-126");
-            Channel2 = new Channel("TMT-127");
-            Channel3 = new Channel("TMT-128");
-            Channel4 = new Channel("TMT-129");
-            Channel5 = new Channel("TMT-130");
-            Channel6 = new Channel("TMT-131");      
+            IQuantitationChannel1 = new IsobaricTag(NamedChemicalFormula.TMT6plex, "TMT-126");
+            IQuantitationChannel2 = new IsobaricTag(NamedChemicalFormula.TMT6plex, "TMT-127");
+            IQuantitationChannel3 = new IsobaricTag(NamedChemicalFormula.TMT6plex, "TMT-128");
+            IQuantitationChannel4 = new IsobaricTag(NamedChemicalFormula.TMT6plex, "TMT-129");
+            IQuantitationChannel5 = new IsobaricTag(NamedChemicalFormula.TMT6plex, "TMT-130");
+            IQuantitationChannel6 = new IsobaricTag(NamedChemicalFormula.TMT6plex, "TMT-131");      
         }
 
         [Test]
@@ -76,23 +77,23 @@ namespace CSMSL.Tests.Analysis.Quantitation
         }
 
         [Test]
-        public void NumChannelsEquals()
+        public void NumIQuantitationChannelsEquals()
         {
-            QuantScan1.AddQuant(Channel1, QuantPeak1);
-            QuantScan1.AddQuant(Channel2, QuantPeak2);
-            QuantScan1.AddQuant(Channel3, QuantPeak3);
-            QuantScan1.AddQuant(Channel4, QuantPeak4);
-            QuantScan1.AddQuant(Channel5, QuantPeak5);
-            QuantScan1.AddQuant(Channel6, QuantPeak6);
-            QuantScan1.ChannelCount.Should().Equal(6);
+            QuantScan1.AddQuant(IQuantitationChannel1, QuantPeak1);
+            QuantScan1.AddQuant(IQuantitationChannel2, QuantPeak2);
+            QuantScan1.AddQuant(IQuantitationChannel3, QuantPeak3);
+            QuantScan1.AddQuant(IQuantitationChannel4, QuantPeak4);
+            QuantScan1.AddQuant(IQuantitationChannel5, QuantPeak5);
+            QuantScan1.AddQuant(IQuantitationChannel6, QuantPeak6);
+            QuantScan1.IQuantitationChannelCount.Should().Equal(6);
         }
 
         [Test]
         public void PeakSignalToNoiseEquals()
         {
-            QuantScan1.AddQuant(Channel2, QuantPeak2);
+            QuantScan1.AddQuant(IQuantitationChannel2, QuantPeak2);
             QuantifiedPeak peak;
-            if (QuantScan1.TryGetQuantifiedPeak(Channel2, out peak, 0))
+            if (QuantScan1.TryGetQuantifiedPeak(IQuantitationChannel2, out peak, 0))
             {
                 peak.SignalToNoise.Should().Equal(5.0);
             }
@@ -105,9 +106,9 @@ namespace CSMSL.Tests.Analysis.Quantitation
         [Test]
         public void PeakMzEquals()
         {
-            QuantScan1.AddQuant(Channel3, QuantPeak3);
+            QuantScan1.AddQuant(IQuantitationChannel3, QuantPeak3);
             QuantifiedPeak peak;
-            if (QuantScan1.TryGetQuantifiedPeak(Channel3, out peak, 0))
+            if (QuantScan1.TryGetQuantifiedPeak(IQuantitationChannel3, out peak, 0))
             {
                 peak.Mz.Should().Equal(128.0);
             }
@@ -121,16 +122,16 @@ namespace CSMSL.Tests.Analysis.Quantitation
         [ExpectedException(typeof(IndexOutOfRangeException))]
         public void AddQuantInvalidIsotope()
         {
-            QuantScan1.AddQuant(Channel1, QuantPeak2, -1);
+            QuantScan1.AddQuant(IQuantitationChannel1, QuantPeak2, -1);
         }
 
         [Test]
         public void AddQuantNullPeakEquals()
         {
             QuantPeak3 = null;
-            QuantScan1.AddQuant(Channel3, QuantPeak3, 1);
+            QuantScan1.AddQuant(IQuantitationChannel3, QuantPeak3, 1);
             QuantifiedPeak peak;
-            if (QuantScan1.TryGetQuantifiedPeak(Channel3, out peak, 1))
+            if (QuantScan1.TryGetQuantifiedPeak(IQuantitationChannel3, out peak, 1))
             {
                 peak.Mz.Should().Equal(0.0);
             }
@@ -142,18 +143,18 @@ namespace CSMSL.Tests.Analysis.Quantitation
 
         [Test]
         [ExpectedException(typeof(NullReferenceException))]
-        public void AddQuantNullChannel()
+        public void AddQuantNullIQuantitationChannel()
         {
-            Channel1 = null;
-            QuantScan1.AddQuant(Channel1, QuantPeak1);           
+            IQuantitationChannel1 = null;
+            QuantScan1.AddQuant(IQuantitationChannel1, QuantPeak1);           
         }
 
         [Test]
         [ExpectedException(typeof(DuplicateKeyException))]
-        public void AddQuantDuplicateChannel()
+        public void AddQuantDuplicateIQuantitationChannel()
         {
-            QuantScan1.AddQuant(Channel2, QuantPeak1);
-            QuantScan1.AddQuant(Channel2, QuantPeak2);
+            QuantScan1.AddQuant(IQuantitationChannel2, QuantPeak1);
+            QuantScan1.AddQuant(IQuantitationChannel2, QuantPeak2);
         }
 
     }

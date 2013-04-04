@@ -127,24 +127,24 @@ namespace CSMSL.Analysis.Quantitation
             QuantifiedScans.Add(quantScan);
         }
                 
-        public double GetChannelIntensity(Channel channel, IntensityWeightingType method, bool noiseBandCap = false, double signalToNoiseThreshold = 3.0)
+        public double GetIQuantitationChannelIntensity(IQuantitationChannel IQuantitationChannel, IntensityWeightingType method, bool noiseBandCap = false, double signalToNoiseThreshold = 3.0)
         {
-            double channelIntensitySum = 0;
+            double IQuantitationChannelIntensitySum = 0;
             QuantifiedPeak peak = null;
             List<double> intensities = new List<double>();
-            double channelIntensity = 0;         
+            double IQuantitationChannelIntensity = 0;         
 
             foreach (QuantifiedScan scan in QuantifiedScans)
             {
                 for (int i = 0; i < QuantifiedScan.NumIsotopes; i++)
                 {                                          
-                    if (scan.TryGetQuantifiedPeak(channel, out peak, i))
+                    if (scan.TryGetQuantifiedPeak(IQuantitationChannel, out peak, i))
                     {
                         if (peak.SignalToNoise >= signalToNoiseThreshold || noiseBandCap)
                         {
-                            channelIntensity = peak.DenormalizedIntensity(noiseBandCap, signalToNoiseThreshold);
-                            channelIntensitySum += channelIntensity;
-                            intensities.Add(channelIntensity);                           
+                            IQuantitationChannelIntensity = peak.DenormalizedIntensity(noiseBandCap, signalToNoiseThreshold);
+                            IQuantitationChannelIntensitySum += IQuantitationChannelIntensity;
+                            intensities.Add(IQuantitationChannelIntensity);                           
                         }
                     }
                 }
@@ -154,9 +154,9 @@ namespace CSMSL.Analysis.Quantitation
             switch (method)
             {               
                 case IntensityWeightingType.Summed:
-                    return channelIntensitySum;
+                    return IQuantitationChannelIntensitySum;
                 case IntensityWeightingType.Average:
-                    return GetRatio(channelIntensitySum, (double)intensities.Count);
+                    return GetRatio(IQuantitationChannelIntensitySum, (double)intensities.Count);
                 case IntensityWeightingType.Median:                    
                     return GetMedian(intensities);
                 default:
@@ -164,15 +164,15 @@ namespace CSMSL.Analysis.Quantitation
             }
         }
 
-        public double GetOverallRatio(Channel numerator, Channel denominator, IntensityWeightingType method, bool noiseBandCap = false, double signalToNoiseThreshold = 3.0)
+        public double GetOverallRatio(IQuantitationChannel numerator, IQuantitationChannel denominator, IntensityWeightingType method, bool noiseBandCap = false, double signalToNoiseThreshold = 3.0)
         {
-            double top = GetChannelIntensity(numerator, method, noiseBandCap, signalToNoiseThreshold);
-            double bottom = GetChannelIntensity(denominator, method, noiseBandCap, signalToNoiseThreshold);
+            double top = GetIQuantitationChannelIntensity(numerator, method, noiseBandCap, signalToNoiseThreshold);
+            double bottom = GetIQuantitationChannelIntensity(denominator, method, noiseBandCap, signalToNoiseThreshold);
 
             return GetRatio(top, bottom);
         }
 
-        public List<double> GetRatioList(Channel numerator, Channel denominator, bool noiseBandCap = false, double signalToNoiseThreshold = 3.0)
+        public List<double> GetRatioList(IQuantitationChannel numerator, IQuantitationChannel denominator, bool noiseBandCap = false, double signalToNoiseThreshold = 3.0)
         {
             List<double> log2Ratios = new List<double>();
             double peakNumerator = 0;
@@ -200,7 +200,7 @@ namespace CSMSL.Analysis.Quantitation
             return log2Ratios;
         }
 
-        public double GetIndividualRatio(Channel numerator, Channel denominator, IntensityWeightingType method, bool noiseBandCap = false, double signalToNoiseThreshold = 3.0)
+        public double GetIndividualRatio(IQuantitationChannel numerator, IQuantitationChannel denominator, IntensityWeightingType method, bool noiseBandCap = false, double signalToNoiseThreshold = 3.0)
         {
             double finalRatio = 0;
             List<double> log2Ratios = GetRatioList(numerator, denominator, noiseBandCap, signalToNoiseThreshold);
@@ -236,7 +236,7 @@ namespace CSMSL.Analysis.Quantitation
             return Math.Pow(2, finalRatio);
         }
 
-        public double GetRatioVariation(Channel numerator, Channel denominator, bool noiseBandCap = false, double signalToNoiseThreshold = 3.0)
+        public double GetRatioVariation(IQuantitationChannel numerator, IQuantitationChannel denominator, bool noiseBandCap = false, double signalToNoiseThreshold = 3.0)
         {
             List<double> log2Ratios = GetRatioList(numerator, denominator, noiseBandCap);
             double ratioAverage = Math.Log(GetIndividualRatio(numerator, denominator, IntensityWeightingType.Average, noiseBandCap, signalToNoiseThreshold), 2);
@@ -287,6 +287,23 @@ namespace CSMSL.Analysis.Quantitation
                     return values[count / 2];
                 }
             }
+        }
+
+        public static IList<QuantifiedPeptide> GenerateQuantifiedPeptides(IEnumerable<PeptideSpectralMatch> psms)
+        {
+            Dictionary<Peptide, QuantifiedPeptide> quantPeps = new  Dictionary<Peptide, QuantifiedPeptide>();
+            QuantifiedPeptide quantPep;
+            foreach (PeptideSpectralMatch psm in psms)
+            {
+                if (!quantPeps.TryGetValue(psm.Peptide, out quantPep))
+                {
+                    quantPep = new QuantifiedPeptide(psm.Peptide);
+                    quantPeps.Add(psm.Peptide, quantPep);
+                }
+                quantPep.AddPeptideSpectralMatch(psm);
+            }
+
+            return quantPeps.Values.ToList();
         }
 
         #endregion
