@@ -393,23 +393,23 @@ namespace CSMSL.Tests.Analysis.Quantitation
             QuantPeptide2.GetChannelIntensity(ChannelNeuCode1, IntensityWeightingType.Summed, true).Should().Be.InRange(value2 - tolerance, value2 + tolerance);
         }
 
-        [Test]
-        [ExpectedException(typeof(DivideByZeroException))]
-        public void AverageChannelIntensity()
-        {
-            double value2 = 193.5525;
+        //[Test]
+        //[ExpectedException(typeof(DivideByZeroException))]
+        //public void AverageChannelIntensity()
+        //{
+        //    double value2 = 193.5525;
 
-            AddAllPSMs();
+        //    AddAllPSMs();
 
-            QuantPeptide2.AddQuantifiedScan(QuantScanNeuCode1);
-            QuantPeptide2.AddQuantifiedScan(QuantScanNeuCode2);
-            QuantPeptide2.GetChannelIntensity(ChannelNeuCode1, IntensityWeightingType.Average).Should().Be.InRange(value2 - tolerance, value2 + tolerance);
+        //    QuantPeptide2.AddQuantifiedScan(QuantScanNeuCode1);
+        //    QuantPeptide2.AddQuantifiedScan(QuantScanNeuCode2);
+        //    QuantPeptide2.GetChannelIntensity(ChannelNeuCode1, IntensityWeightingType.Average).Should().Be.InRange(value2 - tolerance, value2 + tolerance);
 
-            QuantPeptide1.AddQuantifiedScan(QuantScanTMT1);
-            QuantPeptide1.AddQuantifiedScan(QuantScanTMT2);
-            QuantPeptide1.AddQuantifiedScan(QuantScanTMT3);
-            QuantPeptide1.GetChannelIntensity(ChannelTMT5, IntensityWeightingType.Average);
-        }
+        //    QuantPeptide1.AddQuantifiedScan(QuantScanTMT1);
+        //    QuantPeptide1.AddQuantifiedScan(QuantScanTMT2);
+        //    QuantPeptide1.AddQuantifiedScan(QuantScanTMT3);
+        //    QuantPeptide1.GetChannelIntensity(ChannelTMT5, IntensityWeightingType.Average);
+        //}
 
         [Test]
         public void AverageChannelIntensityNBC()

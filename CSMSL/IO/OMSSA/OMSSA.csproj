@@ -65,6 +65,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="OmssaCsvPsmReader.cs" />
+    <Compile Include="OmssaModification.cs" />
     <Compile Include="OmssaPeptideSpectralMatch.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

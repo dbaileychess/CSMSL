@@ -73,26 +73,27 @@ namespace CSMSL.Analysis.Quantitation
             }
         }
 
-        public QuantifiedPeak GetQuantifiedPeak(Channel channel, int isotope = 0)
+        public bool TryGetQuantifiedPeak(Channel channel, out QuantifiedPeak peak, int isotope = 0)
         {
-            QuantifiedPeak peak = null;
+            peak = null;
             // Check for an invalid isotope
-            if (isotope < 0 || isotope >= NumIsotopes)
+            if (isotope < 0 || isotope >= NumIsotopes || channel == null)
             {
-                throw new IndexOutOfRangeException("invalid isotope");
+                return false;
+                //throw new IndexOutOfRangeException("invalid isotope");
             }
 
             // Check for invalid channel
-            if (channel == null)
+            //if (channel == null)
+            //{
+            //    throw new NullReferenceException("null channel");
+            //}
+            if (QuantifiedPeaks[isotope].TryGetValue(channel, out peak))
             {
-                throw new NullReferenceException("null channel");
-            }
-            if (!QuantifiedPeaks[isotope].TryGetValue(channel, out peak))
-            {
-                throw new KeyNotFoundException("channel not found");
+                return true;               
             }
 
-            return peak;
+            return false;
         }
 
         public double GetTheoMz(Channel channel, int isotope = 0)

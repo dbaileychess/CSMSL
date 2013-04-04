@@ -19,36 +19,42 @@ namespace CSMSL.IO.OMSSA
 
         private string _userModFile;
 
-        private Dictionary<string, IMass> _dynamicMods;
+        private static Dictionary<string, IMass> _dynamicMods;
+        private Dictionary<string, IMass> _userDynamicMods;
+
+        static OmssaCsvPsmReader()
+        {
+            _dynamicMods = LoadMods("Resources/mods.xml");            
+        }
 
         public OmssaCsvPsmReader(string filePath, string userModFile = "")
             : base(filePath)
         {
-            _reader = new CsvReader(new StreamReader(filePath));
-            _dynamicMods = new Dictionary<string, IMass>();
-            LoadDynamicMods("Resources/mods.xml");
+            _reader = new CsvReader(new StreamReader(filePath));            
+           
             if (!string.IsNullOrEmpty(userModFile))
             {
-                LoadDynamicMods(userModFile);
+                _userDynamicMods = LoadMods(userModFile);
             }
             _userModFile = userModFile;
         }
 
-        private void LoadDynamicMods(string file)
+        private static Dictionary<string, IMass> LoadMods(string file)
         {
             XmlDocument mods_xml = new XmlDocument();
             mods_xml.Load(file);
             XmlNamespaceManager mods_xml_ns = new XmlNamespaceManager(mods_xml.NameTable);
             mods_xml_ns.AddNamespace("omssa", mods_xml.ChildNodes[1].Attributes["xmlns"].Value);
-
+            Dictionary<string, IMass> mods = new Dictionary<string, IMass>();
             foreach (XmlNode mod_node in mods_xml.SelectNodes("/omssa:MSModSpecSet/omssa:MSModSpec", mods_xml_ns))
             {
                 string name = mod_node.SelectSingleNode("./omssa:MSModSpec_name", mods_xml_ns).FirstChild.Value;
                 double mono = double.Parse(mod_node.SelectSingleNode("./omssa:MSModSpec_monomass", mods_xml_ns).FirstChild.Value);
                 double average = double.Parse(mod_node.SelectSingleNode("./omssa:MSModSpec_averagemass", mods_xml_ns).FirstChild.Value);
-                Mass mass = new Mass(mono, average);
-                _dynamicMods.Add(name, mass);
+                OmssaModification mod = new OmssaModification(name, mono, average);
+                mods.Add(name, mod);
             }
+            return mods;
         }
 
         private void SetDynamicMods(AminoAcidPolymer peptide, string modifications)
@@ -61,9 +67,21 @@ namespace CSMSL.IO.OMSSA
                 string[] modParts = modification.Trim().Split(':');
                 int location = 0;
                 IMass mod = null;
-                if (int.TryParse(modParts[1], out location) && _dynamicMods.TryGetValue(modParts[0], out mod))
+
+                if (int.TryParse(modParts[1], out location))
                 {
-                    peptide.SetModification(mod, location);
+                    if ((_userDynamicMods != null && _userDynamicMods.TryGetValue(modParts[0], out mod)) || _dynamicMods.TryGetValue(modParts[0], out mod))
+                    {
+                        peptide.SetModification(mod, location);
+                    }
+                    else
+                    {
+                        throw new ArgumentException("Could not find the following OMSSA modification: " + modParts[0]);
+                    }
+                }
+                else
+                {
+                    throw new ArgumentException("Could not parse the residue position for the following OMSSA modification: " + modification);
                 }
             }
         }
@@ -81,11 +99,7 @@ namespace CSMSL.IO.OMSSA
                 if (_proteins.TryGetValue(omssaPSM.Defline, out prot))
                 {
                     peptide.Parent = prot;
-                }
-                else
-                {
-
-                }
+                }              
                 PeptideSpectralMatch psm = new PeptideSpectralMatch();
                 psm.Peptide = peptide;
                 psm.Score = omssaPSM.EValue;

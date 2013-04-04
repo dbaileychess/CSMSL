@@ -17,11 +17,15 @@ namespace CSMSL.IO
             FilePath = filePath;
             _proteins = new Dictionary<string, Protein>();
             _fixedMods = new List<Tuple<IMass, ModificationSites>>();
+            _variableMods = new Dictionary<string, IMass>();
+            _dataFiles = new Dictionary<string, MSDataFile>();
         }
                        
         protected Dictionary<string, Protein> _proteins;
 
         protected List<Tuple<IMass, ModificationSites>> _fixedMods;
+        protected Dictionary<string, IMass> _variableMods;
+        protected Dictionary<string, MSDataFile> _dataFiles;
 
         public abstract IEnumerable<PeptideSpectralMatch> ReadNextPsm();
 
@@ -41,7 +45,22 @@ namespace CSMSL.IO
                 LoadProteins(reader.ReadNextProtein());
             }
         }
-          
+
+        public void AddMSDataFile(MSDataFile dataFile)
+        {
+            _dataFiles.Add(dataFile.Name, dataFile);
+        }
+
+        public void AddVariableModification(string chemicalFormula, string name)
+        {
+            AddVariableModification(new ChemicalFormula(chemicalFormula), name);
+        }
+
+        public void AddVariableModification(IMass modification, string name)
+        {
+            _variableMods.Add(name, modification);
+        }
+
         public void AddFixedModification(string chemicalFormula, ModificationSites sites)
         {
             AddFixedModification(new ChemicalFormula(chemicalFormula), sites);
@@ -54,6 +73,15 @@ namespace CSMSL.IO
 
         protected virtual void SetFixedMods(AminoAcidPolymer peptide)
         {
+            foreach (Tuple<IMass, ModificationSites> mods in _fixedMods)
+            {
+                peptide.SetModification(mods.Item1, mods.Item2);
+            }
+        }
+
+        protected virtual void SetVariableMods(AminoAcidPolymer peptide, string modname, int residue)
+        {
+
             foreach (Tuple<IMass, ModificationSites> mods in _fixedMods)
             {
                 peptide.SetModification(mods.Item1, mods.Item2);

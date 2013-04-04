@@ -91,14 +91,30 @@ namespace CSMSL.Tests.Analysis.Quantitation
         public void PeakSignalToNoiseEquals()
         {
             QuantScan1.AddQuant(Channel2, QuantPeak2);
-            QuantScan1.GetQuantifiedPeak(Channel2, 0).SignalToNoise.Should().Equal(5.0);
+            QuantifiedPeak peak;
+            if (QuantScan1.TryGetQuantifiedPeak(Channel2, out peak, 0))
+            {
+                peak.SignalToNoise.Should().Equal(5.0);
+            }
+            else
+            {
+                Assert.Fail();
+            }
         }
 
         [Test]
         public void PeakMzEquals()
         {
             QuantScan1.AddQuant(Channel3, QuantPeak3);
-            QuantScan1.GetQuantifiedPeak(Channel3, 0).Mz.Should().Equal(128.0);
+            QuantifiedPeak peak;
+            if (QuantScan1.TryGetQuantifiedPeak(Channel3, out peak, 0))
+            {
+                peak.Mz.Should().Equal(128.0);
+            }
+            else
+            {
+                Assert.Fail();
+            }
         }
 
         [Test]
@@ -113,7 +129,15 @@ namespace CSMSL.Tests.Analysis.Quantitation
         {
             QuantPeak3 = null;
             QuantScan1.AddQuant(Channel3, QuantPeak3, 1);
-            QuantScan1.GetQuantifiedPeak(Channel3, 1).Mz.Should().Equal(0.0);
+            QuantifiedPeak peak;
+            if (QuantScan1.TryGetQuantifiedPeak(Channel3, out peak, 1))
+            {
+                peak.Mz.Should().Equal(0.0);
+            }
+            else
+            {
+                Assert.Fail();
+            }
         }
 
         [Test]
@@ -132,29 +156,5 @@ namespace CSMSL.Tests.Analysis.Quantitation
             QuantScan1.AddQuant(Channel2, QuantPeak2);
         }
 
-        [Test]
-        [ExpectedException(typeof(IndexOutOfRangeException))]
-        public void GetQuantInvalidIsotope()
-        {
-            QuantScan1.AddQuant(Channel6, QuantPeak6);
-            QuantScan1.GetQuantifiedPeak(Channel6, 4);
-        }
-
-        [Test]
-        [ExpectedException(typeof(NullReferenceException))]
-        public void GetQuantNullChannel()
-        {
-            QuantScan1.AddQuant(Channel4, QuantPeak6);
-            Channel4 = null;
-            QuantScan1.GetQuantifiedPeak(Channel4);
-        }
-
-        [Test]
-        [ExpectedException(typeof(KeyNotFoundException))]
-        public void GetQuantInvalidChannel()
-        {
-            QuantScan1.AddQuant(Channel4, QuantPeak6);
-            QuantScan1.GetQuantifiedPeak(Channel1);
-        }
     }
 }

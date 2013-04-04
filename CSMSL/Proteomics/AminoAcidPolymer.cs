@@ -308,7 +308,8 @@ namespace CSMSL.Proteomics
 
             ChemicalFormula chemFormula = new ChemicalFormula();
             Mass mass = new Mass();
-          
+            IMass mod;
+            IChemicalFormula chemMod;
             int start = 0;
             int end = number;
 
@@ -320,10 +321,7 @@ namespace CSMSL.Proteomics
                 if (CTerminusModification != null)
                 {
                     mass += CTerminusModification.Mass;
-                    if (CTerminusModification is IChemicalFormula)
-                    {
-                        chemFormula.Add(((IChemicalFormula)CTerminusModification).ChemicalFormula);
-                    }  
+                    chemFormula.Add(CTerminusModification as IChemicalFormula);                                
                 }
             }
             else
@@ -331,24 +329,18 @@ namespace CSMSL.Proteomics
                 chemFormula.Add(NTerminus);
                 if (NTerminusModification != null)
                 {
-                    mass += NTerminusModification.Mass;
-                    if (NTerminusModification is IChemicalFormula)
-                    {
-                        chemFormula.Add(((IChemicalFormula)NTerminusModification).ChemicalFormula);
-                    }                   
+                    mass += NTerminusModification.Mass;                 
+                    chemFormula.Add(NTerminusModification as IChemicalFormula); 
                 }
             }
-            IMass mod;
+            
             for (int i = start; i < end; i++)
             {
                 chemFormula.Add(_aminoAcids[i].ChemicalFormula);
                 if ((mod = _modifications[i + 1]) != null)
                 {
                     mass += mod.Mass;
-                    if (mod is IChemicalFormula)
-                    {
-                        chemFormula.Add(((IChemicalFormula)mod).ChemicalFormula);
-                    }
+                    chemFormula.Add(mod as IChemicalFormula);                   
                 }
             }
 
@@ -389,10 +381,7 @@ namespace CSMSL.Proteomics
                         if (CTerminusModification != null)
                         {
                             mass += CTerminusModification.Mass;
-                            if (CTerminusModification is IChemicalFormula)
-                            {
-                                chemFormula.Add(((IChemicalFormula)CTerminusModification).ChemicalFormula);
-                            }  
+                            chemFormula.Add(CTerminusModification as IChemicalFormula);                             
                         }                           
                         for (int i = end; i >= start; i--)
                         {
@@ -400,10 +389,7 @@ namespace CSMSL.Proteomics
                             if ((mod = _modifications[i + 1]) != null)
                             {
                                 mass += mod.Mass;
-                                if (mod is IChemicalFormula)
-                                {
-                                    chemFormula.Add(((IChemicalFormula)mod).ChemicalFormula);
-                                }
+                                chemFormula.Add(mod as IChemicalFormula);   
                             }
                             int number = Length - i;
                             yield return new Fragment(type, number, new Mass(mass), new ChemicalFormula(chemFormula), this);
@@ -415,10 +401,7 @@ namespace CSMSL.Proteomics
                         if (NTerminusModification != null)
                         {
                             mass += NTerminusModification.Mass;
-                            if (NTerminusModification is IChemicalFormula)
-                            {
-                                chemFormula.Add(((IChemicalFormula)NTerminusModification).ChemicalFormula);
-                            }       
+                            chemFormula.Add(NTerminusModification as IChemicalFormula); 
                         }                            
 
                         for (int i = start; i <= end; i++)
@@ -427,10 +410,7 @@ namespace CSMSL.Proteomics
                             if ((mod = _modifications[i]) != null)
                             {
                                 mass += mod.Mass;
-                                if (mod is IChemicalFormula)
-                                {
-                                    chemFormula.Add(((IChemicalFormula)mod).ChemicalFormula);
-                                }
+                                chemFormula.Add(mod as IChemicalFormula);                                
                             }
                             yield return new Fragment(type, i, new Mass(mass), new ChemicalFormula(chemFormula), this);
                         }
@@ -668,10 +648,7 @@ namespace CSMSL.Proteomics
             if ((mod = _modifications[0]) != null)
             {                
                 _mass += mod.Mass;
-                if (mod is IChemicalFormula)
-                {
-                    _chemicalFormula.Add(((IChemicalFormula)mod).ChemicalFormula);
-                }
+                _chemicalFormula.Add(mod as IChemicalFormula);               
                 _sequenceSB.Append('[');
                 _sequenceSB.Append(mod);
                 _sequenceSB.Append("]-");
@@ -688,11 +665,8 @@ namespace CSMSL.Proteomics
                 baseSeqSB.Append(letter);
                 if ((mod = _modifications[i + 1]) != null)  // Mods are 1-based for the N and C-terminus
                 {
-                    if (mod is IChemicalFormula)
-                    {
-                        _chemicalFormula.Add(((IChemicalFormula)mod).ChemicalFormula);
-                    }                    
                     _mass += mod.Mass;
+                    _chemicalFormula.Add(mod as IChemicalFormula); 
                     _sequenceSB.Append('[');
                     _sequenceSB.Append(mod);
                     _sequenceSB.Append(']');
@@ -703,12 +677,9 @@ namespace CSMSL.Proteomics
             _chemicalFormula.Add(CTerminus.ChemicalFormula);
             _mass += CTerminus.Mass;
             if ((mod = _modifications[_length + 1]) != null)
-            {
-                if (mod is IChemicalFormula)
-                {
-                    _chemicalFormula.Add(((IChemicalFormula)mod).ChemicalFormula);
-                }
+            {               
                 _mass += mod.Mass;
+                _chemicalFormula.Add(mod as IChemicalFormula);
                 _sequenceSB.Append("-[");
                 _sequenceSB.Append(mod);
                 _sequenceSB.Append(']');
