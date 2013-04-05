@@ -191,11 +191,6 @@ namespace CSMSL.Examples
             // Many physical things have chemical formulas (e.g. Peptides) and the interface IChemicalFormula allows many methods to work on a variety of different types of objects
             Peptide pep = new Peptide("DEREK");
             WriteFormulaToConsole(pep.ChemicalFormula);
-
-            // Here, a new chemical formula is made in memory based off the chemical formula of the peptide. The two chemical formulas are identicial but are separated by each pointing
-            // to a new place in memory. This allows you to edit the chemicalformula without disrupting the peptide
-            ChemicalFormula pepFormula = new ChemicalFormula(pep);
-            WriteFormulaToConsole(pepFormula);
         }
 
         /// <summary>

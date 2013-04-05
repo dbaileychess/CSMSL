@@ -35,14 +35,18 @@ namespace CSMSL.Tests.Proteomics
         {
             Peptide pep = new Peptide("G");
             ChemicalFormula formula = new ChemicalFormula("C2H5NO2");
-            pep.ChemicalFormula.Should().Equal(formula);
+            ChemicalFormula formula2;
+            pep.TryGetChemicalFormula(out formula2);
+            formula.Should().Equal(formula2);
         }
 
         [Test]
         public void PeptideMassTryptic()
         {
             ChemicalFormula formula = new ChemicalFormula("C37H66N12O21");
-            MockTrypticPeptide.ChemicalFormula.Should().Equal(formula);
+            ChemicalFormula formula2;
+            MockTrypticPeptide.TryGetChemicalFormula(out formula2);
+            formula.Should().Equal(formula2);
         }
 
         [Test]

@@ -24,5 +24,11 @@ namespace CSMSL.Analysis.Quantitation
         {
 	        get { return false; }
         }
+
+
+        public bool IsSequenceDependent
+        {
+            get { return false; }
+        }
     }
 }

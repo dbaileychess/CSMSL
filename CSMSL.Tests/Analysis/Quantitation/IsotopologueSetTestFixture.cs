@@ -14,19 +14,18 @@ namespace CSMSL.Tests.Analysis.Quantitation
     [Category("Peptide")]
     public sealed class IsotopologueSetTestFixture
     {
-        private IsotopologueSet _lysine6plex; 
-
-
+        private QuantitationChannelSet _lysine6plex; 
+        
         [SetUp]
         public void SetUp()
         {
-            _lysine6plex = new IsotopologueSet("Lysine 6-plex");
-            _lysine6plex.AddIsotopologue("C-6 C{13}6 N-2 N{15}2", "C6 N2");
-            _lysine6plex.AddIsotopologue("C-4 C{13}4 N-2 N{15}2 H-2 H{2}2" ,"C4 N2 D2");
-            _lysine6plex.AddIsotopologue("C-5 C{13}5 N-1 N{15}1 H-2 H{2}2" ,"C5 N1 D2");
-            _lysine6plex.AddIsotopologue("C-3 C{13}3 N-1 N{15}1 H-4 H{2}4", "C3 N1 H4");
-            _lysine6plex.AddIsotopologue("C-4 C{13}4 H-4 H{2}4", "C4 D4");
-            _lysine6plex.AddIsotopologue("H-8 H{2}8", "D8");
+            _lysine6plex = new QuantitationChannelSet("Lysine 6-plex");
+            _lysine6plex.Add(new Isotopologue("C-6 C{13}6 N-2 N{15}2", "C6 N2"));
+            _lysine6plex.Add(new Isotopologue("C-4 C{13}4 N-2 N{15}2 H-2 H{2}2", "C4 N2 D2"));
+            _lysine6plex.Add(new Isotopologue("C-5 C{13}5 N-1 N{15}1 H-2 H{2}2", "C5 N1 D2"));
+            _lysine6plex.Add(new Isotopologue("C-3 C{13}3 N-1 N{15}1 H-4 H{2}4", "C3 N1 H4"));
+            _lysine6plex.Add(new Isotopologue("C-4 C{13}4 H-4 H{2}4", "C4 D4"));
+            _lysine6plex.Add(new Isotopologue("H-8 H{2}8", "D8"));
         }
 
         [Test]
@@ -38,7 +37,7 @@ namespace CSMSL.Tests.Analysis.Quantitation
         [Test]
         public void IsotopologueMonoisotopicMass()
         {
-            _lysine6plex.Mass.Monoisotopic.Should().Equal(8.0302584511000088);
+            _lysine6plex.AverageMass.Monoisotopic.Should().Equal(8.0302584511);
         }
 
         [Test]
