@@ -76,6 +76,7 @@
     <Compile Include="Analysis\Quantitation\QuantifiedPeakTestFixture.cs" />
     <Compile Include="Analysis\Quantitation\QuantifiedPeptideTestFixture.cs" />
     <Compile Include="Analysis\Quantitation\QuantifiedScanTestFixture.cs" />
+    <Compile Include="Analysis\Quantitation\QuantitationChannelSetTestFixture.cs" />
     <Compile Include="Chemistry\ChemicalFormulaTestFixture.cs" />
     <Compile Include="Chemistry\MassTestFixture.cs" />
     <Compile Include="Proteomics\FragmentTestFixture.cs" />
