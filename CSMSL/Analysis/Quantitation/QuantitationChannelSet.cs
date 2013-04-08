@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using CSMSL.Proteomics;
 using CSMSL.Chemistry;
 
 namespace CSMSL.Analysis.Quantitation
@@ -96,5 +97,62 @@ namespace CSMSL.Analysis.Quantitation
         {
             get { return AverageMass; }
         }
+
+        #region Static 
+
+        
+        public static IEnumerable<double> GetPrecursorMasses(AminoAcidPolymer peptide)
+        {
+            double monomass = 0;            
+            QuantitationChannelSet quantSetMod;
+            IMass mod;
+            HashSet<double> masses = new HashSet<double>();
+            int count = 0;
+            for (int i = 1; i <= peptide.Length; i++)
+            {
+                if ((mod = peptide.GetModification(i)) != null)
+                {
+                    quantSetMod = mod as QuantitationChannelSet;
+                    if (quantSetMod != null)
+                    {
+                        foreach (IQuantitationChannel channel in quantSetMod.GetChannels())
+                        {
+                            masses.Add(channel.Mass.Monoisotopic);
+                        }
+                        count++;
+                    }
+                    else
+                    {
+                        monomass += mod.Mass.Monoisotopic;
+                    }   
+                }
+                monomass += peptide[i].Mass.Monoisotopic;
+            }
+
+            monomass += peptide.NTerminus.Mass.Monoisotopic;
+            monomass += peptide.CTerminus.Mass.Monoisotopic;
+
+            if (count == 0)
+            {
+                yield return monomass;
+            }
+            else
+            {
+                foreach (double mass in masses)
+                {
+                    yield return monomass + count * mass;
+                }
+            }
+            yield break;
+        }
+
+        public static IEnumerable<double> GetPrecursorMZes(AminoAcidPolymer peptide, int charge)
+        {
+            List<double> masses = GetPrecursorMasses(peptide).ToList();
+            masses.ForEach(v => Mass.MzFromMass(v, charge));
+            return masses;
+        }
+
+        #endregion
     }
 }

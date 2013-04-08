@@ -24,6 +24,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Text.RegularExpressions;
 using CSMSL.Chemistry;
+using CSMSL.Analysis.Quantitation;
 
 namespace CSMSL.Proteomics
 {
@@ -422,7 +423,20 @@ namespace CSMSL.Proteomics
             }
             return false;
         }
-            
+
+        /// <summary>
+        /// Get the modification at the given residue number
+        /// </summary>
+        /// <param name="residueNumber">The amino acid residue number</param>
+        /// <returns>The modification at the site, null if there isn't any modification present</returns>
+        public IMass GetModification(int residueNumber)
+        {
+             if (residueNumber > _length || residueNumber < 1)
+            {
+                throw new IndexOutOfRangeException(string.Format("Residue number not in the correct range: [{0}-{1}] you specified: {2}", 1, Length, residueNumber));
+            }
+            return _modifications[residueNumber];
+        }
 
         /// <summary>
         /// Sets the modification at the terminus of this amino acid polymer
