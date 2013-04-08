@@ -413,9 +413,12 @@ namespace CSMSL.Proteomics
         #endregion
 
         #region Chemical Modifications
-
+                
         public bool ContainsModification(IMass modification)
         {
+            if (modification == null)
+                throw new ArgumentNullException("The modification to search for must not be null");
+
             foreach (IMass mod in _modifications)
             {
                 if (modification.Equals(mod))
@@ -431,9 +434,9 @@ namespace CSMSL.Proteomics
         /// <returns>The modification at the site, null if there isn't any modification present</returns>
         public IMass GetModification(int residueNumber)
         {
-             if (residueNumber > _length || residueNumber < 1)
+            if (residueNumber > _length || residueNumber < 1)
             {
-                throw new IndexOutOfRangeException(string.Format("Residue number not in the correct range: [{0}-{1}] you specified: {2}", 1, Length, residueNumber));
+                throw new IndexOutOfRangeException(string.Format("Residue number not in the correct range: [{0}-{1}] you specified: {2}", 1, _length, residueNumber));
             }
             return _modifications[residueNumber];
         }
