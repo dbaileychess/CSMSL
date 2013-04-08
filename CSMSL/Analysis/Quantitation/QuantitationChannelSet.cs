@@ -100,6 +100,58 @@ namespace CSMSL.Analysis.Quantitation
 
         #region Static 
 
+        public static IEnumerable<Peptide> GetUniquePeptides(Peptide peptide)
+        {
+            double monomass = 0;
+            QuantitationChannelSet quantSetMod;
+            IMass mod;
+            Dictionary<IQuantitationChannel, HashSet<int>> channels = new Dictionary<IQuantitationChannel, HashSet<int>>();
+            int count = 0;
+            for (int i = 1; i <= peptide.Length; i++)
+            {
+                if ((mod = peptide.GetModification(i)) != null)
+                {
+                    quantSetMod = mod as QuantitationChannelSet;
+                    if (quantSetMod != null)
+                    {
+                        HashSet<int> residues;
+                        foreach (IQuantitationChannel channel in quantSetMod.GetChannels())
+                        {
+                            if (channels.TryGetValue(channel, out residues))
+                            {
+                                residues.Add(i);
+                            }
+                            else
+                            {
+                                residues = new HashSet<int>() { i };
+                                channels.Add(channel, residues);
+                            }
+                        }
+                        count++;
+                    }
+                }
+            }
+
+
+            if (count == 0)
+            {
+                yield return new Peptide(peptide, true);
+            }
+            else
+            {
+                foreach (KeyValuePair<IQuantitationChannel, HashSet<int>> kvp in channels)
+                {
+                    Peptide toReturn = new Peptide(peptide, true);
+                    foreach (int residue in kvp.Value)
+                    {
+                        toReturn.SetModification(kvp.Key, residue);
+                    }
+                    yield return toReturn;
+                }
+            }
+            yield break;
+
+        }
         
         public static IEnumerable<double> GetPrecursorMasses(AminoAcidPolymer peptide)
         {
