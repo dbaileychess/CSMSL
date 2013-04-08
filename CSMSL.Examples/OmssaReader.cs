@@ -30,12 +30,11 @@ namespace CSMSL.Examples
             }
 
             watch.Stop();
-            Console.WriteLine("{0:N0} psms were read in", psms.Count);
+            Console.WriteLine("{0:N0} psms were read in", psms.Count);          
             Console.WriteLine("Time elapsed: {0}", watch.Elapsed);
             Console.WriteLine("Memory used: {0:N0} MB", (System.Environment.WorkingSet - startMem) / (1024 * 1024));
             Console.WriteLine("**End OMSSA Reader**");
         }
-
 
     }
 }
