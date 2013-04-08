@@ -14,11 +14,11 @@ namespace CSMSL.Analysis.Quantitation
                       
         private ChemicalFormula _totalFormula;
 
-        private Mass _mass;
+        private Mass _totalMass;
 
         public Mass AverageMass
         {
-            get { return _mass / Count; }
+            get { return _totalMass / Count; }
         }
 
         public IQuantitationChannel this[int index]
@@ -32,7 +32,7 @@ namespace CSMSL.Analysis.Quantitation
         public QuantitationChannelSet(string name)
         {
             Name = name; 
-            _mass = new Mass();
+            _totalMass = new Mass();
             _channels = new SortedList<double, IQuantitationChannel>();          
             _totalFormula = new ChemicalFormula();
         }
@@ -40,7 +40,7 @@ namespace CSMSL.Analysis.Quantitation
         public IQuantitationChannel Add(IQuantitationChannel channel)
         {
             _channels.Add(channel.Mass.Monoisotopic, channel);
-            _mass += channel.Mass;
+            _totalMass += channel.Mass;
             //_totalFormula.Add(channel);
             return channel;
         }       

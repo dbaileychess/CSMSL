@@ -91,7 +91,6 @@
     <Compile Include="Analysis\Quantitation\QuantifiedPeptide.cs" />
     <Compile Include="Analysis\Quantitation\QuantifiedPeptideSpectralMatch.cs" />
     <Compile Include="Analysis\Quantitation\QuantifiedScan.cs" />
-    <Compile Include="Analysis\Quantitation\QuantitationType.cs" />
     <Compile Include="Chemistry\ChemicalFormula.cs" />
     <Compile Include="Chemistry\NamedChemicalFormula.cs" />
     <Compile Include="Chemistry\Element.cs" />
