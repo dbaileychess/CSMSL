@@ -441,6 +441,18 @@ namespace CSMSL.Proteomics
             return _modifications[residueNumber];
         }
 
+        public bool TryGetModification(int residueNumber, out IMass mod)
+        {
+            mod = GetModification(residueNumber);
+            return mod != null;  
+        }
+
+        public bool TryGetModification<T>(int residueNumber, out T mod) where T : class, IMass
+        {       
+            mod = GetModification(residueNumber) as T;
+            return mod != null;
+        }
+
         /// <summary>
         /// Sets the modification at the terminus of this amino acid polymer
         /// </summary>
@@ -555,6 +567,25 @@ namespace CSMSL.Proteomics
             _modifications[residueNumber] = mod;
             _isDirty = true;
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="mod"></param>
+        /// <param name="residueNumbers">(1-based) residue number</param>
+        public void SetModification(IMass mod, params int[] residueNumbers)
+        {
+            foreach (int residueNumber in residueNumbers)
+            {
+                if (residueNumber > _length || residueNumber < 1)
+                {
+                    throw new IndexOutOfRangeException(string.Format("Residue number not in the correct range: [{0}-{1}] you specified: {2}", 1, Length, residueNumber));
+                }
+                _modifications[residueNumber] = mod;
+            }
+            _isDirty = true;
+        }
+
 
         /// <summary>
         /// Clear all modifications from this amino acid polymer.

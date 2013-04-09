@@ -101,109 +101,85 @@ namespace CSMSL.Analysis.Quantitation
         #region Static 
 
         public static IEnumerable<Peptide> GetUniquePeptides(Peptide peptide)
-        {
-            double monomass = 0;
+        {           
             QuantitationChannelSet quantSetMod;
-            IMass mod;
-            Dictionary<IQuantitationChannel, HashSet<int>> channels = new Dictionary<IQuantitationChannel, HashSet<int>>();
-            int count = 0;
+            HashSet<QuantitationChannelSet> sets = new HashSet<QuantitationChannelSet>();
+            Dictionary<IQuantitationChannel, HashSet<int>> locations = new Dictionary<IQuantitationChannel, HashSet<int>>();   
+            HashSet<int> residues;
             for (int i = 1; i <= peptide.Length; i++)
             {
-                if ((mod = peptide.GetModification(i)) != null)
+                if (peptide.TryGetModification<QuantitationChannelSet>(i, out quantSetMod))
                 {
-                    quantSetMod = mod as QuantitationChannelSet;
-                    if (quantSetMod != null)
+                    sets.Add(quantSetMod);
+                    foreach (IQuantitationChannel channel in quantSetMod.GetChannels())
                     {
-                        HashSet<int> residues;
-                        foreach (IQuantitationChannel channel in quantSetMod.GetChannels())
+                        if (locations.TryGetValue(channel, out residues))
                         {
-                            if (channels.TryGetValue(channel, out residues))
-                            {
-                                residues.Add(i);
-                            }
-                            else
-                            {
-                                residues = new HashSet<int>() { i };
-                                channels.Add(channel, residues);
-                            }
+                            residues.Add(i);
                         }
-                        count++;
+                        else
+                        {
+                            residues = new HashSet<int>() { i };
+                            locations.Add(channel, residues);
+                        }
                     }
                 }
             }
 
-
-            if (count == 0)
+            if (sets.Count == 0)
             {
                 yield return new Peptide(peptide, true);
             }
+            else if (sets.Count == 1)
+            {  
+                foreach (QuantitationChannelSet set in sets)
+                {
+                    foreach (IQuantitationChannel channel in set.GetChannels())
+                    {
+                        Peptide toReturn = new Peptide(peptide, true);
+                        toReturn.SetModification(channel, locations[channel].ToArray());                       
+                        yield return toReturn;
+                    }
+                }
+            }
             else
             {
-                foreach (KeyValuePair<IQuantitationChannel, HashSet<int>> kvp in channels)
+                List<HashSet<IQuantitationChannel>> quantChannels = new List<HashSet<IQuantitationChannel>>();
+
+                GetUniquePeptides_helper(sets.ToList(), 0, new HashSet<IQuantitationChannel>(), quantChannels);
+
+                foreach (HashSet<IQuantitationChannel> channelset in quantChannels)
                 {
                     Peptide toReturn = new Peptide(peptide, true);
-                    foreach (int residue in kvp.Value)
+                    foreach (IQuantitationChannel channel in channelset)
                     {
-                        toReturn.SetModification(kvp.Key, residue);
-                    }
+                        toReturn.SetModification(channel, locations[channel].ToArray());
+                    }                   
                     yield return toReturn;
                 }
             }
             yield break;
-
         }
-        
-        public static IEnumerable<double> GetPrecursorMasses(AminoAcidPolymer peptide)
+
+        private static void GetUniquePeptides_helper(IList<QuantitationChannelSet> sets, int setIndex, HashSet<IQuantitationChannel> channels, List<HashSet<IQuantitationChannel>> result)
         {
-            double monomass = 0;            
-            QuantitationChannelSet quantSetMod;
-            IMass mod;
-            HashSet<double> masses = new HashSet<double>();
-            int count = 0;
-            for (int i = 1; i <= peptide.Length; i++)
+            if (setIndex >= sets.Count)
             {
-                if ((mod = peptide.GetModification(i)) != null)
-                {
-                    quantSetMod = mod as QuantitationChannelSet;
-                    if (quantSetMod != null)
-                    {
-                        foreach (IQuantitationChannel channel in quantSetMod.GetChannels())
-                        {
-                            masses.Add(channel.Mass.Monoisotopic);
-                        }
-                        count++;
-                    }
-                    else
-                    {
-                        monomass += mod.Mass.Monoisotopic;
-                    }   
-                }
-                monomass += peptide[i].Mass.Monoisotopic;
-            }
-
-            monomass += peptide.NTerminus.Mass.Monoisotopic;
-            monomass += peptide.CTerminus.Mass.Monoisotopic;
-
-            if (count == 0)
-            {
-                yield return monomass;
+                result.Add(new HashSet<IQuantitationChannel>(channels));               
             }
             else
             {
-                foreach (double mass in masses)
+                QuantitationChannelSet currentSet = sets[setIndex];
+
+                foreach (IQuantitationChannel channel in currentSet.GetChannels())
                 {
-                    yield return monomass + count * mass;
+                    channels.Add(channel);
+                    GetUniquePeptides_helper(sets, setIndex + 1, channels, result);
+                    channels.Remove(channel);
                 }
             }
-            yield break;
         }
-
-        public static IEnumerable<double> GetPrecursorMZes(AminoAcidPolymer peptide, int charge)
-        {
-            List<double> masses = GetPrecursorMasses(peptide).ToList();
-            masses.ForEach(v => Mass.MzFromMass(v, charge));
-            return masses;
-        }
+        
 
         #endregion
     }
