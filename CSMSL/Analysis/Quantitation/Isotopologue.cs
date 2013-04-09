@@ -23,5 +23,11 @@ namespace CSMSL.Analysis.Quantitation
         {
             get { return true; }
         }
+
+        Mass IQuantitationChannel.ReporterMass
+        {
+            get { return Mass; }
+        }
+
     }
 }

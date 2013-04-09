@@ -40,7 +40,7 @@ namespace CSMSL.Analysis.Quantitation
 
         public IQuantitationChannel Add(IQuantitationChannel channel)
         {
-            _channels.Add(channel.Mass.Monoisotopic, channel);
+            _channels.Add(channel.ReporterMass.Monoisotopic, channel);
             _totalMass += channel.Mass;
             //_totalFormula.Add(channel);
             return channel;

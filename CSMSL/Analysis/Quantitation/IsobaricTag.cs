@@ -41,7 +41,7 @@ namespace CSMSL.Analysis.Quantitation
         }
 
         public IsobaricTag(string reporterFormula, string balanceFormula, string name)
-            : base(reporterFormula, name)
+            : base(reporterFormula + balanceFormula, name)
         {
             _reporterFormula = new ChemicalFormula(reporterFormula);
             _balanceFormula = new ChemicalFormula(balanceFormula);
@@ -58,6 +58,9 @@ namespace CSMSL.Analysis.Quantitation
             get { return false; }
         }
 
-
+        Mass IQuantitationChannel.ReporterMass
+        {
+            get { return _reporterFormula.Mass; }
+        }
     }
 }

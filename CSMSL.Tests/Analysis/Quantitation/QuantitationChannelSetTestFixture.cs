@@ -22,12 +22,12 @@ namespace CSMSL.Tests.Analysis.Quantitation
         public void SetUp()
         {
             _TMT6plex = new QuantitationChannelSet("TMT 6-plex");
-            _TMT6plex.Add(new IsobaricTag("C{12}8 C{13}4 H{1}21 N{14}1 N{15}1 O{16}2", "126"));
-            _TMT6plex.Add(new IsobaricTag("C{12}8 C{13}4 H{1}21 N{14}1 N{15}1 O{16}2", "127"));
-            _TMT6plex.Add(new IsobaricTag("C{12}8 C{13}4 H{1}21 N{14}1 N{15}1 O{16}2", "128"));
-            _TMT6plex.Add(new IsobaricTag("C{12}8 C{13}4 H{1}21 N{14}1 N{15}1 O{16}2", "129"));
-            _TMT6plex.Add(new IsobaricTag("C{12}8 C{13}4 H{1}21 N{14}1 N{15}1 O{16}2", "130"));
-            _TMT6plex.Add(new IsobaricTag("C{12}8 C{13}4 H{1}21 N{14}1 N{15}1 O{16}2", "131"));
+            _TMT6plex.Add(new IsobaricTag("C{12}8 H{1}16 N{14}1", "C{13}4 H{1}4 N{15}1 O{16}2", "126"));
+            _TMT6plex.Add(new IsobaricTag("C{12}8 H{1}16 N{15}1", "C{13}4 H{1}4 N{14}1 O{16}2", "127"));
+            _TMT6plex.Add(new IsobaricTag("C{12}6 C{13}2 H{1}16 N{14}1", "C{12}2 C{13}2 H{1}4 N{15}1 O{16}2", "128"));
+            _TMT6plex.Add(new IsobaricTag("C{12}6 C{13}2 H{1}16 N{15}1", "C{12}2 C{13}2 H{1}4 N{14}1 O{16}2", "129"));
+            _TMT6plex.Add(new IsobaricTag("C{12}4 C{13}4 H{1}16 N{14}1", "C{12}4 H{1}5 N{15}4 O{16}2", "130"));
+            _TMT6plex.Add(new IsobaricTag("C{12}4 C{13}4 H{1}16 N{15}1", "C{12}4 H{1}5 N{14}4 O{16}2", "131"));
 
             _lysine6plex = new QuantitationChannelSet("Lysine 6-plex");
             _lysine6plex.Add(new Isotopologue("C-6 C{13}6 N-2 N{15}2", "C6 N2"));
@@ -39,12 +39,26 @@ namespace CSMSL.Tests.Analysis.Quantitation
         }
 
         [Test]
+        public void UnmodifiedPeptideCount()
+        {
+            Peptide pep = new Peptide("DEREK");
+            QuantitationChannelSet.GetUniquePeptides(pep).ToList().Count.Should().Equal(1);
+        }
+
+        [Test]
         public void UnmodifiedPeptideMass()
         {
             double mass = 675.31876792107;
             Peptide pep = new Peptide("DEREK");
-            QuantitationChannelSet.GetPrecursorMasses(pep).ToList().Count.Should().Equal(1);
-            QuantitationChannelSet.GetPrecursorMasses(pep).ToList()[0].Should().Be.InRange(mass - tolerance, mass + tolerance);
+            QuantitationChannelSet.GetUniquePeptides(pep).ToList()[0].Mass.Monoisotopic.Should().Be.InRange(mass - tolerance, mass + tolerance);
+        }
+
+        [Test]
+        public void OneModIsotopologuePeptideCount()
+        {
+            Peptide pep = new Peptide("DEREK");
+            pep.SetModification(_lysine6plex, 'K');
+            QuantitationChannelSet.GetUniquePeptides(pep).ToList().Count.Should().Equal(6);
         }
 
         [Test]
@@ -53,8 +67,15 @@ namespace CSMSL.Tests.Analysis.Quantitation
             double mass = 683.33296673467;
             Peptide pep = new Peptide("DEREK");
             pep.SetModification(_lysine6plex, 'K');
-            QuantitationChannelSet.GetPrecursorMasses(pep).ToList().Count.Should().Equal(6);
-            QuantitationChannelSet.GetPrecursorMasses(pep).ToList()[0].Should().Be.InRange(mass - tolerance, mass + tolerance);
+            QuantitationChannelSet.GetUniquePeptides(pep).ToList()[0].Mass.Monoisotopic.Should().Be.InRange(mass - tolerance, mass + tolerance);
+        }
+
+        [Test]
+        public void TwoModsIsotopologuePeptideCount()
+        {
+            Peptide pep = new Peptide("DEREKK");
+            pep.SetModification(_lysine6plex, 'K');
+            QuantitationChannelSet.GetUniquePeptides(pep).ToList().Count.Should().Equal(6);
         }
 
         [Test]
@@ -63,17 +84,44 @@ namespace CSMSL.Tests.Analysis.Quantitation
             double mass = 819.44212856227;
             Peptide pep = new Peptide("DEREKK");
             pep.SetModification(_lysine6plex, 'K');
-            QuantitationChannelSet.GetPrecursorMasses(pep).ToList().Count.Should().Equal(6);
-            QuantitationChannelSet.GetPrecursorMasses(pep).ToList()[0].Should().Be.InRange(mass - tolerance, mass + tolerance);
+            QuantitationChannelSet.GetUniquePeptides(pep).ToList()[0].Mass.Monoisotopic.Should().Be.InRange(mass - tolerance, mass + tolerance);
         }
 
         [Test]
-        public void OneModIsobaricPeptideMass()
+        public void OneModIsobaricPeptideCount()
         {
-            double mass = 0;
             Peptide pep = new Peptide("DEREK");
             pep.SetModification(_TMT6plex, 'K');
-            QuantitationChannelSet.GetPrecursorMasses(pep).ToList().Count.Should().Equal(6);
+            QuantitationChannelSet.GetUniquePeptides(pep).ToList().Count.Should().Equal(6);
         }
+        
+        [Test]
+        public void OneModIsobaricPeptideMass()
+        {
+            double mass = 904.48170005579;
+            Peptide pep = new Peptide("DEREK");
+            pep.SetModification(_TMT6plex, 'K');
+            QuantitationChannelSet.GetUniquePeptides(pep).ToList()[0].Mass.Monoisotopic.Should().Be.InRange(mass - tolerance, mass + tolerance);
+        }
+
+        [Test]
+        public void TwoModsIsobaricPeptideCount()
+        {
+            Peptide pep = new Peptide("DEREK");
+            pep.SetModification(_TMT6plex, 'K');
+            pep.SetModification(_TMT6plex, 1);
+            QuantitationChannelSet.GetUniquePeptides(pep).ToList().Count.Should().Equal(6);
+        }
+
+        [Test]
+        public void TwoModsIsobaricPeptideMass()
+        {
+            double mass = 1133.64463219051;
+            Peptide pep = new Peptide("DEREK");
+            pep.SetModification(_TMT6plex, 'K');
+            pep.SetModification(_TMT6plex, 1);
+            QuantitationChannelSet.GetUniquePeptides(pep).ToList()[0].Mass.Monoisotopic.Should().Be.InRange(mass - tolerance, mass + tolerance);
+        }
+        
     }
 }
