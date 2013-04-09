@@ -7,7 +7,7 @@ using CSMSL.Chemistry;
 namespace CSMSL.Analysis.Quantitation
 {
     public interface IQuantitationChannel: IChemicalFormula, IMass
-    {        
+    {   
         bool IsSequenceDependent { get; }
     }
 }
