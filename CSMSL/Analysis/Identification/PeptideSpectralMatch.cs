@@ -50,5 +50,6 @@ namespace CSMSL.Analysis.Identification
         {
             return this.Spectrum.Equals(other);
         }
+       
     }
 }

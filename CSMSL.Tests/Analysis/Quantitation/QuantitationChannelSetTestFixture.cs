@@ -46,6 +46,13 @@ namespace CSMSL.Tests.Analysis.Quantitation
         }
 
         [Test]
+        public void UnmodifiedPeptideEquality()
+        {
+            Peptide pep = new Peptide("DEREK");
+            QuantitationChannelSet.GetUniquePeptides(pep).ToList()[0].Should().Equal(pep);
+        }
+
+        [Test]
         public void UnmodifiedPeptideMass()
         {
             double mass = 675.31876792107;

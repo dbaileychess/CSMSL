@@ -262,33 +262,40 @@ namespace CSMSL.Analysis.Quantitation
             return numerator / denominator;
         }
 
-        private static double GetMedian(List<double> values)
+        private static double GetMedian(IEnumerable<double> values)
         {
-            int count = values.Count;
+            double[] temp = values.ToArray();
+
+            int count = temp.Length;
 
             if (count == 0)
             {
-                return 0;
+                throw new InvalidOperationException("Empty collection");
             }
             else if (count == 1)
             {
-                return values[0];
+                return temp[0];
             }
             else
             {
-                values.Sort();
+                Array.Sort(temp);
 
                 if (count % 2 == 0)
                 {
-                    return (values[(count / 2) - 1] + values[count / 2]) / 2;
+                    return (temp[(count / 2) - 1] + temp[count / 2]) / 2.0;
                 }
                 else
                 {
-                    return values[count / 2];
+                    return temp[count / 2];
                 }
             }
         }
 
+        /// <summary>
+        /// Reduces a list of peptide spectral matches into distinct peptides
+        /// </summary>
+        /// <param name="psms"></param>
+        /// <returns></returns>
         public static IList<QuantifiedPeptide> GenerateQuantifiedPeptides(IEnumerable<PeptideSpectralMatch> psms)
         {
             Dictionary<Peptide, QuantifiedPeptide> quantPeps = new  Dictionary<Peptide, QuantifiedPeptide>();
