@@ -56,6 +56,6 @@ namespace CSMSL.Tests.Analysis.Quantitation
             pep.SetModification(_lysine6plex, 3);
             pep.CalculateFragments(FragmentTypes.b | FragmentTypes.y);
             pep.Mass.Monoisotopic.Should().Equal(683.34902637217);
-        }
+        }        
     }
 }
