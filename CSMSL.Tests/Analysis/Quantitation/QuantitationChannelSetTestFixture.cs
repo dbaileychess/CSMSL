@@ -196,5 +196,47 @@ namespace CSMSL.Tests.Analysis.Quantitation
             List<Peptide> peps = QuantitationChannelSet.GetUniquePeptides(pep).ToList();
             peps.Count.Should().Equal(6);
         }
+
+        [Test]
+        public void NeuCode2PlusSILACNoRPeptideCount()
+        {
+            Peptide pep = new Peptide("DEEK");
+            pep.SetModification(_lysine2plex, 'K');
+            pep.SetModification(_arginine3plex, 'R');
+            List<Peptide> peps = QuantitationChannelSet.GetUniquePeptides(pep).ToList();
+            peps.Count.Should().Equal(2);
+        }
+
+        [Test]
+        public void NeuCode2PlusSILACWithRPeptideCount()
+        {
+            Peptide pep = new Peptide("DEREK");
+            pep.SetModification(_lysine2plex, 'K');
+            pep.SetModification(_arginine3plex, 'R');
+            List<Peptide> peps = QuantitationChannelSet.GetUniquePeptides(pep).ToList();
+            peps.Count.Should().Equal(6);
+        }
+
+        [Test]
+        public void NeuCodeTag4PlusSILACNoKPeptideCount()
+        {
+            Peptide pep = new Peptide("DERE");
+            pep.SetModification(_lysine3plex, 'K');
+            pep.SetModification(_tag4plex, 1);
+            pep.SetModification(_tag4plex, 'K');
+            List<Peptide> peps = QuantitationChannelSet.GetUniquePeptides(pep).ToList();
+            peps.Count.Should().Equal(4);
+        }
+
+        [Test]
+        public void NeuCodeTag4PlusSILACWithKPeptideCount()
+        {
+            Peptide pep = new Peptide("DEREK");
+            pep.SetModification(_lysine3plex, 'K');
+            pep.SetModification(_tag4plex, 1);
+            pep.SetModification(_tag4plex, 'K');
+            List<Peptide> peps = QuantitationChannelSet.GetUniquePeptides(pep).ToList();
+            peps.Count.Should().Equal(12);
+        }
     }
 }
