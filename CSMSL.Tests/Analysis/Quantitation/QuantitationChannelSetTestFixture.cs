@@ -175,9 +175,12 @@ namespace CSMSL.Tests.Analysis.Quantitation
         public void TMT6PlusSILAC3WithKPeptideCount()
         {
             Peptide pep = new Peptide("DEREK");
-            pep.SetModification(_lysine3plex, 'K');
-            pep.SetModification(_TMT6plex, 1);
-            pep.SetModification(_TMT6plex, 'K');
+            ModificationCollection col = new ModificationCollection();
+            col.Add(_lysine3plex);
+            col.Add(_TMT6plex);
+            pep.SetModification(col, 'K');
+            pep.SetModification(_TMT6plex, Terminus.N);
+            //pep.SetModification(_TMT6plex, 'K');
             List<Peptide> peps = QuantitationChannelSet.GetUniquePeptides(pep).ToList();
             peps.Count.Should().Equal(18);
         }

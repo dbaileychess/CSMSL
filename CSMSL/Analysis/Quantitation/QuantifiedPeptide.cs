@@ -14,7 +14,7 @@ namespace CSMSL.Analysis.Quantitation
         //internal ExperimentalSet ParentExperimentalSet;
         HashSet<PeptideSpectralMatch> PSMs;
         public List<QuantifiedScan> QuantifiedScans;
-        public Peptide Peptide { get; private set; }
+        public Peptide Peptide { get; private set; }        
 
         public int QuantifiedScanCount
         {

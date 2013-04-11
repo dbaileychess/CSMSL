@@ -95,7 +95,7 @@ namespace CSMSL.IO.OMSSA
             MSDataFile dataFile;
             foreach (OmssaPeptideSpectralMatch omssaPSM in _reader.GetRecords<OmssaPeptideSpectralMatch>())
             {
-                Peptide peptide = new Peptide(omssaPSM.Sequence.ToUpper());
+                Peptide peptide = new Peptide(omssaPSM.Sequence.ToUpper());               
                 SetFixedMods(peptide);
                 SetDynamicMods(peptide, omssaPSM.Modifications);
                 peptide.StartResidue = omssaPSM.StartResidue;

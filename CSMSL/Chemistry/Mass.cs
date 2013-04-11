@@ -96,6 +96,11 @@ namespace CSMSL.Chemistry
             return new Mass(left.Monoisotopic + right.Monoisotopic, left.Average + right.Average);
         }
 
+        public static Mass operator -(Mass left, Mass right)
+        {
+            return new Mass(left.Monoisotopic - right.Monoisotopic, left.Average - right.Average);
+        }
+
         public static Mass operator /(Mass left, int right)
         {
             return new Mass(left.Monoisotopic / right, left.Average / right);
