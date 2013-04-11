@@ -106,6 +106,11 @@ namespace CSMSL.Chemistry
             return new Mass(left.Monoisotopic / right, left.Average / right);
         }
 
+        public static Mass operator /(Mass left, double right)
+        {
+            return new Mass(left.Monoisotopic / right, left.Average / right);
+        }
+
         /// <summary>
         /// Calculates the mass of a given m/z and charge, assuming a proton is the charge donator
         /// </summary>

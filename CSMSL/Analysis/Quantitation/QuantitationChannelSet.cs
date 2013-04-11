@@ -12,8 +12,8 @@ namespace CSMSL.Analysis.Quantitation
         public string Name { get; set; }
 
         private SortedList<double, IQuantitationChannel> _channels;
-                      
-        private ChemicalFormula _totalFormula;
+         
+        public QuantitationChannelSetMassType MassType { get; set; }
 
         private Mass _totalMass;
 
@@ -30,21 +30,36 @@ namespace CSMSL.Analysis.Quantitation
             }
         }
 
-        public QuantitationChannelSet(string name)
+        public QuantitationChannelSet(string name, QuantitationChannelSetMassType massType = QuantitationChannelSetMassType.Average)
         {
-            Name = name; 
+            Name = name;
+            MassType = massType;
             _totalMass = new Mass();
-            _channels = new SortedList<double, IQuantitationChannel>();          
-            _totalFormula = new ChemicalFormula();
+            _channels = new SortedList<double, IQuantitationChannel>();                    
         }
 
         public IQuantitationChannel Add(IQuantitationChannel channel)
         {
             _channels.Add(channel.ReporterMass.Monoisotopic, channel);
-            _totalMass += channel.Mass;
-            //_totalFormula.Add(channel);
+            _totalMass += channel.Mass;        
             return channel;
-        }       
+        }
+
+        public void Clear()
+        {
+            _channels.Clear();
+            _totalMass = new Mass();
+        }
+
+        public bool Remove(IQuantitationChannel channel)
+        {
+            if (_channels.Remove(channel.Mass.Monoisotopic))
+            {
+                _totalMass -= channel.Mass;
+                return true;
+            }
+            return false;
+        }
 
         public IQuantitationChannel LighestChannel
         {
@@ -92,10 +107,40 @@ namespace CSMSL.Analysis.Quantitation
             return Name;
         }
 
+        public Mass GetMass(QuantitationChannelSetMassType massType)
+        {
+            if (Count <= 1)
+            {
+                return new Mass(_totalMass);
+            }
+
+            switch (massType)
+            {
+                default:
+                case QuantitationChannelSetMassType.Average:
+                    return _totalMass / Count;
+                case QuantitationChannelSetMassType.Lightest:
+                    return new Mass(LighestChannel.Mass);
+                case QuantitationChannelSetMassType.Heaviest:
+                    return new Mass(HeaviestChannel.Mass);
+                case QuantitationChannelSetMassType.Median:
+                    if (Count % 2 == 0)
+                    {
+                        return (_channels.Values[(Count / 2) - 1].Mass + _channels.Values[Count / 2].Mass) / 2.0;
+                    }
+                    else
+                    {
+                        return new Mass(_channels.Values[Count / 2].Mass);
+                    }
+            }
+        }
 
         Mass IMass.Mass
         {
-            get { return AverageMass; }
+            get
+            {
+                return GetMass(MassType);
+            }
         }
 
         #region Static 
