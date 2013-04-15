@@ -32,8 +32,8 @@ namespace CSMSL.Tests.Analysis.Quantitation
             _TMT6plex.Add(new IsobaricTag("C{12}8 H{1}16 N{15}1", "C{13}4 H{1}4 N{14}1 O{16}2", "127"));
             _TMT6plex.Add(new IsobaricTag("C{12}6 C{13}2 H{1}16 N{14}1", "C{12}2 C{13}2 H{1}4 N{15}1 O{16}2", "128"));
             _TMT6plex.Add(new IsobaricTag("C{12}6 C{13}2 H{1}16 N{15}1", "C{12}2 C{13}2 H{1}4 N{14}1 O{16}2", "129"));
-            _TMT6plex.Add(new IsobaricTag("C{12}4 C{13}4 H{1}16 N{14}1", "C{12}4 H{1}5 N{15}4 O{16}2", "130"));
-            _TMT6plex.Add(new IsobaricTag("C{12}4 C{13}4 H{1}16 N{15}1", "C{12}4 H{1}5 N{14}4 O{16}2", "131"));
+            _TMT6plex.Add(new IsobaricTag("C{12}4 C{13}4 H{1}16 N{14}1", "C{12}4 H{1}4 N{15}1 O{16}2", "130"));
+            _TMT6plex.Add(new IsobaricTag("C{12}4 C{13}4 H{1}16 N{15}1", "C{12}4 H{1}4 N{14}1 O{16}2", "131"));
 
             _lysine6plex = new QuantitationChannelSet("Lysine 6-plex");
             _lysine6plex.Add(new Isotopologue("C-6 C{13}6 N-2 N{15}2", "C6 N2"));

@@ -6,13 +6,16 @@ using CSMSL.Proteomics;
 using CSMSL.Analysis.Identification;
 using CSMSL.Spectral;
 using CSMSL.Analysis.ExperimentalDesign;
+using CSMSL.IO;
 
 namespace CSMSL.Analysis.Quantitation
 {
     public class QuantifiedPeptide
     {
+        public static double RTWindow = 0.5;
+        public static double ResolutionMin = 100000;
         //internal ExperimentalSet ParentExperimentalSet;
-        HashSet<PeptideSpectralMatch> PSMs;
+        public HashSet<PeptideSpectralMatch> PSMs;
         public List<QuantifiedScan> QuantifiedScans;
         public Peptide Peptide { get; private set; }        
 
@@ -249,6 +252,80 @@ namespace CSMSL.Analysis.Quantitation
             }
 
             return Math.Pow(2, Math.Sqrt(variance / ((double)ratioCount - 1)));
+        }
+
+        public void GenerateQuantScans()
+        {
+            // MS1-based quant
+            Dictionary<int, Dictionary<string, List<PeptideSpectralMatch>>> sortedPSMs = SortPSMsByChargeAndDataFile();
+
+            foreach (KeyValuePair<int, Dictionary<string, List<PeptideSpectralMatch>>> chargeState in sortedPSMs)
+            {
+                foreach (KeyValuePair<string, List<PeptideSpectralMatch>> fileName in chargeState.Value)
+                {
+                    List<MSDataScan> scansToAdd = FindScansInRange(fileName.Key, fileName.Value);
+                    
+                    foreach(MSDataScan scan in scansToAdd)
+                    {
+                        QuantifiedScans.Add(new QuantifiedScan(scan, chargeState.Key));
+                    }
+                }
+            }
+
+            // MS2-based quant.
+            foreach (PeptideSpectralMatch psm in PSMs)
+            {
+                QuantifiedScans.Add(new QuantifiedScan(psm.Spectrum, psm.Charge));
+            }
+        }
+
+        private Dictionary<int, Dictionary<string,List<PeptideSpectralMatch>>> SortPSMsByChargeAndDataFile()
+        {
+            Dictionary<int, Dictionary<string, List<PeptideSpectralMatch>>> sortedPSMs = new Dictionary<int, Dictionary<string,List<PeptideSpectralMatch>>>();
+
+            foreach (PeptideSpectralMatch psm in PSMs)
+            {
+                Dictionary<string, List<PeptideSpectralMatch>> files = null;
+                List<PeptideSpectralMatch> psms = null;
+
+                // Check for existing charge state & file name
+                if (sortedPSMs.TryGetValue(psm.Charge, out files))
+                {
+                    // Add PSM to existing charge state & file name list
+                    if (files.TryGetValue(psm.FileName, out psms))
+                    {
+                        psms.Add(psm);
+                    }
+                    // Add new file name
+                    else
+                    {
+                        psms = new List<PeptideSpectralMatch>();
+                        psms.Add(psm);
+                        files = new Dictionary<string, List<PeptideSpectralMatch>>();
+                        files.Add(psm.FileName, psms);
+                    }
+                }
+                // Add new charge state & file name
+                else
+                {
+                    psms = new List<PeptideSpectralMatch>();
+                    psms.Add(psm);
+                    files = new Dictionary<string, List<PeptideSpectralMatch>>();
+                    files.Add(psm.FileName, psms);
+                    sortedPSMs.Add(psm.Charge, files);
+                }                
+            }
+
+            return sortedPSMs;
+        }
+
+        private List<MSDataScan> FindScansInRange(string fileName, List<PeptideSpectralMatch> psms)
+        {
+            List<MSDataScan> scans = new List<MSDataScan>();
+
+            //MSDataFile file = new ThermoRawFile(fileName);
+
+            return scans;
         }
 
         #region Static

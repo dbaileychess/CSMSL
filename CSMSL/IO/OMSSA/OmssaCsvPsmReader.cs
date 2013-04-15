@@ -107,6 +107,7 @@ namespace CSMSL.IO.OMSSA
                 PeptideSpectralMatch psm = new PeptideSpectralMatch();
                 psm.Peptide = peptide;
                 psm.Score = omssaPSM.EValue;
+                psm.Charge = omssaPSM.Charge;
                 psm.ScoreType = PeptideSpectralMatchScoreType.EValue;
                 psm.IsDecoy = omssaPSM.Defline.StartsWith("DECOY");
                 psm.SpectrumNumber = omssaPSM.SpectrumNumber;
