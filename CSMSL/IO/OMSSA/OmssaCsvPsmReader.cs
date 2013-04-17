@@ -111,6 +111,7 @@ namespace CSMSL.IO.OMSSA
                 psm.IsDecoy = omssaPSM.Defline.StartsWith("DECOY");
                 psm.SpectrumNumber = omssaPSM.SpectrumNumber;
                 psm.FileName = omssaPSM.FileName;
+                psm.Charge = omssaPSM.Charge;
 
                 string[] filenameparts = psm.FileName.Split('.');
                 if (_dataFiles.TryGetValue(filenameparts[0], out dataFile))
