@@ -108,6 +108,12 @@ namespace CSMSL.Analysis.Quantitation
             HashSet<QuantitationChannelSet> sets = new HashSet<QuantitationChannelSet>();
             Dictionary<IQuantitationChannel, HashSet<int>> locations = new Dictionary<IQuantitationChannel, HashSet<int>>();   
             HashSet<int> residues;
+
+            if (peptide.NTerminusModification != null)
+            {
+
+            }
+
             for (int i = 1; i <= peptide.Length; i++)
             {
                 if (peptide.TryGetModification(i, out mod))
