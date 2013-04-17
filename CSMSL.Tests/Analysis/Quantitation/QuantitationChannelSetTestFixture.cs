@@ -21,6 +21,7 @@ namespace CSMSL.Tests.Analysis.Quantitation
         private QuantitationChannelSet _lysine3plex;
         private QuantitationChannelSet _arginine3plex;
         private QuantitationChannelSet _tag4plex;
+        private ModificationCollection _lysineandTMT;
         private double tolerance = 0.0000001;
 
         [SetUp]
@@ -66,6 +67,10 @@ namespace CSMSL.Tests.Analysis.Quantitation
             _lysine3plex.Add(new Isotopologue("", "0"));
             _lysine3plex.Add(new Isotopologue("H-4 H{2}4", "D4"));
             _lysine3plex.Add(new Isotopologue("C-6 C{13}6 N-2 N{15}2", "C6 N2"));
+
+            _lysineandTMT = new ModificationCollection();
+            _lysineandTMT.Add(_lysine3plex);
+            _lysineandTMT.Add(_TMT6plex);
         }
 
         [Test]
@@ -175,12 +180,8 @@ namespace CSMSL.Tests.Analysis.Quantitation
         public void TMT6PlusSILAC3WithKPeptideCount()
         {
             Peptide pep = new Peptide("DEREK");
-            ModificationCollection col = new ModificationCollection();
-            col.Add(_lysine3plex);
-            col.Add(_TMT6plex);
-            pep.SetModification(col, 'K');
-            pep.SetModification(_TMT6plex, Terminus.N);
-            //pep.SetModification(_TMT6plex, 'K');
+            pep.SetModification(_lysineandTMT, ModificationSites.K);            
+            pep.SetModification(_TMT6plex, Terminus.N); 
             List<Peptide> peps = QuantitationChannelSet.GetUniquePeptides(pep).ToList();
             peps.Count.Should().Equal(18);
         }

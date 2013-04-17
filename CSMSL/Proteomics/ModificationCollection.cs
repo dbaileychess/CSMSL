@@ -46,7 +46,7 @@ namespace CSMSL.Proteomics
         }
 
         public void CopyTo(IMass[] array, int arrayIndex)
-        {
+        {            
             _modifications.CopyTo(array, arrayIndex);
         }
 

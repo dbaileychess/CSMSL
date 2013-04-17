@@ -4,6 +4,6 @@
     {
         Summed = 0,
         Average = 1,
-        Median = 2
+        Median = 2        
     }
 }
