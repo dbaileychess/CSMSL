@@ -42,7 +42,6 @@ namespace CSMSL.Proteomics
           {FragmentTypes.zdot, new ChemicalFormula("N-1H-1")},
         };
         
-
         private ChemicalFormula _chemicalFormula;
         private int _number;
 
@@ -57,9 +56,11 @@ namespace CSMSL.Proteomics
             _type = type;
             _number = number;
             _chemicalFormula = chemicalFormula;
-            _chemicalFormula.Add(_fragmentIonCaps[type]);
+            var cap = _fragmentIonCaps[type];
+            _chemicalFormula.Add(cap);
             _parent = parent;
             _mass = mass;
+            _mass += cap.Mass;
         }
 
         public ChemicalFormula ChemicalFormula
