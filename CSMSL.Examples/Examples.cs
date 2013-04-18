@@ -53,7 +53,7 @@ namespace CSMSL.Examples
         {
             // Examples coding
             //ChemicalFormulaExamples();
-            //PeptideExamples();
+            PeptideExamples();
                       
             // Example Objects
             //VennDiagramExamples();
@@ -65,7 +65,7 @@ namespace CSMSL.Examples
             //MsDataFileExamples.Start();
 
             // Omssa Reader
-            OmssaReader.Start();
+            //OmssaReader.Start();
 
             // MS/MS searching
             //MorpheusSearch.Start(Protease.Trypsin);

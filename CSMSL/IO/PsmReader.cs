@@ -49,7 +49,7 @@ namespace CSMSL.IO
         public void AddMSDataFile(MSDataFile dataFile)
         {
             _dataFiles.Add(dataFile.Name, dataFile);
-            dataFile.Open();
+            //dataFile.Open();
         }
 
         public void AddVariableModification(string chemicalFormula, string name)

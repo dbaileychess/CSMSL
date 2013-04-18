@@ -116,6 +116,8 @@ namespace CSMSL.IO.OMSSA
                 string[] filenameparts = psm.FileName.Split('.');
                 if (_dataFiles.TryGetValue(filenameparts[0], out dataFile))
                 {
+                    if (!dataFile.IsOpen)
+                        dataFile.Open();
                     psm.Spectrum = dataFile[psm.SpectrumNumber] as MsnDataScan;
                 }
 
