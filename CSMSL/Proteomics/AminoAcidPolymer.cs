@@ -309,7 +309,9 @@ namespace CSMSL.Proteomics
             {
                 start = Length - number;
                 end = Length;
-                mass.Add(CTerminus);                   
+
+                mass.Add(CTerminus);                  
+
                 if (CTerminusModification != null)
                 {
                     mass.Add(CTerminusModification);                                                       
@@ -317,7 +319,9 @@ namespace CSMSL.Proteomics
             }
             else
             {
-                mass.Add(NTerminus);               
+
+                mass.Add(NTerminus);              
+
                 if (NTerminusModification != null)
                 {
                     mass.Add(NTerminusModification);    
@@ -327,6 +331,7 @@ namespace CSMSL.Proteomics
             for (int i = start; i < end; i++)
             {
                 mass.Add(_aminoAcids[i].Mass);             
+
                 if ((mod = _modifications[i + 1]) != null)
                 {
                     mass.Add(mod);                                          
@@ -365,14 +370,18 @@ namespace CSMSL.Proteomics
 
                     if (type >= FragmentTypes.x)
                     {
+
                         mass.Add(CTerminus);                    
+
                         if (CTerminusModification != null)
                         {
                             mass.Add(CTerminusModification);                                                        
                         }                           
                         for (int i = end; i >= start; i--)
                         {
+
                             mass.Add(_aminoAcids[i]);                             
+
                             if ((mod = _modifications[i + 1]) != null)
                             {
                                 mass.Add(mod);         
@@ -382,7 +391,9 @@ namespace CSMSL.Proteomics
                     }
                     else
                     {
+
                         mass.Add(NTerminus);                                     
+
                         if (NTerminusModification != null)
                         {
                             mass.Add(NTerminusModification);                              
@@ -390,7 +401,9 @@ namespace CSMSL.Proteomics
 
                         for (int i = start; i <= end; i++)
                         {
+
                             mass.Add(_aminoAcids[i - 1]);                        
+
                             if ((mod = _modifications[i]) != null)
                             {
                                 mass.Add(mod);                                                                                  
