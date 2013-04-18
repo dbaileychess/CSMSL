@@ -376,6 +376,7 @@ namespace CSMSL.Proteomics
                         for (int i = end; i >= start; i--)
                         {
                             chemFormula.Add(_aminoAcids[i].ChemicalFormula);
+                            mass += _aminoAcids[i].Mass;
                             if ((mod = _modifications[i + 1]) != null)
                             {
                                 mass += mod.Mass;
@@ -397,6 +398,7 @@ namespace CSMSL.Proteomics
                         for (int i = start; i <= end; i++)
                         {
                             chemFormula.Add(_aminoAcids[i - 1].ChemicalFormula);
+                            mass += _aminoAcids[i - 1].Mass;
                             if ((mod = _modifications[i]) != null)
                             {
                                 mass += mod.Mass;
