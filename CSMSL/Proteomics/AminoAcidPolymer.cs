@@ -308,6 +308,7 @@ namespace CSMSL.Proteomics
                 start = Length - number;
                 end = Length;
                 chemFormula.Add(CTerminus);
+                mass += CTerminus.Mass;
                 if (CTerminusModification != null)
                 {
                     mass += CTerminusModification.Mass;
@@ -317,6 +318,7 @@ namespace CSMSL.Proteomics
             else
             {
                 chemFormula.Add(NTerminus);
+                mass += NTerminus.Mass;
                 if (NTerminusModification != null)
                 {
                     mass += NTerminusModification.Mass;                 
@@ -327,6 +329,7 @@ namespace CSMSL.Proteomics
             for (int i = start; i < end; i++)
             {
                 chemFormula.Add(_aminoAcids[i].ChemicalFormula);
+                mass += _aminoAcids[i].Mass;
                 if ((mod = _modifications[i + 1]) != null)
                 {
                     mass += mod.Mass;
@@ -368,6 +371,7 @@ namespace CSMSL.Proteomics
                     if (type >= FragmentTypes.x)
                     {
                         chemFormula.Add(CTerminus);
+                        mass += CTerminus.Mass;
                         if (CTerminusModification != null)
                         {
                             mass += CTerminusModification.Mass;
@@ -389,6 +393,7 @@ namespace CSMSL.Proteomics
                     else
                     {
                         chemFormula.Add(NTerminus);
+                        mass += NTerminus.Mass;
                         if (NTerminusModification != null)
                         {
                             mass += NTerminusModification.Mass;
