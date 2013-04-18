@@ -209,7 +209,7 @@ namespace CSMSL.Examples
 
         private static void WriteFragmentToConsole(Fragment frag)
         {
-            Console.WriteLine("{0,-4} {1,-20} {2,-5}", frag, frag.ChemicalFormula, frag.ChemicalFormula.Mass.Monoisotopic);
+            Console.WriteLine("{0,-4} {1,-20}", frag, frag.Mass.Monoisotopic);
         }
     }
 }

@@ -22,7 +22,7 @@ using System;
 
 namespace CSMSL.Chemistry
 {
-    public class Mass : IComparable<Mass>, IEquatable<Mass>, IMass
+    public class Mass : IMass, IComparable<Mass>, IEquatable<Mass> 
     {
         /// <summary>
         /// The mass of all the isotopes (in unified atomic mass units)
@@ -34,22 +34,26 @@ namespace CSMSL.Chemistry
         /// </summary>
         public double Average { get; internal set;}   
 
-        /// <summary>
-        /// Create a default mass with the Monoisotpic and Average mass of 0
-        /// </summary>
-        public Mass()
-            : this(0, 0) { }
-
         public Mass(IMass item)
             : this(item.Mass.Monoisotopic, item.Mass.Average) { }
-
-        public Mass(Mass item)
-            : this(item.Monoisotopic, item.Average) { }
-
-        public Mass(double monoisotopic, double average)
+               
+        public Mass(double monoisotopic = 0, double average = 0)
         {
             Monoisotopic = monoisotopic;
             Average = average;
+        }
+
+        /// <summary>
+        /// Adds the mass of another object to this
+        /// </summary>
+        /// <param name="item">The item which possesses a mass</param>
+        public void Add(IMass item)
+        {
+            if (item != null)
+            {
+                Monoisotopic += item.Mass.Monoisotopic;
+                Average += item.Mass.Average;
+            }
         }
 
         /// <summary>
@@ -74,14 +78,22 @@ namespace CSMSL.Chemistry
                 
         public bool Equals(Mass other)
         {
-            if (ReferenceEquals(null, other)) return false;
-            if (ReferenceEquals(this, other)) return true;
-            return Monoisotopic == other.Monoisotopic && Average == other.Average;
+            return Monoisotopic.Equals(other.Monoisotopic);
+        }
+
+        public override bool Equals(object obj)
+        {
+            Mass other = obj as Mass;
+            if (other != null)
+            {
+                return Equals(other);
+            }
+            return false;           
         }
 
         public override int GetHashCode()
         {
-            return Monoisotopic.GetHashCode() ^ Average.GetHashCode();
+            return Monoisotopic.GetHashCode();
         }
 
         Mass IMass.Mass
@@ -91,14 +103,14 @@ namespace CSMSL.Chemistry
 
         #region Static Methods
 
-        public static Mass operator +(Mass left, Mass right)
+        public static Mass operator +(Mass left, IMass right)
         {
-            return new Mass(left.Monoisotopic + right.Monoisotopic, left.Average + right.Average);
+            return new Mass(left.Monoisotopic + right.Mass.Monoisotopic, left.Average + right.Mass.Average);
         }
 
-        public static Mass operator -(Mass left, Mass right)
+        public static Mass operator -(Mass left, IMass right)
         {
-            return new Mass(left.Monoisotopic - right.Monoisotopic, left.Average - right.Average);
+            return new Mass(left.Monoisotopic - right.Mass.Monoisotopic, left.Average - right.Mass.Average);
         }
 
         public static Mass operator /(Mass left, int right)
@@ -115,9 +127,9 @@ namespace CSMSL.Chemistry
         /// Calculates the mass of a given m/z and charge, assuming a proton is the charge donator
         /// </summary>
         /// <param name="mz">The given m/z</param>
-        /// <param name="charge">The given charge</param>
+        /// <param name="charge">The given charge</param>    
         /// <returns>The mass</returns>
-        public static double MassFromMz(double mz, int charge)
+        public static double MassFromMz(double mz, int charge )
         {
             if (mz == 0) return 0;
             return Math.Abs(charge) * mz - charge * Constants.PROTON;
@@ -135,16 +147,16 @@ namespace CSMSL.Chemistry
             return mass / Math.Abs(charge) + Math.Sign(charge) * Constants.PROTON;
         }
 
-        /// <summary>
-        /// Calculates the spacing of isotopes (C13 primarily) in m/z space at a given
-        /// charge state
-        /// </summary>
-        /// <param name="charge">The charge state to calculate the spacing in</param>
-        /// <returns>The distance (in Th) between successive isotopes</returns>
-        public static double GetPeakSpacing(int charge)
-        {
-            return (Constants.CARBON13 - Constants.CARBON) / Math.Abs(charge);
-        }
+        ///// <summary>
+        ///// Calculates the spacing of isotopes (C13 primarily) in m/z space at a given
+        ///// charge state
+        ///// </summary>
+        ///// <param name="charge">The charge state to calculate the spacing in</param>
+        ///// <returns>The distance (in Th) between successive isotopes</returns>
+        //public static double GetPeakSpacing(int charge)
+        //{
+        //    return (Constants.CARBON13 - Constants.CARBON) / Math.Abs(charge);
+        //}
 
         #endregion Static Methods
 

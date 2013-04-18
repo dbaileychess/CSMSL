@@ -201,9 +201,12 @@ namespace CSMSL.Tests.Analysis.Quantitation
         public void NeuCode2PlusMTRAQ3WithKPeptideCount()
         {
             Peptide pep = new Peptide("DEREK");
-            pep.SetModification(_lysine2plex, 'K');
-            pep.SetModification(_mTRAQ3plex, 1);
-            pep.SetModification(_mTRAQ3plex, 'K');
+            ModificationCollection col = new ModificationCollection("K");
+            col.Add(_lysine2plex);
+            col.Add(_mTRAQ3plex);
+
+            pep.SetModification(col, 'K');
+            pep.SetModification(_mTRAQ3plex, Terminus.N);      
             List<Peptide> peps = QuantitationChannelSet.GetUniquePeptides(pep).ToList();
             peps.Count.Should().Equal(6);
         }
@@ -243,9 +246,12 @@ namespace CSMSL.Tests.Analysis.Quantitation
         public void NeuCodeTag4PlusSILACWithKPeptideCount()
         {
             Peptide pep = new Peptide("DEREK");
-            pep.SetModification(_lysine3plex, 'K');
-            pep.SetModification(_tag4plex, 1);
-            pep.SetModification(_tag4plex, 'K');
+            ModificationCollection col = new ModificationCollection("K");
+            col.Add(_lysine3plex);
+            col.Add(_tag4plex);
+
+            pep.SetModification(col, 'K');
+            pep.SetModification(_tag4plex, Terminus.N);
             List<Peptide> peps = QuantitationChannelSet.GetUniquePeptides(pep).ToList();
             peps.Count.Should().Equal(12);
         }
