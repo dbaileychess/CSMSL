@@ -56,6 +56,10 @@ namespace CSMSL.Proteomics
         private int _length;
         private Mass _mass;
 
+        internal bool IsDirty { get { return _isDirty;}  set { _isDirty = value;} }
+
+        internal IMass[] Modifications { get { return _modifications; } }
+
         #region Constructors
 
         public AminoAcidPolymer()
@@ -646,8 +650,7 @@ namespace CSMSL.Proteomics
             }
             _isDirty = true;
         }
-
-
+        
         /// <summary>
         /// Clear all modifications from this amino acid polymer.
         /// Includes N and C terminus modifications.
@@ -661,33 +664,7 @@ namespace CSMSL.Proteomics
         #endregion
 
         #region ChemicalFormula
-
-        //private bool _isExactChemicalFormula;
-
-        //public bool IsExactChemicalFormula
-        //{
-        //    get
-        //    {
-        //        if (_isDirty)
-        //        {
-        //            CleanUp();
-        //        }
-        //        return _isExactChemicalFormula;
-        //    }
-        //}
-
-        //public ChemicalFormula ChemicalFormula
-        //{
-        //    get
-        //    {
-        //        if (_isDirty)
-        //        {
-        //            CleanUp();
-        //        }
-        //        return _baseChemicalFormula;
-        //    }
-        //}
-
+        
         public bool TryGetChemicalFormula(out ChemicalFormula formula)
         {
             formula = new ChemicalFormula();
@@ -941,10 +918,9 @@ namespace CSMSL.Proteomics
 
             _sequence = baseSeqSB.ToString();
             _isSequenceDirty = false;
-             
-            Array.Resize(ref _aminoAcids, index);
-            Array.Resize(ref _modifications, index + 2);
-            _length = index;        
+            _length = index;
+            Array.Resize(ref _aminoAcids, _length);
+            Array.Resize(ref _modifications, _length + 2);          
             _isDirty = true;             
         }
 

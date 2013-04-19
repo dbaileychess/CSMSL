@@ -170,6 +170,14 @@ namespace CSMSL.Tests.Proteomics
         }
 
         [Test]
+        public void ParseDoubleModificationToString()
+        {
+            Peptide peptide = new Peptide("T[TMT 6-plex]HGEAK[25.132]K[TMT 6-plex]");
+
+            peptide.ToString().Should().Equal("T[TMT 6-plex]HGEAK[25.132]K[TMT 6-plex]");
+        }
+
+        [Test]
         public void ParseNamedChemicalModificationToString()
         {
             Peptide peptide = new Peptide("T[TMT 6-plex]HGEAK[Acetyl]K[TMT 6-plex]");

@@ -70,6 +70,19 @@ namespace CSMSL.Chemistry
         }
 
         /// <summary>
+        /// Removes the mass of another object to this
+        /// </summary>
+        /// <param name="item">The item which possesses a mass</param>
+        public void Remove(Mass item)
+        {
+            if (item != null)
+            {
+                Monoisotopic -= item.Monoisotopic;
+                Average -= item.Average;
+            }
+        }
+
+        /// <summary>
         /// Calculates the m/z for the monoisotopic mass
         /// </summary>
         /// <param name="charge">The charge state</param>
@@ -81,7 +94,7 @@ namespace CSMSL.Chemistry
 
         public override string ToString()
         {
-            return Monoisotopic.ToString("F5");            
+            return Monoisotopic.ToString("G5");            
         }
 
         public int CompareTo(Mass other)

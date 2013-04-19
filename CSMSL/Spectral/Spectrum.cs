@@ -84,9 +84,25 @@ namespace CSMSL.Spectral
             return true;
         }
 
-        public void RemovePeaks(IEnumerable<IRange<double>> ranges)
+        public bool RemovePeaks(IEnumerable<IRange<double>> ranges)
         {
+            int removed = 0;
+            IPeak peak;
+            foreach (IRange<double> range in ranges)
+            {
+                int index = Array.BinarySearch(_peaks, range.Minimum);
+                if (index < 0)
+                    index = ~index;      
+            }
 
+            return removed > 0;
+        }
+
+        public Spectrum<T> Clean(IEnumerable<IRange<double>> ranges)
+        {
+            Spectrum<T> spec = new Spectrum<T>(_peaks);
+            spec.RemovePeaks(ranges);
+            return spec;
         }
 
         private void LoadPeaks(IEnumerable<T> peaks)
@@ -99,7 +115,7 @@ namespace CSMSL.Spectral
         {
             return string.Format("{0:G0} Peaks", Count);
         }
-
+    
         public void Clear()
         {
             if (_peaks != null)

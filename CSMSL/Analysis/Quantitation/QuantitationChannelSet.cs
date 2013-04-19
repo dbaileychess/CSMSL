@@ -41,7 +41,7 @@ namespace CSMSL.Analysis.Quantitation
         public IQuantitationChannel Add(IQuantitationChannel channel)
         {
             _channels.Add(channel.ReporterMass.Monoisotopic, channel);
-            _totalMass += channel.Mass;        
+            _totalMass.Add(channel.Mass);        
             return channel;
         }
 
@@ -55,7 +55,7 @@ namespace CSMSL.Analysis.Quantitation
         {
             if (_channels.Remove(channel.Mass.Monoisotopic))
             {
-                _totalMass -= channel.Mass;
+                _totalMass.Remove(channel.Mass);
                 return true;
             }
             return false;
@@ -154,45 +154,36 @@ namespace CSMSL.Analysis.Quantitation
             Dictionary<IQuantitationChannel, HashSet<int>> locations = new Dictionary<IQuantitationChannel, HashSet<int>>();   
             HashSet<int> residues;
 
-            if (peptide.NTerminusModification != null)
-            {
+            IMass[] mods = peptide.Modifications;
+            int modLength = mods.Length;
 
-            }
-
-            for (int i = 1; i <= peptide.Length; i++)
+            for (int i = 0; i < modLength; i++)
             {
-                if (peptide.TryGetModification(i, out mod))
+                if (mods[i] != null)
                 {
-                    modCol = mod as ModificationCollection;
-                    if (modCol != null)
+                    mod = mods[i];
+                    
+                    List<QuantitationChannelSet> channelsets = new List<QuantitationChannelSet>();
+
+                    if ((modCol = mod as ModificationCollection) != null)                     
                     {
                         foreach (IMass mod2 in modCol)
-                        {
-                            quantSetMod = mod2 as QuantitationChannelSet;
-                            if (quantSetMod != null)
+                        {                            
+                            if ((quantSetMod = mod2 as QuantitationChannelSet) != null)
                             {
-                                sets.Add(quantSetMod);
-                                foreach (IQuantitationChannel channel in quantSetMod.GetChannels())
-                                {
-                                    if (locations.TryGetValue(channel, out residues))
-                                    {
-                                        residues.Add(i);
-                                    }
-                                    else
-                                    {
-                                        residues = new HashSet<int>() { i };
-                                        locations.Add(channel, residues);
-                                    }
-                                }
+                                channelsets.Add(quantSetMod);
                             }
                         }
                     }
-
-                    quantSetMod = mod as QuantitationChannelSet;
-                    if (quantSetMod != null)
+                    else if ((quantSetMod = mod as QuantitationChannelSet) != null)
                     {
-                        sets.Add(quantSetMod);
-                        foreach (IQuantitationChannel channel in quantSetMod.GetChannels())
+                        channelsets.Add(quantSetMod);
+                    }
+
+                    foreach (QuantitationChannelSet channelset in channelsets)
+                    {
+                        sets.Add(channelset);
+                        foreach (IQuantitationChannel channel in channelset.GetChannels())
                         {
                             if (locations.TryGetValue(channel, out residues))
                             {
@@ -204,9 +195,7 @@ namespace CSMSL.Analysis.Quantitation
                                 locations.Add(channel, residues);
                             }
                         }
-                    }
-
-
+                    }                 
                 }
             }
 
@@ -221,7 +210,11 @@ namespace CSMSL.Analysis.Quantitation
                     foreach (IQuantitationChannel channel in set.GetChannels())
                     {
                         Peptide toReturn = new Peptide(peptide, true);
-                        toReturn.SetModification(channel, locations[channel].ToArray());                       
+                        foreach (int residue in locations[channel])
+                        {
+                            toReturn.Modifications[residue] = channel;
+                        }
+                        toReturn.IsDirty = true;                  
                         yield return toReturn;
                     }
                 }
@@ -256,8 +249,9 @@ namespace CSMSL.Analysis.Quantitation
                     }
                     foreach (KeyValuePair<int, IMass> kvp in modsToAdd)
                     {
-                        toReturn.SetModification(kvp.Value, kvp.Key);
+                        toReturn.Modifications[kvp.Key] = kvp.Value;                        
                     }
+                    toReturn.IsDirty = true;
                     yield return toReturn;
                 }
             }
