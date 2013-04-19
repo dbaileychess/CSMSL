@@ -203,7 +203,6 @@ namespace CSMSL.Chemistry
             }
         }
 
-
         /// <summary>
         /// Gets the string representation (Hill Notation) of this chemical formula
         /// </summary>

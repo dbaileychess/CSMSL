@@ -57,6 +57,19 @@ namespace CSMSL.Chemistry
         }
 
         /// <summary>
+        /// Adds the mass of another object to this
+        /// </summary>
+        /// <param name="item">The item which possesses a mass</param>
+        public void Add(Mass item)
+        {
+            if (item != null)
+            {
+                Monoisotopic += item.Monoisotopic;
+                Average += item.Average;
+            }
+        }
+
+        /// <summary>
         /// Calculates the m/z for the monoisotopic mass
         /// </summary>
         /// <param name="charge">The charge state</param>
@@ -68,7 +81,7 @@ namespace CSMSL.Chemistry
 
         public override string ToString()
         {
-            return string.Format("{0:F5} ({1:F5})", Monoisotopic, Average);
+            return Monoisotopic.ToString("F5");            
         }
 
         public int CompareTo(Mass other)

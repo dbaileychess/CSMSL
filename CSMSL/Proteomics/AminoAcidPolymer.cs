@@ -42,17 +42,16 @@ namespace CSMSL.Proteomics
         /// </summary>
         public static readonly ChemicalFormula DefaultNTerminus = new ChemicalFormula("H");
 
-
         private static readonly Regex _sequenceRegex = new Regex(@"([A-Z])(?:\[([\w\{\}]+)\])?", RegexOptions.Compiled);
         private static readonly Regex _validateSequenceRegex = new Regex("^(" + _sequenceRegex.ToString() + ")+$", RegexOptions.Compiled);
         
         private IChemicalFormula _cTerminus;
         private IChemicalFormula _nTerminus;
         private IMass[] _modifications;
-        private IAminoAcid[] _aminoAcids;       
-        private ChemicalFormula _baseChemicalFormula;
+        private IAminoAcid[] _aminoAcids;   
         private bool _isDirty;
         private bool _isSequenceDirty;
+        private string _sequence;
         private StringBuilder _sequenceSB;
         private int _length;
         private Mass _mass;
@@ -199,9 +198,7 @@ namespace CSMSL.Proteomics
                 }
                 return _mass;
             } 
-        }
-        
-        private string _sequence;
+        }   
 
         /// <summary>
         /// The base amino acid sequence
@@ -665,31 +662,31 @@ namespace CSMSL.Proteomics
 
         #region ChemicalFormula
 
-        private bool _isExactChemicalFormula;
+        //private bool _isExactChemicalFormula;
 
-        public bool IsExactChemicalFormula
-        {
-            get
-            {
-                if (_isDirty)
-                {
-                    CleanUp();
-                }
-                return _isExactChemicalFormula;
-            }
-        }
+        //public bool IsExactChemicalFormula
+        //{
+        //    get
+        //    {
+        //        if (_isDirty)
+        //        {
+        //            CleanUp();
+        //        }
+        //        return _isExactChemicalFormula;
+        //    }
+        //}
 
-        public ChemicalFormula ChemicalFormula
-        {
-            get
-            {
-                if (_isDirty)
-                {
-                    CleanUp();
-                }
-                return _baseChemicalFormula;
-            }
-        }
+        //public ChemicalFormula ChemicalFormula
+        //{
+        //    get
+        //    {
+        //        if (_isDirty)
+        //        {
+        //            CleanUp();
+        //        }
+        //        return _baseChemicalFormula;
+        //    }
+        //}
 
         public bool TryGetChemicalFormula(out ChemicalFormula formula)
         {
@@ -715,9 +712,8 @@ namespace CSMSL.Proteomics
 
             // Handle Amino Acid Residues
             for (int i = 0; i < _length; i++)
-            {
-                IAminoAcid aa = _aminoAcids[i];
-                formula.Add(aa.ChemicalFormula);
+            {               
+                formula.Add(_aminoAcids[i].ChemicalFormula);
             }           
 
             return true;
@@ -791,38 +787,20 @@ namespace CSMSL.Proteomics
             {
                 _sequenceSB.Clear();
             }
-
-            if (_baseChemicalFormula == null)
-            {
-                _baseChemicalFormula = new ChemicalFormula();
-            }
-            else
-            {
-                _baseChemicalFormula.Clear();
-            }
-
-            _isExactChemicalFormula = true;
+           
             _mass = new Mass();
             
             StringBuilder baseSeqSB = new StringBuilder();
-            IMass mod = null;
-            IChemicalFormula chemMod = null;
+            IMass mod = null;          
 
-            // Handle N-Terminus            
-            _mass += _nTerminus.Mass;
-            _baseChemicalFormula.Add(_nTerminus.ChemicalFormula);
+            // Handle N-Terminus
+            _mass.Add(_nTerminus.Mass);          
+        
+            // Handle N-Terminus Modification
             if ((mod = _modifications[0]) != null)
-            {                
-                _mass += mod.Mass;
-                chemMod = mod as IChemicalFormula;               
-                if (chemMod == null)
-                {
-                    _isExactChemicalFormula = false;
-                }
-                else
-                {
-                    _baseChemicalFormula.Add(chemMod.ChemicalFormula);
-                }
+            {
+                _mass.Add(mod.Mass);
+            
                 _sequenceSB.Append('[');
                 _sequenceSB.Append(mod);
                 _sequenceSB.Append("]-");
@@ -832,44 +810,31 @@ namespace CSMSL.Proteomics
             for (int i = 0; i < _length; i++)
             {
                 IAminoAcid aa = _aminoAcids[i];
-                _baseChemicalFormula.Add(aa.ChemicalFormula);
-                _mass += aa.Mass;
+                _mass.Add(aa.Mass);               
+              
                 char letter = aa.Letter;
                 _sequenceSB.Append(letter);
                 baseSeqSB.Append(letter);
-                if ((mod = _modifications[i + 1]) != null)  // Mods are 1-based for the N and C-terminus
+
+                // Handle Amino Acid Modification (1-based)
+                if ((mod = _modifications[i + 1]) != null)  
                 {
-                    _mass += mod.Mass;
-                    chemMod = mod as IChemicalFormula;
-                    if (chemMod == null)
-                    {
-                        _isExactChemicalFormula = false;
-                    }
-                    else
-                    {
-                        _baseChemicalFormula.Add(chemMod.ChemicalFormula);
-                    }
+                    _mass.Add(mod.Mass);
+                  
                     _sequenceSB.Append('[');
                     _sequenceSB.Append(mod);
                     _sequenceSB.Append(']');
                 }
             }
 
-            // Handle C-Terminus          
-            _mass += _cTerminus.Mass;
-            _baseChemicalFormula.Add(_cTerminus.ChemicalFormula);
+            // Handle C-Terminus         
+            _mass.Add(_cTerminus.Mass);
+          
+            // Handle C-Terminus Modification
             if ((mod = _modifications[_length + 1]) != null)
-            {               
-                _mass += mod.Mass;
-                chemMod = mod as IChemicalFormula;
-                if (chemMod == null)
-                {
-                    _isExactChemicalFormula = false;
-                }
-                else
-                {
-                    _baseChemicalFormula.Add(chemMod.ChemicalFormula);
-                }
+            {
+                _mass.Add(mod.Mass);              
+              
                 _sequenceSB.Append("-[");
                 _sequenceSB.Append(mod);
                 _sequenceSB.Append(']');
@@ -898,22 +863,27 @@ namespace CSMSL.Proteomics
                         inMod = false;
                       
                         string modString = modSB.ToString();
-                        modSB.Clear();
-
-                        NamedChemicalFormula modification = null;
+                        modSB.Clear();                   
+                        IMass modification = null;
                         switch (modString)
                         {
                             case "#": // Make the modification unverisally heavy (all C12 and N14s are promoted to C13 and N15s)
                                 modification = NamedChemicalFormula.MakeHeavy(_aminoAcids[index - 1]);
                                 break;
                             default:
-                                if (NamedChemicalFormula.TryGetModification(modString, out modification))
+                                NamedChemicalFormula formula;
+                                double mass;
+                                if (NamedChemicalFormula.TryGetModification(modString, out formula))
                                 {
-                                    // do nothing
+                                    modification = formula;
                                 }
                                 else if (ChemicalFormula.IsValidChemicalFormula(modString))
                                 {
-                                    modification = new NamedChemicalFormula(modString);
+                                    modification = new ChemicalFormula(modString);
+                                }
+                                else if (double.TryParse(modString, out mass))
+                                {
+                                    modification = new Mass(mass);
                                 }
                                 else
                                 {

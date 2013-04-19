@@ -115,6 +115,7 @@ namespace CSMSL.Proteomics
         private char _letter;
         private string _name;
         private string _symbol;
+        private Mass _mass;
 
         internal AminoAcid(string name, char oneLetterAbbreviation, string threeLetterAbbreviation, string chemicalFormula, ModificationSites site)
             : this(name, oneLetterAbbreviation, threeLetterAbbreviation, new ChemicalFormula(chemicalFormula), site) { }
@@ -125,6 +126,7 @@ namespace CSMSL.Proteomics
             _letter = oneLetterAbbreviation;
             _symbol = threeLetterAbbreviation;
             _chemicalFormula = chemicalFormula;
+            _mass = new Mass(_chemicalFormula.Mass);
             Site = site;
         }
       
@@ -144,7 +146,7 @@ namespace CSMSL.Proteomics
 
         public Mass Mass
         {
-            get { return _chemicalFormula.Mass; }
+            get { return _mass; }
         }
 
         public string Name

@@ -122,6 +122,7 @@ namespace CSMSL.IO.OMSSA
 
                 yield return psm;
             }
+            yield break;
         }          
 
         protected override void Dispose(bool disposing)
