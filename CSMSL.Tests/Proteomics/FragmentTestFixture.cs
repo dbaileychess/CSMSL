@@ -60,71 +60,64 @@ namespace CSMSL.Tests.Proteomics
             Fragment fragment = MockPeptideEveryAminoAcid.CalculateFragment(FragmentTypes.a, 1);
             ChemicalFormula formula = new ChemicalFormula("C{13}4C10N{15}N2O2H25");
             
-            fragment.ChemicalFormula.Should().Equal(formula);
+            fragment.Mass.Should().Equal(formula.Mass);
         }
 
         [Test]
         public void FragmentCTerminalMod()
         {
             MockPeptideEveryAminoAcid.SetModification(NamedChemicalFormula.TMT6plex, Terminus.C);
-            Fragment fragment = MockPeptideEveryAminoAcid.CalculateFragment(FragmentTypes.x, 1);
-            ChemicalFormula formula = new ChemicalFormula("C{13}4C18N{15}N2O6H29");
+            Fragment fragment = MockPeptideEveryAminoAcid.CalculateFragment(FragmentTypes.x, 1);          
 
-            fragment.ChemicalFormula.Should().Equal(formula);
+            fragment.Mass.Monoisotopic.Should().Equal(436.21608990639004);
         }
 
         [Test]       
         public void FragmentChemicalFormulaAIon()
         {
-            Fragment fragment = MockPeptideEveryAminoAcid.CalculateFragment(FragmentTypes.a, 1);
-            ChemicalFormula formula = new ChemicalFormula("C2H5N");
+            Fragment fragment = MockPeptideEveryAminoAcid.CalculateFragment(FragmentTypes.a, 1);          
 
-            fragment.ChemicalFormula.Should().Equal(formula);
+            fragment.Mass.Monoisotopic.Should().Equal(43.042199165149988);
         }
 
         [Test]
         public void FragmentChemicalFormulaBIon()
         {
-            Fragment fragment = MockPeptideEveryAminoAcid.CalculateFragment(FragmentTypes.b, 1);
-            ChemicalFormula formula = new ChemicalFormula("C3H5NO");
+            Fragment fragment = MockPeptideEveryAminoAcid.CalculateFragment(FragmentTypes.b, 1);            
 
-            fragment.ChemicalFormula.Should().Equal(formula);
+            fragment.Mass.Monoisotopic.Should().Equal(71.037113784709987);
         }
 
         [Test]
         public void FragmentChemicalFormulaCIon()
         {
             Fragment fragment = MockPeptideEveryAminoAcid.CalculateFragment(FragmentTypes.c, 1);
-            ChemicalFormula formula = new ChemicalFormula("C3H8N2O");
-
-            fragment.ChemicalFormula.Should().Equal(formula);
+ 
+            fragment.Mass.Monoisotopic.Should().Equal(88.063662885719992);
         }
 
         [Test]
         public void FragmentChemicalFormulaXIon()
         {
             Fragment fragment = MockPeptideEveryAminoAcid.CalculateFragment(FragmentTypes.x, 1);
-            ChemicalFormula formula = new ChemicalFormula("C10H9NO4");
 
-            fragment.ChemicalFormula.Should().Equal(formula);
+            fragment.Mass.Monoisotopic.Should().Equal(207.05315777167004);
         }
 
         [Test]
         public void FragmentChemicalFormulaYIon()
         {
             Fragment fragment = MockPeptideEveryAminoAcid.CalculateFragment(FragmentTypes.y, 1);
-            ChemicalFormula formula = new ChemicalFormula("C9H11NO3");
 
-            fragment.ChemicalFormula.Should().Equal(formula);
+            fragment.Mass.Monoisotopic.Should().Equal(181.07389321625004);
         }
 
         [Test]
         public void FragmentChemicalFormulaZIon()
         {
             Fragment fragment = MockPeptideEveryAminoAcid.CalculateFragment(FragmentTypes.z, 1);
-            ChemicalFormula formula = new ChemicalFormula("C9H8O3");
 
-            fragment.ChemicalFormula.Should().Equal(formula);
+            fragment.Mass.Monoisotopic.Should().Equal(164.04734411524004);
         }
     }
 }

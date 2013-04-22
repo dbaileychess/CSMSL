@@ -7,7 +7,7 @@ using CSMSL.Chemistry;
 namespace CSMSL.Analysis.Quantitation
 {
     public class IsobaricTag : NamedChemicalFormula, IChemicalFormula, IQuantitationChannel 
-    {
+    {   
         private ChemicalFormula _reporterFormula;
 
         private ChemicalFormula _balanceFormula;

@@ -31,7 +31,7 @@ namespace CSMSL.Proteomics
         public void Add(IMass item)
         {
             _modifications.Add(item);
-            _totalMass += item.Mass;
+            _totalMass.Add(item.Mass);
         }
 
         public void Clear()
@@ -64,7 +64,7 @@ namespace CSMSL.Proteomics
         {
             if (_modifications.Remove(item))
             {
-                _totalMass -= item.Mass;
+                _totalMass.Remove(item.Mass);
                 return true;
             }
             return false;

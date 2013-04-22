@@ -61,11 +61,17 @@ namespace CSMSL.Examples
             // Example programs
             //TrypticDigestion.Start(Protease.Trypsin);
 
+            // Example Protein Grouping
+            //ProteinGroupingExample.Start(Protease.Trypsin);
+
+            // Example TMT 6-plex quantitation
+            TMT6plexExample.Start();
+
             //Example IO
             //MsDataFileExamples.Start();
 
             // Omssa Reader
-            OmssaReader.Start();
+            //OmssaReader.Start();
 
             // MS/MS searching
             //MorpheusSearch.Start(Protease.Trypsin);
@@ -132,6 +138,9 @@ namespace CSMSL.Examples
             {
                 WriteFragmentToConsole(fragment);
             }
+
+            Peptide peptide2 = new Peptide("ACDEFGH[25.34234]IKLMNPQRSTVWY");
+            WritePeptideToConsole(peptide2);
         }
 
         /// <summary>
@@ -188,9 +197,7 @@ namespace CSMSL.Examples
             formula4 = new ChemicalFormula("C4H3NO");
             Console.WriteLine("Are {0} and {1} equivalent? {2}", formula3, formula4, formula3.Equals(formula4));
 
-            // Many physical things have chemical formulas (e.g. Peptides) and the interface IChemicalFormula allows many methods to work on a variety of different types of objects
-            Peptide pep = new Peptide("DEREK");
-            WriteFormulaToConsole(pep.ChemicalFormula);
+
         }
 
         /// <summary>
@@ -204,12 +211,14 @@ namespace CSMSL.Examples
 
         private static void WritePeptideToConsole(Peptide peptide)
         {
-            Console.WriteLine("{0,-5} {1,-5} {2,-5}", peptide, peptide.ChemicalFormula, peptide.ChemicalFormula.Mass.Monoisotopic);
+            ChemicalFormula formula;
+            peptide.TryGetChemicalFormula(out formula);
+            Console.WriteLine("{0,-5} {1,-5} {2,-5}", peptide, formula, peptide.Mass.Monoisotopic);
         }
 
         private static void WriteFragmentToConsole(Fragment frag)
         {
-            Console.WriteLine("{0,-4} {1,-20} {2,-5}", frag, frag.ChemicalFormula, frag.ChemicalFormula.Mass.Monoisotopic);
+            Console.WriteLine("{0,-4} {1,-20}", frag, frag.Mass.Monoisotopic);
         }
     }
 }

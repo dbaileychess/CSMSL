@@ -47,7 +47,7 @@ namespace CSMSL.Examples
                     }
                     prots.Add(protein);
                 }
-            }
+            }       
             watch.Stop();
             Console.WriteLine("{0:N0} proteins produced {1:N0} peptides using {2:N0} missed clevages", prots.Count, peps.Count, maxMissed);
             Console.WriteLine("Time elapsed: {0}", watch.Elapsed);

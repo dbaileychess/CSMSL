@@ -72,6 +72,11 @@ namespace CSMSL
             return new MassTolerance(MassToleranceType.PPM, value);
         }
 
+        public static MassTolerance FromDA(double value)
+        {
+            return new MassTolerance(MassToleranceType.DA, value);
+        }
+
         public override string ToString()
         {
             return string.Format("{0:f4} {1}", _value, Enum.GetName(typeof(MassToleranceType), _type));

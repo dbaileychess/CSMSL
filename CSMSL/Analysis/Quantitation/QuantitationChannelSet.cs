@@ -9,6 +9,19 @@ namespace CSMSL.Analysis.Quantitation
 {
     public class QuantitationChannelSet: IMass
     {
+        public static readonly QuantitationChannelSet TMT6Plex;
+
+        static QuantitationChannelSet()
+        {
+            TMT6Plex = new QuantitationChannelSet("TMT 6-Pex", QuantitationChannelSetMassType.Average);
+            TMT6Plex.Add(new IsobaricTag("C{12}8 H{1}16 N{14}1", "C{13}4 H{1}4 N{15}1 O{16}2", "126"));
+            TMT6Plex.Add(new IsobaricTag("C{12}8 H{1}16 N{15}1", "C{13}4 H{1}4 N{14}1 O{16}2", "127"));
+            TMT6Plex.Add(new IsobaricTag("C{12}6 C{13}2 H{1}16 N{14}1", "C{12}2 C{13}2 H{1}4 N{15}1 O{16}2", "128"));
+            TMT6Plex.Add(new IsobaricTag("C{12}6 C{13}2 H{1}16 N{15}1", "C{12}2 C{13}2 H{1}4 N{14}1 O{16}2", "129"));
+            TMT6Plex.Add(new IsobaricTag("C{12}4 C{13}4 H{1}16 N{14}1", "C{12}4 H{1}5 N{15}4 O{16}2", "130"));
+            TMT6Plex.Add(new IsobaricTag("C{12}4 C{13}4 H{1}16 N{15}1", "C{12}4 H{1}5 N{14}4 O{16}2", "131"));
+        }
+
         public string Name { get; set; }
 
         private SortedList<double, IQuantitationChannel> _channels;
@@ -41,7 +54,7 @@ namespace CSMSL.Analysis.Quantitation
         public IQuantitationChannel Add(IQuantitationChannel channel)
         {
             _channels.Add(channel.ReporterMass.Monoisotopic, channel);
-            _totalMass += channel.Mass;        
+            _totalMass.Add(channel.Mass);        
             return channel;
         }
 
@@ -55,7 +68,7 @@ namespace CSMSL.Analysis.Quantitation
         {
             if (_channels.Remove(channel.Mass.Monoisotopic))
             {
-                _totalMass -= channel.Mass;
+                _totalMass.Remove(channel.Mass);
                 return true;
             }
             return false;
@@ -153,40 +166,37 @@ namespace CSMSL.Analysis.Quantitation
             HashSet<QuantitationChannelSet> sets = new HashSet<QuantitationChannelSet>();
             Dictionary<IQuantitationChannel, HashSet<int>> locations = new Dictionary<IQuantitationChannel, HashSet<int>>();   
             HashSet<int> residues;
-            for (int i = 1; i <= peptide.Length; i++)
+
+            IMass[] mods = peptide.Modifications;
+            int modLength = mods.Length;
+
+            for (int i = 0; i < modLength; i++)
             {
-                if (peptide.TryGetModification(i, out mod))
+                if (mods[i] != null)
                 {
-                    modCol = mod as ModificationCollection;
-                    if (modCol != null)
+                    mod = mods[i];
+                    
+                    List<QuantitationChannelSet> channelsets = new List<QuantitationChannelSet>();
+
+                    if ((modCol = mod as ModificationCollection) != null)                     
                     {
                         foreach (IMass mod2 in modCol)
-                        {
-                            quantSetMod = mod2 as QuantitationChannelSet;
-                            if (quantSetMod != null)
+                        {                            
+                            if ((quantSetMod = mod2 as QuantitationChannelSet) != null)
                             {
-                                sets.Add(quantSetMod);
-                                foreach (IQuantitationChannel channel in quantSetMod.GetChannels())
-                                {
-                                    if (locations.TryGetValue(channel, out residues))
-                                    {
-                                        residues.Add(i);
-                                    }
-                                    else
-                                    {
-                                        residues = new HashSet<int>() { i };
-                                        locations.Add(channel, residues);
-                                    }
-                                }
+                                channelsets.Add(quantSetMod);
                             }
                         }
                     }
-
-                    quantSetMod = mod as QuantitationChannelSet;
-                    if (quantSetMod != null)
+                    else if ((quantSetMod = mod as QuantitationChannelSet) != null)
                     {
-                        sets.Add(quantSetMod);
-                        foreach (IQuantitationChannel channel in quantSetMod.GetChannels())
+                        channelsets.Add(quantSetMod);
+                    }
+
+                    foreach (QuantitationChannelSet channelset in channelsets)
+                    {
+                        sets.Add(channelset);
+                        foreach (IQuantitationChannel channel in channelset.GetChannels())
                         {
                             if (locations.TryGetValue(channel, out residues))
                             {
@@ -198,9 +208,7 @@ namespace CSMSL.Analysis.Quantitation
                                 locations.Add(channel, residues);
                             }
                         }
-                    }
-
-
+                    }                 
                 }
             }
 
@@ -215,7 +223,11 @@ namespace CSMSL.Analysis.Quantitation
                     foreach (IQuantitationChannel channel in set.GetChannels())
                     {
                         Peptide toReturn = new Peptide(peptide, true);
-                        toReturn.SetModification(channel, locations[channel].ToArray());                       
+                        foreach (int residue in locations[channel])
+                        {
+                            toReturn.Modifications[residue] = channel;
+                        }
+                        toReturn.IsDirty = true;                  
                         yield return toReturn;
                     }
                 }
@@ -250,8 +262,9 @@ namespace CSMSL.Analysis.Quantitation
                     }
                     foreach (KeyValuePair<int, IMass> kvp in modsToAdd)
                     {
-                        toReturn.SetModification(kvp.Value, kvp.Key);
+                        toReturn.Modifications[kvp.Key] = kvp.Value;
                     }
+                    toReturn.IsDirty = true;
                     yield return toReturn;
                 }
             }

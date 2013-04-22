@@ -53,8 +53,11 @@ namespace CSMSL.Tests.Proteomics
         public void PeptideMassTrypticNTerminalLabeledFormula()
         {
             MockTrypticPeptide.SetModification(NamedChemicalFormula.TMT6plex, Terminus.N);
-            ChemicalFormula formula = new ChemicalFormula("C45C{13}4H86N13N{15}1O23");
-            MockTrypticPeptide.ChemicalFormula.Should().Equal(formula);
+            ChemicalFormula formulaA = new ChemicalFormula("C45C{13}4H86N13N{15}1O23");
+            ChemicalFormula formulaB;
+            MockTrypticPeptide.TryGetChemicalFormula(out formulaB);
+
+            formulaA.Should().Equal(formulaB);
         }
 
         [Test]      
@@ -76,27 +79,33 @@ namespace CSMSL.Tests.Proteomics
         public void ParseNTerminalChemicalFormula()
         {
             Peptide peptide = new Peptide("[C2H3NO]-TTGSSSSSSSK");
-            ChemicalFormula formula = new ChemicalFormula("C39H69N13O22");
+            ChemicalFormula formulaA = new ChemicalFormula("C39H69N13O22");
+            ChemicalFormula formulaB;
+            peptide.TryGetChemicalFormula(out formulaB);
 
-            peptide.ChemicalFormula.Should().Equal(formula);
+            formulaA.Should().Equal(formulaB);
         }
 
         [Test]
         public void ParseCTerminalChemicalFormula()
         {
             Peptide peptide = new Peptide("TTGSSSSSSSK-[C2H3NO]");
-            ChemicalFormula formula = new ChemicalFormula("C39H69N13O22");
+            ChemicalFormula formulaA = new ChemicalFormula("C39H69N13O22");
+            ChemicalFormula formulaB;
+            peptide.TryGetChemicalFormula(out formulaB);
 
-            peptide.ChemicalFormula.Should().Equal(formula);
+            formulaA.Should().Equal(formulaB);
         }
 
         [Test]
         public void ParseCTerminalChemicalFormulaWithLastResidueMod()
         {
             Peptide peptide = new Peptide("TTGSSSSSSSK[H2O]-[C2H3NO]");
-            ChemicalFormula formula = new ChemicalFormula("C39H71N13O23");
+            ChemicalFormula formulaA = new ChemicalFormula("C39H71N13O23");
+            ChemicalFormula formulaB;
+            peptide.TryGetChemicalFormula(out formulaB);
 
-            peptide.ChemicalFormula.Should().Equal(formula);
+            formulaA.Should().Equal(formulaB);
         }
 
         [Test]
@@ -112,36 +121,44 @@ namespace CSMSL.Tests.Proteomics
         public void ParseNAndCTerminalChemicalFormula()
         {
             Peptide peptide = new Peptide("[C2H3NO]-TTGSSSSSSSK-[C2H3NO]");
-            ChemicalFormula formula = new ChemicalFormula("C41H72N14O23");
+            ChemicalFormula formulaA = new ChemicalFormula("C41H72N14O23");
+            ChemicalFormula formulaB;
+            peptide.TryGetChemicalFormula(out formulaB);
 
-            peptide.ChemicalFormula.Should().Equal(formula);     
+            formulaA.Should().Equal(formulaB);    
         }
 
         [Test]
         public void ParseNTerminalNamedChemicalModification()
         {
             Peptide peptide = new Peptide("[Carbamidomethyl]-TTGSSSSSSSK");
-            ChemicalFormula formula = new ChemicalFormula("C39H69N13O22");
+            ChemicalFormula formulaA = new ChemicalFormula("C39H69N13O22");
+            ChemicalFormula formulaB;
+            peptide.TryGetChemicalFormula(out formulaB);
 
-            peptide.ChemicalFormula.Should().Equal(formula);
+            formulaA.Should().Equal(formulaB);
         }
 
         [Test]
         public void ParseCTerminalNamedChemicalModification()
         {
             Peptide peptide = new Peptide("TTGSSSSSSSK-[Carbamidomethyl]");
-            ChemicalFormula formula = new ChemicalFormula("C39H69N13O22");
+            ChemicalFormula formulaA = new ChemicalFormula("C39H69N13O22");
+            ChemicalFormula formulaB;
+            peptide.TryGetChemicalFormula(out formulaB);
 
-            peptide.ChemicalFormula.Should().Equal(formula);
+            formulaA.Should().Equal(formulaB);
         }
 
         [Test]
         public void ParseNAndCTerminalNamedChemicalModification()
         {
             Peptide peptide = new Peptide("[Carbamidomethyl]-TTGSSSSSSSK-[Carbamidomethyl]");
-            ChemicalFormula formula = new ChemicalFormula("C41H72N14O23");
+            ChemicalFormula formulaA = new ChemicalFormula("C41H72N14O23");
+            ChemicalFormula formulaB;
+            peptide.TryGetChemicalFormula(out formulaB);
 
-            peptide.ChemicalFormula.Should().Equal(formula);     
+            formulaA.Should().Equal(formulaB);   
         }
 
         [Test]
@@ -150,6 +167,14 @@ namespace CSMSL.Tests.Proteomics
             Peptide peptide = new Peptide("T[TMT 6-plex]HGEAK[Acetyl]K[TMT 6-plex]");
 
             peptide.Mass.Monoisotopic.Should().Equal(1269.74468058495);
+        }
+
+        [Test]
+        public void ParseDoubleModificationToString()
+        {
+            Peptide peptide = new Peptide("T[TMT 6-plex]HGEAK[25.132]K[TMT 6-plex]");
+
+            peptide.ToString().Should().Equal("T[TMT 6-plex]HGEAK[25.132]K[TMT 6-plex]");
         }
 
         [Test]
@@ -346,8 +371,10 @@ namespace CSMSL.Tests.Proteomics
         {
             Peptide pepA = new Peptide();
             ChemicalFormula h2o = new ChemicalFormula("H2O");
+            ChemicalFormula formulaB;
+            pepA.TryGetChemicalFormula(out formulaB);
 
-            pepA.ChemicalFormula.Should().Equal(h2o);
+            h2o.Should().Equal(formulaB);        
         }
 
         [Test]

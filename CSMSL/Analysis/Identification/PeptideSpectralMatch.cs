@@ -18,7 +18,7 @@ namespace CSMSL.Analysis.Identification
         public virtual int SpectrumNumber { get; set; }
 
         public virtual string FileName { get; set; }
-        
+
         /// <summary>
         /// The score of the match between the peptide and spectrum.
         /// </summary>

@@ -19,6 +19,7 @@
 ///////////////////////////////////////////////////////////////////////////
 
 using System;
+using System.Collections.Generic;
 
 namespace CSMSL
 {
@@ -132,6 +133,6 @@ namespace CSMSL
             if (ReferenceEquals(this, other)) return true;
             if ((this == null) != (other == null)) return false;
             return _max.Equals(other.Maximum) && _min.Equals(other.Minimum);
-        }
+        }     
     }
 }

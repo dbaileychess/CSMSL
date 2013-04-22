@@ -23,9 +23,8 @@ using System.Collections.Generic;
 
 namespace CSMSL.Proteomics
 {
-    public class Fragment : IChemicalFormula, IMass
+    public class Fragment : IMass
     {
-
         private static readonly Dictionary<FragmentTypes, ChemicalFormula> _fragmentIonCaps = new Dictionary<FragmentTypes, ChemicalFormula>()
         {
           {FragmentTypes.a, new ChemicalFormula("C-1H-1O-1")},
@@ -41,9 +40,7 @@ namespace CSMSL.Proteomics
           {FragmentTypes.z, new ChemicalFormula("N-1H-2")},
           {FragmentTypes.zdot, new ChemicalFormula("N-1H-1")},
         };
-        
-
-        private ChemicalFormula _chemicalFormula;
+               
         private int _number;
 
         private AminoAcidPolymer _parent;
@@ -52,21 +49,14 @@ namespace CSMSL.Proteomics
 
         private Mass _mass;
 
-        public Fragment(FragmentTypes type, int number, Mass mass, ChemicalFormula chemicalFormula, AminoAcidPolymer parent)
+        public Fragment(FragmentTypes type, int number, Mass mass, AminoAcidPolymer parent)
         {
             _type = type;
             _number = number;
-            _chemicalFormula = chemicalFormula;
-            _chemicalFormula.Add(_fragmentIonCaps[type]);
             _parent = parent;
             _mass = mass;
-        }
-
-        public ChemicalFormula ChemicalFormula
-        {
-            get { return _chemicalFormula; }
-            private set { _chemicalFormula = value; }
-        }
+            _mass.Add(_fragmentIonCaps[type]);
+        }     
 
         public Mass Mass
         {

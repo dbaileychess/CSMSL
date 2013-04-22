@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>CSMSL.Examples</RootNamespace>
     <AssemblyName>CSMSL.Examples</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
   </PropertyGroup>
@@ -61,6 +61,8 @@
     <Compile Include="Examples.cs" />
     <Compile Include="MsDataFileExamples.cs" />
     <Compile Include="OmssaReader.cs" />
+    <Compile Include="ProteinGroupingExample.cs" />
+    <Compile Include="TMT6plexExample.cs" />
     <Compile Include="TrypticDigestion.cs" />
     <Compile Include="MorpheusSearch.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -145,6 +147,12 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Resources\ThermoRawFileMS1MS2_Profile.mzML">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\TMT_6plex_yeast.raw">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\TMT_6plex_yeast_omssa_psms.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

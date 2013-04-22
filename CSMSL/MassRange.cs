@@ -115,5 +115,10 @@ namespace CSMSL
             return new MassRange(mean, new MassTolerance(MassToleranceType.PPM, ppmTolerance));
         }
 
+        public static MassRange FromDa(double mean, double daTolerance)
+        {
+            return new MassRange(mean, new MassTolerance(MassToleranceType.DA, daTolerance));
+        }
+
     }
 }
