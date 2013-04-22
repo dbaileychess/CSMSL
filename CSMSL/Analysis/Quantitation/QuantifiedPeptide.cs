@@ -45,6 +45,11 @@ namespace CSMSL.Analysis.Quantitation
             QuantifiedScans = new List<QuantifiedScan>();
         }
 
+        public override string ToString()
+        {
+            return string.Format("{0} ({1:N0} PSMs)", Peptide, PsmCount);
+        }
+
         public void AddPeptideSpectralMatch(PeptideSpectralMatch psm)
         {
             if (psm == null)

@@ -43,6 +43,19 @@ namespace CSMSL.Analysis.Quantitation
             }
         }
 
+        public IQuantitationChannel this[string name]
+        {
+            get
+            {
+                foreach (IQuantitationChannel channel in _channels.Values)
+                {
+                    if (channel.Name.Equals(name))
+                        return channel;
+                }
+                throw new ArgumentException("Could not find the quantitation channel " + name + " in this set");
+            }
+        }
+
         public QuantitationChannelSet(string name, QuantitationChannelSetMassType massType = QuantitationChannelSetMassType.Average)
         {
             Name = name;

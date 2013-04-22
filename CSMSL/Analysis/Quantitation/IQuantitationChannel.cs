@@ -17,5 +17,11 @@ namespace CSMSL.Analysis.Quantitation
         /// The mass of the reporter
         /// </summary>
         Mass ReporterMass { get; }
+
+        /// <summary>
+        /// The name of the channel        
+        /// </summary>
+        string Name { get; }
+      
     }
 }
