@@ -249,7 +249,7 @@ namespace CSMSL.Analysis.Quantitation
                     }
                     foreach (KeyValuePair<int, IMass> kvp in modsToAdd)
                     {
-                        toReturn.Modifications[kvp.Key] = kvp.Value;                        
+                        toReturn.Modifications[kvp.Key] = kvp.Value;
                     }
                     toReturn.IsDirty = true;
                     yield return toReturn;

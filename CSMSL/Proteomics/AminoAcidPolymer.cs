@@ -52,7 +52,7 @@ namespace CSMSL.Proteomics
         private bool _isDirty;
         private bool _isSequenceDirty;
         private string _sequence;
-        private StringBuilder _sequenceSB;
+        private string _sequenceWithMods;       
         private int _length;
         private Mass _mass;
 
@@ -115,40 +115,8 @@ namespace CSMSL.Proteomics
             _isSequenceDirty = true;
         }
 
-        #endregion
-                        
-        /// <summary>
-        /// Gets or sets the modification of the C terminus on this amino acid polymer
-        /// </summary>        
-        public IMass CTerminusModification
-        {
-            get
-            {
-                return _modifications[_length + 1];
-            }
-            set
-            {
-                _modifications[_length + 1] = value;
-                _isDirty = true;
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets the modification of the C terminus on this amino acid polymer
-        /// </summary>        
-        public IMass NTerminusModification
-        {
-            get
-            {
-                return _modifications[0];
-            }
-            set
-            {
-                _modifications[0] = value;
-                _isDirty = true;
-            }
-        }
-        
+        #endregion                        
+  
         /// <summary>
         /// Gets or sets the C terminus of this amino acid polymer
         /// </summary>        
@@ -202,7 +170,9 @@ namespace CSMSL.Proteomics
                 }
                 return _mass;
             } 
-        }   
+        }
+
+        #region Amino Acid Sequence
 
         /// <summary>
         /// The base amino acid sequence
@@ -219,6 +189,9 @@ namespace CSMSL.Proteomics
             }
         }
 
+        /// <summary>
+        /// The amino acid sequence with modifications
+        /// </summary>
         public string SequenceWithModifications
         {
             get
@@ -227,7 +200,7 @@ namespace CSMSL.Proteomics
                 {
                     CleanUp();
                 }
-                return _sequenceSB.ToString();
+                return _sequenceWithMods;
             }
         }
 
@@ -286,18 +259,20 @@ namespace CSMSL.Proteomics
             }
         }
 
+        #endregion
+
         #region Fragmentation
 
         public Fragment CalculateFragment(FragmentTypes type, int number)
         {
-            if (number < 1 || number > _length)
-            {
-                throw new IndexOutOfRangeException();
-            }
-
             if (type == FragmentTypes.None)
             {
                 return null;
+            }
+
+            if (number < 1 || number > _length)
+            {
+                throw new IndexOutOfRangeException();
             }
            
             Mass mass = new Mass();
@@ -308,24 +283,21 @@ namespace CSMSL.Proteomics
 
             if (type >= FragmentTypes.x)
             {
-                start = Length - number;
-                end = Length;
+                start = _length - number;
+                end = _length;
 
-                mass.Add(CTerminus);                  
-
+                mass.Add(CTerminus.Mass);
                 if (CTerminusModification != null)
                 {
-                    mass.Add(CTerminusModification);                                                       
+                    mass.Add(CTerminusModification.Mass);                                                       
                 }
             }
             else
             {
-
-                mass.Add(NTerminus);              
-
+                mass.Add(NTerminus.Mass);   
                 if (NTerminusModification != null)
                 {
-                    mass.Add(NTerminusModification);    
+                    mass.Add(NTerminusModification.Mass);    
                 }
             }
             
@@ -335,7 +307,7 @@ namespace CSMSL.Proteomics
 
                 if ((mod = _modifications[i + 1]) != null)
                 {
-                    mass.Add(mod);                                          
+                    mass.Add(mod.Mass);                                          
                 }
             }
 
@@ -344,7 +316,7 @@ namespace CSMSL.Proteomics
         
         public IEnumerable<Fragment> CalculateFragments(FragmentTypes types)
         {
-            return CalculateFragments(types, 1, Length - 1);
+            return CalculateFragments(types, 1, _length - 1);
         }
 
         public IEnumerable<Fragment> CalculateFragments(FragmentTypes types, int min, int max)
@@ -354,7 +326,7 @@ namespace CSMSL.Proteomics
                 yield break;
             }
 
-            if (min < 1 || max > Length - 1)
+            if (min < 1 || max > _length - 1)
             {
                 throw new IndexOutOfRangeException();
             }
@@ -372,42 +344,41 @@ namespace CSMSL.Proteomics
                     if (type >= FragmentTypes.x)
                     {
 
-                        mass.Add(CTerminus);                    
+                        mass.Add(CTerminus.Mass);                    
 
                         if (CTerminusModification != null)
                         {
-                            mass.Add(CTerminusModification);                                                        
+                            mass.Add(CTerminusModification.Mass);                                                        
                         }                           
                         for (int i = end; i >= start; i--)
                         {
 
-                            mass.Add(_aminoAcids[i]);                             
+                            mass.Add(_aminoAcids[i].Mass);                             
 
                             if ((mod = _modifications[i + 1]) != null)
                             {
-                                mass.Add(mod);         
+                                mass.Add(mod.Mass);         
                             }                     
-                            yield return new Fragment(type, Length - i, new Mass(mass), this);
+                            yield return new Fragment(type, _length - i, new Mass(mass), this);
                         }
                     }
                     else
                     {
 
-                        mass.Add(NTerminus);                                     
+                        mass.Add(NTerminus.Mass);                                     
 
                         if (NTerminusModification != null)
                         {
-                            mass.Add(NTerminusModification);                              
+                            mass.Add(NTerminusModification.Mass);                              
                         }                            
 
                         for (int i = start; i <= end; i++)
                         {
-
-                            mass.Add(_aminoAcids[i - 1]);                        
+                            mass.Add(_aminoAcids[i - 1].Mass);                        
 
                             if ((mod = _modifications[i]) != null)
                             {
-                                mass.Add(mod);                                                                                  
+                                mass.Add(mod.Mass);                                                                                  
                             }
                             yield return new Fragment(type, i, new Mass(mass), this);
                         }
@@ -419,8 +390,40 @@ namespace CSMSL.Proteomics
 
         #endregion
 
-        #region Chemical Modifications
+        #region Modifications
 
+        /// <summary>
+        /// Gets or sets the modification of the C terminus on this amino acid polymer
+        /// </summary>        
+        public IMass CTerminusModification
+        {
+            get
+            {
+                return _modifications[_length + 1];
+            }
+            set
+            {
+                _modifications[_length + 1] = value;
+                _isDirty = true;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the modification of the C terminus on this amino acid polymer
+        /// </summary>        
+        public IMass NTerminusModification
+        {
+            get
+            {
+                return _modifications[0];
+            }
+            set
+            {
+                _modifications[0] = value;
+                _isDirty = true;
+            }
+        }
+        
         /// <summary>
         /// Counts the total number of modifications on this polymer
         /// </summary>
@@ -670,6 +673,8 @@ namespace CSMSL.Proteomics
             formula = new ChemicalFormula();
             IChemicalFormula chemMod;
             IMass mod;
+
+            // Handle Modifications
             for (int i = 0; i < _length + 2; i++)
             {
                 if ((mod = _modifications[i]) != null)
@@ -755,20 +760,13 @@ namespace CSMSL.Proteomics
         #region Private Methods
 
         private void CleanUp()
-        {                    
-            if (_sequenceSB == null)
-            {
-                _sequenceSB = new StringBuilder(_length + 2);
-            }
-            else
-            {
-                _sequenceSB.Clear();
-            }
-           
+        {   
             _mass = new Mass();
             
-            StringBuilder baseSeqSB = new StringBuilder();
-            IMass mod = null;          
+            StringBuilder baseSeqSB = new StringBuilder(_length);
+            StringBuilder modSeqSB = new StringBuilder(_length);
+
+            IMass mod;          
 
             // Handle N-Terminus
             _mass.Add(_nTerminus.Mass);          
@@ -777,10 +775,10 @@ namespace CSMSL.Proteomics
             if ((mod = _modifications[0]) != null)
             {
                 _mass.Add(mod.Mass);
-            
-                _sequenceSB.Append('[');
-                _sequenceSB.Append(mod);
-                _sequenceSB.Append("]-");
+
+                modSeqSB.Append('[');
+                modSeqSB.Append(mod);
+                modSeqSB.Append("]-");
             }
 
             // Handle Amino Acid Residues
@@ -790,17 +788,17 @@ namespace CSMSL.Proteomics
                 _mass.Add(aa.Mass);               
               
                 char letter = aa.Letter;
-                _sequenceSB.Append(letter);
+                modSeqSB.Append(letter);
                 baseSeqSB.Append(letter);
 
                 // Handle Amino Acid Modification (1-based)
                 if ((mod = _modifications[i + 1]) != null)  
                 {
                     _mass.Add(mod.Mass);
-                  
-                    _sequenceSB.Append('[');
-                    _sequenceSB.Append(mod);
-                    _sequenceSB.Append(']');
+
+                    modSeqSB.Append('[');
+                    modSeqSB.Append(mod);
+                    modSeqSB.Append(']');
                 }
             }
 
@@ -810,14 +808,15 @@ namespace CSMSL.Proteomics
             // Handle C-Terminus Modification
             if ((mod = _modifications[_length + 1]) != null)
             {
-                _mass.Add(mod.Mass);              
-              
-                _sequenceSB.Append("-[");
-                _sequenceSB.Append(mod);
-                _sequenceSB.Append(']');
+                _mass.Add(mod.Mass);
+
+                modSeqSB.Append("-[");
+                modSeqSB.Append(mod);
+                modSeqSB.Append(']');
             }
 
             _sequence = baseSeqSB.ToString();
+            _sequenceWithMods = modSeqSB.ToString();
             _isDirty = false;
             _isSequenceDirty = false;
         }
@@ -983,8 +982,6 @@ namespace CSMSL.Proteomics
         }
 
         #endregion
-
-
 
     }
 }

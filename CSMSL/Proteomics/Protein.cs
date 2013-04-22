@@ -49,9 +49,12 @@ namespace CSMSL.Proteomics
             return new Fasta(this.Sequence, this.Description);
         }
 
-        public List<Peptide> Digest(IProtease protease, int maxMissedCleavages = 3, int minLength = 1, int maxLength = int.MaxValue)
+        public IEnumerable<Peptide> Digest(IProtease protease, int maxMissedCleavages = 3, int minLength = 1, int maxLength = int.MaxValue)
         {
-            return Digest(new IProtease[] { protease }, maxMissedCleavages, minLength, maxLength);
+            foreach (Peptide pep in Digest(new IProtease[] { protease }, maxMissedCleavages, minLength, maxLength))
+            {
+                yield return pep;
+            }
         }
                
         /// <summary>
@@ -62,14 +65,13 @@ namespace CSMSL.Proteomics
         /// <param name="minLength">The minimum length (in amino acids) of the peptide</param>
         /// <param name="maxLength">The maximum length (in amino acids) of the peptide</param>
         /// <returns>A list of digested peptides</returns>
-        public List<Peptide> Digest(IEnumerable<IProtease> proteases, int maxMissedCleavages = 3, int minLength = 1, int maxLength = int.MaxValue)
+        public IEnumerable<Peptide> Digest(IEnumerable<IProtease> proteases, int maxMissedCleavages = 3, int minLength = 1, int maxLength = int.MaxValue)
         {
             if (maxMissedCleavages < 0)
             {
                 throw new ArgumentOutOfRangeException("maxMissedCleavages", "The maximum number of missedcleavages must be >= 0");
             }
-
-            //_childern.Clear();
+            
             List<Peptide> peptides = new List<Peptide>();
 
             // Combine all the proteases digestion sites
@@ -95,14 +97,11 @@ namespace CSMSL.Proteomics
                     int len = indices[i + missed_cleavages + 1] - indices[i];
                     if (len >= minLength && len <= maxLength)
                     {
-                        int begin = indices[i] + 1;               
-                        Peptide peptide = new Peptide(this, begin, len);
-                        peptides.Add(peptide);
+                        int begin = indices[i] + 1;    
+                        yield return new Peptide(this, begin, len);
                     }
                 }
             }
-
-            return peptides;
         }
     }
 }
