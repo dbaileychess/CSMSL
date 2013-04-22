@@ -443,6 +443,14 @@ namespace CSMSL.Analysis.Quantitation
             }
         }
 
+        public static void PopulateQuantifiedScans(IEnumerable<QuantifiedPeptide> quantPeps)
+        {
+            foreach (QuantifiedPeptide pep in quantPeps)
+            {
+
+            }
+        }
+
         #endregion
     }
 }
