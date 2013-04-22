@@ -61,6 +61,7 @@
     <Compile Include="Examples.cs" />
     <Compile Include="MsDataFileExamples.cs" />
     <Compile Include="OmssaReader.cs" />
+    <Compile Include="ProteinGroupingExample.cs" />
     <Compile Include="TrypticDigestion.cs" />
     <Compile Include="MorpheusSearch.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

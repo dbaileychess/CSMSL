@@ -703,6 +703,75 @@ namespace CSMSL.Proteomics
 
         #endregion
 
+        #region Digestion
+
+        public virtual IEnumerable<Peptide> Digest(IProtease protease, int maxMissedCleavages = 3, int minLength = 1, int maxLength = int.MaxValue)
+        {
+            foreach (Peptide pep in Digest(new IProtease[] { protease }, maxMissedCleavages, minLength, maxLength))
+            {
+                yield return pep;
+            }
+        }
+
+        /// <summary>
+        /// Digests this amino acid polymer into peptides.
+        /// </summary>
+        /// <param name="proteases">The proteases to digest with</param>
+        /// <param name="maxMissedCleavages">The max number of missed cleavages generated, 0 means no missed cleavages</param>
+        /// <param name="minLength">The minimum length (in amino acids) of the peptide</param>
+        /// <param name="maxLength">The maximum length (in amino acids) of the peptide</param>
+        /// <returns>A list of digested peptides</returns>
+        public virtual IEnumerable<Peptide> Digest(IEnumerable<IProtease> proteases, int maxMissedCleavages = 3, int minLength = 1, int maxLength = int.MaxValue)
+        {
+            if (maxMissedCleavages < 0)
+            {
+                throw new ArgumentOutOfRangeException("maxMissedCleavages", "The maximum number of missedcleavages must be >= 0");
+            }
+
+            List<Peptide> peptides = new List<Peptide>();
+
+            // Combine all the proteases digestion sites
+            SortedSet<int> locations = new SortedSet<int>() { -1 };
+            foreach (IProtease protease in proteases)
+            {
+                if (protease != null)
+                {
+                    locations.UnionWith(protease.GetDigestionSites(this.Sequence));
+                }
+            }
+            locations.Add(Length - 1);
+
+            IList<int> indices = new List<int>(locations);
+            //indices.Sort(); // most likely not needed if locations is a sorted set
+
+            int indiciesCount = indices.Count;
+            for (int missed_cleavages = 0; missed_cleavages <= maxMissedCleavages; missed_cleavages++)
+            {
+                int max = indiciesCount - missed_cleavages - 1;
+                for (int i = 0; i < max; i++)
+                {
+                    int len = indices[i + missed_cleavages + 1] - indices[i];
+                    if (len >= minLength && len <= maxLength)
+                    {
+                        int begin = indices[i] + 1;
+                        yield return new Peptide(this, begin, len);
+                    }
+                }
+            }
+        }
+
+        #endregion
+
+        public bool Contains(AminoAcidPolymer item)
+        {
+            return Sequence.Contains(item.Sequence);
+        }
+
+        public bool Contains(string sequence)
+        {
+            return Sequence.Contains(sequence);
+        }
+
         public override string ToString()
         {
             return SequenceWithModifications;
