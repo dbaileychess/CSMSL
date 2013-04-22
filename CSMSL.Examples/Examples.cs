@@ -62,7 +62,10 @@ namespace CSMSL.Examples
             //TrypticDigestion.Start(Protease.Trypsin);
 
             // Example Protein Grouping
-            ProteinGroupingExample.Start(Protease.Trypsin);
+            //ProteinGroupingExample.Start(Protease.Trypsin);
+
+            // Example TMT 6-plex quantitation
+            TMT6plexExample.Start();
 
             //Example IO
             //MsDataFileExamples.Start();

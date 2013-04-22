@@ -9,6 +9,19 @@ namespace CSMSL.Analysis.Quantitation
 {
     public class QuantitationChannelSet: IMass
     {
+        public static readonly QuantitationChannelSet TMT6Plex;
+
+        static QuantitationChannelSet()
+        {
+            TMT6Plex = new QuantitationChannelSet("TMT 6-Pex", QuantitationChannelSetMassType.Average);
+            TMT6Plex.Add(new IsobaricTag("C{12}8 H{1}16 N{14}1", "C{13}4 H{1}4 N{15}1 O{16}2", "126"));
+            TMT6Plex.Add(new IsobaricTag("C{12}8 H{1}16 N{15}1", "C{13}4 H{1}4 N{14}1 O{16}2", "127"));
+            TMT6Plex.Add(new IsobaricTag("C{12}6 C{13}2 H{1}16 N{14}1", "C{12}2 C{13}2 H{1}4 N{15}1 O{16}2", "128"));
+            TMT6Plex.Add(new IsobaricTag("C{12}6 C{13}2 H{1}16 N{15}1", "C{12}2 C{13}2 H{1}4 N{14}1 O{16}2", "129"));
+            TMT6Plex.Add(new IsobaricTag("C{12}4 C{13}4 H{1}16 N{14}1", "C{12}4 H{1}5 N{15}4 O{16}2", "130"));
+            TMT6Plex.Add(new IsobaricTag("C{12}4 C{13}4 H{1}16 N{15}1", "C{12}4 H{1}5 N{14}4 O{16}2", "131"));
+        }
+
         public string Name { get; set; }
 
         private SortedList<double, IQuantitationChannel> _channels;
