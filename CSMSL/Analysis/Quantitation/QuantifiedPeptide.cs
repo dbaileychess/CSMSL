@@ -6,13 +6,17 @@ using CSMSL.Proteomics;
 using CSMSL.Analysis.Identification;
 using CSMSL.Spectral;
 using CSMSL.Analysis.ExperimentalDesign;
+using CSMSL.IO;
+using CSMSL;
 
 namespace CSMSL.Analysis.Quantitation
 {
     public class QuantifiedPeptide
     {
+        public static double RTWindow = 0.5;
+        public static double ResolutionMin = 100000;
         //internal ExperimentalSet ParentExperimentalSet;
-        HashSet<PeptideSpectralMatch> PSMs;
+        public HashSet<PeptideSpectralMatch> PSMs;
         public List<QuantifiedScan> QuantifiedScans;
         public Peptide Peptide { get; private set; }        
 
@@ -256,6 +260,102 @@ namespace CSMSL.Analysis.Quantitation
             return Math.Pow(2, Math.Sqrt(variance / ((double)ratioCount - 1)));
         }
 
+        private Dictionary<int, Dictionary<string,List<PeptideSpectralMatch>>> SortPSMsByChargeAndDataFile()
+        {
+            Dictionary<int, Dictionary<string, List<PeptideSpectralMatch>>> sortedPSMs = new Dictionary<int, Dictionary<string,List<PeptideSpectralMatch>>>();
+
+            foreach (PeptideSpectralMatch psm in PSMs)
+            {
+                Dictionary<string, List<PeptideSpectralMatch>> files = null;
+                List<PeptideSpectralMatch> psms = null;
+
+                // Check for existing charge state & file name
+                if (sortedPSMs.TryGetValue(psm.Charge, out files))
+                {
+                    // Add PSM to existing charge state & file name list
+                    if (files.TryGetValue(psm.FileName, out psms))
+                    {
+                        psms.Add(psm);
+                    }
+                    // Add new file name
+                    else
+                    {
+                        psms = new List<PeptideSpectralMatch>();
+                        psms.Add(psm);
+                        files = new Dictionary<string, List<PeptideSpectralMatch>>();
+                        files.Add(psm.FileName, psms);
+                    }
+                }
+                // Add new charge state & file name
+                else
+                {
+                    psms = new List<PeptideSpectralMatch>();
+                    psms.Add(psm);
+                    files = new Dictionary<string, List<PeptideSpectralMatch>>();
+                    files.Add(psm.FileName, psms);
+                    sortedPSMs.Add(psm.Charge, files);
+                }                
+            }
+
+            return sortedPSMs;
+        }
+
+        private List<MSDataScan> FindQuantScans(MSDataFile dataFile, List<PeptideSpectralMatch> psms)
+        {
+            double minTime = CalculateRTRangeMin(psms);
+            double maxTime = CalculateRTRangeMax(psms);
+            double firstTime = dataFile[dataFile.FirstSpectrumNumber].RetentionTime;
+            double lastTime = dataFile[dataFile.LastSpectrumNumber].RetentionTime;
+
+            if (minTime < firstTime)
+            {
+                minTime = firstTime;
+            }
+
+            if (maxTime > lastTime)
+            {
+                maxTime = lastTime;
+            }
+
+            Range<double> rTRange = new Range<double>(minTime, maxTime);
+            List<MSDataScan> scans = FindScansInRange(dataFile, rTRange);
+            return scans;
+        }
+
+        private double CalculateRTRangeMin(List<PeptideSpectralMatch> psms)
+        {
+            double minTime;
+            int numPSMs = psms.Count;
+
+            List<PeptideSpectralMatch> sortedPSMs = psms.OrderBy(psm => psm.SpectrumNumber).ToList();
+            minTime = sortedPSMs[0].Spectrum.RetentionTime - RTWindow;
+
+            return minTime;
+        }
+
+        private double CalculateRTRangeMax(List<PeptideSpectralMatch> psms)
+        {
+            double maxTime;
+            int numPSMs = psms.Count;
+
+            List<PeptideSpectralMatch> sortedPSMs = psms.OrderBy(psm => psm.SpectrumNumber).ToList();
+            maxTime = sortedPSMs[numPSMs - 1].Spectrum.RetentionTime + RTWindow;
+
+            return maxTime;
+        }
+
+        private List<MSDataScan> FindScansInRange(MSDataFile dataFile, Range<double> rTRange, int msn = 1, double resolution = 100000)
+        {
+            List<MSDataScan> scans = new List<MSDataScan>();
+
+            foreach (MSDataScan dataScan in dataFile.Where(scan => scan.MsnOrder == msn && scan.Resolution >= resolution && scan.RetentionTime >= rTRange.Minimum && scan.RetentionTime <= rTRange.Maximum))
+            {
+                scans.Add(dataScan);
+            }
+
+            return scans;
+        }
+
         #region Static
         
         private static double GetRatio(double numerator, double denominator)
@@ -316,6 +416,44 @@ namespace CSMSL.Analysis.Quantitation
             }
 
             return quantPeps.Values.ToList();
+        }
+
+        public static void GenerateQuantifiedScans(List<MSDataFile> dataFiles, IEnumerable<QuantifiedPeptide> quantPeps)
+        {
+            MSDataFile dataFile;
+            foreach (QuantifiedPeptide pep in quantPeps)
+            {
+                // MS1-based quant
+                Dictionary<int, Dictionary<string, List<PeptideSpectralMatch>>> sortedPSMs = pep.SortPSMsByChargeAndDataFile();
+
+                foreach (KeyValuePair<int, Dictionary<string, List<PeptideSpectralMatch>>> chargeState in sortedPSMs)
+                {
+                    foreach (KeyValuePair<string, List<PeptideSpectralMatch>> fileName in chargeState.Value)
+                    {
+                        dataFile = dataFiles.Find(file => file.Name.Equals(fileName));
+                        List<MSDataScan> scansToAdd = pep.FindQuantScans(dataFile, fileName.Value);
+
+                        foreach (MSDataScan scan in scansToAdd)
+                        {
+                            pep.QuantifiedScans.Add(new QuantifiedScan(scan, chargeState.Key));
+                        }
+                    }
+                }
+
+                // MS2-based quant.
+                foreach (PeptideSpectralMatch psm in pep.PSMs)
+                {
+                    pep.QuantifiedScans.Add(new QuantifiedScan(psm.Spectrum, psm.Charge));
+                }
+            }
+        }
+
+        public static void PopulateQuantifiedScans(IEnumerable<QuantifiedPeptide> quantPeps)
+        {
+            foreach (QuantifiedPeptide pep in quantPeps)
+            {
+
+            }
         }
 
         #endregion

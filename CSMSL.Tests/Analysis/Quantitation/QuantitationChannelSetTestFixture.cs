@@ -21,7 +21,7 @@ namespace CSMSL.Tests.Analysis.Quantitation
         private QuantitationChannelSet _lysine3plex;
         private QuantitationChannelSet _arginine3plex;
         private QuantitationChannelSet _tag4plex;
-        private ModificationCollection _lysineandTMT;
+        private ModificationCollection _lysine3plexTMT;
         private double tolerance = 0.0000001;
 
         [SetUp]
@@ -32,8 +32,8 @@ namespace CSMSL.Tests.Analysis.Quantitation
             _TMT6plex.Add(new IsobaricTag("C{12}8 H{1}16 N{15}1", "C{13}4 H{1}4 N{14}1 O{16}2", "127"));
             _TMT6plex.Add(new IsobaricTag("C{12}6 C{13}2 H{1}16 N{14}1", "C{12}2 C{13}2 H{1}4 N{15}1 O{16}2", "128"));
             _TMT6plex.Add(new IsobaricTag("C{12}6 C{13}2 H{1}16 N{15}1", "C{12}2 C{13}2 H{1}4 N{14}1 O{16}2", "129"));
-            _TMT6plex.Add(new IsobaricTag("C{12}4 C{13}4 H{1}16 N{14}1", "C{12}4 H{1}5 N{15}4 O{16}2", "130"));
-            _TMT6plex.Add(new IsobaricTag("C{12}4 C{13}4 H{1}16 N{15}1", "C{12}4 H{1}5 N{14}4 O{16}2", "131"));
+            _TMT6plex.Add(new IsobaricTag("C{12}4 C{13}4 H{1}16 N{14}1", "C{12}4 H{1}4 N{15}1 O{16}2", "130"));
+            _TMT6plex.Add(new IsobaricTag("C{12}4 C{13}4 H{1}16 N{15}1", "C{12}4 H{1}4 N{14}1 O{16}2", "131"));
 
             _lysine6plex = new QuantitationChannelSet("Lysine 6-plex");
             _lysine6plex.Add(new Isotopologue("C-6 C{13}6 N-2 N{15}2", "C6 N2"));
@@ -68,9 +68,9 @@ namespace CSMSL.Tests.Analysis.Quantitation
             _lysine3plex.Add(new Isotopologue("H-4 H{2}4", "D4"));
             _lysine3plex.Add(new Isotopologue("C-6 C{13}6 N-2 N{15}2", "C6 N2"));
 
-            _lysineandTMT = new ModificationCollection();
-            _lysineandTMT.Add(_lysine3plex);
-            _lysineandTMT.Add(_TMT6plex);
+            _lysine3plexTMT = new ModificationCollection();
+            _lysine3plexTMT.Add(_lysine3plex);
+            _lysine3plexTMT.Add(_TMT6plex);
         }
 
         [Test]
@@ -99,7 +99,7 @@ namespace CSMSL.Tests.Analysis.Quantitation
         public void OneModIsotopologuePeptideCount()
         {
             Peptide pep = new Peptide("DEREK");
-            pep.SetModification(_lysine6plex, 'K');
+            pep.SetModification(_lysine6plex, ModificationSites.K);
             QuantitationChannelSet.GetUniquePeptides(pep).ToList().Count.Should().Equal(6);
         }
 
@@ -108,7 +108,7 @@ namespace CSMSL.Tests.Analysis.Quantitation
         {
             double mass = 683.33296673467;
             Peptide pep = new Peptide("DEREK");
-            pep.SetModification(_lysine6plex, 'K');
+            pep.SetModification(_lysine6plex, ModificationSites.K);
             QuantitationChannelSet.GetUniquePeptides(pep).ToList()[0].Mass.Monoisotopic.Should().Be.InRange(mass - tolerance, mass + tolerance);
         }
 
@@ -116,7 +116,7 @@ namespace CSMSL.Tests.Analysis.Quantitation
         public void TwoModsIsotopologuePeptideCount()
         {
             Peptide pep = new Peptide("DEREKK");
-            pep.SetModification(_lysine6plex, 'K');
+            pep.SetModification(_lysine6plex, ModificationSites.K);
             QuantitationChannelSet.GetUniquePeptides(pep).ToList().Count.Should().Equal(6);
         }
 
@@ -125,15 +125,15 @@ namespace CSMSL.Tests.Analysis.Quantitation
         {
             double mass = 819.44212856227;
             Peptide pep = new Peptide("DEREKK");
-            pep.SetModification(_lysine6plex, 'K');
+            pep.SetModification(_lysine6plex, ModificationSites.K);
             QuantitationChannelSet.GetUniquePeptides(pep).ToList()[0].Mass.Monoisotopic.Should().Be.InRange(mass - tolerance, mass + tolerance);
         }
 
         [Test]
         public void OneModIsobaricPeptideCount()
         {
-            Peptide pep = new Peptide("DEREK");
-            pep.SetModification(_TMT6plex, 'K');
+            Peptide pep = new Peptide("DERE");
+            pep.SetModification(_TMT6plex, ModificationSites.K | ModificationSites.NPep);
             QuantitationChannelSet.GetUniquePeptides(pep).ToList().Count.Should().Equal(6);
         }
         
@@ -141,8 +141,8 @@ namespace CSMSL.Tests.Analysis.Quantitation
         public void OneModIsobaricPeptideMass()
         {
             double mass = 904.48170005579;
-            Peptide pep = new Peptide("DEREK");
-            pep.SetModification(_TMT6plex, 'K');
+            Peptide pep = new Peptide("DERE");
+            pep.SetModification(_TMT6plex, ModificationSites.K | ModificationSites.NPep);
             QuantitationChannelSet.GetUniquePeptides(pep).ToList()[0].Mass.Monoisotopic.Should().Be.InRange(mass - tolerance, mass + tolerance);
         }
 
@@ -150,8 +150,7 @@ namespace CSMSL.Tests.Analysis.Quantitation
         public void TwoModsIsobaricPeptideCount()
         {
             Peptide pep = new Peptide("DEREK");
-            pep.SetModification(_TMT6plex, 'K');
-            pep.SetModification(_TMT6plex, 1);
+            pep.SetModification(_TMT6plex, ModificationSites.K | ModificationSites.NPep);
             QuantitationChannelSet.GetUniquePeptides(pep).ToList().Count.Should().Equal(6);
         }
 
@@ -160,8 +159,7 @@ namespace CSMSL.Tests.Analysis.Quantitation
         {
             double mass = 1133.64463219051;
             Peptide pep = new Peptide("DEREK");
-            pep.SetModification(_TMT6plex, 'K');
-            pep.SetModification(_TMT6plex, 1);
+            pep.SetModification(_TMT6plex, ModificationSites.K | ModificationSites.NPep);
             QuantitationChannelSet.GetUniquePeptides(pep).ToList()[0].Mass.Monoisotopic.Should().Be.InRange(mass - tolerance, mass + tolerance);
         }
 
@@ -169,9 +167,8 @@ namespace CSMSL.Tests.Analysis.Quantitation
         public void TMT6PlusSILAC3NoKPeptideCount()
         {
             Peptide pep = new Peptide("DERE");
-            pep.SetModification(_TMT6plex, 1);
-            pep.SetModification(_TMT6plex, 'K');
-            pep.SetModification(_lysine3plex, 'K');
+            pep.SetModification(_lysine3plexTMT, ModificationSites.K);
+            pep.SetModification(_TMT6plex, ModificationSites.NPep);
             List<Peptide> peps = QuantitationChannelSet.GetUniquePeptides(pep).ToList();
             peps.Count.Should().Equal(6);
         }
@@ -180,7 +177,7 @@ namespace CSMSL.Tests.Analysis.Quantitation
         public void TMT6PlusSILAC3WithKPeptideCount()
         {
             Peptide pep = new Peptide("DEREK");
-            pep.SetModification(_lysineandTMT, ModificationSites.K);            
+            pep.SetModification(_lysine3plexTMT, ModificationSites.K);            
             pep.SetModification(_TMT6plex, Terminus.N); 
             List<Peptide> peps = QuantitationChannelSet.GetUniquePeptides(pep).ToList();
             peps.Count.Should().Equal(18);

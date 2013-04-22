@@ -13,6 +13,8 @@ namespace CSMSL.Analysis.Identification
 
         public virtual MsnDataScan Spectrum { get; set; }
 
+        public virtual int Charge { get; set; }
+
         public virtual int SpectrumNumber { get; set; }
 
         public virtual string FileName { get; set; }
