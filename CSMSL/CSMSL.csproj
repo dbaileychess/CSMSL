@@ -86,6 +86,7 @@
     <Compile Include="Analysis\Quantitation\IQuantitationChannel.cs" />
     <Compile Include="Analysis\Quantitation\IsobaricTag.cs" />
     <Compile Include="Analysis\Quantitation\Isotopologue.cs" />
+    <Compile Include="Analysis\Quantitation\Quantity.cs" />
     <Compile Include="Analysis\Quantitation\QuantitationChannelSet.cs" />
     <Compile Include="Analysis\Quantitation\QuantifiedPeak.cs" />
     <Compile Include="Analysis\Quantitation\QuantifiedPeptide.cs" />

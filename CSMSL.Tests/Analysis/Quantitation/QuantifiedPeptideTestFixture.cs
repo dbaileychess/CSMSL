@@ -301,13 +301,13 @@ namespace CSMSL.Tests.Analysis.Quantitation
             QuantPeptide1.AddPeptideSpectralMatch(Psm1);
         }
 
-        [Test]
-        [ExpectedException(typeof(ArgumentException))]
+        [Test]     
         public void AddDuplicatePSM()
         {
             Psm2 = Psm1;
             QuantPeptide1.AddPeptideSpectralMatch(Psm1);
             QuantPeptide1.AddPeptideSpectralMatch(Psm2);
+            QuantPeptide1.PsmCount.Should().Equal(1);
         }
 
         [Test]

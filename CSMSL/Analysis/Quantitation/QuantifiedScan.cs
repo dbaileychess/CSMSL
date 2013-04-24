@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Data.Linq;
+using CSMSL.Proteomics;
 using CSMSL.Spectral;
 using CSMSL.IO;
 
@@ -14,12 +15,13 @@ namespace CSMSL.Analysis.Quantitation
         static QuantifiedPeak empty = new QuantifiedPeak();
         public MSDataScan DataScan;
         public int Charge { get; set; }
-        public Dictionary<IQuantitationChannel, QuantifiedPeak>[] QuantifiedPeaks;
+        public Dictionary<IQuantitationChannel, QuantifiedPeak>[] QuantifiedPeaks;        
         internal QuantifiedPeptide QuantifiedPeptideParent { get; set; }
 
         public QuantifiedScan(MSDataScan dataScan, int charge = 0)
 	    {
 		    DataScan = dataScan;
+            //Dictionary<IIonDesignation, List<QuantifiedPeak>> 
 		    QuantifiedPeaks = new Dictionary<IQuantitationChannel, QuantifiedPeak>[NumIsotopes];
 		    for (int i = 0; i < NumIsotopes; i++)
 		    {

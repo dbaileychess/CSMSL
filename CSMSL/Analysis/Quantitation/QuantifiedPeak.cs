@@ -18,7 +18,7 @@ namespace CSMSL.Analysis.Quantitation
             get;
         }
 		
-	    public QuantifiedPeak(double mz = 0, int charge = 0, double intensity = 0, double noise = 0, double resolution = 0)
+	    public QuantifiedPeak(double mz = 0, int charge = 0, double intensity = 0, double noise = 1, double resolution = 0)
 	    {
 		    Mz = mz;
             Charge = charge;

@@ -7,6 +7,7 @@ using CSMSL.Analysis.Identification;
 using CSMSL.Spectral;
 using CSMSL.Analysis.ExperimentalDesign;
 using CSMSL.IO;
+using CSMSL.Chemistry;
 using CSMSL;
 
 namespace CSMSL.Analysis.Quantitation
@@ -15,10 +16,20 @@ namespace CSMSL.Analysis.Quantitation
     {
         public static double RTWindow = 0.5;
         public static double ResolutionMin = 100000;
-        //internal ExperimentalSet ParentExperimentalSet;
+       
         public HashSet<PeptideSpectralMatch> PSMs;
         public List<QuantifiedScan> QuantifiedScans;
-        public Peptide Peptide { get; private set; }        
+        public Peptide Peptide { get; private set; }
+
+        private Dictionary<ExperimentalCondition, Quantity> _quantities;
+
+        public QuantifiedPeptide(Peptide peptide)
+        {
+            Peptide = peptide;
+            PSMs = new HashSet<PeptideSpectralMatch>();
+            QuantifiedScans = new List<QuantifiedScan>();
+            _quantities = new Dictionary<ExperimentalCondition, Quantity>();
+        }
 
         public int QuantifiedScanCount
         {
@@ -36,18 +47,15 @@ namespace CSMSL.Analysis.Quantitation
             }
         }
 
-        public PeptideSpectralMatch BestPSM
+        public Quantity this[ExperimentalCondition condition]
         {
-            get;
-            set;
+            get
+            {
+                return _quantities[condition];
+            }
         }
 
-        public QuantifiedPeptide(Peptide peptide)
-        {
-            Peptide = peptide;
-            PSMs = new HashSet<PeptideSpectralMatch>();
-            QuantifiedScans = new List<QuantifiedScan>();
-        }
+        public PeptideSpectralMatch BestPSM { get; private set;}              
 
         public override string ToString()
         {
@@ -60,36 +68,20 @@ namespace CSMSL.Analysis.Quantitation
             {
                 throw new ArgumentNullException("null psm");
             }
-            
-            if (PSMs.Contains(psm))
-            {
-                throw new ArgumentException("peptide spectral match already exists");
-            }
 
-            // Check for new best PSM
-            if (PsmCount > 0)
+            if (PSMs.Add(psm))
             {
-                if (psm.ScoreType == PeptideSpectralMatchScoreType.EValue)
+                // Check for new best PSM
+                if (BestPSM != null)
                 {
-                    if (psm.Score < BestPSM.Score)
-                    {
+                    if(psm.CompareTo(BestPSM) < 0)
                         BestPSM = psm;
-                    }
                 }
-                else if (psm.ScoreType == PeptideSpectralMatchScoreType.XCorr || psm.ScoreType == PeptideSpectralMatchScoreType.Morpheus)
+                else
                 {
-                    if (psm.Score > BestPSM.Score)
-                    {
-                        BestPSM = psm;
-                    }
-                }
-            }
-            else
-            {
-                BestPSM = psm;
-            }
-
-            PSMs.Add(psm);
+                    BestPSM = psm;
+                }          
+            }     
         }
 
         public void AddQuantifiedScan(QuantifiedScan quantScan)
@@ -135,7 +127,7 @@ namespace CSMSL.Analysis.Quantitation
             quantScan.QuantifiedPeptideParent = this;
             QuantifiedScans.Add(quantScan);
         }
-                
+        
         public double GetIQuantitationChannelIntensity(IQuantitationChannel IQuantitationChannel, IntensityWeightingType method, bool noiseBandCap = false, double signalToNoiseThreshold = 3.0)
         {
             double IQuantitationChannelIntensitySum = 0;
@@ -395,58 +387,137 @@ namespace CSMSL.Analysis.Quantitation
                 }
             }
         }
+             
+        public static IEnumerable<QuantifiedPeptide> GroupPeptideSpectralMatches(IEnumerable<PeptideSpectralMatch> psms)
+        {
+            // Group psms into peptides
+            Dictionary<Peptide, QuantifiedPeptide> quantPeps = new Dictionary<Peptide, QuantifiedPeptide>();
+            {
+                QuantifiedPeptide quantPep;
+                foreach (PeptideSpectralMatch psm in psms)
+                {
+                    if (!quantPeps.TryGetValue(psm.Peptide, out quantPep))
+                    {
+                        quantPep = new QuantifiedPeptide(psm.Peptide);
+                        quantPeps.Add(psm.Peptide, quantPep);
+                    }
+                    quantPep.AddPeptideSpectralMatch(psm);
+                }
+            }
+            return quantPeps.Values;
+        }
 
         /// <summary>
         /// Reduces a list of peptide spectral matches into distinct peptides
         /// </summary>
         /// <param name="psms"></param>
         /// <returns></returns>
-        public static IList<QuantifiedPeptide> GenerateQuantifiedPeptides(IEnumerable<PeptideSpectralMatch> psms)
-        {
-            Dictionary<Peptide, QuantifiedPeptide> quantPeps = new  Dictionary<Peptide, QuantifiedPeptide>();
-            QuantifiedPeptide quantPep;
-            foreach (PeptideSpectralMatch psm in psms)
+        public static void Quantify(IEnumerable<QuantifiedPeptide> quantifiedPeptides, IEnumerable<ExperimentalCondition> conditions)
+        {          
+            foreach (QuantifiedPeptide quantPep in quantifiedPeptides)
             {
-                if (!quantPeps.TryGetValue(psm.Peptide, out quantPep))
+                HashSet<QuantitationChannelSet> channels = QuantitationChannelSet.GetQuantChannelModifications(quantPep.Peptide);
+                bool sequenceIndependent = channels.Any(channel => !channel.IsSequenceDependent);
+
+                if (sequenceIndependent)
                 {
-                    quantPep = new QuantifiedPeptide(psm.Peptide);
-                    quantPeps.Add(psm.Peptide, quantPep);
+                    SequenceIndependentQuantify(quantPep, conditions);
                 }
-                quantPep.AddPeptideSpectralMatch(psm);
-            }
-
-            return quantPeps.Values.ToList();
-        }
-
-        public static void GenerateQuantifiedScans(List<MSDataFile> dataFiles, IEnumerable<QuantifiedPeptide> quantPeps)
-        {
-            MSDataFile dataFile;
-            foreach (QuantifiedPeptide pep in quantPeps)
-            {
+                else
+                {
+                    SequenceDependentQuantify(quantPep);
+                }
                 // MS1-based quant
-                Dictionary<int, Dictionary<string, List<PeptideSpectralMatch>>> sortedPSMs = pep.SortPSMsByChargeAndDataFile();
+                //Dictionary<int, Dictionary<string, List<PeptideSpectralMatch>>> sortedPSMs = quantPep.SortPSMsByChargeAndDataFile();
 
-                foreach (KeyValuePair<int, Dictionary<string, List<PeptideSpectralMatch>>> chargeState in sortedPSMs)
+                //foreach (KeyValuePair<int, Dictionary<string, List<PeptideSpectralMatch>>> chargeState in sortedPSMs)
+                //{
+                //    foreach (KeyValuePair<string, List<PeptideSpectralMatch>> fileName in chargeState.Value)
+                //    {
+                //        MSDataFile msDataFile = fileName.Value[0].Spectrum.ParentFile;
+                //    
+                //        foreach (MSDataScan scan in quantPep.FindQuantScans(msDataFile, fileName.Value))
+                //        {
+                //            quantPep.QuantifiedScans.Add(new QuantifiedScan(scan, chargeState.Key));
+                //        }
+                //    }
+                //}
+             
+                
+            }
+
+            //return quantPeps.Values.ToList();
+        }
+
+        private static void SequenceDependentQuantify(QuantifiedPeptide quantPep)
+        {
+
+        }
+
+        private static ExperimentalCondition GetCondition(Peptide peptide, IEnumerable<ExperimentalCondition> conditions)
+        {
+              HashSet<IQuantitationChannel> quantChannels = new HashSet<IQuantitationChannel>(peptide.Modifications.OfType<IQuantitationChannel>());
+              foreach (ExperimentalCondition condition in conditions)
+              {
+                  if (quantChannels.SetEquals(condition))
+                      return condition;              
+              }
+            return null;
+
+        }
+
+        private static void SequenceIndependentQuantify(QuantifiedPeptide quantPep, IEnumerable<ExperimentalCondition> conditions)
+        {
+            Quantity quantity;
+            List<MZPeak> peaks;
+
+            // MS2-based quant.
+            foreach (PeptideSpectralMatch psm in quantPep.PSMs)
+            {
+                MassSpectrum spectrum = psm.Spectrum.MassSpectrum;
+                int charge = psm.Charge;
+                QuantifiedScan quantScan = new QuantifiedScan(psm.Spectrum, charge);
+
+                foreach (Peptide peptide in QuantitationChannelSet.GetUniquePeptides(psm.Peptide))
                 {
-                    foreach (KeyValuePair<string, List<PeptideSpectralMatch>> fileName in chargeState.Value)
+                    ExperimentalCondition condition = GetCondition(peptide, conditions);
+                             
+                    Mass mass = GetReporterMass(peptide, condition);
+                    double mz = mass.ToMz(1);
+                    if (spectrum.TryGetPeaks(MassRange.FromDa(mz, 0.05), out peaks))
                     {
-                        dataFile = dataFiles.Find(file => file.Name.Equals(fileName));
-                        List<MSDataScan> scansToAdd = pep.FindQuantScans(dataFile, fileName.Value);
-
-                        foreach (MSDataScan scan in scansToAdd)
-                        {
-                            pep.QuantifiedScans.Add(new QuantifiedScan(scan, chargeState.Key));
+                        MZPeak peak = peaks.OrderBy(p => p.Intensity).ToArray()[0];
+                        QuantifiedPeak qpeak = new QuantifiedPeak(peak.MZ, 1, peak.Intensity);
+                        if (!quantPep._quantities.TryGetValue(condition, out quantity))
+                        {    
+                            quantity = new Quantity();
+                            quantPep._quantities.Add(condition, quantity);
                         }
+                        quantity.Add(qpeak); 
+                        //quantScan.AddQuant(quantChannels.ToArray()[0], qpeak, 0);
                     }
+                    else
+                    {
+                        
+                    }
+                    
                 }
-
-                // MS2-based quant.
-                foreach (PeptideSpectralMatch psm in pep.PSMs)
-                {
-                    pep.QuantifiedScans.Add(new QuantifiedScan(psm.Spectrum, psm.Charge));
-                }
+                quantPep.QuantifiedScans.Add(quantScan);
             }
         }
+
+        private static Mass GetReporterMass(Peptide peptide, IEnumerable<IQuantitationChannel> channels)
+        {            
+            foreach (IQuantitationChannel channel in channels)
+            {
+                if (!channel.IsSequenceDependent)
+                {
+                    return channel.ReporterMass;
+                }               
+            }
+            return peptide.Mass;
+        }
+      
 
         public static void PopulateQuantifiedScans(IEnumerable<QuantifiedPeptide> quantPeps)
         {

@@ -40,39 +40,39 @@ namespace CSMSL.Examples
 
             // Set up experimental conditions
             Sample sample = new Sample("Yeast", "Tryptic digestion");
-            ExperimentalCondition cond1_10 = sample.AddCondition("10").SetQuantChannel(QuantitationChannelSet.TMT6Plex["126"]);
-            ExperimentalCondition cond1_5 = sample.AddCondition("5").SetQuantChannel(QuantitationChannelSet.TMT6Plex["127"]);
-            ExperimentalCondition cond1_1 = sample.AddCondition("1").SetQuantChannel(QuantitationChannelSet.TMT6Plex["128"]);
-            ExperimentalCondition cond2_1 = sample.AddCondition("1").SetQuantChannel(QuantitationChannelSet.TMT6Plex["129"]);
-            ExperimentalCondition cond2_5 = sample.AddCondition("5").SetQuantChannel(QuantitationChannelSet.TMT6Plex["130"]);
-            ExperimentalCondition cond2_10 = sample.AddCondition("10").SetQuantChannel(QuantitationChannelSet.TMT6Plex["131"]);        
+            QuantitationChannelSet tmt6plex = QuantitationChannelSet.TMT6Plex;
 
+            ExperimentalCondition cond1_10 = sample.AddCondition("10").AddQuantChannel(tmt6plex["126"]);
+            ExperimentalCondition cond1_5 = sample.AddCondition("5").AddQuantChannel(tmt6plex["127"]);
+            ExperimentalCondition cond1_1 = sample.AddCondition("1").AddQuantChannel(tmt6plex["128"]);
+            ExperimentalCondition cond2_1 = sample.AddCondition("1").AddQuantChannel(tmt6plex["129"]);
+            ExperimentalCondition cond2_5 = sample.AddCondition("5").AddQuantChannel(tmt6plex["130"]);
+            ExperimentalCondition cond2_10 = sample.AddCondition("10").AddQuantChannel(tmt6plex["131"]);
+           
             // PSM loading
             List<PeptideSpectralMatch> psms;
             using (PsmReader psmReader = new OmssaCsvPsmReader(psmFile))
-            {                
+            {
                 psmReader.LoadProteins(fastaFile);
                 psmReader.AddMSDataFile(dataFile);
 
                 // Set modifications
                 psmReader.AddFixedModification(NamedChemicalFormula.Carbamidomethyl, ModificationSites.C);
-                psmReader.AddFixedModification(QuantitationChannelSet.TMT6Plex, ModificationSites.K | ModificationSites.NPep);
+                psmReader.AddFixedModification(tmt6plex, ModificationSites.K | ModificationSites.NPep);
                 psmReader.AddVariableModification(NamedChemicalFormula.Oxidation, "oxidation of M");
-                psmReader.AddVariableModification(QuantitationChannelSet.TMT6Plex, "TMT_Tyrosine");
-                
+                psmReader.AddVariableModification(tmt6plex, "TMT_Tyrosine");
+
                 psms = psmReader.ReadNextPsm().ToList();
             }
 
-            foreach (PeptideSpectralMatch psm in psms)
-            {
-                List<Peptide> peps = QuantitationChannelSet.GetUniquePeptides(psm.Peptide).ToList();
-            }
+            List<QuantifiedPeptide> quantPeptides = QuantifiedPeptide.GroupPeptideSpectralMatches(psms).ToList();
 
-            IList<QuantifiedPeptide> quantPeptides = QuantifiedPeptide.GenerateQuantifiedPeptides(psms);
-            
-            
-            
+            QuantifiedPeptide.Quantify(quantPeptides, sample);
 
+            // Example of comparing the ratio of two conditions
+            QuantifiedPeptide qpep = quantPeptides[0];
+            double ratio = qpep[cond1_10].Value / qpep[cond1_1].Value;
+            
         }
     }
 }

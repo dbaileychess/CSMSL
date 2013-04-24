@@ -2,11 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using CSMSL.Proteomics;
 using CSMSL.Analysis.Quantitation;
 
 namespace CSMSL.Analysis.ExperimentalDesign
 {
-    public class ExperimentalCondition
+    public class ExperimentalCondition : IEnumerable<IQuantitationChannel>
     {
         public string Name { get; private set; }
 
@@ -14,24 +15,41 @@ namespace CSMSL.Analysis.ExperimentalDesign
 
         public Sample Sample { get; private set; }
 
-        public IQuantitationChannel QuantChannel {get; private set;}
+        private HashSet<IQuantitationChannel> QuantChannels { get; set; }
+
+        public MassTolerance MassTolerance { get; set; }
 
         internal ExperimentalCondition(Sample sample, string name, string description)
         {
             Sample = sample;
             Name = name;
             Description = description;
+            QuantChannels = new HashSet<IQuantitationChannel>();
         }
 
-        public ExperimentalCondition SetQuantChannel(IQuantitationChannel channel)
+        public ExperimentalCondition AddQuantChannel(params IQuantitationChannel[] channels)
         {
-            QuantChannel = channel;
+            foreach (IQuantitationChannel channel in channels)
+            {
+                QuantChannels.Add(channel);
+            }
             return this;
         }
 
         public override string ToString()
         {
             return string.Format("{0} ({1})", Sample, Name);
+        }
+
+
+        public IEnumerator<IQuantitationChannel> GetEnumerator()
+        {
+            return QuantChannels.GetEnumerator();
+        }
+
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        {
+            return QuantChannels.GetEnumerator();
         }
     }
 }

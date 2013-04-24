@@ -140,7 +140,7 @@ namespace CSMSL.Tests.Analysis.Quantitation
         [Test]
         public void OneModIsobaricPeptideMass()
         {
-            double mass = 904.48170005579;
+            double mass = 776.38673704179;
             Peptide pep = new Peptide("DERE");
             pep.SetModification(_TMT6plex, ModificationSites.K | ModificationSites.NPep);
             QuantitationChannelSet.GetUniquePeptides(pep).ToList()[0].Mass.Monoisotopic.Should().Be.InRange(mass - tolerance, mass + tolerance);
@@ -243,10 +243,9 @@ namespace CSMSL.Tests.Analysis.Quantitation
         public void NeuCodeTag4PlusSILACWithKPeptideCount()
         {
             Peptide pep = new Peptide("DEREK");
-            ModificationCollection col = new ModificationCollection("K");
+            ModificationCollection col = new ModificationCollection("K");         
             col.Add(_lysine3plex);
             col.Add(_tag4plex);
-
             pep.SetModification(col, 'K');
             pep.SetModification(_tag4plex, Terminus.N);
             List<Peptide> peps = QuantitationChannelSet.GetUniquePeptides(pep).ToList();

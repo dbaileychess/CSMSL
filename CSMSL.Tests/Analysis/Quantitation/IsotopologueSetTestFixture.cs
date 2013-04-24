@@ -37,7 +37,7 @@ namespace CSMSL.Tests.Analysis.Quantitation
         [Test]
         public void IsotopologueMonoisotopicMass()
         {
-            _lysine6plex.AverageMass.Monoisotopic.Should().Equal(8.0302584511);
+            _lysine6plex.GetMass().Monoisotopic.Should().Equal(8.0302584511);
         }
 
         [Test]
