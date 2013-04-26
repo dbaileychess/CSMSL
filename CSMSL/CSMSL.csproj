@@ -86,12 +86,11 @@
     <Compile Include="Analysis\Quantitation\IQuantitationChannel.cs" />
     <Compile Include="Analysis\Quantitation\IsobaricTag.cs" />
     <Compile Include="Analysis\Quantitation\Isotopologue.cs" />
-    <Compile Include="Analysis\Quantitation\Quantity.cs" />
+    <Compile Include="Analysis\Quantitation\QuantifiedPeakSet.cs" />
+    <Compile Include="Analysis\Quantitation\QuantitationTypes.cs" />
     <Compile Include="Analysis\Quantitation\QuantitationChannelSet.cs" />
     <Compile Include="Analysis\Quantitation\QuantifiedPeak.cs" />
     <Compile Include="Analysis\Quantitation\QuantifiedPeptide.cs" />
-    <Compile Include="Analysis\Quantitation\QuantifiedPeptideSpectralMatch.cs" />
-    <Compile Include="Analysis\Quantitation\QuantifiedScan.cs" />
     <Compile Include="Analysis\Quantitation\QuantitationChannelSetMassType.cs" />
     <Compile Include="Chemistry\ChemicalFormula.cs" />
     <Compile Include="Chemistry\NamedChemicalFormula.cs" />

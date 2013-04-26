@@ -7,29 +7,32 @@ using CSMSL.Analysis.Quantitation;
 
 namespace CSMSL.Analysis.ExperimentalDesign
 {
-    public class ExperimentalSet
+    public class ExperimentalSet : IEnumerable<ExperimentalCondition>
     {       
-        private Dictionary<IQuantitationChannel, ExperimentalCondition> _data;
+        private HashSet<ExperimentalCondition> _conditions;
 
         public string Name { get; private set; }
 
         public ExperimentalSet(string name = "")
         {
             Name = name;
-            _data = new Dictionary<IQuantitationChannel, ExperimentalCondition>();
+            _conditions = new HashSet<ExperimentalCondition>();
         }
 
-        public void Add(ExperimentalCondition condition, IQuantitationChannel quantChannel)
+        public void Add(ExperimentalCondition condition)
         {
-            if (_data.ContainsKey(quantChannel))
-            {
-                throw new DuplicateKeyException("Cannot add two identical quantitation channels to an experimental set!");
-            }
-            else
-            {
-                _data.Add(quantChannel, condition);
-            }
-        }        
+            _conditions.Add(condition);        
+        }
 
+
+        public IEnumerator<ExperimentalCondition> GetEnumerator()
+        {
+            return _conditions.GetEnumerator();
+        }
+
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        {
+            return _conditions.GetEnumerator();
+        }
     }
 }

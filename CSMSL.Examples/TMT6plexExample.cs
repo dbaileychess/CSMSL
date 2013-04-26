@@ -40,15 +40,23 @@ namespace CSMSL.Examples
 
             // Set up experimental conditions
             Sample sample = new Sample("Yeast", "Tryptic digestion");
-            QuantitationChannelSet tmt6plex = QuantitationChannelSet.TMT6Plex;
+            QuantitationChannelSet tmt6plex = QuantitationChannelSet.TMT6PlexHeavy;
 
             ExperimentalCondition cond1_10 = sample.AddCondition("10").AddQuantChannel(tmt6plex["126"]);
-            ExperimentalCondition cond1_5 = sample.AddCondition("5").AddQuantChannel(tmt6plex["127"]);
-            ExperimentalCondition cond1_1 = sample.AddCondition("1").AddQuantChannel(tmt6plex["128"]);
-            ExperimentalCondition cond2_1 = sample.AddCondition("1").AddQuantChannel(tmt6plex["129"]);
-            ExperimentalCondition cond2_5 = sample.AddCondition("5").AddQuantChannel(tmt6plex["130"]);
+            ExperimentalCondition cond1_5 = sample.AddCondition("5").AddQuantChannel(tmt6plex["127h"]);
+            ExperimentalCondition cond1_1 = sample.AddCondition("1").AddQuantChannel(tmt6plex["128l"]);
+            ExperimentalCondition cond2_1 = sample.AddCondition("1").AddQuantChannel(tmt6plex["129h"]);
+            ExperimentalCondition cond2_5 = sample.AddCondition("5").AddQuantChannel(tmt6plex["130l"]);
             ExperimentalCondition cond2_10 = sample.AddCondition("10").AddQuantChannel(tmt6plex["131"]);
-           
+
+            ExperimentalSet experiment = new ExperimentalSet();
+            experiment.Add(cond1_1);
+            experiment.Add(cond1_5);
+            experiment.Add(cond1_10);
+            experiment.Add(cond2_10);
+            experiment.Add(cond2_5);
+            experiment.Add(cond2_1);
+
             // PSM loading
             List<PeptideSpectralMatch> psms;
             using (PsmReader psmReader = new OmssaCsvPsmReader(psmFile))
@@ -71,7 +79,29 @@ namespace CSMSL.Examples
 
             // Example of comparing the ratio of two conditions
             QuantifiedPeptide qpep = quantPeptides[0];
-            double ratio = qpep[cond1_10].Value / qpep[cond1_1].Value;
+
+            //double ratio = qpep[cond1_10].Intensity / qpep[cond1_1].Intensity;
+
+            Console.WriteLine(string.Join("\t",experiment.Select(cond => cond.Name)));
+
+            foreach (QuantifiedPeptide quantPeptide in quantPeptides)
+            { 
+                //Console.Write(quantPeptide.Peptide);
+                foreach (ExperimentalCondition cond in experiment)
+                {
+                    QuantifiedPeakSet quant = quantPeptide[cond];
+                    if (quant != null)
+                    {
+                        Console.Write(quant.DeNormalizedIntensity.ToString("e3"));
+                    }
+                    else
+                    {
+                        Console.Write("n/a");
+                    }
+                    Console.Write("\t");
+                }
+                Console.WriteLine();
+            }         
             
         }
     }

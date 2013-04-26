@@ -9,17 +9,62 @@ namespace CSMSL.Analysis.Quantitation
 {
     public class QuantitationChannelSet: IMass
     {
-        public static readonly QuantitationChannelSet TMT6Plex;
+        public static readonly QuantitationChannelSet TMT6PlexHeavy;
+        public static readonly QuantitationChannelSet TMT6PlexLight;
+        public static readonly QuantitationChannelSet TMT8Plex;
+        public static readonly QuantitationChannelSet TMT10Plex;
 
         static QuantitationChannelSet()
         {
-            TMT6Plex = new QuantitationChannelSet("TMT 6-Pex", QuantitationChannelSetMassType.Average, false);
-            TMT6Plex.Add(new IsobaricTag("C8 H15 N", "C{13}4 H4 N{15} O2", "126"));
-            TMT6Plex.Add(new IsobaricTag("C8 H15 N{15}", "C{13}4 H4 N O2", "127"));
-            TMT6Plex.Add(new IsobaricTag("C6 C{13}2 H15 N", "C2 C{13}2 H4 N{15} O2", "128"));
-            TMT6Plex.Add(new IsobaricTag("C6 C{13}2 H15 N{15}", "C2 C{13}2 H4 N O2", "129"));
-            TMT6Plex.Add(new IsobaricTag("C4 C{13}4 H15 N", "C4 H4 N{15} O2", "130"));
-            TMT6Plex.Add(new IsobaricTag("C4 C{13}4 H15 N{15}", "C4 H4 N O2", "131"));
+            IsobaricTag tmt126 = new IsobaricTag("C8 H15 N", "C{13}4 H4 N{15} O2", "126");
+            IsobaricTag tmt127l = new IsobaricTag("C8 H15 N{15}", "C{13}4 H4 N O2", "127l");
+            IsobaricTag tmt127h = new IsobaricTag("C7 C{13} H15 N", "C C{13}3 H4 N{15} O2", "127h");
+            IsobaricTag tmt128l = new IsobaricTag("C7 C{13} H15 N{15}", "C C{13}3 H4 N O2", "128l");
+            IsobaricTag tmt128h = new IsobaricTag("C6 C{13}2 H15 N", "C2 C{13}2 H4 N{15} O2", "128h");
+            IsobaricTag tmt129l = new IsobaricTag("C6 C{13}2 H15 N{15}", "C2 C{13}2 H4 N O2", "129l");
+            IsobaricTag tmt129h = new IsobaricTag("C5 C{13}3 H15 N", "C3 C{13} H4 N{15} O2", "129h");
+            IsobaricTag tmt130l = new IsobaricTag("C5 C{13}3 H15 N{15}", "C3 C{13} H4 N O2", "130l");
+            IsobaricTag tmt130h = new IsobaricTag("C4 C{13}4 H15 N", "C4 H4 N{15} O2", "130h");
+            IsobaricTag tmt131 = new IsobaricTag("C4 C{13}4 H15 N{15}", "C4 H4 N O2", "131");
+
+            TMT6PlexHeavy = new QuantitationChannelSet("TMT 6-Pex (Heavy)", QuantitationChannelSetMassType.Average, false);
+            TMT6PlexHeavy.Add(tmt126);
+            TMT6PlexHeavy.Add(tmt127h);
+            TMT6PlexHeavy.Add(tmt128l);
+            TMT6PlexHeavy.Add(tmt129h);
+            TMT6PlexHeavy.Add(tmt130l);
+            TMT6PlexHeavy.Add(tmt131);
+
+            TMT6PlexLight = new QuantitationChannelSet("TMT 6-Pex (Light)", QuantitationChannelSetMassType.Average, false);
+            TMT6PlexLight.Add(tmt126);
+            TMT6PlexLight.Add(tmt127l);
+            TMT6PlexLight.Add(tmt128l);
+            TMT6PlexLight.Add(tmt129l);
+            TMT6PlexLight.Add(tmt130l);
+            TMT6PlexLight.Add(tmt131);
+
+            TMT8Plex = new QuantitationChannelSet("TMT 8-Pex", QuantitationChannelSetMassType.Average, false);
+            TMT8Plex.Add(tmt126);
+            TMT8Plex.Add(tmt127l);
+            TMT8Plex.Add(tmt127h);
+            TMT8Plex.Add(tmt128l);
+            TMT8Plex.Add(tmt129l);
+            TMT8Plex.Add(tmt129h);
+            TMT8Plex.Add(tmt130l);
+            TMT8Plex.Add(tmt131);
+
+            TMT10Plex = new QuantitationChannelSet("TMT 10-Pex", QuantitationChannelSetMassType.Average, false);
+            TMT10Plex.Add(tmt126);
+            TMT10Plex.Add(tmt127l);
+            TMT10Plex.Add(tmt127h);
+            TMT10Plex.Add(tmt128l);
+            TMT10Plex.Add(tmt128h);
+            TMT10Plex.Add(tmt129l);
+            TMT10Plex.Add(tmt129h);
+            TMT10Plex.Add(tmt130l);
+            TMT10Plex.Add(tmt130h);
+            TMT10Plex.Add(tmt131);
+
         }
 
         public string Name { get; set; }

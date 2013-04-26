@@ -38,7 +38,7 @@ namespace CSMSL.Proteomics
         ydot = 512,
         z = 1024,
         zdot = 2048,
-        Internal = 4096,
+        Internal = 4096,    
         All = Int32.MaxValue
     }
 }

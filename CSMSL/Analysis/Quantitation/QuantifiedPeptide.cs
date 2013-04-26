@@ -18,17 +18,17 @@ namespace CSMSL.Analysis.Quantitation
         public static double ResolutionMin = 100000;
        
         public HashSet<PeptideSpectralMatch> PSMs;
-        public List<QuantifiedScan> QuantifiedScans;
+        public HashSet<MSDataScan> QuantifiedScans;
         public Peptide Peptide { get; private set; }
 
-        private Dictionary<ExperimentalCondition, Quantity> _quantities;
+        private Dictionary<ExperimentalCondition, QuantifiedPeakSet> _quantities;
 
         public QuantifiedPeptide(Peptide peptide)
         {
             Peptide = peptide;
             PSMs = new HashSet<PeptideSpectralMatch>();
-            QuantifiedScans = new List<QuantifiedScan>();
-            _quantities = new Dictionary<ExperimentalCondition, Quantity>();
+            QuantifiedScans = new HashSet<MSDataScan>();
+            _quantities = new Dictionary<ExperimentalCondition, QuantifiedPeakSet>();
         }
 
         public int QuantifiedScanCount
@@ -47,7 +47,7 @@ namespace CSMSL.Analysis.Quantitation
             }
         }
 
-        public Quantity this[ExperimentalCondition condition]
+        public QuantifiedPeakSet this[ExperimentalCondition condition]
         {
             get
             {
@@ -84,7 +84,7 @@ namespace CSMSL.Analysis.Quantitation
             }     
         }
 
-        public void AddQuantifiedScan(QuantifiedScan quantScan)
+        public void AddQuantifiedScan(MSDataScan quantScan)
         {
             if (quantScan == null)
             {
@@ -98,33 +98,33 @@ namespace CSMSL.Analysis.Quantitation
             }
 
             // For MS2-based quantification, check to make sure relevant PSM exists
-            bool psmFound = false;  
-            foreach(PeptideSpectralMatch psm in PSMs)         
-            {             
-                if (quantScan.DataScan.MsnOrder == 2)
-                {
-                    if (((MSDataScan)psm.Spectrum).Equals(quantScan.DataScan))
-                    {
-                        psmFound = true;
-                        break;
-                    }                   
-                }
-                else
-                {
-                    if (((int)psm.Spectrum.PrecursorCharge).Equals(quantScan.Charge))
-                    {
-                        psmFound = true;
-                        break;
-                    }                  
-                }
-            }
+            //bool psmFound = false;  
+            //foreach(PeptideSpectralMatch psm in PSMs)         
+            //{             
+            //    if (quantScan.DataScan.MsnOrder == 2)
+            //    {
+            //        if (((MSDataScan)psm.Spectrum).Equals(quantScan.DataScan))
+            //        {
+            //            psmFound = true;
+            //            break;
+            //        }                   
+            //    }
+            //    else
+            //    {
+            //        if (((int)psm.Spectrum.PrecursorCharge).Equals(quantScan.Charge))
+            //        {
+            //            psmFound = true;
+            //            break;
+            //        }                  
+            //    }
+            //}
 
-            if (!psmFound)
-            {
-                throw new ArgumentOutOfRangeException("psm not found");
-            }
+            //if (!psmFound)
+            //{
+            //    throw new ArgumentOutOfRangeException("psm not found");
+            //}
             
-            quantScan.QuantifiedPeptideParent = this;
+            //quantScan.QuantifiedPeptideParent = this;
             QuantifiedScans.Add(quantScan);
         }
         
@@ -135,22 +135,22 @@ namespace CSMSL.Analysis.Quantitation
             List<double> intensities = new List<double>();
             double IQuantitationChannelIntensity = 0;         
 
-            foreach (QuantifiedScan scan in QuantifiedScans)
-            {
-                for (int i = 0; i < QuantifiedScan.NumIsotopes; i++)
-                {                                          
-                    if (scan.TryGetQuantifiedPeak(IQuantitationChannel, out peak, i))
-                    {
-                        if (peak.SignalToNoise >= signalToNoiseThreshold || noiseBandCap)
-                        {
-                            IQuantitationChannelIntensity = peak.DenormalizedIntensity(noiseBandCap, signalToNoiseThreshold);
-                            IQuantitationChannelIntensitySum += IQuantitationChannelIntensity;
-                            intensities.Add(IQuantitationChannelIntensity);                           
-                        }
-                    }
-                }
+            //foreach (QuantifiedScan scan in QuantifiedScans)
+            //{
+            //    for (int i = 0; i < QuantifiedScan.NumIsotopes; i++)
+            //    {                                          
+            //        if (scan.TryGetQuantifiedPeak(IQuantitationChannel, out peak, i))
+            //        {
+            //            if (peak.SignalToNoise >= signalToNoiseThreshold || noiseBandCap)
+            //            {
+            //                IQuantitationChannelIntensity = peak.DenormalizedIntensity(noiseBandCap, signalToNoiseThreshold);
+            //                IQuantitationChannelIntensitySum += IQuantitationChannelIntensity;
+            //                intensities.Add(IQuantitationChannelIntensity);                           
+            //            }
+            //        }
+            //    }
 
-            }
+            //}
 
             switch (method)
             {               
@@ -173,6 +173,31 @@ namespace CSMSL.Analysis.Quantitation
             return GetRatio(top, bottom);
         }
 
+        public double GetRatio(ExperimentalCondition numerator, ExperimentalCondition denominator, Func<QuantifiedPeak, bool> predicate)
+        {
+            QuantifiedPeakSet num = _quantities[numerator].Filter(predicate);
+            QuantifiedPeakSet den = _quantities[denominator].Filter(predicate);
+            return num.Intensity / den.Intensity;
+        }
+
+        public IEnumerable<double> GetRatioList(ExperimentalCondition numerator, ExperimentalCondition denominator, Func<QuantifiedPeak, QuantifiedPeak, bool> predicate)
+        {
+            QuantifiedPeakSet num = _quantities[numerator];
+            QuantifiedPeakSet den = _quantities[denominator];
+            foreach (QuantifiedPeak num_peak in num.GetPeaks())
+            {
+                foreach (QuantifiedPeak den_peak in den.GetPeaks())
+                {
+                    if (predicate(num_peak, den_peak))
+                    {
+                        yield return num_peak.Intensity / den_peak.Intensity;
+                    }
+                }
+            }
+
+            yield break;
+        }
+
         public List<double> GetRatioList(IQuantitationChannel numerator, IQuantitationChannel denominator, bool noiseBandCap = false, double signalToNoiseThreshold = 3.0)
         {
             List<double> log2Ratios = new List<double>();
@@ -181,22 +206,22 @@ namespace CSMSL.Analysis.Quantitation
             double ratio = 0;
             QuantifiedPeak numeratorPeak = null;
             QuantifiedPeak denominatorPeak = null;
-            foreach (QuantifiedScan scan in QuantifiedScans)
-            {
-                for (int i = 0; i < QuantifiedScan.NumIsotopes; i++)
-                {
-                    if (scan.TryGetQuantifiedPeak(numerator, out numeratorPeak, i) && scan.TryGetQuantifiedPeak(denominator, out denominatorPeak, i))
-                    {
-                        peakNumerator = numeratorPeak.DenormalizedIntensity(noiseBandCap, signalToNoiseThreshold);
-                        peakDenominator = denominatorPeak.DenormalizedIntensity(noiseBandCap, signalToNoiseThreshold);
-                        ratio = GetRatio(peakNumerator, peakDenominator);
-                        if (ratio != 0.0)
-                        {
-                            log2Ratios.Add(Math.Log(ratio, 2));
-                        }
-                    }                             
-                }
-            }
+            //foreach (QuantifiedScan scan in QuantifiedScans)
+            //{
+            //    for (int i = 0; i < QuantifiedScan.NumIsotopes; i++)
+            //    {
+            //        if (scan.TryGetQuantifiedPeak(numerator, out numeratorPeak, i) && scan.TryGetQuantifiedPeak(denominator, out denominatorPeak, i))
+            //        {
+            //            peakNumerator = numeratorPeak.DenormalizedIntensity(noiseBandCap, signalToNoiseThreshold);
+            //            peakDenominator = denominatorPeak.DenormalizedIntensity(noiseBandCap, signalToNoiseThreshold);
+            //            ratio = GetRatio(peakNumerator, peakDenominator);
+            //            if (ratio != 0.0)
+            //            {
+            //                log2Ratios.Add(Math.Log(ratio, 2));
+            //            }
+            //        }                             
+            //    }
+            //}
 
             return log2Ratios;
         }
@@ -421,7 +446,7 @@ namespace CSMSL.Analysis.Quantitation
 
                 if (sequenceIndependent)
                 {
-                    SequenceIndependentQuantify(quantPep, conditions);
+                    quantPep.SequenceIndependentQuantify(conditions);
                 }
                 else
                 {
@@ -466,17 +491,16 @@ namespace CSMSL.Analysis.Quantitation
 
         }
 
-        private static void SequenceIndependentQuantify(QuantifiedPeptide quantPep, IEnumerable<ExperimentalCondition> conditions)
+        private void SequenceIndependentQuantify(IEnumerable<ExperimentalCondition> conditions)
         {
-            Quantity quantity;
+            QuantifiedPeakSet peakSet;
             List<MZPeak> peaks;
 
             // MS2-based quant.
-            foreach (PeptideSpectralMatch psm in quantPep.PSMs)
+            foreach (PeptideSpectralMatch psm in PSMs)
             {
                 MassSpectrum spectrum = psm.Spectrum.MassSpectrum;
-                int charge = psm.Charge;
-                QuantifiedScan quantScan = new QuantifiedScan(psm.Spectrum, charge);
+                int charge = psm.Charge;             
 
                 foreach (Peptide peptide in QuantitationChannelSet.GetUniquePeptides(psm.Peptide))
                 {
@@ -487,13 +511,14 @@ namespace CSMSL.Analysis.Quantitation
                     if (spectrum.TryGetPeaks(MassRange.FromDa(mz, 0.05), out peaks))
                     {
                         MZPeak peak = peaks.OrderBy(p => p.Intensity).ToArray()[0];
-                        QuantifiedPeak qpeak = new QuantifiedPeak(peak.MZ, 1, peak.Intensity);
-                        if (!quantPep._quantities.TryGetValue(condition, out quantity))
-                        {    
-                            quantity = new Quantity();
-                            quantPep._quantities.Add(condition, quantity);
+                        QuantifiedPeak qpeak = new QuantifiedPeak(psm.Spectrum, peak.MZ, 1, peak.Intensity);
+                     
+                        if (!_quantities.TryGetValue(condition, out peakSet))
+                        {
+                            peakSet = new QuantifiedPeakSet();
+                            _quantities.Add(condition, peakSet);
                         }
-                        quantity.Add(qpeak); 
+                        peakSet.Add(qpeak); 
                         //quantScan.AddQuant(quantChannels.ToArray()[0], qpeak, 0);
                     }
                     else
@@ -502,7 +527,7 @@ namespace CSMSL.Analysis.Quantitation
                     }
                     
                 }
-                quantPep.QuantifiedScans.Add(quantScan);
+                QuantifiedScans.Add(psm.Spectrum);
             }
         }
 
