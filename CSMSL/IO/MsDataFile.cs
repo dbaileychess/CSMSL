@@ -178,7 +178,7 @@ namespace CSMSL.IO
             {
                 scan = new MSDataScan(spectrumNumber, msn, this);
             }
-            scan.MassSpectrum = GetMzSpectrum(spectrumNumber);
+            //scan.MassSpectrum = GetMzSpectrum(spectrumNumber);
             scan.Resolution = GetResolution(spectrumNumber);
             scan.InjectionTime = GetInjectionTime(spectrumNumber);
             scan.RetentionTime = GetRetentionTime(spectrumNumber);

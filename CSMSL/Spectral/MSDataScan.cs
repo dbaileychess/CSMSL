@@ -16,6 +16,17 @@ namespace CSMSL.Spectral
         {
             get
             {
+                if (_massSpectrum == null)
+                {
+                    if (ParentFile.IsOpen)
+                    {
+                        _massSpectrum = ParentFile.GetMzSpectrum(_spectrumNumber);
+                    }
+                    else
+                    {
+                        throw new ArgumentException("The parent data file is closed");
+                    }
+                }
                 return _massSpectrum;
             }
             internal set

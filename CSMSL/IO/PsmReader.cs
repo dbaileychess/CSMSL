@@ -46,10 +46,17 @@ namespace CSMSL.IO
             }
         }
 
+        public void AddMSDataFiles(IEnumerable<MSDataFile> dataFiles)
+        {
+            foreach (MSDataFile dataFile in dataFiles)
+            {
+                AddMSDataFile(dataFile);
+            }
+        }
+
         public void AddMSDataFile(MSDataFile dataFile)
         {
-            _dataFiles.Add(dataFile.Name, dataFile);
-            //dataFile.Open();
+            _dataFiles.Add(dataFile.Name, dataFile);          
         }
 
         public void AddVariableModification(string chemicalFormula, string name)
