@@ -48,5 +48,5 @@ TestResults/
 
 # Nuget #
 #########
-packages/*
-!packages/repositories.config
+!NuGet.exe
+packages/

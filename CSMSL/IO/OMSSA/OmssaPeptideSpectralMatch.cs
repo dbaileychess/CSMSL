@@ -9,51 +9,52 @@ using CsvHelper.TypeConversion;
 
 namespace CSMSL.IO.OMSSA
 {
+    
     public class OmssaPeptideSpectralMatch
-    {
-        [CsvField(Name = "Spectrum number")]
+    {             
+
         public int SpectrumNumber { get; set; }
 
-        [CsvField(Name = "E-value")]
+        //[CsvField(Name = "E-value")]
         public double EValue { get; set; }
 
-        [CsvField(Name = "Mass")]
+        //[CsvField(Name = "Mass")]
         public double Mass { get; set; }
         
-        [CsvField(Name = "Theo Mass")]
+        //[CsvField(Name = "Theo Mass")]
         public double TheoreticalMass { get; set; }
              
-        [CsvField(Name = "Peptide")]     
+        //[CsvField(Name = "Peptide")]     
         public string Sequence { get; set; }
  
-        [CsvField(Name = "Defline")]
+        //[CsvField(Name = "Defline")]
         public string Defline { get; set; }
 
-        [CsvField(Name = "Filename/id")]
+       // [CsvField(Name = "Filename/id")]
         public string FileName { get; set; }
 
-        [CsvField(Name = "Accession")]
+        //[CsvField(Name = "Accession")]
         public string Accession { get; set; }
 
-        [CsvField(Name = "P-value")]
+        //[CsvField(Name = "P-value")]
         public double PValue { get; set; }
 
-        [CsvField(Name = "Mods")]
+       // [CsvField(Name = "Mods")]
         public string Modifications { get; set; }
          
-        [CsvField(Name = "Charge")]
+        //[CsvField(Name = "Charge")]
         public int Charge { get; set; }
 
-        [CsvField(Name = "Start")]
+        //[CsvField(Name = "Start")]
         public int StartResidue { get; set; }
 
-        [CsvField(Name = "Stop")]
+        //[CsvField(Name = "Stop")]
         public int StopResidue { get; set; }       
 
-        [CsvField(Name = "gi")]
+        //[CsvField(Name = "gi")]
         public int GI { get; set; }
         
-        [CsvField(Name = "NIST score")]
+       // [CsvField(Name = "NIST score")]
         public double NistScore { get; set; }
     }
 }
