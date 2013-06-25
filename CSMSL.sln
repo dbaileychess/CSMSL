@@ -3,13 +3,18 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSMSL", "CSMSL\CSMSL.csproj", "{3C8C9F05-9C19-4251-95FA-05D7EDC8CAE6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSMSL.Tests", "CSMSL.Tests\CSMSL.Tests.csproj", "{156FA2E7-48A5-4940-B4BF-1154B052579A}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Thermo", "CSMSL\IO\Thermo\Thermo.csproj", "{24DC85FF-E97B-4140-9614-77DD8FDDD32F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSMSL.Examples", "CSMSL.Examples\CSMSL.Examples.csproj", "{AFA55374-C851-429F-AC43-CCC0A52C0315}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OMSSA", "CSMSL\IO\OMSSA\OMSSA.csproj", "{45A71E18-42E8-41A4-9479-2852C4186993}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{87E563B1-0EB9-49D7-98BD-8EA282FB9BAC}"
+	ProjectSection(SolutionItems) = preProject
+		.nuget\NuGet.Config = .nuget\NuGet.Config
+		.nuget\NuGet.exe = .nuget\NuGet.exe
+		.nuget\NuGet.targets = .nuget\NuGet.targets
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,18 +38,6 @@ Global
 		{3C8C9F05-9C19-4251-95FA-05D7EDC8CAE6}.Release|x64.Build.0 = Release|x64
 		{3C8C9F05-9C19-4251-95FA-05D7EDC8CAE6}.Release|x86.ActiveCfg = Release|x86
 		{3C8C9F05-9C19-4251-95FA-05D7EDC8CAE6}.Release|x86.Build.0 = Release|x86
-		{156FA2E7-48A5-4940-B4BF-1154B052579A}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
-		{156FA2E7-48A5-4940-B4BF-1154B052579A}.Debug|Mixed Platforms.Build.0 = Debug|x86
-		{156FA2E7-48A5-4940-B4BF-1154B052579A}.Debug|x64.ActiveCfg = Debug|x64
-		{156FA2E7-48A5-4940-B4BF-1154B052579A}.Debug|x64.Build.0 = Debug|x64
-		{156FA2E7-48A5-4940-B4BF-1154B052579A}.Debug|x86.ActiveCfg = Debug|x86
-		{156FA2E7-48A5-4940-B4BF-1154B052579A}.Debug|x86.Build.0 = Debug|x86
-		{156FA2E7-48A5-4940-B4BF-1154B052579A}.Release|Mixed Platforms.ActiveCfg = Release|x86
-		{156FA2E7-48A5-4940-B4BF-1154B052579A}.Release|Mixed Platforms.Build.0 = Release|x86
-		{156FA2E7-48A5-4940-B4BF-1154B052579A}.Release|x64.ActiveCfg = Release|x64
-		{156FA2E7-48A5-4940-B4BF-1154B052579A}.Release|x64.Build.0 = Release|x64
-		{156FA2E7-48A5-4940-B4BF-1154B052579A}.Release|x86.ActiveCfg = Release|x86
-		{156FA2E7-48A5-4940-B4BF-1154B052579A}.Release|x86.Build.0 = Release|x86
 		{24DC85FF-E97B-4140-9614-77DD8FDDD32F}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
 		{24DC85FF-E97B-4140-9614-77DD8FDDD32F}.Debug|Mixed Platforms.Build.0 = Debug|x86
 		{24DC85FF-E97B-4140-9614-77DD8FDDD32F}.Debug|x64.ActiveCfg = Debug|x64
