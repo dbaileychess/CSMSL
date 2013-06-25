@@ -18,8 +18,19 @@ namespace CSMSL.Spectral
         public double PrecursorMz
         {
             get
-            {              
-                return _precursorMz;
+            {
+                if (double.IsNaN(_precursorMz))
+                {
+                    if (ParentFile.IsOpen)
+                    {
+                        _precursorMz = ParentFile.GetPrecusorMz(SpectrumNumber, MsnOrder);
+                    }
+                    else
+                    {
+                        throw new ArgumentException("The parent data file is closed");
+                    }
+                }
+                return _precursorMz;             
             }
             internal set
             {
@@ -31,7 +42,18 @@ namespace CSMSL.Spectral
         public MassRange IsolationRange
         {
             get
-            {               
+            {
+                if (_isolationRange == null)
+                {
+                    if (ParentFile.IsOpen)
+                    {
+                        _isolationRange = ParentFile.GetIsolationRange(SpectrumNumber);
+                    }
+                    else
+                    {
+                        throw new ArgumentException("The parent data file is closed");
+                    }
+                }           
                 return _isolationRange;
             }
             internal set
@@ -44,8 +66,19 @@ namespace CSMSL.Spectral
         public virtual short PrecursorCharge
         {
             get
-            {              
-                return _precursorCharge;
+            {
+                if (_precursorCharge == 0)
+                {
+                    if (ParentFile.IsOpen)
+                    {
+                        _precursorCharge = ParentFile.GetPrecusorCharge(SpectrumNumber, MsnOrder);
+                    }
+                    else
+                    {
+                        throw new ArgumentException("The parent data file is closed");
+                    }
+                }
+                return _precursorCharge;     
             }
             internal set
             {
@@ -57,7 +90,18 @@ namespace CSMSL.Spectral
         public DissociationType DissociationType
         {
             get
-            {               
+            {
+                if (_dissociationType == DissociationType.UnKnown)
+                {
+                    if (ParentFile.IsOpen)
+                    {
+                        _dissociationType = ParentFile.GetDissociationType(SpectrumNumber);
+                    }
+                    else
+                    {
+                        throw new ArgumentException("The parent data file is closed");
+                    }
+                }             
                 return _dissociationType;
             }
             internal set

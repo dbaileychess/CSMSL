@@ -26,7 +26,7 @@ using CSMSL.Proteomics;
 
 namespace CSMSL.IO
 {
-    public class Fasta
+    public class Fasta : IEquatable<Fasta>
     {
         public static string[] DECOY_IDENTIFIERS = {"DECOY", "REVERSE"};
 
@@ -39,6 +39,20 @@ namespace CSMSL.IO
             Sequence = sequence;
             Description = description;
         }
+
+        public override bool Equals(object obj)
+        {
+            if (obj is Fasta)
+            {
+                return this.Equals((Fasta)obj);
+            }
+            return false;
+        }
+
+        public override int GetHashCode()
+        {
+            return Sequence.GetHashCode();
+        }        
 
         /// <summary>
         /// Generate a decoy version of the given fasta
@@ -152,6 +166,13 @@ namespace CSMSL.IO
             get { return _isDecoy; }
             set { _isDecoy = value; }
         }
+
+        public bool Equals(Fasta other)
+        {
+            return Sequence.Equals(other.Sequence);
+        }
+
+
     } // class Fasta
 
 

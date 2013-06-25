@@ -53,7 +53,18 @@ namespace CSMSL.Spectral
         public double Resolution
         {
             get
-            {           
+            {
+                if (double.IsNaN(_resolution))
+                {
+                    if (ParentFile.IsOpen)
+                    {
+                        _resolution = ParentFile.GetResolution(_spectrumNumber);
+                    }
+                    else
+                    {
+                        throw new ArgumentException("The parent data file is closed");
+                    }
+                }             
                 return _resolution;
             }
             internal set
@@ -75,10 +86,29 @@ namespace CSMSL.Spectral
             }
         }
 
+        private double _injectionTime = double.NaN;
+
         public virtual double InjectionTime
         {
-            get;
-            set;
+            get
+            {
+                if (double.IsNaN(_injectionTime))
+                {
+                    if (ParentFile.IsOpen)
+                    {
+                        _injectionTime = ParentFile.GetInjectionTime(_spectrumNumber);
+                    }
+                    else
+                    {
+                        throw new ArgumentException("The parent data file is closed");
+                    }
+                }
+                return _injectionTime;
+            }
+            internal set
+            {
+                _injectionTime = value;
+            }
         }
 
         private double _retentionTime = double.NaN;
@@ -86,7 +116,18 @@ namespace CSMSL.Spectral
         public double RetentionTime
         {
             get
-            {              
+            {
+                if (double.IsNaN(_retentionTime))
+                {
+                    if (ParentFile.IsOpen)
+                    {
+                        _retentionTime = ParentFile.GetRetentionTime(_spectrumNumber);
+                    }
+                    else
+                    {
+                        throw new ArgumentException("The parent data file is closed");
+                    }
+                }              
                 return _retentionTime;
             }
             internal set
@@ -99,7 +140,18 @@ namespace CSMSL.Spectral
         public Polarity Polarity
         {
             get
-            {               
+            {
+                if (_polarity == Spectral.Polarity.Unknown)
+                {
+                    if (ParentFile.IsOpen)
+                    {
+                        _polarity = ParentFile.GetPolarity(_spectrumNumber);
+                    }
+                    else
+                    {
+                        throw new ArgumentException("The parent data file is closed");
+                    }
+                }
                 return _polarity;
             }
             internal set
@@ -113,7 +165,18 @@ namespace CSMSL.Spectral
         public MZAnalyzerType MzAnalyzer
         {
             get
-            {              
+            {
+                if (_mzAnalyzer == MZAnalyzerType.Unknown)
+                {
+                    if (ParentFile.IsOpen)
+                    {
+                        _mzAnalyzer = ParentFile.GetMzAnalyzer(_spectrumNumber);
+                    }
+                    else
+                    {
+                        throw new ArgumentException("The parent data file is closed");
+                    }
+                }
                 return _mzAnalyzer;
             }
             internal set
@@ -126,7 +189,18 @@ namespace CSMSL.Spectral
         public MassRange MzRange
         {
             get
-            {               
+            {
+                if (_mzRange == null)
+                {
+                    if (ParentFile.IsOpen)
+                    {
+                        _mzRange = ParentFile.GetMzRange(_spectrumNumber);
+                    }
+                    else
+                    {
+                        throw new ArgumentException("The parent data file is closed");
+                    }
+                }
                 return _mzRange;
             }
             internal set

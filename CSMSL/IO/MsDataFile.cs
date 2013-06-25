@@ -30,6 +30,7 @@ namespace CSMSL.IO
             }
             FilePath = filePath;
             FileType = filetype;
+            _isOpen = false;
             if (openImmediately) Open();
         }
 
@@ -67,7 +68,8 @@ namespace CSMSL.IO
             }
         }
 
-        public bool IsOpen { 
+        public bool IsOpen
+        {
             get { return _isOpen; }
             protected set { _isOpen = value; }
         }
@@ -145,7 +147,7 @@ namespace CSMSL.IO
             {
                 _scans = new MSDataScan[LastSpectrumNumber + 1];
             }
-
+           
             if (_scans[spectrumNumber] == null)
             {
                 return _scans[spectrumNumber] = GetMSDataScan(spectrumNumber);                
@@ -168,10 +170,10 @@ namespace CSMSL.IO
             if (msn > 1)
             {
                 MsnDataScan msnscan = new MsnDataScan(spectrumNumber, msn, this);
-                msnscan.PrecursorMz = GetPrecusorMz(spectrumNumber, msn);               
-                msnscan.IsolationRange = GetIsolationRange(spectrumNumber, msn);
-                msnscan.DissociationType = GetDissociationType(spectrumNumber, msn);
-                msnscan.PrecursorCharge = GetPrecusorCharge(spectrumNumber, msn);
+               // msnscan.PrecursorMz = GetPrecusorMz(spectrumNumber, msn);               
+               // msnscan.IsolationRange = GetIsolationRange(spectrumNumber, msn);
+                //msnscan.DissociationType = GetDissociationType(spectrumNumber, msn);
+                //msnscan.PrecursorCharge = GetPrecusorCharge(spectrumNumber, msn);
                 scan = msnscan;
             }
             else
@@ -179,12 +181,12 @@ namespace CSMSL.IO
                 scan = new MSDataScan(spectrumNumber, msn, this);
             }
             //scan.MassSpectrum = GetMzSpectrum(spectrumNumber);
-            scan.Resolution = GetResolution(spectrumNumber);
-            scan.InjectionTime = GetInjectionTime(spectrumNumber);
-            scan.RetentionTime = GetRetentionTime(spectrumNumber);
-            scan.Polarity = GetPolarity(spectrumNumber);
-            scan.MzAnalyzer = GetMzAnalyzer(spectrumNumber);
-            scan.MzRange = GetMzRange(spectrumNumber);
+            //scan.Resolution = GetResolution(spectrumNumber);
+            //scan.InjectionTime = GetInjectionTime(spectrumNumber);
+            //scan.RetentionTime = GetRetentionTime(spectrumNumber);
+            //scan.Polarity = GetPolarity(spectrumNumber);
+            //scan.MzAnalyzer = GetMzAnalyzer(spectrumNumber);
+            //scan.MzRange = GetMzRange(spectrumNumber);
 
             return scan;            
         }

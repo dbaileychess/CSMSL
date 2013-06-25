@@ -45,6 +45,19 @@ namespace CSMSL.Spectral
             }
         }
 
+        public MassSpectrum Filter(double miniumSN)
+        {
+            double noiseLevel = GetNoiseLevel();
+            double minIntensity = miniumSN * noiseLevel;
+            return new MassSpectrum(this.Where(p => p.Intensity > minIntensity));
+        }
+
+        public double GetNoiseLevel()
+        {
+           
+            return _peaks.Average(p => p.Intensity);
+        }
+
         public MassSpectrum() { }        
 
         public MassSpectrum(double[,] data)          
@@ -106,6 +119,7 @@ namespace CSMSL.Spectral
             }
         }
 
+
         MassSpectrum IMassSpectrum.MassSpectrum
         {
             get { return this; }
@@ -113,12 +127,57 @@ namespace CSMSL.Spectral
 
         public IEnumerator<MZPeak> GetEnumerator()
         {
-            return (IEnumerator<MZPeak>)_peaks.GetEnumerator();
+            return ((MZPeak[])_peaks).ToList().GetEnumerator();
         }
 
         System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
         {
             return _peaks.GetEnumerator();
+        }
+
+        public MZPeak GetClosestPeak(MassRange mzRange)
+        {
+            List<MZPeak> peaks = new List<MZPeak>();
+            if (TryGetPeaks(mzRange, out peaks))
+            {
+                double mz = mzRange.Mean;
+                if (peaks.Count == 1)
+                {
+                    return peaks[0];
+                }
+                else if (peaks.Count == 2)
+                {
+                    if (Math.Abs(peaks[0].MZ - mz) < Math.Abs(peaks[1].MZ - mz))
+                    {
+                        return peaks[0];
+                    }
+                    else
+                    {
+                        return peaks[1];
+                    }
+                }
+                else
+                {
+
+                    double smallestDiff = double.MaxValue;
+                    MZPeak bestPeak = null;
+
+                    foreach (MZPeak peak in peaks)
+                    {
+                        double diff = Math.Abs(peak.MZ - mz);
+                        if (diff < smallestDiff)
+                        {
+                            smallestDiff = diff;
+                            bestPeak = peak;
+                        }
+                    }
+                    return bestPeak;
+                }
+            }
+            else
+            {
+                return null;
+            }
         }
     }   
     

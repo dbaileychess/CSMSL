@@ -19,6 +19,7 @@ namespace CSMSL.IO
             _fixedMods = new List<Tuple<IMass, ModificationSites>>();
             _variableMods = new Dictionary<string, IMass>();
             _dataFiles = new Dictionary<string, MSDataFile>();
+            _extraColumns = new List<string>();
         }
                        
         protected Dictionary<string, Protein> _proteins;
@@ -99,7 +100,7 @@ namespace CSMSL.IO
         protected bool _disposed;
 
         protected virtual void Dispose(bool disposing)
-        {            
+        {   
             if (_proteins != null)
                 _proteins.Clear();
             _proteins = null;
@@ -110,6 +111,13 @@ namespace CSMSL.IO
         {
             Dispose(true);
             GC.SuppressFinalize(this);
+        }
+
+        protected List<string> _extraColumns;
+
+        public void ReadExtra(string p)
+        {
+            _extraColumns.Add(p);
         }
     }
 }

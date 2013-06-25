@@ -19,6 +19,10 @@ namespace CSMSL.Analysis.Identification
 
         public virtual string FileName { get; set; }
 
+        public virtual double PrecursorMZ { get { return Peptide.Mass.ToMz(Charge); } }
+
+        private Dictionary<string, string> _extraData;
+
         public PeptideSpectralMatch(PeptideSpectralMatchScoreType type = PeptideSpectralMatchScoreType.LowerIsBetter)
         {
             ScoreType = type;
@@ -75,6 +79,18 @@ namespace CSMSL.Analysis.Identification
 
             // The sign of the scoretype enum indicates how they should be compared
             return Score.CompareTo(other.Score) * Math.Sign((int)ScoreType);
+        }
+
+        public string this[string name]
+        {
+            get { return _extraData[name]; }
+        }
+
+        public void AddExtraData(string name, string value)
+        {
+            if (_extraData == null)
+                _extraData = new Dictionary<string, string>();
+            _extraData[name] = value;
         }
     }
 }
