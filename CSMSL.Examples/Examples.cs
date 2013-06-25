@@ -26,9 +26,6 @@ using CSMSL;
 using CSMSL.Chemistry;
 using CSMSL.Proteomics;
 using CSMSL.Util.Collections;
-//using CSMSL.IO.Agilent;
-using CSMSL.IO.Thermo;
-//using CSMSL.IO.Bruker;
 using CSMSL.IO;
 using CSMSL.Spectral;
 using CSMSL.Analysis.Quantitation;
@@ -50,7 +47,7 @@ namespace CSMSL.Examples
         }                
 
         private static void StartExamples()
-        {
+        {   
             // Examples coding
             //ChemicalFormulaExamples();
             //PeptideExamples();
@@ -65,10 +62,10 @@ namespace CSMSL.Examples
             //ProteinGroupingExample.Start(Protease.Trypsin);
 
             // Example TMT 6-plex quantitation
-            TMT6plexExample.Start();
+            //TMT6plexExample.Start();
 
             //Example IO
-            //MsDataFileExamples.Start();
+            MsDataFileExamples.Start();
 
             // Omssa Reader
             //OmssaReader.Start();

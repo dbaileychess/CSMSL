@@ -45,6 +45,19 @@ namespace CSMSL.Spectral
             }
         }
 
+        public MassSpectrum Filter(double miniumSN)
+        {
+            double noiseLevel = GetNoiseLevel();
+            double minIntensity = miniumSN * noiseLevel;
+            return new MassSpectrum(this.Where(p => p.Intensity > minIntensity));
+        }
+
+        public double GetNoiseLevel()
+        {
+           
+            return _peaks.Average(p => p.Intensity);
+        }
+
         public MassSpectrum() { }        
 
         public MassSpectrum(double[,] data)          
@@ -106,6 +119,7 @@ namespace CSMSL.Spectral
             }
         }
 
+
         MassSpectrum IMassSpectrum.MassSpectrum
         {
             get { return this; }
@@ -113,7 +127,7 @@ namespace CSMSL.Spectral
 
         public IEnumerator<MZPeak> GetEnumerator()
         {
-            return (IEnumerator<MZPeak>)_peaks.GetEnumerator();
+            return ((MZPeak[])_peaks).ToList().GetEnumerator();
         }
 
         System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()

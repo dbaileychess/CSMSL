@@ -63,11 +63,10 @@ namespace CSMSL.IO.OMSSA
             if (peptide == null || string.IsNullOrEmpty(modifications))
                 return;
 
-            foreach (string modification in modifications.Split(','))
+            foreach (string modification in modifications.Split(',',';'))
             {
                 string[] modParts = modification.Trim().Split(':');
-                int location = 0;
-                IMass mod = null;
+                int location = 0;               
 
                 if (int.TryParse(modParts[1], out location))
                 {
@@ -95,6 +94,7 @@ namespace CSMSL.IO.OMSSA
             MSDataFile dataFile;
             foreach (OmssaPeptideSpectralMatch omssaPSM in _reader.GetRecords<OmssaPeptideSpectralMatch>())
             {
+               
                 Peptide peptide = new Peptide(omssaPSM.Sequence.ToUpper());               
                 SetFixedMods(peptide);
                 SetDynamicMods(peptide, omssaPSM.Modifications);
@@ -103,15 +103,23 @@ namespace CSMSL.IO.OMSSA
                 if (_proteins.TryGetValue(omssaPSM.Defline, out prot))
                 {
                     peptide.Parent = prot;
-                }              
+                }
+                
+              
                 PeptideSpectralMatch psm = new PeptideSpectralMatch();
+                if (_extraColumns.Count > 0)
+                {
+                    foreach(string name in _extraColumns) {
+                        psm.AddExtraData(name, _reader.GetField<string>(name));
+                    }                   
+                }
                 psm.Peptide = peptide;
                 psm.Score = omssaPSM.EValue;
                 psm.Charge = omssaPSM.Charge;
                 psm.ScoreType = PeptideSpectralMatchScoreType.EValue;
                 psm.IsDecoy = omssaPSM.Defline.StartsWith("DECOY");
                 psm.SpectrumNumber = omssaPSM.SpectrumNumber;
-                psm.FileName = omssaPSM.FileName;
+                psm.FileName = omssaPSM.FileName;               
 
                 string[] filenameparts = psm.FileName.Split('.');
                 if (_dataFiles.TryGetValue(filenameparts[0], out dataFile))

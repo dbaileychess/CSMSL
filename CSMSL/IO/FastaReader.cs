@@ -93,8 +93,7 @@ namespace CSMSL.IO
 
         public IEnumerable<Protein> ReadNextProtein()
         {
-
-            
+                        
             foreach (Fasta f in ReadNextFasta())
             {
                 yield return new Protein(f.Sequence, f.Description);

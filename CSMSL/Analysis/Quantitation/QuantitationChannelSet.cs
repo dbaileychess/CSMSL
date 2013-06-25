@@ -47,10 +47,10 @@ namespace CSMSL.Analysis.Quantitation
             TMT8Plex.Add(tmt126);
             TMT8Plex.Add(tmt127l);
             TMT8Plex.Add(tmt127h);
-            TMT8Plex.Add(tmt128l);
+            TMT8Plex.Add(tmt128h);
             TMT8Plex.Add(tmt129l);
             TMT8Plex.Add(tmt129h);
-            TMT8Plex.Add(tmt130l);
+            TMT8Plex.Add(tmt130h);
             TMT8Plex.Add(tmt131);
 
             TMT10Plex = new QuantitationChannelSet("TMT 10-Pex", QuantitationChannelSetMassType.Average, false);

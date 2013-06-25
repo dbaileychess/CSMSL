@@ -25,21 +25,41 @@ using Combinatorics.Collections;
 
 namespace CSMSL.Util.Collections
 {
-    public class VennDiagram<T> :
-        IEnumerable<VennSet<T>>
-        where T : IEquatable<T>
+    public class VennDiagram<T> where T : IEquatable<T>
     {
         public int Count
         {
-            get { return _inputSets.Length; }
+            get { return _inputSets.Length; }      
         }
 
+        public VennSet<T> this[int index]
+        {
+            get
+            {
+                return _subSets[index - 1];
+            }
+        }
+
+        public VennSet<T> this[string region]
+        {
+            get
+            {
+                return _regions[region];
+            }
+        }
+
+        private VennSet<T>[] _exclusiveSubSets;
         private VennSet<T>[] _subSets;
         private Dictionary<string, VennSet<T>> _regions;
 
         public VennSet<T>[] SubSets
         {
             get { return _subSets; }
+        }
+
+        public VennSet<T>[] ExclusiveSubSets
+        {
+            get { return _exclusiveSubSets; }
         }
 
         public VennSet<T> TotalUnique
@@ -72,9 +92,11 @@ namespace CSMSL.Util.Collections
             int count = diagram.Count;
             // Initialize subsets
             diagram._subSets = new VennSet<T>[count];
+            diagram._exclusiveSubSets = new VennSet<T>[count];
             for (int i = 0; i < count; i++)
             {
                 diagram._subSets[i] = new VennSet<T>(string.Format("In {0:G0} of {1:G0}", i + 1, count));
+                diagram._exclusiveSubSets[i] = new VennSet<T>(string.Format("Only in {0:G0} of {1:G0}", i + 1, count));
             }
 
             //_subSets[Count] = new VennSet<T>("Total Unique");
@@ -107,17 +129,20 @@ namespace CSMSL.Util.Collections
                             }
                         }
                         sb.Append(" only");
-                        diagram.AddVennSet(new VennSet<T>(baseSet, sb.ToString()), depth);
+                        diagram.AddVennSet(new VennSet<T>(baseSet, sb.ToString()), depth, true);
                     }
                 }
             }
+            diagram._exclusiveSubSets[count - 1].Add(diagram._subSets[count - 1]);
             return diagram;
         }
 
-        private void AddVennSet(VennSet<T> set, int depth)
+        private void AddVennSet(VennSet<T> set, int depth, bool exclusive = false)
         {
             _subSets[depth - 1].Add(set);
             _regions.Add(set.Name, set);
+            if (exclusive)
+                _exclusiveSubSets[depth - 1].Add(set);
         }
 
         public override string ToString()
@@ -130,9 +155,6 @@ namespace CSMSL.Util.Collections
             return _regions.Values.GetEnumerator();
         }
 
-        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
-        {
-            return _regions.Values.GetEnumerator();
-        }
+       
     }
 }

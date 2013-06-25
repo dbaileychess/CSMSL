@@ -19,24 +19,28 @@
 ///////////////////////////////////////////////////////////////////////////
 
 using System;
+using System.Linq;
 using System.Collections.Generic;
 
 namespace CSMSL.Util.Collections
 {
-    public class VennSet<T> : HashSet<T> where T : IEquatable<T>
+    public class VennSet<T> : IEnumerable<T> where T : IEquatable<T>
     {
         private string _name;
+        private Dictionary<T, T> _data;
 
-        public VennSet(IEnumerable<T> items, string name = "")
-            : base(items)
+        public int Count { get { return _data.Count; } }
+
+        public VennSet(IEnumerable<T> items, string name = "")           
         {
             Name = name;
+            _data = items.ToDictionary(Tkey => Tkey);
         }
 
-        public VennSet(string name = "")
-            : base()
+        public VennSet(string name = "")           
         {
             Name = name;
+            _data = new Dictionary<T, T>();
         }
 
         public string Name
@@ -45,14 +49,37 @@ namespace CSMSL.Util.Collections
             set { _name = value; }
         }
 
+        public void Add(T item)
+        {
+            _data[item] = item;            
+        }
+
         public void Add(IEnumerable<T> items)
         {
-            this.UnionWith(items);
+            foreach (T item in items)
+            {
+                _data[item] = item;
+            }            
+        }
+
+        public bool TryGetValue(T key, out T value)
+        {
+            return _data.TryGetValue(key, out value);
         }
 
         public override string ToString()
         {
             return string.Format("{0} Count = {1:G0}", Name, Count);
+        }
+
+        public IEnumerator<T> GetEnumerator()
+        {
+            return _data.Values.GetEnumerator();
+        }
+
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        {
+            return _data.Values.GetEnumerator();
         }
     }
 }

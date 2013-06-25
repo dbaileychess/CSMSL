@@ -67,9 +67,16 @@
     <Reference Include="Ionic.Zip">
       <HintPath>..\..\..\..\Desktop\GregPRM\packages\DotNetZip.1.9.1.8\lib\net20\Ionic.Zip.dll</HintPath>
     </Reference>
+    <Reference Include="MathNet.Numerics">
+      <HintPath>..\..\Misc\8plexTMT\packages\MathNet.Numerics.2.5.0\lib\net40\MathNet.Numerics.dll</HintPath>
+    </Reference>
+    <Reference Include="MathNet.Numerics.IO">
+      <HintPath>..\..\Misc\8plexTMT\packages\MathNet.Numerics.2.5.0\lib\net40\MathNet.Numerics.IO.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data.Linq" />
+    <Reference Include="System.Numerics" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
@@ -84,6 +91,7 @@
     <Compile Include="Analysis\Quantitation\IntensityWeightingType.cs" />
     <Compile Include="Analysis\Quantitation\IQuantitationChannel.cs" />
     <Compile Include="Analysis\Quantitation\IsobaricTag.cs" />
+    <Compile Include="Analysis\Quantitation\IsobaricTagPurityCorrection.cs" />
     <Compile Include="Analysis\Quantitation\Isotopologue.cs" />
     <Compile Include="Analysis\Quantitation\QuantifiedPeakSet.cs" />
     <Compile Include="Analysis\Quantitation\QuantitationTypes.cs" />
@@ -112,6 +120,7 @@
     <Compile Include="Proteomics\DissociationType.cs" />
     <Compile Include="Proteomics\FragmentCollection.cs" />
     <Compile Include="Proteomics\IAminoAcid.cs" />
+    <Compile Include="Proteomics\IAminoAcidSequence.cs" />
     <Compile Include="Proteomics\IProtease.cs" />
     <Compile Include="Proteomics\ModificationCollection.cs" />
     <Compile Include="Proteomics\ModificationSites.cs" />
@@ -164,7 +173,7 @@
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <Import Project="$(SolutionDir)\.nuget\nuget.targets" />
+  <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
