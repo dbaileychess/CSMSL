@@ -24,9 +24,6 @@ namespace CSMSL
 {
     public class MassTolerance
     {
-        private MassToleranceType _type;
-        private double _value;
-
         /// <summary>
         /// 
         /// </summary>
@@ -34,24 +31,16 @@ namespace CSMSL
         /// <param name="value"></param>
         public MassTolerance(MassToleranceType type, double value)
         {
-            _type = type;
-            _value = value;
+            Type = type;
+            Value = value;
         }
 
         public MassTolerance(MassToleranceType type, double experimental, double theoretical)
             : this(type, GetTolerance(experimental, theoretical, type)) { }
 
-        public MassToleranceType Type
-        {
-            get { return _type; }
-            set { _type = value; }
-        }
+        public MassToleranceType Type { get; set; }
 
-        public double Value
-        {
-            get { return _value; }
-            set { _value = value; }
-        }
+        public double Value { get; set; }
 
         public static double GetTolerance(double experimental, double theoretical, MassToleranceType type)
         {
@@ -78,7 +67,7 @@ namespace CSMSL
 
         public override string ToString()
         {
-            return string.Format("{0:f4} {1}", _value, Enum.GetName(typeof(MassToleranceType), _type));
+            return string.Format("{0:f4} {1}", Value, Enum.GetName(typeof(MassToleranceType), Type));
         }
     }
 }

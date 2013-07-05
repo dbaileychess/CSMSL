@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace CSMSL.Analysis.Identification
 {
@@ -19,6 +16,6 @@ namespace CSMSL.Analysis.Identification
         /// <summary>
         /// The scoring metric for the object
         /// </summary>
-        T FDRScoreMetric { get; }
+        T FdrScoreMetric { get; }
     }
 }

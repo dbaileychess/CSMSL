@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using CSMSL.Proteomics;
 using CSMSL.Spectral;
 
@@ -19,7 +17,7 @@ namespace CSMSL.Analysis.Identification
 
         public virtual string FileName { get; set; }
 
-        public virtual double PrecursorMZ { get { return Peptide.Mass.ToMz(Charge); } }
+        public virtual double PrecursorMz { get { return Peptide.Mass.ToMz(Charge); } }
 
         private Dictionary<string, string> _extraData;
 
@@ -33,11 +31,11 @@ namespace CSMSL.Analysis.Identification
         /// </summary>
         public virtual double Score { get; set; }
 
-        public virtual PeptideSpectralMatchScoreType ScoreType { get; set; }
+        public PeptideSpectralMatchScoreType ScoreType { get; set; }
 
         public virtual bool IsDecoy { get;  set; }
         
-        double IFalseDiscovery<double>.FDRScoreMetric
+        double IFalseDiscovery<double>.FdrScoreMetric
         {
             get { return Score; }
         }
@@ -59,7 +57,7 @@ namespace CSMSL.Analysis.Identification
 
         public bool Equals(MSDataScan other)
         {
-            return this.Spectrum.Equals(other);
+            return Spectrum.Equals(other);
         }
 
         /// <summary>
