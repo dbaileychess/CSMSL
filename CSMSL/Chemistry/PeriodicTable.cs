@@ -54,7 +54,10 @@ namespace CSMSL.Chemistry
             _elements = new Dictionary<string, Element>();
             _uniqueID = DefaultID;
             _isotopes = new Isotope[300];
-            LoadElements("Resources/Elements.xml");
+            // from: http://stackoverflow.com/questions/3314140/how-to-read-embedded-resource-text-file
+            var assembly = System.Reflection.Assembly.GetExecutingAssembly();
+            LoadElements(assembly.GetManifestResourceStream("CSMSL.Resources.Elements.xml"));
+            //LoadElements("Resources/Elements.xml");
             Array.Resize(ref _isotopes, _uniqueID);
         }
 
@@ -98,9 +101,9 @@ namespace CSMSL.Chemistry
         /// Load a xml file containing elemental and isotopic data into the periodic table
         /// </summary>
         /// <param name="elementListXML">The xml file containing the data</param>
-        public void LoadElements(string elementListXML)
-        {          
-            using (XmlReader reader = XmlReader.Create(elementListXML))            
+        public void LoadElements(Stream elementsListXML)
+        {
+            using (XmlReader reader = XmlReader.Create(elementsListXML))            
             {
                 while (reader.ReadToFollowing("Element"))
                 {                  

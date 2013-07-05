@@ -21,6 +21,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 using CSMSL.Proteomics;
 
@@ -30,32 +31,28 @@ namespace CSMSL.IO
     public class FastaReader : IDisposable
     {
         public char[] Delimiters = { '>' };
-        private string _fileName;
-        private StreamReader _reader;
+        private readonly StreamReader _reader;
 
-        public int LineNumber { get { return _lineNumber; } }
+        public int LineNumber { get; private set; }
 
         public Stream BaseStream
         {
             get { return _reader.BaseStream; }
         }
-       
 
         public FastaReader(string fileName)
         {
-            _fileName = fileName;
+            FileName = fileName;
+            LineNumber = 0;
             _reader = new StreamReader(fileName);
         }
 
-        public string FileName
-        {
-            get { return _fileName; }
-            set { _fileName = value; }
-        }
+        public string FileName { get; set; }
 
         public void Close()
         {
             _reader.Close();
+            LineNumber = 0;
         }
 
         public void Dispose()
@@ -67,10 +64,8 @@ namespace CSMSL.IO
         {
             StringBuilder sequenceSB = new StringBuilder(50);
             StringBuilder headerSB = new StringBuilder(80);
-            foreach (string line in ReadNextLine())
+            foreach (string line in ReadNextLine().Where(line => !string.IsNullOrEmpty(line)))
             {
-                if (string.IsNullOrEmpty(line))
-                    continue;
                 if (Array.IndexOf(Delimiters, line[0]) >= 0)
                 {
                     if (sequenceSB.Length > 0)
@@ -87,42 +82,27 @@ namespace CSMSL.IO
                 }
             }
             yield return new Fasta(sequenceSB.ToString(), headerSB.ToString());
-            yield break;
         }
 
 
         public IEnumerable<Protein> ReadNextProtein()
         {
-                        
-            foreach (Fasta f in ReadNextFasta())
-            {
-                yield return new Protein(f.Sequence, f.Description);
-
-            }
-            yield break;
+            return ReadNextFasta().Select(f => new Protein(f.Sequence, f.Description));
         }
 
         public override string ToString()
         {
-            return _fileName;
+            return FileName;
         }
-
-        private int _lineNumber;
 
         private IEnumerable<string> ReadNextLine()
         {
-            _lineNumber = 0;
-            
-            while (_reader.Peek() >= 0 )
+            while (_reader.Peek() >= 0)
             {
-                _lineNumber++;
+                LineNumber++;
                
                 yield return _reader.ReadLine();
-               
             }
-            yield break;
         }
-
-      
     }
 }

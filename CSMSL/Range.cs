@@ -19,7 +19,6 @@
 ///////////////////////////////////////////////////////////////////////////
 
 using System;
-using System.Collections.Generic;
 
 namespace CSMSL
 {
@@ -29,8 +28,8 @@ namespace CSMSL
     public class Range<T> : IRange<T>
         where T : IComparable<T>, IEquatable<T>
     {
-        protected T _max;
-        protected T _min;
+        protected T Max;
+        protected T Min;
 
         public Range()
             : this(default(T), default(T)) { }
@@ -40,8 +39,8 @@ namespace CSMSL
 
         public Range(T minimum, T maximum)
         {
-            _min = minimum;
-            _max = maximum;
+            Min = minimum;
+            Max = maximum;
         }
 
         /// <summary>
@@ -49,8 +48,8 @@ namespace CSMSL
         /// </summary>
         public T Maximum
         {
-            get { return _max; }
-            set { T _max = value; }
+            get { return Max; }
+            set { Max = value; }
         }
 
         /// <summary>
@@ -58,8 +57,8 @@ namespace CSMSL
         /// </summary>
         public T Minimum
         {
-            get { return _min; }
-            set { T _min = value; }
+            get { return Min; }
+            set { Min = value; }
         }
 
         /// <summary>
@@ -69,8 +68,8 @@ namespace CSMSL
         /// <returns>-1 if item is below the range, 1 if item is above the range, 0 otherwise</returns>
         public int CompareTo(T item)
         {
-            if (_min.CompareTo(item) > 0) return -1;
-            if (_max.CompareTo(item) < 0) return 1;
+            if (Min.CompareTo(item) > 0) return -1;
+            if (Max.CompareTo(item) < 0) return 1;
             return 0;
         }
 
@@ -81,7 +80,7 @@ namespace CSMSL
         /// <returns>True if this range is fully encloses the other range, false otherwise</returns>
         public bool IsSuperRange(IRange<T> other)
         {
-            return (_max.CompareTo(other.Maximum) >= 0 && _min.CompareTo(other.Minimum) <= 0);
+            return (Max.CompareTo(other.Maximum) >= 0 && Min.CompareTo(other.Minimum) <= 0);
         }
 
         /// <summary>
@@ -91,7 +90,7 @@ namespace CSMSL
         /// <returns>True if this range is fully enclosed by the other range, false otherwise</returns>
         public bool IsSubRange(IRange<T> other)
         {
-            return (_max.CompareTo(other.Maximum) <= 0 && _min.CompareTo(other.Minimum) >= 0);
+            return (Max.CompareTo(other.Maximum) <= 0 && Min.CompareTo(other.Minimum) >= 0);
         }
 
         /// <summary>
@@ -120,7 +119,7 @@ namespace CSMSL
         /// <returns>Format: [min - max]</returns>
         public override string ToString()
         {
-            return string.Format("[{0:F4} - {1:F4}]", _min, _max);
+            return string.Format("[{0} - {1}]", Min, Max);
         }
 
         /// <summary>
@@ -131,8 +130,7 @@ namespace CSMSL
         public bool Equals(IRange<T> other)
         {
             if (ReferenceEquals(this, other)) return true;
-            if ((this == null) != (other == null)) return false;
-            return _max.Equals(other.Maximum) && _min.Equals(other.Minimum);
+            return Max.Equals(other.Maximum) && Min.Equals(other.Minimum);
         }     
     }
 }

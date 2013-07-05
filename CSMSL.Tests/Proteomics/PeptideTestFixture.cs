@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using CSMSL.Proteomics;
 using NUnit.Framework;
 using Should.Fluent;
@@ -27,7 +23,7 @@ namespace CSMSL.Tests.Proteomics
         [Test]
         public void PeptideMass()
         {
-            MockPeptideEveryAminoAcid.Mass.Monoisotopic.Should().Equal(2394.12490682513);
+            Assert.AreEqual(MockPeptideEveryAminoAcid.Mass.Monoisotopic, 2394.12490682513);
         }
 
         [Test]

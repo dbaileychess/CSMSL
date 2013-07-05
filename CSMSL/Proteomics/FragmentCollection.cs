@@ -1,15 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace CSMSL.Proteomics
 {
-    public class FragmentCollection : IEnumerable<Fragment>, ICollection<Fragment>
+    public class FragmentCollection : ICollection<Fragment>
     {
-        private AminoAcidPolymer _parent;
+        private readonly AminoAcidPolymer _parent;
 
-        private List<Fragment> _fragments;
+        private readonly List<Fragment> _fragments;
 
         public int Count { get { return _fragments.Count; } }
 

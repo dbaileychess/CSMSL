@@ -15,6 +15,6 @@ namespace CSMSL.Proteomics
         /// <returns>A set of the 1-based indicies to cut at</returns>
         ReadOnlyCollection<int> GetDigestionSites(string aminoAcidSequence);
 
-        ReadOnlyCollection<int> GetDigestionSites(AminoAcidPolymer aminoAcidPolymer);
+        ReadOnlyCollection<int> GetDigestionSites(IAminoAcidSequence aminoAcidSequence);
     }
 }

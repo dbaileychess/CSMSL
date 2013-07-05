@@ -27,10 +27,10 @@ namespace CSMSL.IO
 {
     public class FastaWriter : IDisposable
     {
-        private int _charperline;
-        private char _delimiter;
+        private readonly int _charperline;
+        private readonly char _delimiter;
         private string _filename;
-        private StreamWriter _writer;
+        private readonly StreamWriter _writer;
 
         public FastaWriter(string filename)
             : this(filename, '>', 80) { }

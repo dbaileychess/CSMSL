@@ -32,7 +32,7 @@ namespace CSMSL.Chemistry
         /// <summary>
         /// The element's isotopes stored based on their atomic number
         /// </summary>
-        internal Dictionary<int, Isotope> _isotopes;
+        internal Dictionary<int, Isotope> Isotopes;
 
         public static readonly PeriodicTable PeriodicTable = PeriodicTable.Instance;
 
@@ -45,7 +45,7 @@ namespace CSMSL.Chemistry
         {
             get
             {
-                return _isotopes[atomicNumber];
+                return Isotopes[atomicNumber];
             }
         }
 
@@ -62,7 +62,7 @@ namespace CSMSL.Chemistry
             AtomicNumber = atomicNumber;
             AverageMass = 0;
             TotalAbundance = 0;
-            _isotopes = new Dictionary<int, Isotope>(4);
+            Isotopes = new Dictionary<int, Isotope>(4);
         }
 
         /// <summary>
@@ -101,7 +101,7 @@ namespace CSMSL.Chemistry
         /// The number of isotopes this element comprises of (only isotopes with
         /// natural relative abundances > 0% are considered)
         /// </summary>
-        public int IsotopeCount { get { return _isotopes.Count; } }
+        public int IsotopeCount { get { return Isotopes.Count; } }
 
         /// <summary>
         /// Returns a textual representation of this element in the following format: Hydrogen (H) Helium (He)
@@ -115,7 +115,7 @@ namespace CSMSL.Chemistry
         /// <summary>
         /// The sum of the weighted isotope masses
         /// </summary>
-        private double _totalMass = 0;
+        private double _totalMass;
 
         /// <summary>
         /// Add an isotope to this element
@@ -126,10 +126,10 @@ namespace CSMSL.Chemistry
         /// <returns>The created isotopes that is added to this element</returns>
         internal Isotope AddIsotope(int atomicNumber, double atomicMass, float abundance)
         {
-            Isotope isotope = new Isotope(this, atomicNumber, atomicMass, abundance);
-            if (!_isotopes.ContainsKey(atomicNumber))
+            var isotope = new Isotope(this, atomicNumber, atomicMass, abundance);
+            if (!Isotopes.ContainsKey(atomicNumber))
             {
-                _isotopes.Add(atomicNumber, isotope);
+                Isotopes.Add(atomicNumber, isotope);
                 TotalAbundance += abundance;
                 _totalMass += abundance * atomicMass;
                 AverageMass = _totalMass / TotalAbundance;

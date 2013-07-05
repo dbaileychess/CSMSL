@@ -1,9 +1,8 @@
-﻿using System;
-using CSMSL.Chemistry;
+﻿using CSMSL.Chemistry;
 
 namespace CSMSL.Proteomics
 {
-    public interface IAminoAcid : IChemicalFormula, IMass
+    public interface IAminoAcid : IChemicalFormula
     {
         char Letter { get; }
         string Symbol { get; }

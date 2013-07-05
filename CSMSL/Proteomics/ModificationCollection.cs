@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using CSMSL.Chemistry;
 
 namespace CSMSL.Proteomics
@@ -10,7 +7,7 @@ namespace CSMSL.Proteomics
     {
         public string Name { get; set; }
 
-        private List<IMass> _modifications;
+        private readonly List<IMass> _modifications;
 
         private Mass _totalMass;
 

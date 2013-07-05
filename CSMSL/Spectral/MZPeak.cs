@@ -41,7 +41,7 @@ namespace CSMSL.Spectral
 
         public bool Equals(IPeak other)
         {
-            if (object.ReferenceEquals(this, other)) return true;
+            if (ReferenceEquals(this, other)) return true;
             return MZ.Equals(other.X) && Intensity.Equals(other.Y);
         }
 
@@ -66,7 +66,7 @@ namespace CSMSL.Spectral
                 return MZ.CompareTo((double)other);
             if (other is IPeak)
                 return CompareTo((IPeak)other);
-            throw new System.InvalidOperationException("Unable to compare types");
+            throw new InvalidOperationException("Unable to compare types");
         }
 
         double IPeak.X

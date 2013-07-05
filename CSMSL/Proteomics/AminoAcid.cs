@@ -18,13 +18,13 @@
 //  along with CSMSL.  If not, see <http://www.gnu.org/licenses/>.        /
 ///////////////////////////////////////////////////////////////////////////
 
-using System;
 using System.Collections.Generic;
+using System.Globalization;
 using CSMSL.Chemistry;
 
 namespace CSMSL.Proteomics
 {
-    public class AminoAcid : IAminoAcid, IChemicalFormula, IMass
+    public class AminoAcid : IAminoAcid
     {
         public static AminoAcid Alanine { get; private set; }
         public static AminoAcid Arginine { get; private set; }
@@ -48,38 +48,38 @@ namespace CSMSL.Proteomics
         public static AminoAcid Tyrosine { get; private set; }
         public static AminoAcid Valine { get; private set; }
 
-        private static Dictionary<string, AminoAcid> _residues;
+        private static readonly Dictionary<string, AminoAcid> Residues;
 
         public static AminoAcid GetResidue(string symbol)
         {
-            return _residues[symbol];
+            return Residues[symbol];
         }
 
         public static AminoAcid GetResidue(char letter)
         {
-            return _residues[letter.ToString()];
+            return Residues[letter.ToString(CultureInfo.InvariantCulture)];
         }
 
         public static bool TryGetResidue(char letter, out AminoAcid residue)
         {
-            return _residues.TryGetValue(letter.ToString(), out residue);
+            return Residues.TryGetValue(letter.ToString(CultureInfo.InvariantCulture), out residue);
         }
 
         public static bool TryGetResidue(string symbol, out AminoAcid residue)
         {
-            return _residues.TryGetValue(symbol, out residue);
+            return Residues.TryGetValue(symbol, out residue);
         }
 
         public static AminoAcid AddResidue(string name, char oneLetterAbbreviation, string threeLetterAbbreviation, string chemicalFormula, ModificationSites site)
         {
-            AminoAcid residue = new AminoAcid(name, oneLetterAbbreviation, threeLetterAbbreviation, chemicalFormula, site);
+            var residue = new AminoAcid(name, oneLetterAbbreviation, threeLetterAbbreviation, chemicalFormula, site);
             AddResidueToDictionary(residue);
             return residue;
         }
 
         static AminoAcid()
         {
-            _residues = new Dictionary<string, AminoAcid>(66);
+            Residues = new Dictionary<string, AminoAcid>(66);
           
             Alanine = AddResidue("Alanine",'A',"Ala","C3H5NO" ,ModificationSites.A);
             Arginine = AddResidue("Arginine", 'R', "Arg", "C6H12N4O", ModificationSites.R);
@@ -106,16 +106,16 @@ namespace CSMSL.Proteomics
         
         private static void AddResidueToDictionary(AminoAcid residue)
         {
-            _residues.Add(residue.Letter.ToString(), residue);
-            _residues.Add(residue.Name, residue);
-            _residues.Add(residue.Symbol, residue);
+            Residues.Add(residue.Letter.ToString(CultureInfo.InvariantCulture), residue);
+            Residues.Add(residue.Name, residue);
+            Residues.Add(residue.Symbol, residue);
         }
         
-        private ChemicalFormula _chemicalFormula;
-        private char _letter;
-        private string _name;
-        private string _symbol;
-        private Mass _mass;
+        private readonly ChemicalFormula _chemicalFormula;
+        private readonly char _letter;
+        private readonly string _name;
+        private readonly string _symbol;
+        private readonly Mass _mass;
 
         internal AminoAcid(string name, char oneLetterAbbreviation, string threeLetterAbbreviation, string chemicalFormula, ModificationSites site)
             : this(name, oneLetterAbbreviation, threeLetterAbbreviation, new ChemicalFormula(chemicalFormula), site) { }
@@ -133,13 +133,11 @@ namespace CSMSL.Proteomics
         public ChemicalFormula ChemicalFormula
         {
             get { return _chemicalFormula; }
-            private set { _chemicalFormula = value; }
         }
 
         public char Letter
         {
             get { return _letter; }
-            private set { _letter = value; }
         }
 
         public ModificationSites Site { get; private set; }
@@ -152,13 +150,11 @@ namespace CSMSL.Proteomics
         public string Name
         {
             get { return _name; }
-            private set { _name = value; }
         }
 
         public string Symbol
         {
             get { return _symbol; }
-            private set { _symbol = value; }
         }    
 
         public override string ToString()

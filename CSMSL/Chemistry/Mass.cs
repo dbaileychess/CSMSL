@@ -49,11 +49,11 @@ namespace CSMSL.Chemistry
         /// <param name="item">The item which possesses a mass</param>
         public void Add(IMass item)
         {
-            if (item != null)
-            {
-                Monoisotopic += item.Mass.Monoisotopic;
-                Average += item.Mass.Average;
-            }
+            if (item == null)
+                return;
+
+            Monoisotopic += item.Mass.Monoisotopic;
+            Average += item.Mass.Average;
         }
 
         /// <summary>
@@ -62,11 +62,11 @@ namespace CSMSL.Chemistry
         /// <param name="item">The item which possesses a mass</param>
         public void Add(Mass item)
         {
-            if (item != null)
-            {
-                Monoisotopic += item.Monoisotopic;
-                Average += item.Average;
-            }
+            if (item == null)
+                return;
+
+            Monoisotopic += item.Monoisotopic;
+            Average += item.Average;
         }
 
         /// <summary>
@@ -75,11 +75,11 @@ namespace CSMSL.Chemistry
         /// <param name="item">The item which possesses a mass</param>
         public void Remove(Mass item)
         {
-            if (item != null)
-            {
-                Monoisotopic -= item.Monoisotopic;
-                Average -= item.Average;
-            }
+            if (item == null) 
+                return;
+
+            Monoisotopic -= item.Monoisotopic;
+            Average -= item.Average;
         }
 
         /// <summary>
@@ -109,12 +109,8 @@ namespace CSMSL.Chemistry
 
         public override bool Equals(object obj)
         {
-            Mass other = obj as Mass;
-            if (other != null)
-            {
-                return Equals(other);
-            }
-            return false;           
+            var other = obj as Mass;
+            return other != null && Equals(other);
         }
 
         public override int GetHashCode()
@@ -167,7 +163,6 @@ namespace CSMSL.Chemistry
         /// <returns>The mass</returns>
         public static double MassFromMz(double mz, int charge )
         {
-            if (mz == 0) return 0;
             return Math.Abs(charge) * mz - charge * Constants.PROTON;
         }
 
@@ -179,7 +174,8 @@ namespace CSMSL.Chemistry
         /// <returns>The m/z</returns>
         public static double MzFromMass(double mass, int charge)
         {
-            if (mass == 0 || charge == 0) return 0;
+            if (charge == 0)
+                throw new ArgumentException("Charge cannot be zero");
             return mass / Math.Abs(charge) + Math.Sign(charge) * Constants.PROTON;
         }
 

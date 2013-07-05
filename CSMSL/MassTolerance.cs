@@ -61,7 +61,6 @@ namespace CSMSL
                     return (experimental - theoretical) * 1000.0;
                 case MassToleranceType.PPM:
                     return (experimental - theoretical) / theoretical * 1000000.0;
-                case MassToleranceType.DA:
                 default:
                     return experimental - theoretical;
             }

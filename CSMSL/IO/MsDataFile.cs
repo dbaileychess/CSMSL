@@ -8,11 +8,9 @@ namespace CSMSL.IO
 {
     public abstract class MSDataFile : IDisposable, IEquatable<MSDataFile>, IEnumerable<MSDataScan>
     {
-        internal MSDataScan[] _scans = null;
+        internal MSDataScan[] Scans = null;
 
         private string _filePath;
-
-        private MSDataFileType _fileType;
 
         private int _firstSpectrumNumber = -1;
 
@@ -22,7 +20,7 @@ namespace CSMSL.IO
 
         private string _name;
 
-        public MSDataFile(string filePath, MSDataFileType filetype = MSDataFileType.UnKnown, bool openImmediately = false)
+        protected MSDataFile(string filePath, MSDataFileType filetype = MSDataFileType.UnKnown, bool openImmediately = false)
         {
             if (!File.Exists(filePath) && !Directory.Exists(filePath))
             {
@@ -46,11 +44,7 @@ namespace CSMSL.IO
             }
         }
 
-        public MSDataFileType FileType
-        {
-            get { return _fileType; }
-            private set { _fileType = value; }
-        }
+        public MSDataFileType FileType { get; private set; }
 
         public virtual int FirstSpectrumNumber
         {
@@ -103,15 +97,15 @@ namespace CSMSL.IO
 
         System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
         {
-            return this.GetEnumerator();
+            return GetEnumerator();
         }
 
         public virtual void Dispose()
         {
-            if (_scans != null)
+            if (Scans != null)
             {               
                 ClearCachedScans();
-                _scans = null;                
+                Scans = null;                
             }
             _isOpen = false;
         }
@@ -119,7 +113,7 @@ namespace CSMSL.IO
         public bool Equals(MSDataFile other)
         {
             if (ReferenceEquals(this, other)) return true;
-            return this.FilePath.Equals(other.FilePath);
+            return FilePath.Equals(other.FilePath);
         }
 
         public IEnumerator<MSDataScan> GetEnumerator()
@@ -129,7 +123,7 @@ namespace CSMSL.IO
 
         public override int GetHashCode()
         {
-            return this.FilePath.GetHashCode();
+            return FilePath.GetHashCode();
         }
 
         public abstract DissociationType GetDissociationType(int spectrumNumber, int msnOrder = 2);
@@ -143,24 +137,24 @@ namespace CSMSL.IO
         /// <returns></returns>
         public virtual MSDataScan GetMsScan(int spectrumNumber)
         {
-            if (_scans == null)
+            if (Scans == null)
             {
-                _scans = new MSDataScan[LastSpectrumNumber + 1];
+                Scans = new MSDataScan[LastSpectrumNumber + 1];
             }
            
-            if (_scans[spectrumNumber] == null)
+            if (Scans[spectrumNumber] == null)
             {
-                return _scans[spectrumNumber] = GetMSDataScan(spectrumNumber);                
+                return Scans[spectrumNumber] = GetMSDataScan(spectrumNumber);                
             }
 
-            return _scans[spectrumNumber];
+            return Scans[spectrumNumber];
         }
 
         public virtual void ClearCachedScans()
         {
-            if (_scans == null)
+            if (Scans == null)
                 return;
-            Array.Clear(_scans, 0, _scans.Length);
+            Array.Clear(Scans, 0, Scans.Length);
         }
 
         protected virtual MSDataScan GetMSDataScan(int spectrumNumber)
@@ -217,7 +211,6 @@ namespace CSMSL.IO
             {
                 yield return GetMsScan(spectrumNumber);
             }
-            yield break;
         }
 
         public IEnumerable<MSDataScan> GetMsScans(IRange<int> range)

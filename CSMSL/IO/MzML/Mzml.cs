@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Diagnostics;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.IO;
 using System.Threading.Tasks;
@@ -14,7 +12,7 @@ using System.Xml.Serialization;
 using System.Xml;
 using Ionic.Zlib;
 
-namespace CSMSL.IO
+namespace CSMSL.IO.MzML
 {
 
     public class Mzml : MSDataFile

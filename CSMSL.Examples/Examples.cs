@@ -49,7 +49,7 @@ namespace CSMSL.Examples
         private static void StartExamples()
         {   
             // Examples coding
-            //ChemicalFormulaExamples();
+            ChemicalFormulaExamples();
             //PeptideExamples();
                       
             // Example Objects
@@ -65,7 +65,7 @@ namespace CSMSL.Examples
             //TMT6plexExample.Start();
 
             //Example IO
-            MsDataFileExamples.Start();
+            //MsDataFileExamples.Start();
 
             // Omssa Reader
             //OmssaReader.Start();
@@ -113,7 +113,7 @@ namespace CSMSL.Examples
 
             // Fragmenting a peptide is simple, you can include as many fragment types as you want
             Console.WriteLine("{0,-4} {1,-20} {2,-5}", "Type", "Formula", "Mass");
-            foreach (Fragment fragment in peptide1.CalculateFragments(FragmentTypes.b | FragmentTypes.y))
+            foreach (Fragment fragment in peptide1.Fragment(FragmentTypes.b | FragmentTypes.y))
             {
                 WriteFragmentToConsole(fragment);
             }
@@ -131,7 +131,7 @@ namespace CSMSL.Examples
 
             // If you fragment a modified peptide, the modifications stay part of the fragments
             Console.WriteLine("{0,-4} {1,-20} {2,-5}", "Type", "Formula", "Mass");
-            foreach (Fragment fragment in peptide1.CalculateFragments(FragmentTypes.b, 3, 5))
+            foreach (Fragment fragment in peptide1.Fragment(FragmentTypes.b, 3, 5))
             {
                 WriteFragmentToConsole(fragment);
             }
