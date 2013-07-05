@@ -68,8 +68,10 @@ namespace CSMSL
         /// <returns>-1 if item is below the range, 1 if item is above the range, 0 otherwise</returns>
         public int CompareTo(T item)
         {
-            if (Min.CompareTo(item) > 0) return -1;
-            if (Max.CompareTo(item) < 0) return 1;
+            if (Min.CompareTo(item) > 0) 
+                return -1;
+            if (Max.CompareTo(item) < 0) 
+                return 1;
             return 0;
         }
 

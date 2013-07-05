@@ -11,14 +11,14 @@
 
         public MassRange(double minimum, double maximum)
         {
-            Min = minimum;
-            Max = maximum;
-            _width = Max - Min;
-            _mean = (Max + Min) / 2.0;
+            base.Minimum = minimum;
+            base.Maximum = maximum;
+            _width = base.Maximum - base.Minimum;
+            _mean = (base.Maximum + base.Minimum) / 2.0;
         }
 
         public MassRange(MassRange range)
-            : this(range.Min, range.Max) { }
+            : this(range.Minimum, range.Maximum) { }
 
         public MassRange(double mean, MassTolerance tolerance)
         {
@@ -31,34 +31,34 @@
             switch (tolerance.Type)
             {
                 default:
-                    Min = _mean - tolerance.Value / 2;
-                    Max = _mean + tolerance.Value / 2;
+                    base.Minimum = _mean - tolerance.Value / 2;
+                    base.Maximum = _mean + tolerance.Value / 2;
                     break;
 
                 case MassToleranceType.MMU:
-                    Min = _mean - tolerance.Value / 2000;
-                    Max = _mean + tolerance.Value / 2000;
+                    base.Minimum = _mean - tolerance.Value / 2000;
+                    base.Maximum = _mean + tolerance.Value / 2000;
                     break;
 
                 case MassToleranceType.PPM:
-                    Min = _mean * (1 - (tolerance.Value / 2e6));
-                    Max = _mean * (1 + (tolerance.Value / 2e6));
+                    base.Minimum = _mean * (1 - (tolerance.Value / 2e6));
+                    base.Maximum = _mean * (1 + (tolerance.Value / 2e6));
                     break;
             }
-            _width = Max - Min;
+            _width = base.Maximum - base.Minimum;
         }
 
         public new double Maximum
         {
             get
             {
-                return Max;
+                return base.Maximum;
             }
             set
             {
-                Max = value;
-                _width = Max - Min;
-                _mean = (Max + Min) / 2.0;
+                base.Maximum = value;
+                _width = base.Maximum - base.Minimum;
+                _mean = (base.Maximum + base.Minimum) / 2.0;
             }
         }
 
@@ -71,8 +71,8 @@
             set
             {
                 _mean = value;
-                Min = _mean - (_width / 2.0);
-                Max = _mean + (_width / 2.0);
+                base.Minimum = _mean - (_width / 2.0);
+                base.Maximum = _mean + (_width / 2.0);
             }
         }
 
@@ -80,13 +80,13 @@
         {
             get
             {
-                return Min;
+                return base.Minimum;
             }
             set
             {
-                Min = value;
-                _width = Max - Min;
-                _mean = (Max + Min) / 2.0;
+                base.Minimum = value;
+                _width = base.Maximum - base.Minimum;
+                _mean = (base.Maximum + base.Minimum) / 2.0;
             }
         }
 
@@ -99,8 +99,8 @@
             set
             {
                 _width = value;
-                Min = _mean - (_width / 2.0);
-                Max = _mean + (_width / 2.0);
+                base.Minimum = _mean - (_width / 2.0);
+                base.Maximum = _mean + (_width / 2.0);
             }
         }
 

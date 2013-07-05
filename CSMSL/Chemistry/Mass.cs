@@ -165,7 +165,7 @@ namespace CSMSL.Chemistry
         {
             if (charge == 0)
                 throw new DivideByZeroException("Charge cannot be zero");
-            return Math.Abs(charge) * mz - charge * Constants.PROTON;
+            return Math.Abs(charge) * mz - charge * Constants.Proton;
         }
 
         /// <summary>
@@ -178,7 +178,7 @@ namespace CSMSL.Chemistry
         {
             if (charge == 0)
                 throw new DivideByZeroException("Charge cannot be zero");
-            return mass / Math.Abs(charge) + Math.Sign(charge) * Constants.PROTON;
+            return mass / Math.Abs(charge) + Math.Sign(charge) * Constants.Proton;
         }
 
         #endregion Static Methods

@@ -1036,7 +1036,7 @@ namespace CSMSL.Proteomics
  
         public static double GetMass(string sequence)
         {
-            double mass = Constants.WATER;
+            double mass = Constants.Water;
             foreach (char letter in sequence)
             {
                 AminoAcid residue = null;

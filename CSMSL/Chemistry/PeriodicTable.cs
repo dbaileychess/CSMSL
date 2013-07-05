@@ -131,12 +131,12 @@ namespace CSMSL.Chemistry
                             if (unqiueID != null)
                             {
                                 int uniqueId = int.Parse(unqiueID);
-                                isotope.UniqueID = uniqueId;
+                                isotope.UniqueId = uniqueId;
                                 _isotopes[uniqueId] = isotope;
                             }
                             else
                             {
-                                isotope.UniqueID = _uniqueID;
+                                isotope.UniqueId = _uniqueID;
                                 _isotopes[_uniqueID++] = isotope;
                             }
                         }

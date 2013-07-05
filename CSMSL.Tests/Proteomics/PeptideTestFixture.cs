@@ -108,7 +108,6 @@ namespace CSMSL.Tests.Proteomics
         public void ParseCTerminalChemicalFormulaWithLastResidueModStringRepresentation()
         {
             Peptide peptide = new Peptide("TTGSSSSSSSK[H2O]-[C2H3NO]");
-            ChemicalFormula formula = new ChemicalFormula("C39H71N13O23");
 
             peptide.SequenceWithModifications.Should().Equal("TTGSSSSSSSK[H2O]-[C2H3NO]");
         }

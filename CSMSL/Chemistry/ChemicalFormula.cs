@@ -312,7 +312,7 @@ namespace CSMSL.Chemistry
             if (isotope == null || count == 0)            
                 return;            
            
-            int id = isotope.UniqueID;
+            int id = isotope.UniqueId;
 
             if (id > _largestIsotopeId)
             {
@@ -418,7 +418,7 @@ namespace CSMSL.Chemistry
             if (isotope == null)
                 return false;
 
-            int id = isotope.UniqueID;
+            int id = isotope.UniqueId;
 
             if (id > _largestIsotopeId)
             {
@@ -514,9 +514,9 @@ namespace CSMSL.Chemistry
         /// <returns></returns>
         public int Count(Isotope isotope)
         {
-            if (isotope == null || isotope.UniqueID > _largestIsotopeId)
+            if (isotope == null || isotope.UniqueId > _largestIsotopeId)
                 return 0;
-            return _isotopes[isotope.UniqueID];
+            return _isotopes[isotope.UniqueId];
         }
 
         /// <summary>

@@ -42,7 +42,7 @@ namespace CSMSL
         /// Checks if an item is within the range
         /// </summary>
         /// <param name="item">The item to check</param>
-        /// <returns>True if the item is >= minimum and <= maximum</returns>
+        /// <returns>True if the item is within minimum and maximum (inclusive)</returns>
         bool Contains(T item);
 
         int CompareTo(T item);
