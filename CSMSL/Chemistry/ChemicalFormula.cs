@@ -35,7 +35,7 @@ namespace CSMSL.Chemistry
         /// A regular expression for matching chemical formulas such as: C2C{13}3H5NO5
         /// \s* (at end as well) allows for optional spacing among the elements, i.e. C2 C{13}3 H5 N O5
         /// The first group is the only non-optional group and that handles the chemical symbol: H, He, etc..
-        /// The second are optional, which handles alternative isotopes of elements: C{13} means carbon-13, while C is the common carbon-12
+        /// The second group is optional, which handles alternative isotopes of elements: C{13} means carbon-13, while C is the common carbon-12
         /// The third group is optional and indicates if we are adding or subtracting the elements form the formula, C-2C{13}5 would mean first subtract 2 carbon-12 and then add 5 carbon-13
         /// The fourth group is optional and represents the number of isotopes to add, if not present it assumes 1: H2O means 2 Hydrogen and 1 Oxygen        
         /// Modified from: http://stackoverflow.com/questions/4116786/parsing-a-chemical-formula-from-a-string-in-c
@@ -73,10 +73,29 @@ namespace CSMSL.Chemistry
         /// </summary>
         private int _largestIsotopeId;
 
+        /// <summary>
+        /// The mass of the chemical formula
+        /// </summary>
         private Mass _mass;
+
+        /// <summary>
+        /// The number of atoms in this chemical formula. Atoms represent individual isotopes
+        /// </summary>
         private int _atomCount;
+
+        /// <summary>
+        /// The number of unique elements in this chemical formula.
+        /// </summary>
         private int _elementCount;
+
+        /// <summary>
+        /// The number of unikque isotopes in this chemical formula.
+        /// </summary>
         private int _isotopeCount;
+
+        /// <summary>
+        /// The Hill Notation string for this chemical formula
+        /// </summary>
         private string _chemicalFormulaString;
 
         #region Constructors
@@ -86,19 +105,16 @@ namespace CSMSL.Chemistry
         /// </summary>
         public ChemicalFormula()
         {
-            _isotopes = new int[PeriodicTable.RecommendedID];
-            _largestIsotopeId = 0;
-            _isFormulaDirty = _isDirty = true;
+            ChemicalFormulaConstructor();
         }
+          
 
         /// <summary>
         /// Create an empty chemical formula with space for the largest ID
         /// </summary>
         private ChemicalFormula(int largestId)
         {
-            _isotopes = new int[largestId + 1];
-            _largestIsotopeId = 0;
-            _isFormulaDirty = _isDirty = true;
+            ChemicalFormulaConstructor(largestId + 1);
         }
 
         /// <summary>
@@ -125,19 +141,29 @@ namespace CSMSL.Chemistry
         public ChemicalFormula(ChemicalFormula other)
         {
             if (other == null)
-            {                
-                // create a new blank chemical formula
-                _isotopes = new int[PeriodicTable.RecommendedID];
-                _largestIsotopeId = 0;                 
-            }
-            else
             {
-                int length = other._isotopes.Length;
-                _isotopes = new int[length];
-                _largestIsotopeId = other._largestIsotopeId;
-                Array.Copy(other._isotopes, _isotopes, length);                      
+                // create a new blank chemical formula
+                ChemicalFormulaConstructor();
+
+                return;
             }
-            _isDirty = _isFormulaDirty = true;           
+           
+            int length = other._isotopes.Length;
+            ChemicalFormulaConstructor(length, other._largestIsotopeId);
+
+            Array.Copy(other._isotopes, _isotopes, length);     
+        }
+
+        /// <summary>
+        /// Helper method for constructing new chemical formulas
+        /// </summary>
+        /// <param name="largestId"></param>
+        /// <param name="larestIsotope"></param>
+        private void ChemicalFormulaConstructor(int largestId = PeriodicTable.RecommendedId, int larestIsotope = 0)
+        {
+            _isotopes = new int[largestId];
+            _largestIsotopeId = larestIsotope;
+            _isFormulaDirty = _isDirty = true;
         }
 
         #endregion
@@ -310,21 +336,26 @@ namespace CSMSL.Chemistry
         public void Add(Isotope isotope, int count)
         {
             if (isotope == null || count == 0)            
-                return;            
-           
+                return;
+
+            _isFormulaDirty = _isDirty = true;
+
             int id = isotope.UniqueId;
 
             if (id > _largestIsotopeId)
             {
+                // Isotope doesn't exist, set the count (faster than the += below)
                 _largestIsotopeId = id;
+
                 if (id >= _isotopes.Length)
                 {
-                    // Isotope doesn't exist, resize array and set the count (faster than the += below)
+                    // resize array if it is too small   
                     Array.Resize(ref _isotopes, id + 1);
-                    _isotopes[id] = count;
-                    _isFormulaDirty = _isDirty = true;                  
-                    return;
                 }
+
+                _isotopes[id] = count;
+                
+                return;
             }
            
             _isotopes[id] += count;
@@ -335,8 +366,6 @@ namespace CSMSL.Chemistry
             {
                 FindLargestIsotope();
             }
-
-            _isFormulaDirty = _isDirty = true;
         }
 
         /// <summary>
@@ -420,24 +449,18 @@ namespace CSMSL.Chemistry
 
             int id = isotope.UniqueId;
 
-            if (id > _largestIsotopeId)
+            if (id > _largestIsotopeId || _isotopes[id] == 0)
             {
-                // id not contained, just return false
+                // isotope not contained or is already zero, do nothing and just return false
                 return false;
             }
+
+            _isotopes[id] = 0;
+
             if (id == _largestIsotopeId)
             {
-                // id is the largest, set it to 0 and find the new largest
-                _isotopes[id] = 0;
+                // id is the largest, find the new largest
                 FindLargestIsotope();
-            }
-            else if (_isotopes[id] == 0)
-            {
-                return false;               
-            }
-            else
-            {
-                _isotopes[id] = 0;
             }
 
             return _isFormulaDirty = _isDirty = true;
@@ -679,7 +702,6 @@ namespace CSMSL.Chemistry
                     continue;
 
                 Isotope isotope = Element.PeriodicTable[i];
-                Element element = isotope.Element;              
 
                 sb.Clear();
                 sb.Append(isotope.AtomicSymbol);
@@ -748,7 +770,7 @@ namespace CSMSL.Chemistry
             foreach (Match match in FormulaRegex.Matches(formula))
             {
                 string chemsym = match.Groups[1].Value;             // Group 1: Chemical Symbol
-                Element element = null;
+                Element element;
                 if (Element.PeriodicTable.TryGetElement(chemsym, out element))
                 {
                     Isotope isotope = match.Groups[2].Success ?     // Group 2 (optional): Isotope Mass Number
