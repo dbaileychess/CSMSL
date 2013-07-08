@@ -49,7 +49,6 @@ namespace CSMSL.Proteomics
             //Mass = mass;
             //Mass.Add(FragmentIonCaps[type]);
             MonoisotopicMass = monoisotopicMass + FragmentIonCaps[type].MonoisotopicMass;
-            
         }
 
         /// <summary>

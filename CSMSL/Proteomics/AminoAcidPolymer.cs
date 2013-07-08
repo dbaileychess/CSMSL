@@ -323,11 +323,11 @@ namespace CSMSL.Proteomics
             }
             else
             {
-                mass.Add(NTerminus.Mass);
+                //mass.Add(NTerminus.Mass);
                 monoMass += NTerminus.MonoisotopicMass;
                 if (NTerminusModification != null)
                 {
-                    mass.Add(NTerminusModification.Mass);
+                    //mass.Add(NTerminusModification.Mass);
                     monoMass += NTerminusModification.MonoisotopicMass;
                 }
             }
@@ -893,7 +893,7 @@ namespace CSMSL.Proteomics
             if ((mod = _modifications[0]) != null)
             {
                 //_mass.Add(mod.Mass);
-                monoMass += mod.MonoisotopicMass;
+                //monoMass += mod.MonoisotopicMass;
 
                 modSeqSb.Append('[');
                 modSeqSb.Append(mod);
@@ -905,7 +905,7 @@ namespace CSMSL.Proteomics
             {
                 IAminoAcid aa = _aminoAcids[i];
                 //_mass.Add(aa.Mass);
-                monoMass += aa.MonoisotopicMass;
+               // monoMass += aa.MonoisotopicMass;
               
                 char letter = aa.Letter;
                 modSeqSb.Append(letter);
@@ -915,7 +915,7 @@ namespace CSMSL.Proteomics
                 if ((mod = _modifications[i + 1]) != null)  
                 {
                     //_mass.Add(mod.Mass);
-                    monoMass += mod.MonoisotopicMass;
+                    //monoMass += mod.MonoisotopicMass;
 
                     modSeqSb.Append('[');
                     modSeqSb.Append(mod);
@@ -925,13 +925,13 @@ namespace CSMSL.Proteomics
 
             // Handle C-Terminus         
             //_mass.Add(_cTerminus.Mass);
-            monoMass += _cTerminus.MonoisotopicMass;
+            //monoMass += _cTerminus.MonoisotopicMass;
           
             // Handle C-Terminus Modification
             if ((mod = _modifications[Length + 1]) != null)
             {
                 //_mass.Add(mod.Mass);
-                monoMass += mod.MonoisotopicMass;
+                //monoMass += mod.MonoisotopicMass;
 
                 modSeqSb.Append("-[");
                 modSeqSb.Append(mod);
@@ -942,7 +942,7 @@ namespace CSMSL.Proteomics
 
             _sequence = baseSeqSb.ToString();
             _sequenceWithMods = modSeqSb.ToString();
-            //MonoisotopicMass = monoMass;
+            
             IsDirty = false;
             _isSequenceDirty = false;
         }

@@ -23,7 +23,7 @@ namespace CSMSL.Tests.Proteomics
         [Test]
         public void PeptideMass()
         {
-            Assert.AreEqual(MockPeptideEveryAminoAcid.Mass.MonoisotopicMass, 2394.12490682513);
+            Assert.AreEqual(MockPeptideEveryAminoAcid.MonoisotopicMass, 2394.12490682513);
         }
 
         [Test]
@@ -210,7 +210,7 @@ namespace CSMSL.Tests.Proteomics
             NamedChemicalFormula.AddModification("C2H3NO", "Test");
             Peptide peptide = new Peptide("T[TMT 6-plex]HGEAK[Test]K[TMT 6-plex]");
 
-            peptide.Mass.MonoisotopicMass.Should().Equal(1284.7555796218198);
+            peptide.MonoisotopicMass.Should().Equal(1284.7555796218198);
         }
 
         [Test]

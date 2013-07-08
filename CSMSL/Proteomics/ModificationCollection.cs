@@ -9,9 +9,7 @@ namespace CSMSL.Proteomics
 
         private readonly List<IMass> _modifications;
 
-        private Mass _totalMass;
-
-        public Mass Mass { get { return _totalMass; } }
+        public double MonoisotopicMass { get; private set; }
 
         public override string ToString()
         {            
@@ -22,19 +20,19 @@ namespace CSMSL.Proteomics
         {
             Name = name;
             _modifications = new List<IMass>(2);
-            _totalMass = new Mass();
+            MonoisotopicMass = 0;
         }        
 
         public void Add(IMass item)
         {
             _modifications.Add(item);
-            _totalMass.Add(item.Mass);
+            MonoisotopicMass += item.MonoisotopicMass;
         }
 
         public void Clear()
         {
             _modifications.Clear();
-            _totalMass = new Mass();
+            MonoisotopicMass = 0;
         }
 
         public bool Contains(IMass item)
@@ -61,7 +59,7 @@ namespace CSMSL.Proteomics
         {
             if (_modifications.Remove(item))
             {
-                _totalMass.Remove(item.Mass);
+                MonoisotopicMass -= item.MonoisotopicMass;
                 return true;
             }
             return false;
@@ -76,11 +74,6 @@ namespace CSMSL.Proteomics
         {
             return _modifications.GetEnumerator();
         }
-
-
-        public double MonoisotopicMass
-        {
-            get { throw new System.NotImplementedException(); }
-        }
+       
     }
 }

@@ -81,16 +81,7 @@ namespace CSMSL.Tests.Chemistry
 
             Assert.AreNotEqual(m1, m2);
         }
-
-        [Test]
-        public void MassAverageInequality()
-        {
-            Mass m1 = new Mass(524.342, 524.500);
-            Mass m2 = new Mass(524.342, 524.501);
-
-            Assert.AreNotEqual(m1, m2);
-        }
-
+  
         [Test]
         public void MassBothInequality()
         {

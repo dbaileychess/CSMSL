@@ -25,7 +25,7 @@ namespace CSMSL.Chemistry
         /// <summary>
         /// The mass of this object
         /// </summary>
-        Mass Mass { get; }
+        //Mass Mass { get; }
 
         /// <summary>
         /// The monoisotopic mass of this object

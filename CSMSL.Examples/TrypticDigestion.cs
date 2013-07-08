@@ -28,7 +28,7 @@ namespace CSMSL.Examples
 {
     public class TrypticDigestion
     {
-        public static void Start(IProtease protease, int maxMissed = 3, int minLength = 5, int maxLength = 80)
+        public static void Start(IProtease protease, int maxMissed = 3, int minLength = 5, int maxLength = 35)
         {
             Console.WriteLine("**Start Digestion**");
             Stopwatch watch = new Stopwatch();

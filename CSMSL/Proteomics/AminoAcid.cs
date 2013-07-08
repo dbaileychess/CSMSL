@@ -110,37 +110,25 @@ namespace CSMSL.Proteomics
             Residues.Add(residue.Name, residue);
             Residues.Add(residue.Symbol, residue);
         }
-        
-        private readonly ChemicalFormula _chemicalFormula;
-        private readonly char _letter;
-        private readonly string _name;
-        private readonly string _symbol;
+
         private readonly Mass _mass;
-        private readonly double _monoisotopicMass;
 
         internal AminoAcid(string name, char oneLetterAbbreviation, string threeLetterAbbreviation, string chemicalFormula, ModificationSites site)
             : this(name, oneLetterAbbreviation, threeLetterAbbreviation, new ChemicalFormula(chemicalFormula), site) { }
        
         internal AminoAcid(string name, char oneLetterAbbreviation, string threeLetterAbbreviation, ChemicalFormula chemicalFormula, ModificationSites site)
         {
-            _name = name;
-            _letter = oneLetterAbbreviation;
-            _symbol = threeLetterAbbreviation;
-            _chemicalFormula = chemicalFormula;
-            //_mass = new Mass(_chemicalFormula.Mass);
-            _monoisotopicMass = _chemicalFormula.MonoisotopicMass;
+            Name = name;
+            Letter = oneLetterAbbreviation;
+            Symbol = threeLetterAbbreviation;
+            ChemicalFormula = chemicalFormula;
+            MonoisotopicMass = ChemicalFormula.MonoisotopicMass;
             Site = site;
         }
-      
-        public ChemicalFormula ChemicalFormula
-        {
-            get { return _chemicalFormula; }
-        }
 
-        public char Letter
-        {
-            get { return _letter; }
-        }
+        public ChemicalFormula ChemicalFormula { get; private set; }
+
+        public char Letter { get; private set; }
 
         public ModificationSites Site { get; private set; }
 
@@ -149,24 +137,15 @@ namespace CSMSL.Proteomics
             get { return _mass; }
         }
 
-        public double MonoisotopicMass
-        {
-            get { return _monoisotopicMass; }
-        }
+        public double MonoisotopicMass { get; private set; }
 
-        public string Name
-        {
-            get { return _name; }
-        }
+        public string Name { get; private set; }
 
-        public string Symbol
-        {
-            get { return _symbol; }
-        }    
+        public string Symbol { get; private set; }
 
         public override string ToString()
         {
-            return string.Format("{0} {1} ({2})", _letter, _symbol, _name);
+            return string.Format("{0} {1} ({2})", Letter, Symbol, Name);
         }
 
     }
