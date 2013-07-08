@@ -25,7 +25,7 @@ namespace CSMSL.Proteomics
 {
     public class Fragment : IMass
     {
-        private static readonly Dictionary<FragmentTypes, ChemicalFormula> FragmentIonCaps = new Dictionary<FragmentTypes, ChemicalFormula>
+        private static readonly Dictionary<FragmentTypes, IMass> FragmentIonCaps = new Dictionary<FragmentTypes, IMass>
         {
           {FragmentTypes.a, new ChemicalFormula("C-1H-1O-1")},
           {FragmentTypes.adot, new ChemicalFormula("C-1O-1")},
@@ -41,13 +41,15 @@ namespace CSMSL.Proteomics
           {FragmentTypes.zdot, new ChemicalFormula("N-1H-1")},
         };
 
-        public Fragment(FragmentTypes type, int number, Mass mass, AminoAcidPolymer parent)
+        public Fragment(FragmentTypes type, int number, double monoisotopicMass, AminoAcidPolymer parent)
         {
             Type = type;
             Number = number;
             Parent = parent;
-            Mass = mass;
-            Mass.Add(FragmentIonCaps[type]);
+            //Mass = mass;
+            //Mass.Add(FragmentIonCaps[type]);
+            MonoisotopicMass = monoisotopicMass + FragmentIonCaps[type].MonoisotopicMass;
+            
         }
 
         /// <summary>

@@ -157,6 +157,30 @@ namespace CSMSL.Tests.Proteomics
         }
 
         [Test]
+        public void EmptyStringPeptideConstructorLength()
+        {
+            Peptide peptide = new Peptide();
+
+            Assert.AreEqual(0, peptide.Length);
+        }
+
+        [Test]
+        public void EmptyStringPeptideConstructorToString()
+        {
+            Peptide peptide = new Peptide();
+
+            Assert.AreEqual(string.Empty, peptide.ToString());
+        }
+
+        [Test]
+        public void EmptyStringPeptideConstructorMassIsWater()
+        {
+            Peptide peptide = new Peptide();
+
+            Assert.AreEqual(18.010564683699997, peptide.MonoisotopicMass);
+        }
+
+        [Test]
         public void ParseNamedChemicalNamedChemicalModification()
         { 
             Peptide peptide = new Peptide("T[TMT 6-plex]HGEAK[Acetyl]K[TMT 6-plex]");
@@ -317,7 +341,7 @@ namespace CSMSL.Tests.Proteomics
             ChemicalFormula formula = new ChemicalFormula("Fe");
             MockPeptideEveryAminoAcid.SetModification(formula, Terminus.N);
 
-            MockPeptideEveryAminoAcid.ClearModification(Terminus.N);
+            MockPeptideEveryAminoAcid.ClearModifications(Terminus.N);
 
             MockPeptideEveryAminoAcid.NTerminusModification.Should().Equal(null);
         }
@@ -328,7 +352,7 @@ namespace CSMSL.Tests.Proteomics
             ChemicalFormula formula = new ChemicalFormula("Fe");
             MockPeptideEveryAminoAcid.SetModification(formula, Terminus.C);
 
-            MockPeptideEveryAminoAcid.ClearModification(Terminus.C);
+            MockPeptideEveryAminoAcid.ClearModifications(Terminus.C);
 
             MockPeptideEveryAminoAcid.CTerminusModification.Should().Equal(null);
         }
@@ -358,7 +382,7 @@ namespace CSMSL.Tests.Proteomics
         {
             Peptide pepA = new Peptide();
 
-            pepA.Sequence.Should().Be.Empty();
+            Assert.AreEqual(String.Empty, pepA.Sequence);
         }
 
         [Test]
@@ -456,7 +480,16 @@ namespace CSMSL.Tests.Proteomics
             Peptide pepA = new Peptide("DER[Fe]EK");
             Peptide pepB = new Peptide(pepA, 2, 3);
             Peptide pepC = new Peptide("R[Fe]EK");
-            pepB.Should().Equal(pepC);
+            Assert.AreEqual(pepB, pepC);
+        }
+
+        [Test]
+        public void PeptideParitalClonelWithInternalModificationTwoMods()
+        {
+            Peptide pepA = new Peptide("DE[Al]R[Fe]EK");
+            Peptide pepB = new Peptide(pepA, 2, 3);
+            Peptide pepC = new Peptide("R[Fe]EK");
+            Assert.AreEqual(pepB, pepC);
         }
         
         [Test]

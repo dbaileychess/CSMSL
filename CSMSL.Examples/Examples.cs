@@ -50,7 +50,7 @@ namespace CSMSL.Examples
         {   
             // Examples coding
             //ChemicalFormulaExamples();
-            //PeptideExamples();
+            PeptideExamples();
                       
             // Example Objects
             //VennDiagramExamples();
@@ -117,7 +117,7 @@ namespace CSMSL.Examples
             {
                 WriteFragmentToConsole(fragment);
             }
-                       
+           
             // Modifications can be applied to any residue or termini
             Console.WriteLine("Lets add some Iron to our peptide...");
             peptide1.SetModification(new NamedChemicalFormula("Fe"), Terminus.C | Terminus.N);
@@ -215,7 +215,7 @@ namespace CSMSL.Examples
 
         private static void WriteFragmentToConsole(Fragment frag)
         {
-            Console.WriteLine("{0,-4} {1,-20}", frag, frag.Mass.MonoisotopicMass);
+            Console.WriteLine("{0,-4} {1,-20}", frag, frag.MonoisotopicMass);
         }
     }
 }
