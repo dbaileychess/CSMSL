@@ -43,7 +43,7 @@ namespace CSMSL.Examples
                     foreach (Peptide peptide in protein.Digest(protease, maxMissed, minLength, maxLength))
                     {
                         peps.Add(peptide);
-                        allMzs.Add(peptide.Mass.ToMz(1)); // forces the calculation of the mass and thus chemical formula
+                        allMzs.Add(peptide.ToMz(2)); // forces the calculation of the mass and thus chemical formula
                     }
                     prots.Add(protein);
                 }

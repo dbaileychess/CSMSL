@@ -215,7 +215,7 @@ namespace CSMSL.Tests.Chemistry
         {
             ChemicalFormula water = new ChemicalFormula("H2O");
            
-            Assert.AreEqual(2 * Constants.Hydrogen + Constants.Oxygen, water.Mass.Monoisotopic);
+            Assert.AreEqual(2 * Constants.Hydrogen + Constants.Oxygen, water.Mass.MonoisotopicMass);
         }
 
         [Test]
@@ -296,7 +296,7 @@ namespace CSMSL.Tests.Chemistry
         [Test]
         public void EmptyFormulaMonoisotopicMassIsZero()
         {           
-            Assert.AreEqual(0.0, EmptyFormula.Mass.Monoisotopic);
+            Assert.AreEqual(0.0, EmptyFormula.Mass.MonoisotopicMass);
         }
 
         [Test]

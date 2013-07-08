@@ -12,7 +12,7 @@ namespace CSMSL.Tests.Chemistry
         {
             Mass m = new Mass();
 
-            Assert.AreEqual(0.0, m.Monoisotopic);
+            Assert.AreEqual(0.0, m.MonoisotopicMass);
         }
 
         [Test]
@@ -28,7 +28,7 @@ namespace CSMSL.Tests.Chemistry
         {
             Mass m = new Mass(524.342);
 
-            Assert.AreEqual(524.342, m.Monoisotopic);
+            Assert.AreEqual(524.342, m.MonoisotopicMass);
         }
 
         [Test]
@@ -44,7 +44,7 @@ namespace CSMSL.Tests.Chemistry
         {
             Mass m = new Mass(524.342, 524.500);
 
-            Assert.AreEqual(524.342, m.Monoisotopic);
+            Assert.AreEqual(524.342, m.MonoisotopicMass);
         }
 
         [Test]

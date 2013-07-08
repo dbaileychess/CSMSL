@@ -27,5 +27,10 @@ namespace CSMSL.IO.OMSSA
         {
             return Name;
         }
+
+        public double MonoisotopicMass
+        {
+            get { throw new NotImplementedException(); }
+        }
     }
 }

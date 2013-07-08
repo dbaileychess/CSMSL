@@ -49,14 +49,14 @@ namespace CSMSL.Examples
         private static void StartExamples()
         {   
             // Examples coding
-            ChemicalFormulaExamples();
+            //ChemicalFormulaExamples();
             //PeptideExamples();
                       
             // Example Objects
             //VennDiagramExamples();
             
             // Example programs
-            //TrypticDigestion.Start(Protease.Trypsin);
+            TrypticDigestion.Start(Protease.Trypsin);
 
             // Example Protein Grouping
             //ProteinGroupingExample.Start(Protease.Trypsin);
@@ -203,19 +203,19 @@ namespace CSMSL.Examples
         /// <param name="formula"></param>
         private static void WriteFormulaToConsole(ChemicalFormula formula)
         {
-            Console.WriteLine("Formula {0} mass is {1}", formula, formula.Mass.Monoisotopic);
+            Console.WriteLine("Formula {0} mass is {1} or {2}", formula, formula.Mass.MonoisotopicMass, formula.MonoisotopicMass);
         }
 
         private static void WritePeptideToConsole(Peptide peptide)
         {
             ChemicalFormula formula;
             peptide.TryGetChemicalFormula(out formula);
-            Console.WriteLine("{0,-5} {1,-5} {2,-5}", peptide, formula, peptide.Mass.Monoisotopic);
+            Console.WriteLine("{0,-5} {1,-5} {2,-5}", peptide, formula, peptide.Mass.MonoisotopicMass);
         }
 
         private static void WriteFragmentToConsole(Fragment frag)
         {
-            Console.WriteLine("{0,-4} {1,-20}", frag, frag.Mass.Monoisotopic);
+            Console.WriteLine("{0,-4} {1,-20}", frag, frag.Mass.MonoisotopicMass);
         }
     }
 }

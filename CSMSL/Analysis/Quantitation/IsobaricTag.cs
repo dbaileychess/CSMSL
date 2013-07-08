@@ -24,7 +24,7 @@ namespace CSMSL.Analysis.Quantitation
         {
             get
             {
-                return _reporterFormula.Mass.Monoisotopic;
+                return _reporterFormula.Mass.MonoisotopicMass;
             }
         }
         

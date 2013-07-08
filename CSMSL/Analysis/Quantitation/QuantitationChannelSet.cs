@@ -109,8 +109,9 @@ namespace CSMSL.Analysis.Quantitation
 
         public IQuantitationChannel Add(IQuantitationChannel channel)
         {
-            _channels.Add(channel.ReporterMass.Monoisotopic, channel);
+            _channels.Add(channel.ReporterMass.MonoisotopicMass, channel);
             _totalMass.Add(channel.Mass);        
+
             return channel;
         }
 
@@ -122,7 +123,7 @@ namespace CSMSL.Analysis.Quantitation
 
         public bool Remove(IQuantitationChannel channel)
         {
-            if (_channels.Remove(channel.Mass.Monoisotopic))
+            if (_channels.Remove(channel.Mass.MonoisotopicMass))
             {
                 _totalMass.Remove(channel.Mass);
                 return true;
@@ -159,7 +160,7 @@ namespace CSMSL.Analysis.Quantitation
         {
             get
             {
-                return new MassRange(LightestChannel.ReporterMass.Monoisotopic, HeaviestChannel.ReporterMass.Monoisotopic);
+                return new MassRange(LightestChannel.ReporterMass.MonoisotopicMass, HeaviestChannel.ReporterMass.MonoisotopicMass);
             }
         }
 
@@ -169,6 +170,11 @@ namespace CSMSL.Analysis.Quantitation
             {
                 return _channels.Count;
             }
+        }
+
+        public double MonoisotopicMass
+        {
+            get { throw new NotImplementedException(); }
         }
 
         public override string ToString()
@@ -384,5 +390,8 @@ namespace CSMSL.Analysis.Quantitation
         #endregion
 
 
+
+
+       
     }
 }

@@ -83,7 +83,7 @@ namespace CSMSL.Chemistry
         /// The main data store for all the isotopes in this periodic table. The isotope unique ID serves as the index in the array, these IDs are unique for each isotope.
         /// </summary>
         private Isotope[] _isotopes;
-        
+      
         public Element this[string element]
         {
             get
@@ -139,6 +139,7 @@ namespace CSMSL.Chemistry
                         if (abundance > 0)
                         {
                             Isotope isotope = element.AddIsotope(massNumber, mass, abundance);
+                           
                             if (unqiueId != null)
                             {
                                 int uniqueId = int.Parse(unqiueId);

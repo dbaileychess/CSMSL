@@ -45,6 +45,9 @@ ehthumbs.db
 # TESTS #
 #########
 TestResults/
+*.psess
+*.vsp
+
 
 # Nuget #
 #########

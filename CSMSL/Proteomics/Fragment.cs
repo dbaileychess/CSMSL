@@ -55,6 +55,8 @@ namespace CSMSL.Proteomics
         /// </summary>
         public Mass Mass { get; private set; }
 
+        public double MonoisotopicMass { get; private set; }
+
         public int Number { get; private set; }
 
         public AminoAcidPolymer Parent { get; private set; }

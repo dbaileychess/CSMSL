@@ -72,6 +72,7 @@ namespace CSMSL.Proteomics
             IsDirty = true;
             _isSequenceDirty = true;
             Length = 0;
+            MonoisotopicMass = DefaultNTerminus.MonoisotopicMass + DefaultCTerminus.MonoisotopicMass;
         }
 
         protected AminoAcidPolymer(string sequence)
@@ -84,6 +85,7 @@ namespace CSMSL.Proteomics
             _modifications = new IMass[length + 2]; // +2 for the n and c term         
             NTerminus = nTerm;
             CTerminus = cTerm;
+            MonoisotopicMass = DefaultNTerminus.MonoisotopicMass + DefaultCTerminus.MonoisotopicMass;
             ParseSequence(sequence);      
         }
 
@@ -165,6 +167,8 @@ namespace CSMSL.Proteomics
                 return _mass;
             } 
         }
+
+        public double MonoisotopicMass { get; private set; }
 
         #region Amino Acid Sequence
 
@@ -414,10 +418,7 @@ namespace CSMSL.Proteomics
             }
             set
             {
-                if (Equals(value, _modifications[Length + 1]))
-                    return;
-                _modifications[Length + 1] = value;
-                IsDirty = true;
+                ReplaceMod(Length + 1, value);
             }
         }
 
@@ -432,10 +433,7 @@ namespace CSMSL.Proteomics
             }
             set
             {
-                if (Equals(value, _modifications[0]))
-                    return;
-                _modifications[0] = value;
-                IsDirty = true;
+                ReplaceMod(0, value);
             }
         }
         
@@ -538,7 +536,7 @@ namespace CSMSL.Proteomics
                 ModificationSites site = _aminoAcids[i].Site;
                 if ((sites & site) == site)
                 {
-                    _modifications[i + 1] = mod;                   
+                    ReplaceMod(i + 1, mod);
                     count++;
                 }
             }
@@ -549,8 +547,6 @@ namespace CSMSL.Proteomics
                 count++;
             }
 
-            if(count > 0)
-                IsDirty = true;
             return count;
         }
 
@@ -578,14 +574,35 @@ namespace CSMSL.Proteomics
             {
                 if (letter.Equals(_aminoAcids[i].Letter))
                 {
-                    _modifications[i + 1] = mod;                    
+                    ReplaceMod(i + 1, mod);
                     count++;
                 }
             }
 
-            if (count > 0)
-                IsDirty = true;
             return count;         
+        }
+
+        /// <summary>
+        /// Replaces a modification (if present) at the specific index in the residue (0-based for N and C termini)
+        /// </summary>
+        /// <param name="index">The residue index to replace at</param>
+        /// <param name="mod">The modification to replace with</param>
+        private void ReplaceMod(int index, IMass mod)
+        {
+            IMass oldMod = _modifications[index];
+
+            if (Equals(mod, oldMod))
+                return; // Same modifications, no change is required
+
+            IsDirty = true;
+
+            if (oldMod != null)
+                MonoisotopicMass -= oldMod.MonoisotopicMass; // remove the old mod mass
+
+            _modifications[index] = mod;
+
+            if(mod != null)
+                MonoisotopicMass += mod.MonoisotopicMass;
         }
 
         public int SetModification(IMass mod, IAminoAcid residue)
@@ -595,12 +612,10 @@ namespace CSMSL.Proteomics
             {
                 if (residue.Equals(_aminoAcids[i]))
                 {
-                    _modifications[i + 1] = mod;                  
+                    ReplaceMod(i + 1, mod);
                     count++;
                 }
             }
-            if (count > 0)
-                IsDirty = true;
             return count;        
         }
 
@@ -616,11 +631,7 @@ namespace CSMSL.Proteomics
                 throw new IndexOutOfRangeException(string.Format("Residue number not in the correct range: [{0}-{1}] you specified: {2}", 1, Length, residueNumber));
             }
 
-            if(Equals(mod, _modifications[residueNumber]))
-                return;
-
-            _modifications[residueNumber] = mod;
-            IsDirty = true;
+            ReplaceMod(residueNumber, mod);
         }
 
         /// <summary>
@@ -634,12 +645,8 @@ namespace CSMSL.Proteomics
             {
                 if (residueNumber > Length || residueNumber < 1)
                     throw new IndexOutOfRangeException(string.Format("Residue number not in the correct range: [{0}-{1}] you specified: {2}", 1, Length, residueNumber));
-                
-                if (Equals(mod, _modifications[residueNumber])) 
-                    continue;
 
-                _modifications[residueNumber] = mod;
-                IsDirty = true;
+                ReplaceMod(residueNumber, mod);
             }
         }
         
@@ -652,8 +659,15 @@ namespace CSMSL.Proteomics
             if (ModificationCount() == 0)
                 return;
 
-            Array.Clear(_modifications, 0, Length + 2);
-            IsDirty = true;
+            for (int i = 0; i <= Length + 1; i++)
+            {
+                if (_modifications[i] == null)
+                    continue;
+              
+                MonoisotopicMass -= _modifications[i].MonoisotopicMass;
+                _modifications[i] = null;
+                IsDirty = true;
+            }
         }
 
         public void ClearModifications(IMass mod)
@@ -661,11 +675,12 @@ namespace CSMSL.Proteomics
             if (mod == null)
                 return;
          
-            for (int i = 0; i < Length + 2; i++)
+            for (int i = 0; i <= Length + 1; i++)
             {
                 if (!mod.Equals(_modifications[i])) 
                     continue;
 
+                MonoisotopicMass -= mod.MonoisotopicMass;
                 _modifications[i] = null;
                 IsDirty = true;
             }
@@ -820,20 +835,20 @@ namespace CSMSL.Proteomics
 
         private void CleanUp()
         {   
-            _mass = new Mass();
-            
             StringBuilder baseSeqSB = new StringBuilder(Length);
             StringBuilder modSeqSB = new StringBuilder(Length);
 
             IMass mod;          
 
             // Handle N-Terminus
-            _mass.Add(_nTerminus.Mass);          
-        
+            //_mass.Add(_nTerminus.Mass);
+            double monoMass = _nTerminus.MonoisotopicMass;
+
             // Handle N-Terminus Modification
             if ((mod = _modifications[0]) != null)
             {
-                _mass.Add(mod.Mass);
+                //_mass.Add(mod.Mass);
+                monoMass += mod.MonoisotopicMass;
 
                 modSeqSB.Append('[');
                 modSeqSB.Append(mod);
@@ -844,7 +859,8 @@ namespace CSMSL.Proteomics
             for (int i = 0; i < Length; i++)
             {
                 IAminoAcid aa = _aminoAcids[i];
-                _mass.Add(aa.Mass);               
+                //_mass.Add(aa.Mass);
+                monoMass += aa.MonoisotopicMass;
               
                 char letter = aa.Letter;
                 modSeqSB.Append(letter);
@@ -853,7 +869,8 @@ namespace CSMSL.Proteomics
                 // Handle Amino Acid Modification (1-based)
                 if ((mod = _modifications[i + 1]) != null)  
                 {
-                    _mass.Add(mod.Mass);
+                    //_mass.Add(mod.Mass);
+                    monoMass += mod.MonoisotopicMass;
 
                     modSeqSB.Append('[');
                     modSeqSB.Append(mod);
@@ -862,20 +879,25 @@ namespace CSMSL.Proteomics
             }
 
             // Handle C-Terminus         
-            _mass.Add(_cTerminus.Mass);
+            //_mass.Add(_cTerminus.Mass);
+            monoMass += _cTerminus.MonoisotopicMass;
           
             // Handle C-Terminus Modification
             if ((mod = _modifications[Length + 1]) != null)
             {
-                _mass.Add(mod.Mass);
+                //_mass.Add(mod.Mass);
+                monoMass += mod.MonoisotopicMass;
 
                 modSeqSB.Append("-[");
                 modSeqSB.Append(mod);
                 modSeqSB.Append(']');
             }
 
+            _mass = new Mass(monoMass);
+
             _sequence = baseSeqSB.ToString();
             _sequenceWithMods = modSeqSB.ToString();
+            MonoisotopicMass = monoMass;
             IsDirty = false;
             _isSequenceDirty = false;
         }
@@ -926,6 +948,8 @@ namespace CSMSL.Proteomics
                                 break;
                         }
 
+                        MonoisotopicMass += modification.MonoisotopicMass;
+
                         if (cterminalMod)
                         {
                             _modifications[index + 1] = modification;
@@ -947,7 +971,8 @@ namespace CSMSL.Proteomics
                     AminoAcid residue = null;
                     if (AminoAcid.TryGetResidue(letter, out residue))
                     {
-                        _aminoAcids[index++] = residue;                 
+                        _aminoAcids[index++] = residue;
+                        MonoisotopicMass += residue.MonoisotopicMass;
                         baseSeqSB.Append(letter);
                     }                
                     else
@@ -1042,7 +1067,7 @@ namespace CSMSL.Proteomics
                 AminoAcid residue = null;
                 if (AminoAcid.TryGetResidue(letter, out residue))
                 {
-                    mass += residue.Mass.Monoisotopic;
+                    mass += residue.Mass.MonoisotopicMass;
                 }
             }
             return mass;

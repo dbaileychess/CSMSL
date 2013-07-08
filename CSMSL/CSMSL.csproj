@@ -97,6 +97,7 @@
     <Compile Include="Chemistry\IChemicalFormula.cs" />
     <Compile Include="Chemistry\Isotope.cs" />
     <Compile Include="Chemistry\PeriodicTable.cs" />
+    <Compile Include="ClassExtensions.cs" />
     <Compile Include="Constants.cs" />
     <Compile Include="Chemistry\IMass.cs" />
     <Compile Include="IO\Fasta.cs" />

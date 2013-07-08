@@ -69,7 +69,7 @@ namespace CSMSL.Tests.Proteomics
             MockPeptideEveryAminoAcid.SetModification(NamedChemicalFormula.TMT6plex, Terminus.C);
             Fragment fragment = MockPeptideEveryAminoAcid.Fragment(FragmentTypes.x, 1);          
 
-            fragment.Mass.Monoisotopic.Should().Equal(436.21608990639004);
+            fragment.Mass.MonoisotopicMass.Should().Equal(436.21608990639004);
         }
 
         [Test]       
@@ -77,7 +77,7 @@ namespace CSMSL.Tests.Proteomics
         {
             Fragment fragment = MockPeptideEveryAminoAcid.Fragment(FragmentTypes.a, 1);          
 
-            fragment.Mass.Monoisotopic.Should().Equal(43.042199165149988);
+            fragment.Mass.MonoisotopicMass.Should().Equal(43.042199165149988);
         }
 
         [Test]
@@ -85,7 +85,7 @@ namespace CSMSL.Tests.Proteomics
         {
             Fragment fragment = MockPeptideEveryAminoAcid.Fragment(FragmentTypes.b, 1);            
 
-            fragment.Mass.Monoisotopic.Should().Equal(71.037113784709987);
+            fragment.Mass.MonoisotopicMass.Should().Equal(71.037113784709987);
         }
 
         [Test]
@@ -93,7 +93,7 @@ namespace CSMSL.Tests.Proteomics
         {
             Fragment fragment = MockPeptideEveryAminoAcid.Fragment(FragmentTypes.c, 1);
  
-            fragment.Mass.Monoisotopic.Should().Equal(88.063662885719992);
+            fragment.Mass.MonoisotopicMass.Should().Equal(88.063662885719992);
         }
 
         [Test]
@@ -101,7 +101,7 @@ namespace CSMSL.Tests.Proteomics
         {
             Fragment fragment = MockPeptideEveryAminoAcid.Fragment(FragmentTypes.x, 1);
 
-            fragment.Mass.Monoisotopic.Should().Equal(207.05315777167004);
+            fragment.Mass.MonoisotopicMass.Should().Equal(207.05315777167004);
         }
 
         [Test]
@@ -109,7 +109,7 @@ namespace CSMSL.Tests.Proteomics
         {
             Fragment fragment = MockPeptideEveryAminoAcid.Fragment(FragmentTypes.y, 1);
 
-            fragment.Mass.Monoisotopic.Should().Equal(181.07389321625004);
+            fragment.Mass.MonoisotopicMass.Should().Equal(181.07389321625004);
         }
 
         [Test]
@@ -117,7 +117,7 @@ namespace CSMSL.Tests.Proteomics
         {
             Fragment fragment = MockPeptideEveryAminoAcid.Fragment(FragmentTypes.z, 1);
 
-            fragment.Mass.Monoisotopic.Should().Equal(164.04734411524004);
+            fragment.Mass.MonoisotopicMass.Should().Equal(164.04734411524004);
         }
     }
 }

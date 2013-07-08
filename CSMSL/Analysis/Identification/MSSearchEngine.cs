@@ -36,7 +36,7 @@ namespace CSMSL.Analysis.Identification
 
         public void LoadPeptides(IEnumerable<AminoAcidPolymer> peptides)
         {
-            _peptides = peptides.OrderBy(pep => pep.Mass.Monoisotopic).ToList();     
+            _peptides = peptides.OrderBy(pep => pep.Mass.MonoisotopicMass).ToList();     
         }
 
         public void AddVariableModification(IChemicalFormula modification, char residue)

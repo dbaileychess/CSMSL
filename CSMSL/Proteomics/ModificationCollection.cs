@@ -76,5 +76,11 @@ namespace CSMSL.Proteomics
         {
             return _modifications.GetEnumerator();
         }
+
+
+        public double MonoisotopicMass
+        {
+            get { throw new System.NotImplementedException(); }
+        }
     }
 }
