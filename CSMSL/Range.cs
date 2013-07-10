@@ -28,9 +28,6 @@ namespace CSMSL
     public class Range<T> : IRange<T>
         where T : IComparable<T>, IEquatable<T>
     {
-        protected T Max;
-        protected T Min;
-
         public Range()
             : this(default(T), default(T)) { }
 
@@ -39,27 +36,22 @@ namespace CSMSL
 
         public Range(T minimum, T maximum)
         {
-            Min = minimum;
-            Max = maximum;
+            if (maximum.CompareTo(minimum) < 0)
+                throw new ArgumentException(minimum + " > " + maximum + " unable to create negative ranges");
+
+            Minimum = minimum;
+            Maximum = maximum;
         }
 
         /// <summary>
         /// The maximum value of the range
         /// </summary>
-        public T Maximum
-        {
-            get { return Max; }
-            set { Max = value; }
-        }
+        public T Maximum { get; protected set; }
 
         /// <summary>
         /// The minimum value of the range
         /// </summary>
-        public T Minimum
-        {
-            get { return Min; }
-            set { Min = value; }
-        }
+        public T Minimum { get; protected set; }
 
         /// <summary>
         /// Determines whether an item is below, above, or contained within a range of values
@@ -68,9 +60,9 @@ namespace CSMSL
         /// <returns>-1 if item is below the range, 1 if item is above the range, 0 otherwise</returns>
         public int CompareTo(T item)
         {
-            if (Min.CompareTo(item) > 0) 
+            if (Minimum.CompareTo(item) > 0) 
                 return -1;
-            if (Max.CompareTo(item) < 0) 
+            if (Maximum.CompareTo(item) < 0) 
                 return 1;
             return 0;
         }
@@ -82,7 +74,7 @@ namespace CSMSL
         /// <returns>True if this range is fully encloses the other range, false otherwise</returns>
         public bool IsSuperRange(IRange<T> other)
         {
-            return (Max.CompareTo(other.Maximum) >= 0 && Min.CompareTo(other.Minimum) <= 0);
+            return (Maximum.CompareTo(other.Maximum) >= 0 && Minimum.CompareTo(other.Minimum) <= 0);
         }
 
         /// <summary>
@@ -92,7 +84,7 @@ namespace CSMSL
         /// <returns>True if this range is fully enclosed by the other range, false otherwise</returns>
         public bool IsSubRange(IRange<T> other)
         {
-            return (Max.CompareTo(other.Maximum) <= 0 && Min.CompareTo(other.Minimum) >= 0);
+            return (Maximum.CompareTo(other.Maximum) <= 0 && Minimum.CompareTo(other.Minimum) >= 0);
         }
 
         /// <summary>
@@ -102,7 +94,10 @@ namespace CSMSL
         /// <returns>True if the other range in any way overlaps this range, false otherwise</returns>
         public bool IsOverlapping(IRange<T> other)
         {
-            return Contains(other.Minimum) || Contains(other.Maximum);
+            if (other == null)
+                return false;
+
+            return Maximum.CompareTo(other.Minimum) >= 0 && Minimum.CompareTo(other.Maximum) <= 0;
         }
 
         /// <summary>
@@ -121,7 +116,7 @@ namespace CSMSL
         /// <returns>Format: [min - max]</returns>
         public override string ToString()
         {
-            return string.Format("[{0} - {1}]", Min, Max);
+            return string.Format("[{0} - {1}]", Minimum, Maximum);
         }
 
         /// <summary>
@@ -131,8 +126,22 @@ namespace CSMSL
         /// <returns>True if both the minimum and maximum values are equivalent, false otherwise</returns>
         public bool Equals(IRange<T> other)
         {
-            if (ReferenceEquals(this, other)) return true;
-            return Max.Equals(other.Maximum) && Min.Equals(other.Minimum);
-        }     
+            return Maximum.Equals(other.Maximum) && Minimum.Equals(other.Minimum);
+        }
+
+        public override int GetHashCode()
+        {
+            return Minimum.GetHashCode() + (Maximum.GetHashCode() << 3);
+        }
+
+        public override bool Equals(object obj)
+        {
+            IRange<T> other = obj as IRange<T>;
+
+            if (other == null)
+                return false;
+
+            return Equals(other);
+        }
     }
 }

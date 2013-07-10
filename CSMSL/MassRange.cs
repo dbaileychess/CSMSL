@@ -10,14 +10,13 @@
             : this(0, 0) { }
 
         public MassRange(double minimum, double maximum)
+            : base(minimum, maximum)
         {
-            base.Minimum = minimum;
-            base.Maximum = maximum;
             _width = base.Maximum - base.Minimum;
             _mean = (base.Maximum + base.Minimum) / 2.0;
         }
 
-        public MassRange(MassRange range)
+        public MassRange(IRange<double> range)
             : this(range.Minimum, range.Maximum) { }
 
         public MassRange(double mean, MassTolerance tolerance)
@@ -31,13 +30,13 @@
             switch (tolerance.Type)
             {
                 default:
-                    base.Minimum = _mean - tolerance.Value / 2;
-                    base.Maximum = _mean + tolerance.Value / 2;
+                    base.Minimum = _mean - tolerance.Value / 2.0;
+                    base.Maximum = _mean + tolerance.Value / 2.0;
                     break;
 
                 case MassToleranceType.MMU:
-                    base.Minimum = _mean - tolerance.Value / 2000;
-                    base.Maximum = _mean + tolerance.Value / 2000;
+                    base.Minimum = _mean - tolerance.Value / 2000.0;
+                    base.Maximum = _mean + tolerance.Value / 2000.0;
                     break;
 
                 case MassToleranceType.PPM:

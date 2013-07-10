@@ -31,12 +31,12 @@ namespace CSMSL
         /// <summary>
         /// The minimum value of this range
         /// </summary>
-        T Minimum { get; set; }
+        T Minimum { get; }
 
         /// <summary>
         /// The maximum value of this range
         /// </summary>
-        T Maximum { get; set; }
+        T Maximum { get; }
 
         /// <summary>
         /// Checks if an item is within the range
@@ -45,6 +45,11 @@ namespace CSMSL
         /// <returns>True if the item is within minimum and maximum (inclusive)</returns>
         bool Contains(T item);
 
+        /// <summary>
+        /// Checks if an item is below, within, or above this range 
+        /// </summary>
+        /// <param name="item">The item to check</param>
+        /// <returns>-1 if the item is below, 0 if within, or 1 if above</returns>
         int CompareTo(T item);
 
         /// <summary>

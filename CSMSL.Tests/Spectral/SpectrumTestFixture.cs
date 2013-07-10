@@ -43,14 +43,6 @@ namespace CSMSL.Tests.Spectral
         }
 
         [Test]
-        public void SpectrumClearPeaks()
-        {
-            mzSpectrum1000.Clear();
-
-            mzSpectrum1000.Count.Should().Equal(0);
-        }
-
-        [Test]
         public void SpectrumTryGetPeaks()
         {
             List<MZPeak> peaks;
