@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace CSMSL.Spectral
+﻿namespace CSMSL.Spectral
 {
     public interface IMassSpectrum
     {

@@ -27,16 +27,13 @@ namespace CSMSL.Spectral
     /// </summary>
     public class MZPeak : IPeak, IEquatable<MZPeak>
     {
-        private readonly double _intensity;
-        private readonly double _mz;
+        public double Intensity { get; private set; }
+        public double MZ { get; private set; }
 
-        public double Intensity { get { return _intensity; } }
-        public double MZ { get { return _mz; } }
-        
         public MZPeak(double mz, double intensity)
         {
-            _mz = mz;
-            _intensity = intensity;
+            MZ = mz;
+            Intensity = intensity;
         }       
 
         public bool Equals(IPeak other)
@@ -71,12 +68,12 @@ namespace CSMSL.Spectral
 
         double IPeak.X
         {
-            get { return _mz; }
+            get { return MZ; }
         }
 
         double IPeak.Y
         {
-            get { return _intensity; }
+            get { return Intensity; }
         }
 
         public override bool Equals(object obj)
@@ -86,7 +83,7 @@ namespace CSMSL.Spectral
 
         public override int GetHashCode()
         {
-            return _mz.GetHashCode() ^ _intensity.GetHashCode();
+            return MZ.GetHashCode() ^ Intensity.GetHashCode();
         }
 
         public bool Equals(MZPeak other)

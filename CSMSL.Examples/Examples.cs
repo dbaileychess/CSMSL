@@ -50,13 +50,13 @@ namespace CSMSL.Examples
         {   
             // Examples coding
             //ChemicalFormulaExamples();
-            PeptideExamples();
+            //PeptideExamples();
                       
             // Example Objects
             //VennDiagramExamples();
             
             // Example programs
-            TrypticDigestion.Start(Protease.Trypsin);
+            //TrypticDigestion.Start(Protease.Trypsin);
 
             // Example Protein Grouping
             //ProteinGroupingExample.Start(Protease.Trypsin);
@@ -65,7 +65,7 @@ namespace CSMSL.Examples
             //TMT6plexExample.Start();
 
             //Example IO
-            //MsDataFileExamples.Start();
+            MsDataFileExamples.Start();
 
             // Omssa Reader
             //OmssaReader.Start();

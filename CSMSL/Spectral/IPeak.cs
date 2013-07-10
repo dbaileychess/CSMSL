@@ -16,5 +16,6 @@ namespace CSMSL.Spectral
         /// The Y value of this peak
         /// </summary>
         double Y { get; }
+
     }    
 }
