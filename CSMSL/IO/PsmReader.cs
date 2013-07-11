@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using CSMSL.Proteomics;
-using CSMSL.Analysis.Identification;
+﻿using CSMSL.Analysis.Identification;
 using CSMSL.Chemistry;
+using CSMSL.Proteomics;
+using System;
+using System.Collections.Generic;
 
 namespace CSMSL.IO
 {

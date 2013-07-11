@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using CSMSL.Chemistry;
 using NUnit.Framework;
-using CSMSL.Chemistry;
+using System.Collections.Generic;
 
 namespace CSMSL.Tests.Chemistry
 {

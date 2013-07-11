@@ -1,14 +1,12 @@
-﻿using System;
+﻿using CSMSL.Analysis.ExperimentalDesign;
+using CSMSL.Analysis.Identification;
+using CSMSL.Chemistry;
+using CSMSL.IO;
+using CSMSL.Proteomics;
+using CSMSL.Spectral;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using CSMSL.Proteomics;
-using CSMSL.Analysis.Identification;
-using CSMSL.Spectral;
-using CSMSL.Analysis.ExperimentalDesign;
-using CSMSL.IO;
-using CSMSL.Chemistry;
-using CSMSL;
 
 namespace CSMSL.Analysis.Quantitation
 {
@@ -131,9 +129,9 @@ namespace CSMSL.Analysis.Quantitation
         public double GetIQuantitationChannelIntensity(IQuantitationChannel IQuantitationChannel, IntensityWeightingType method, bool noiseBandCap = false, double signalToNoiseThreshold = 3.0)
         {
             double IQuantitationChannelIntensitySum = 0;
-            QuantifiedPeak peak = null;
+
             List<double> intensities = new List<double>();
-            double IQuantitationChannelIntensity = 0;         
+            
 
             //foreach (QuantifiedScan scan in QuantifiedScans)
             //{
@@ -201,27 +199,7 @@ namespace CSMSL.Analysis.Quantitation
         public List<double> GetRatioList(IQuantitationChannel numerator, IQuantitationChannel denominator, bool noiseBandCap = false, double signalToNoiseThreshold = 3.0)
         {
             List<double> log2Ratios = new List<double>();
-            double peakNumerator = 0;
-            double peakDenominator = 0;
-            double ratio = 0;
-            QuantifiedPeak numeratorPeak = null;
-            QuantifiedPeak denominatorPeak = null;
-            //foreach (QuantifiedScan scan in QuantifiedScans)
-            //{
-            //    for (int i = 0; i < QuantifiedScan.NumIsotopes; i++)
-            //    {
-            //        if (scan.TryGetQuantifiedPeak(numerator, out numeratorPeak, i) && scan.TryGetQuantifiedPeak(denominator, out denominatorPeak, i))
-            //        {
-            //            peakNumerator = numeratorPeak.DenormalizedIntensity(noiseBandCap, signalToNoiseThreshold);
-            //            peakDenominator = denominatorPeak.DenormalizedIntensity(noiseBandCap, signalToNoiseThreshold);
-            //            ratio = GetRatio(peakNumerator, peakDenominator);
-            //            if (ratio != 0.0)
-            //            {
-            //                log2Ratios.Add(Math.Log(ratio, 2));
-            //            }
-            //        }                             
-            //    }
-            //}
+     
 
             return log2Ratios;
         }

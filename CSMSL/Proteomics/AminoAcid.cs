@@ -18,9 +18,9 @@
 //  along with CSMSL.  If not, see <http://www.gnu.org/licenses/>.        /
 ///////////////////////////////////////////////////////////////////////////
 
+using CSMSL.Chemistry;
 using System.Collections.Generic;
 using System.Globalization;
-using CSMSL.Chemistry;
 
 namespace CSMSL.Proteomics
 {
@@ -111,7 +111,7 @@ namespace CSMSL.Proteomics
             Residues.Add(residue.Symbol, residue);
         }
 
-        private readonly Mass _mass;
+  
 
         internal AminoAcid(string name, char oneLetterAbbreviation, string threeLetterAbbreviation, string chemicalFormula, ModificationSites site)
             : this(name, oneLetterAbbreviation, threeLetterAbbreviation, new ChemicalFormula(chemicalFormula), site) { }
@@ -131,12 +131,7 @@ namespace CSMSL.Proteomics
         public char Letter { get; private set; }
 
         public ModificationSites Site { get; private set; }
-
-        public Mass Mass
-        {
-            get { return _mass; }
-        }
-
+        
         public double MonoisotopicMass { get; private set; }
 
         public string Name { get; private set; }

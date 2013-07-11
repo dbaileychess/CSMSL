@@ -1,12 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using CSMSL.Proteomics;
-using CSMSL.Analysis.Identification;
-using CsvHelper.Configuration;
-using CsvHelper.TypeConversion;
-
+﻿
 namespace CSMSL.IO.OMSSA
 {
     

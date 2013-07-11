@@ -1,7 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using CSMSL.Proteomics;
+﻿using CSMSL.Proteomics;
 using CSMSL.Spectral;
+using System;
+using System.Collections.Generic;
 
 namespace CSMSL.Analysis.Identification
 {

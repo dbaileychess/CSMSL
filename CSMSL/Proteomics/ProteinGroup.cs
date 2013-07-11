@@ -1,8 +1,7 @@
-﻿using System;
+﻿using CSMSL.IO;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using CSMSL.IO;
 
 namespace CSMSL.Proteomics
 {
@@ -81,8 +80,7 @@ namespace CSMSL.Proteomics
         }
 
         #region Statics
-
-        private static Dictionary<Peptide, ProteinGroup> _pepToProts;
+   
 
         public static IEnumerable<ProteinGroup> GroupProteins(string fastaFile, Protease protease, IEnumerable<IAminoAcidSequence> observeredSequences, int MaxMissedCleavages = 3)
         {

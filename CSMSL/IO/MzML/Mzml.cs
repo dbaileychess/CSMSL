@@ -1,16 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Collections.Generic;
-using System.Text;
-using System.IO;
-using System.Threading.Tasks;
-using System.Text.RegularExpressions;
+﻿using CSMSL.Proteomics;
 using CSMSL.Spectral;
-using CSMSL.Proteomics;
-using System.Xml.Serialization;
-using System.Xml;
 using Ionic.Zlib;
+using System;
+using System.IO;
+using System.Xml.Serialization;
 
 namespace CSMSL.IO.MzML
 {
@@ -66,13 +59,13 @@ namespace CSMSL.IO.MzML
                     _indexedmzMLConnection = _indexedSerializer.Deserialize(stream) as indexedmzML;
                     _mzMLConnection = _indexedmzMLConnection.mzML;
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                     try
                     {
                         _mzMLConnection = _mzMLSerializer.Deserialize(stream) as mzMLType;
                     }
-                    catch (Exception e2)
+                    catch (Exception)
                     {
                         throw new InvalidDataException("Unable to parse " + FilePath + " as a mzML file!");
                     }

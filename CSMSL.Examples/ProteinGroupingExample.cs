@@ -1,12 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Diagnostics;
-using CSMSL;
-using CSMSL.Proteomics;
-using CSMSL.IO;
+﻿using CSMSL.Proteomics;
 
 namespace CSMSL.Examples
 {

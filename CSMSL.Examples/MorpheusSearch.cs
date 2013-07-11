@@ -1,15 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Diagnostics;
+﻿using CSMSL.Analysis.Identification;
 using CSMSL.IO;
-using CSMSL.Chemistry;
-using CSMSL.Proteomics;
-using CSMSL.Spectral;
 using CSMSL.IO.Thermo;
+using CSMSL.Proteomics;
 using CSMSL.Util.Collections;
-using CSMSL.Analysis.Identification;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
 
 namespace CSMSL.Examples
 {

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using CSMSL.Analysis.Quantitation;
+﻿using System.Collections.Generic;
 
 namespace CSMSL.Analysis.ExperimentalDesign
 {

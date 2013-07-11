@@ -1,9 +1,5 @@
-﻿using System;
+﻿using CSMSL.Analysis.Quantitation;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using CSMSL.Proteomics;
-using CSMSL.Analysis.Quantitation;
 
 namespace CSMSL.Analysis.ExperimentalDesign
 {

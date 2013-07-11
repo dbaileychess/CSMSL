@@ -1,10 +1,10 @@
-﻿using System;
+﻿using CSMSL.IO;
+using CSMSL.IO.MzML;
+using CSMSL.IO.Thermo;
+using CSMSL.Spectral;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using CSMSL.IO;
-using CSMSL.Spectral;
-using CSMSL.IO.Thermo;
-using CSMSL.IO.MzML;
 
 namespace CSMSL.Examples
 {

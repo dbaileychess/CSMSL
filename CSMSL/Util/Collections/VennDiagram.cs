@@ -18,10 +18,10 @@
 //  along with CSMSL.  If not, see <http://www.gnu.org/licenses/>.        /
 ///////////////////////////////////////////////////////////////////////////
 
+using Combinatorics.Collections;
 using System;
 using System.Collections.Generic;
 using System.Text;
-using Combinatorics.Collections;
 
 namespace CSMSL.Util.Collections
 {

@@ -18,9 +18,6 @@
 //  along with CSMSL.  If not, see <http://www.gnu.org/licenses/>.        /
 ///////////////////////////////////////////////////////////////////////////
 
-using System.Collections.Generic;
-using System;
-using CSMSL.Chemistry;
 
 namespace CSMSL.Proteomics
 {
@@ -96,7 +93,7 @@ namespace CSMSL.Proteomics
             return new Peptide(this, firstResidue, length);
         }
 
-        public bool Equals(AminoAcidPolymer other)
+        public new bool Equals(AminoAcidPolymer other)
         {
             return base.Equals(other);
         }

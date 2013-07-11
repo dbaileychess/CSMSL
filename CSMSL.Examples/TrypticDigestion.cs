@@ -18,11 +18,11 @@
 //  along with CSMSL.  If not, see <http://www.gnu.org/licenses/>.        /
 ///////////////////////////////////////////////////////////////////////////
 
+using CSMSL.IO;
+using CSMSL.Proteomics;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using CSMSL.IO;
-using CSMSL.Proteomics;
 
 namespace CSMSL.Examples
 {

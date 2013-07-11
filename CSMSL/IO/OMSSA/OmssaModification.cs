@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using CSMSL.Chemistry;
+﻿using CSMSL.Chemistry;
+using System;
 
 namespace CSMSL.IO.OMSSA
 {

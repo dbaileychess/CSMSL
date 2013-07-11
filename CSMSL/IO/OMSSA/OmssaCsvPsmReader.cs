@@ -1,15 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.IO;
-using System.Threading.Tasks;
-using CsvHelper;
-using CSMSL.Proteomics;
-using CSMSL.Analysis.Identification;
-using CSMSL.IO;
+﻿using CSMSL.Analysis.Identification;
 using CSMSL.Chemistry;
+using CSMSL.Proteomics;
 using CSMSL.Spectral;
+using CsvHelper;
+using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Xml;
 
 namespace CSMSL.IO.OMSSA

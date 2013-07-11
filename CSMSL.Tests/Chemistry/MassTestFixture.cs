@@ -1,6 +1,6 @@
-﻿using System;
+﻿using CSMSL.Chemistry;
 using NUnit.Framework;
-using CSMSL.Chemistry;
+using System;
 
 namespace CSMSL.Tests.Chemistry
 {

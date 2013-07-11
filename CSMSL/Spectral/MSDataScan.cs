@@ -1,5 +1,5 @@
-﻿using System;
-using CSMSL.IO;
+﻿using CSMSL.IO;
+using System;
 
 namespace CSMSL.Spectral
 {

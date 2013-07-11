@@ -18,10 +18,10 @@
 //  along with CSMSL.  If not, see <http://www.gnu.org/licenses/>.        /
 ///////////////////////////////////////////////////////////////////////////
 
-using System.Linq;
 using CSMSL.Chemistry;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -1117,7 +1117,7 @@ namespace CSMSL.Proteomics
                 AminoAcid residue = null;
                 if (AminoAcid.TryGetResidue(letter, out residue))
                 {
-                    mass += residue.Mass.MonoisotopicMass;
+                    mass += residue.MonoisotopicMass;
                 }
             }
             return mass;

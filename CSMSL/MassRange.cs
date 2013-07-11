@@ -2,9 +2,9 @@
 {
     public class MassRange : Range<double>, IRange<double>
     {
-        protected double _mean;
+        private double _mean;
 
-        protected double _width;
+        private double _width;
 
         public MassRange()
             : this(0, 0) { }
@@ -27,21 +27,30 @@
 
         private void SetTolerance(MassTolerance tolerance)
         {
+            if (tolerance == null)
+            {
+                base.Minimum = base.Maximum = _mean;
+                _width = 0.0;
+                return;
+            }
+
+            double value = System.Math.Abs(tolerance.Value);
+
             switch (tolerance.Type)
             {
                 default:
-                    base.Minimum = _mean - tolerance.Value / 2.0;
-                    base.Maximum = _mean + tolerance.Value / 2.0;
+                    base.Minimum = _mean - value / 2.0;
+                    base.Maximum = _mean + value / 2.0;
                     break;
 
                 case MassToleranceType.MMU:
-                    base.Minimum = _mean - tolerance.Value / 2000.0;
-                    base.Maximum = _mean + tolerance.Value / 2000.0;
+                    base.Minimum = _mean - value / 2000.0;
+                    base.Maximum = _mean + value / 2000.0;
                     break;
 
                 case MassToleranceType.PPM:
-                    base.Minimum = _mean * (1 - (tolerance.Value / 2e6));
-                    base.Maximum = _mean * (1 + (tolerance.Value / 2e6));
+                    base.Minimum = _mean * (1 - (value / 2e6));
+                    base.Maximum = _mean * (1 + (value / 2e6));
                     break;
             }
             _width = base.Maximum - base.Minimum;

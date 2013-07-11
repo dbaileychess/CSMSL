@@ -1,15 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using CSMSL.Spectral;
 using NUnit.Framework;
-using Should.Fluent;
-using CSMSL.Spectral;
+using System;
+using System.Collections.Generic;
 
 namespace CSMSL.Tests.Spectral
 {
-    [TestFixture]
-    [Category("Spectral")]
+    [TestFixture, Category("Spectral"), System.Runtime.InteropServices.GuidAttribute("FEB664ED-51B1-4DD9-A224-E81E0E120AFE")]
     public sealed class SpectrumTestFixture
     {
         private MassSpectrum mzSpectrum1000;
@@ -33,13 +29,13 @@ namespace CSMSL.Tests.Spectral
         [Test]
         public void SpectrumPeakCount()
         {
-            mzSpectrum1000.Count.Should().Equal(1000);
+            Assert.AreEqual(1000, mzSpectrum1000.Count);
         }
 
         [Test]
         public void SpectrumTIC()
         {
-            mzSpectrum1000.TotalIonCurrent.Should().Equal(483469778.88814604);
+            Assert.AreEqual(483469778.88814604, mzSpectrum1000.TotalIonCurrent);
         }
 
         [Test]
@@ -48,21 +44,21 @@ namespace CSMSL.Tests.Spectral
             List<MZPeak> peaks;
             mzSpectrum1000.TryGetPeaks(500, 501, out peaks);
 
-            peaks.Count.Should().Equal(2);
+            Assert.AreEqual(2, peaks.Count);
         }
         
         [Test]
         public void SpectrumTryGetPeaksIsTrue()
         {
             List<MZPeak> peaks;
-            mzSpectrum1000.TryGetPeaks(500, 501, out peaks).Should().Be.True();            
+            Assert.IsTrue(mzSpectrum1000.TryGetPeaks(500, 501, out peaks));
         }
 
         [Test]
         public void SpectrumTryGetPeaksIsFalse()
         {
             List<MZPeak> peaks;
-            mzSpectrum1000.TryGetPeaks(2000, 2001, out peaks).Should().Be.False();
+            Assert.IsFalse(mzSpectrum1000.TryGetPeaks(2000, 2001, out peaks));
         }
     }
 }

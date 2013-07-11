@@ -1,10 +1,9 @@
-﻿using System;
-using CSMSL;
-using CSMSL.Proteomics;
+﻿using CSMSL.Proteomics;
 using CSMSL.Spectral;
+using MSFileReaderLib;
+using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
-using MSFileReaderLib;
 
 namespace CSMSL.IO.Thermo
 {   

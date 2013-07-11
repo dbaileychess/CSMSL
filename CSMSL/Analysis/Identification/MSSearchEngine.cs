@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using CSMSL.Spectral;
+﻿using CSMSL.Chemistry;
 using CSMSL.Proteomics;
-using CSMSL.Chemistry;
+using CSMSL.Spectral;
 using CSMSL.Util.Collections;
+using System.Collections.Generic;
 
 namespace CSMSL.Analysis.Identification
 {
@@ -31,12 +28,9 @@ namespace CSMSL.Analysis.Identification
 
         public abstract SortedMaxSizedContainer<PeptideSpectralMatch> Search(IEnumerable<AminoAcidPolymer> peptides);
 
-        private List<AminoAcidPolymer> _peptides;
-        private List<IMassSpectrum> _spectrum;
 
         public void LoadPeptides(IEnumerable<AminoAcidPolymer> peptides)
         {
-            _peptides = peptides.OrderBy(pep => pep.Mass.MonoisotopicMass).ToList();     
         }
 
         public void AddVariableModification(IChemicalFormula modification, char residue)

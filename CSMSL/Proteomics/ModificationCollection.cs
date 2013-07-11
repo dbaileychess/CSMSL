@@ -1,5 +1,5 @@
-﻿using System.Collections.Generic;
-using CSMSL.Chemistry;
+﻿using CSMSL.Chemistry;
+using System.Collections.Generic;
 
 namespace CSMSL.Proteomics
 {
