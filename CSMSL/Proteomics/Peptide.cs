@@ -23,52 +23,33 @@ namespace CSMSL.Proteomics
 {
     public class Peptide : AminoAcidPolymer
     {
-        private int _startResidue;
+        public int StartResidue { get; set; }
 
-        public int StartResidue
-        {
-            get { return _startResidue; }
-            set { _startResidue = value; }
-        }
+        public int EndResidue { get; set; }
 
-        private int _endResidue;
-
-        public int EndResidue
-        {
-            get { return _endResidue; }
-            set { _endResidue = value; }
-        }
-
-        private AminoAcidPolymer _parent;
-
-        public AminoAcidPolymer Parent
-        {
-            get { return _parent; }
-            set { _parent = value; }
-        }
+        public AminoAcidPolymer Parent { get; set; }
 
         public Peptide()
-            : base()
         {
-            _parent = null;
-            _startResidue = 0;
-            _endResidue = 0;
+            Parent = null;
+            StartResidue = 0;
+            EndResidue = 0;
         }
 
         public Peptide(AminoAcidPolymer aminoAcidPolymer, bool includeModifications = true)
             : base(aminoAcidPolymer, includeModifications)
         {
-            _parent = aminoAcidPolymer;
-            _startResidue = 0;
-            _endResidue = _startResidue + Length - 1;
+            Parent = aminoAcidPolymer;
+            StartResidue = 0;
+            EndResidue = StartResidue + Length - 1;
         }
 
         public Peptide(AminoAcidPolymer aminoAcidPolymer, int firstResidue, int length, bool includeModifications = true)
             : base(aminoAcidPolymer, firstResidue, length, includeModifications)
         {
-            _parent = aminoAcidPolymer;
-            _startResidue = firstResidue;
-            _endResidue = firstResidue + length - 1;
+            Parent = aminoAcidPolymer;
+            StartResidue = firstResidue;
+            EndResidue = firstResidue + length - 1;
         }
 
         public Peptide(AminoAcidPolymer aminoAcidPolymer)
@@ -83,9 +64,9 @@ namespace CSMSL.Proteomics
         public Peptide(string sequence, Protein parent, int startResidue)
             : base(sequence)
         {
-            _parent = parent;
-            _startResidue = startResidue;
-            _endResidue = startResidue + Length - 1;
+            Parent = parent;
+            StartResidue = startResidue;
+            EndResidue = startResidue + Length - 1;
         }
 
         public Peptide GetSubPeptide(int firstResidue, int length)
@@ -96,11 +77,6 @@ namespace CSMSL.Proteomics
         public new bool Equals(AminoAcidPolymer other)
         {
             return base.Equals(other);
-        }
-
-        public override string ToString()
-        {
-            return base.ToString();
         }
     }
 }

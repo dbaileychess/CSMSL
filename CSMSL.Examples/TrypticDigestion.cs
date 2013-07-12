@@ -28,14 +28,15 @@ namespace CSMSL.Examples
 {
     public class TrypticDigestion
     {
-        public static void Start(IProtease protease, int maxMissed = 3, int minLength = 5, int maxLength = 35)
+        public static void Start(IProtease protease, int maxMissed = 3, int minLength = 5, int maxLength = 35, bool storeSequenceString = true)
         {
             Console.WriteLine("**Start Digestion**");
             Stopwatch watch = new Stopwatch();
             watch.Start();          
             List<Peptide> peps = new List<Peptide>();
             List<Protein> prots = new List<Protein>();
-            List<double> allMzs = new List<double>();         
+            List<double> allMzs = new List<double>();
+            AminoAcidPolymer.StoreSequenceString = storeSequenceString;
             using (FastaReader reader = new FastaReader("Resources/yeast_uniprot_120226.fasta"))
             {
                 foreach (Protein protein in reader.ReadNextProtein())

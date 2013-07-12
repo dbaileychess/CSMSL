@@ -496,5 +496,24 @@ namespace CSMSL.Tests.Proteomics
             Assert.AreEqual(pepB,pepC);
         }
 
+        [Test]
+        public void GetLeucineSequence()
+        {
+            Peptide pepA = new Peptide("DERIEK");
+            string leuSeq = pepA.GetLeucineSequence();
+
+            Assert.AreEqual("DERLEK", leuSeq);
+        }
+
+        [Test]
+        public void GetLeucineSequenceNoReplacement()
+        {
+            Peptide pepA = new Peptide("DERLEK");
+
+            string leuSeq = pepA.GetLeucineSequence();
+
+            Assert.AreEqual("DERLEK", leuSeq);
+        }
+
     }
 }

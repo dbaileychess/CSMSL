@@ -50,7 +50,7 @@ namespace CSMSL.Examples
             //VennDiagramExamples();
             
             // Example programs
-            TrypticDigestion.Start(Protease.Trypsin);
+            TrypticDigestion.Start(Protease.Trypsin, storeSequenceString: false);
 
             // Example Protein Grouping
             //ProteinGroupingExample.Start(Protease.Trypsin);

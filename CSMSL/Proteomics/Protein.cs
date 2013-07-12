@@ -18,41 +18,64 @@
 //  along with CSMSL.  If not, see <http://www.gnu.org/licenses/>.        /
 ///////////////////////////////////////////////////////////////////////////
 
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using CSMSL.IO;
 
 namespace CSMSL.Proteomics
 {
     public class Protein : AminoAcidPolymer
     {
-        private string _description;
-        private bool _isDecoy;
-
         public Protein(string sequence)
             : this(sequence, string.Empty) { }
 
         public Protein(string sequence, string description, bool isDecoy = false)
             : base(sequence)
         {           
-            _description = description;
-            _isDecoy = isDecoy;
-        }
-     
-        public string Description
-        {
-            get { return _description; }
-            set { _description = value; }
+            Description = description;
+            IsDecoy = isDecoy;
         }
 
-        public bool IsDecoy
-        {
-            get { return _isDecoy; }
-            set { _isDecoy = value; }
-        }
+        public string Description { get; set; }
+
+        public bool IsDecoy { get; set; }
 
         public Fasta ToFasta()
         {
-            return new Fasta(Sequence, _description);
+            return new Fasta(Sequence, Description);
         }
+        
+        #region Digestion
+
+        /// <summary>
+        /// Digests this protein into peptides.
+        /// </summary>
+        /// <param name="protease">The protease to digest with</param>
+        /// <param name="maxMissedCleavages">The max number of missed cleavages generated, 0 means no missed cleavages</param>
+        /// <param name="minLength">The minimum length (in amino acids) of the peptide</param>
+        /// <param name="maxLength">The maximum length (in amino acids) of the peptide</param>
+        /// <returns>A list of digested peptides</returns>
+        public virtual IEnumerable<Peptide> Digest(IProtease protease, int maxMissedCleavages = 3, int minLength = 1, int maxLength = int.MaxValue)
+        {
+            return Digest(new[] { protease }, maxMissedCleavages, minLength, maxLength);
+        }
+
+        /// <summary>
+        /// Digests this protein into peptides.
+        /// </summary>
+        /// <param name="proteases">The proteases to digest with</param>
+        /// <param name="maxMissedCleavages">The max number of missed cleavages generated, 0 means no missed cleavages</param>
+        /// <param name="minLength">The minimum length (in amino acids) of the peptide</param>
+        /// <param name="maxLength">The maximum length (in amino acids) of the peptide</param>
+        /// <returns>A list of digested peptides</returns>
+        public virtual IEnumerable<Peptide> Digest(IEnumerable<IProtease> proteases, int maxMissedCleavages = 3, int minLength = 1, int maxLength = int.MaxValue)
+        {
+            return GetDigestionPoints(Sequence, proteases, maxMissedCleavages, minLength, maxLength).Select(points => new Peptide(this, points.Item1, points.Item2));
+        }
+
+        #endregion
+
     
     }
 }

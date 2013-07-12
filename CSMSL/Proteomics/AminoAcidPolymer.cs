@@ -43,6 +43,13 @@ namespace CSMSL.Proteomics
         public static readonly ChemicalFormula DefaultNTerminus = new ChemicalFormula("H");
 
         /// <summary>
+        /// Defines if newly generated Amino Acid Polymers will store the amino acid sequence as a string
+        /// or generate the string dynamically. If true, certain operations will be quicker at the cost of
+        /// increased memory consumption. Default value is True.
+        /// </summary>
+        public static bool StoreSequenceString;
+
+        /// <summary>
         /// The regex for peptide sequences with the possibilities of modifications (either chemical formulas or masses)
         /// </summary>
         //private static readonly Regex SequenceRegex = new Regex(@"([A-Z])(?:\[([\w\{\}]+)\])?", RegexOptions.Compiled);
@@ -52,12 +59,18 @@ namespace CSMSL.Proteomics
         private IMass[] _modifications;
         private IAminoAcid[] _aminoAcids;
         private string _sequenceWithMods;
+        private string _sequence;
 
         internal bool IsDirty { get; set; }
 
         internal IMass[] Modifications { get { return _modifications; } }
 
         #region Constructors
+
+        static AminoAcidPolymer()
+        {
+            StoreSequenceString = true;
+        }
 
         protected AminoAcidPolymer()
             : this(string.Empty, DefaultNTerminus, DefaultCTerminus) { }
@@ -96,7 +109,7 @@ namespace CSMSL.Proteomics
                 _aminoAcids[i] = aa;
                 MonoisotopicMass += aa.MonoisotopicMass;
             }
-         
+           
             NTerminus = (firstResidue == 0) ? aminoAcidPolymer.NTerminus : DefaultNTerminus;
             CTerminus = (length + firstResidue == aminoAcidPolymer.Length) ? aminoAcidPolymer.CTerminus : DefaultCTerminus;
 
@@ -122,26 +135,14 @@ namespace CSMSL.Proteomics
         }
 
         #endregion
-        
+
         /// <summary>
         /// Gets or sets the C terminus of this amino acid polymer
         /// </summary>        
         public IChemicalFormula CTerminus
         {
             get { return _cTerminus; }
-            set
-            {
-                if (Equals(value, _cTerminus))
-                    return;
-               
-                if (_cTerminus != null)
-                    MonoisotopicMass -= _cTerminus.MonoisotopicMass;
-
-                _cTerminus = value;
-
-                if(value != null)
-                    MonoisotopicMass += value.MonoisotopicMass;
-            }
+            set { ReplaceTerminus(ref _cTerminus, value); }
         }
 
         /// <summary>
@@ -150,19 +151,7 @@ namespace CSMSL.Proteomics
         public IChemicalFormula NTerminus
         {
             get { return _nTerminus; }
-            set
-            {
-                if (Equals(value, _nTerminus))
-                    return;
-          
-                if (_nTerminus != null)
-                    MonoisotopicMass -= _nTerminus.MonoisotopicMass;
-
-                _nTerminus = value;
-
-                if(value != null)
-                    MonoisotopicMass += value.MonoisotopicMass;
-            }
+            set { ReplaceTerminus(ref _nTerminus, value); }
         }
 
         /// <summary>
@@ -173,15 +162,10 @@ namespace CSMSL.Proteomics
         public double MonoisotopicMass { get; private set; }
 
         #region Amino Acid Sequence
-
-        private string _leucineSequence;
+       
         public string GetLeucineSequence()
         {
-            if (IsDirty || string.IsNullOrEmpty(_leucineSequence))
-            {
-                _leucineSequence =  Sequence.Replace('I', 'L');
-            }
-            return _leucineSequence;
+            return Sequence.Replace('I', 'L');
         }
 
         public bool Contains(char residue)
@@ -193,30 +177,43 @@ namespace CSMSL.Proteomics
         {
             return _aminoAcids.Contains(residue);
         }
-
+        
         /// <summary>
-        /// The base amino acid sequence
+        /// Gets the base amino acid sequence
         /// </summary>
         public string Sequence
         {
             get
             {
+                if (StoreSequenceString) 
+                {
+                    if (string.IsNullOrEmpty(_sequence))
+                    {
+                        _sequence = new string(_aminoAcids.Select(aa => aa.Letter).ToArray());
+                    }
+                    return _sequence;
+                } 
                 return new string(_aminoAcids.Select(aa => aa.Letter).ToArray());
             }
         }
 
         /// <summary>
-        /// The amino acid sequence with modifications
+        /// Gets the amino acid sequence with modifications
         /// </summary>
         public string SequenceWithModifications
         {
             get
             {
-                if (IsDirty)
+                if (StoreSequenceString)
                 {
-                    CleanUp();
+                    if (IsDirty || string.IsNullOrEmpty(_sequenceWithMods))
+                    {
+                        _sequenceWithMods = GetSequenceWithModifications();
+                        IsDirty = false;
+                    }
+                    return _sequenceWithMods;
                 }
-                return _sequenceWithMods;
+                return GetSequenceWithModifications();
             }
         }
 
@@ -247,22 +244,7 @@ namespace CSMSL.Proteomics
         {
             return _aminoAcids.Count(aar => aar.Letter.Equals(residueChar));
         }
-
-        /// <summary>
-        /// Gets the IAminoAcid at the specified position (1-based)
-        /// </summary>
-        /// <param name="index">The 1-based index of the amino acid to get</param>
-        /// <returns>The IAminoAcid at the specified position</returns>
-        public IAminoAcid this[int index]
-        {
-            get
-            {
-                if (index - 1 > Length || index < 1)
-                    throw new IndexOutOfRangeException();
-                return _aminoAcids[index - 1];
-            }
-        }
-
+        
         #endregion
 
         #region Fragmentation
@@ -270,16 +252,12 @@ namespace CSMSL.Proteomics
         public Fragment Fragment(FragmentTypes type, int number)
         {
             if (type == FragmentTypes.None)
-            {
                 return null;
-            }
 
             if (number < 1 || number > Length)
-            {
                 throw new IndexOutOfRangeException();
-            }
           
-            double monoMass = 0;
+            double monoMass = 0.0;
 
             int start = 0;
             int end = number;
@@ -288,35 +266,28 @@ namespace CSMSL.Proteomics
             {
                 start = Length - number;
                 end = Length;
-
-                //mass.Add(CTerminus.Mass);
+               
                 monoMass += CTerminus.MonoisotopicMass;
                 if (CTerminusModification != null)
                 {
-                    //mass.Add(CTerminusModification.Mass);
                     monoMass += CTerminusModification.MonoisotopicMass;
                 }
             }
             else
             {
-                //mass.Add(NTerminus.Mass);
                 monoMass += NTerminus.MonoisotopicMass;
                 if (NTerminusModification != null)
                 {
-                    //mass.Add(NTerminusModification.Mass);
                     monoMass += NTerminusModification.MonoisotopicMass;
                 }
             }
 
             for (int i = start; i < end; i++)
             {
-                //mass.Add(_aminoAcids[i].Mass);
                 monoMass += _aminoAcids[i].MonoisotopicMass;
-                IMass mod;
-                if ((mod = _modifications[i + 1]) != null)
+                if (_modifications[i + 1] != null)
                 {
-                    monoMass += mod.MonoisotopicMass;
-                   // mass.Add(mod.Mass);
+                    monoMass += _modifications[i + 1].MonoisotopicMass;
                 }
             }
 
@@ -341,14 +312,12 @@ namespace CSMSL.Proteomics
         public IEnumerable<Fragment> Fragment(FragmentTypes types, int min, int max)
         {
             if (types == FragmentTypes.None)
-            {
                 yield break;
-            }
+            
 
             if (min < 1 || max > Length - 1)
-            {
                 throw new IndexOutOfRangeException();
-            }
+            
 
             foreach (FragmentTypes type in Enum.GetValues(typeof(FragmentTypes)))
             {
@@ -359,8 +328,7 @@ namespace CSMSL.Proteomics
                     int start = min;
                     int end = max;
 
-                    IMass mod;
-                    if (type >= FragmentTypes.x)
+                   if (type >= FragmentTypes.x)
                     {
                         monoMass += CTerminus.MonoisotopicMass;
 
@@ -372,9 +340,9 @@ namespace CSMSL.Proteomics
                         {
                             monoMass += _aminoAcids[i].MonoisotopicMass;
                          
-                            if ((mod = _modifications[i + 1]) != null)
+                            if (_modifications[i + 1] != null)
                             {
-                                monoMass += mod.MonoisotopicMass;
+                                monoMass += _modifications[i + 1].MonoisotopicMass;
                             }
                             yield return new Fragment(type, Length - i, monoMass, this);
                         }
@@ -392,9 +360,9 @@ namespace CSMSL.Proteomics
                         {
                             monoMass += _aminoAcids[i - 1].MonoisotopicMass;
 
-                            if ((mod = _modifications[i]) != null)
+                            if (_modifications[i] != null)
                             {
-                                monoMass += mod.MonoisotopicMass;
+                                monoMass += _modifications[i].MonoisotopicMass;
                             }
                             yield return new Fragment(type, i, monoMass, this);
                         }
@@ -412,14 +380,8 @@ namespace CSMSL.Proteomics
         /// </summary>        
         public IMass CTerminusModification
         {
-            get
-            {
-                return _modifications[Length + 1];
-            }
-            set
-            {
-                ReplaceMod(Length + 1, value);
-            }
+            get { return _modifications[Length + 1]; }
+            set { ReplaceMod(Length + 1, value); }
         }
 
         /// <summary>
@@ -427,16 +389,10 @@ namespace CSMSL.Proteomics
         /// </summary>        
         public IMass NTerminusModification
         {
-            get
-            {
-                return _modifications[0];
-            }
-            set
-            {
-                ReplaceMod(0, value);
-            }
+            get { return _modifications[0]; }
+            set { ReplaceMod(0, value); }
         }
-        
+
         /// <summary>
         /// Counts the total number of modifications on this polymer
         /// </summary>
@@ -493,33 +449,42 @@ namespace CSMSL.Proteomics
             return _modifications[residueNumber];
         }
 
+    
         public bool TryGetModification(int residueNumber, out IMass mod)
         {
-            mod = GetModification(residueNumber);
-            return mod != null;  
+            if (residueNumber > Length || residueNumber < 1)
+            {
+                mod = null;
+                return false;
+            }
+            mod = _modifications[residueNumber];
+            return mod != null;
         }
 
         public bool TryGetModification<T>(int residueNumber, out T mod) where T : class, IMass
-        {       
-            mod = GetModification(residueNumber) as T;
-            return mod != null;
+        {
+            IMass outMod;
+            if (TryGetModification(residueNumber, out outMod))
+            {
+                mod = outMod as T;
+                return mod != null;
+            }
+            mod = default(T);
+            return false;
         }
 
         /// <summary>
         /// Sets the modification at the terminus of this amino acid polymer
         /// </summary>
-        /// <param name="mod">The mod to set</param>
+        /// <param name="mod">The modification to set</param>
         /// <param name="terminus">The termini to set the mod at</param>
-        public void SetModification(IMass mod, Terminus terminus)
+        public virtual void SetModification(IMass mod, Terminus terminus)
         {
             if ((terminus & Terminus.N) == Terminus.N)
-            {
                 NTerminusModification = mod;
-            }
+            
             if ((terminus & Terminus.C) == Terminus.C)
-            {
                 CTerminusModification = mod;
-            }
         }
 
         /// <summary>
@@ -556,66 +521,57 @@ namespace CSMSL.Proteomics
 
             return count;
         }
-
+        
         /// <summary>
-        /// Clears the modification set at the terminus of this amino acid polymer back
-        /// to the default C or N modifications.
+        /// Sets the modification at specific sites on this amino acid polymer
         /// </summary>
-        /// <param name="terminus">The termini to clear the mod at</param>
-        public void ClearModifications(Terminus terminus)
-        {
-            if ((terminus & Terminus.N) == Terminus.N)
-            {
-                NTerminusModification = null;
-            }
-            if ((terminus & Terminus.C) == Terminus.C)
-            {
-                CTerminusModification = null;
-            }
-        }
-
-        public int SetModification(IMass mod, char letter)
+        /// <param name="mod">The modification to set</param>
+        /// <param name="letter">The residue character to set the modification at</param>
+        /// <returns>The number of modifications added to this amino acid polymer</returns>
+        public virtual int SetModification(IMass mod, char letter)
         {
             int count = 0;
             for (int i = 0; i < Length; i++)
             {
-                if (letter.Equals(_aminoAcids[i].Letter))
-                {
-                    ReplaceMod(i + 1, mod);
-                    count++;
-                }
+                if (!letter.Equals(_aminoAcids[i].Letter))
+                    continue;
+
+                ReplaceMod(i + 1, mod);
+                count++;
             }
 
             return count;         
         }
-
-
-
-        public int SetModification(IMass mod, IAminoAcid residue)
+        
+        /// <summary>
+        /// Sets the modification at specific sites on this amino acid polymer
+        /// </summary>
+        /// <param name="mod">The modification to set</param>
+        /// <param name="residue">The residue to set the modification at</param>
+        /// <returns>The number of modifications added to this amino acid polymer</returns>
+        public virtual int SetModification(IMass mod, IAminoAcid residue)
         {
             int count = 0;
             for (int i = 0; i < Length; i++)
             {
-                if (residue.Equals(_aminoAcids[i]))
-                {
-                    ReplaceMod(i + 1, mod);
-                    count++;
-                }
+                if (!residue.Equals(_aminoAcids[i])) 
+                    continue;
+
+                ReplaceMod(i + 1, mod);
+                count++;
             }
             return count;        
         }
 
         /// <summary>
-        /// 
+        /// Sets the modification at specific sites on this amino acid polymer
         /// </summary>
-        /// <param name="mod"></param>
-        /// <param name="residueNumber">(1-based) residue number</param>
-        public void SetModification(IMass mod, int residueNumber)
+        /// <param name="mod">The modification to set</param>
+        /// <param name="residueNumber">The residue number to set the modification at</param>
+        public virtual void SetModification(IMass mod, int residueNumber)
         {
             if (residueNumber > Length || residueNumber < 1)
-            {
                 throw new IndexOutOfRangeException(string.Format("Residue number not in the correct range: [{0}-{1}] you specified: {2}", 1, Length, residueNumber));
-            }
 
             ReplaceMod(residueNumber, mod);
         }
@@ -632,7 +588,21 @@ namespace CSMSL.Proteomics
                 SetModification(mod, residueNumber);
             }
         }
-        
+
+        /// <summary>
+        /// Clears the modification set at the terminus of this amino acid polymer back
+        /// to the default C or N modifications.
+        /// </summary>
+        /// <param name="terminus">The termini to clear the mod at</param>
+        public void ClearModifications(Terminus terminus)
+        {
+            if ((terminus & Terminus.N) == Terminus.N)
+                NTerminusModification = null;
+
+            if ((terminus & Terminus.C) == Terminus.C)
+                CTerminusModification = null;
+        }
+
         /// <summary>
         /// Clear all modifications from this amino acid polymer.
         /// Includes N and C terminus modifications.
@@ -677,6 +647,13 @@ namespace CSMSL.Proteomics
 
         #region ChemicalFormula
        
+        /// <summary>
+        /// Try and get the chemical formula for the whole amino acid polymer. Modifications
+        /// may not always be of IChemicalFormula and this method will return false if any
+        /// modification is not a chemical formula
+        /// </summary>
+        /// <param name="formula"></param>
+        /// <returns></returns>
         public bool TryGetChemicalFormula(out ChemicalFormula formula)
         {
             formula = new ChemicalFormula();
@@ -685,13 +662,14 @@ namespace CSMSL.Proteomics
             for (int i = 0; i < Length + 2; i++)
             {
                 IMass mod;
-                if ((mod = _modifications[i]) != null)
-                {
-                    IChemicalFormula chemMod = mod as IChemicalFormula;
-                    if (chemMod == null)
-                        return false;
-                    formula.Add(chemMod.ChemicalFormula);
-                }
+                if ((mod = _modifications[i]) == null)
+                    continue;
+
+                IChemicalFormula chemMod = mod as IChemicalFormula;
+                if (chemMod == null)
+                    return false;
+
+                formula.Add(chemMod.ChemicalFormula);
             }
 
             // Handle N-Terminus
@@ -707,62 +685,6 @@ namespace CSMSL.Proteomics
             }           
 
             return true;
-        }
-
-        #endregion
-
-        #region Digestion
-
-        public virtual IEnumerable<Peptide> Digest(IProtease protease, int maxMissedCleavages = 3, int minLength = 1, int maxLength = int.MaxValue)
-        {
-            return Digest(new [] { protease }, maxMissedCleavages, minLength, maxLength);
-        }
-
-        /// <summary>
-        /// Digests this amino acid polymer into peptides.
-        /// </summary>
-        /// <param name="proteases">The proteases to digest with</param>
-        /// <param name="maxMissedCleavages">The max number of missed cleavages generated, 0 means no missed cleavages</param>
-        /// <param name="minLength">The minimum length (in amino acids) of the peptide</param>
-        /// <param name="maxLength">The maximum length (in amino acids) of the peptide</param>
-        /// <returns>A list of digested peptides</returns>
-        public virtual IEnumerable<Peptide> Digest(IEnumerable<IProtease> proteases, int maxMissedCleavages = 3, int minLength = 1, int maxLength = int.MaxValue)
-        {
-            if (maxMissedCleavages < 0)
-            {
-                throw new ArgumentOutOfRangeException("maxMissedCleavages", "The maximum number of missedcleavages must be >= 0");
-            }
-
-            string sequence = Sequence;
-        
-            // Combine all the proteases digestion sites
-            SortedSet<int> locations = new SortedSet<int> { -1 };
-            foreach (IProtease protease in proteases)
-            {
-                if (protease != null)
-                {
-                    locations.UnionWith(protease.GetDigestionSites(sequence));
-                }
-            }
-            locations.Add(sequence.Length - 1);
-
-            IList<int> indices = new List<int>(locations);
-            //indices.Sort(); // most likely not needed if locations is a sorted set
-
-            int indiciesCount = indices.Count;
-            for (int missedCleavages = 0; missedCleavages <= maxMissedCleavages; missedCleavages++)
-            {
-                int max = indiciesCount - missedCleavages - 1;
-                for (int i = 0; i < max; i++)
-                {
-                    int len = indices[i + missedCleavages + 1] - indices[i];
-                    if (len < minLength || len > maxLength) 
-                        continue;
-
-                    int begin = indices[i] + 1;
-                    yield return new Peptide(this, begin, len);
-                }
-            }
         }
 
         #endregion
@@ -784,7 +706,7 @@ namespace CSMSL.Proteomics
              
         public override int GetHashCode()
         {
-            return MonoisotopicMass.GetHashCode();          
+            return Sequence.GetHashCode();          
         }
 
         public override bool Equals(object obj)
@@ -822,6 +744,20 @@ namespace CSMSL.Proteomics
 
         #region Private Methods
 
+        private void ReplaceTerminus(ref IChemicalFormula terminus, IChemicalFormula value)
+        {
+            if (Equals(value, terminus))
+                return;
+
+            if (terminus != null)
+                MonoisotopicMass -= terminus.MonoisotopicMass;
+
+            terminus = value;
+
+            if (value != null)
+                MonoisotopicMass += value.MonoisotopicMass;
+        }
+
         /// <summary>
         /// Replaces a modification (if present) at the specific index in the residue (0-based for N and C termini)
         /// </summary>
@@ -829,6 +765,9 @@ namespace CSMSL.Proteomics
         /// <param name="mod">The modification to replace with</param>
         private void ReplaceMod(int index, IMass mod)
         {
+            // No error checking here as all validation will occur before this method is call. This is to prevent
+            // unneeded bounds checking
+
             IMass oldMod = _modifications[index]; // Get the mod at the index, if present
 
             if (Equals(mod, oldMod))
@@ -845,7 +784,7 @@ namespace CSMSL.Proteomics
                 MonoisotopicMass += mod.MonoisotopicMass; // add the new mod mass
         }
 
-        private void CleanUp()
+        private string GetSequenceWithModifications()
         {   
             StringBuilder modSeqSb = new StringBuilder(Length);
 
@@ -862,10 +801,7 @@ namespace CSMSL.Proteomics
             // Handle Amino Acid Residues
             for (int i = 0; i < Length; i++)
             {
-                IAminoAcid aa = _aminoAcids[i];
-              
-                char letter = aa.Letter;
-                modSeqSb.Append(letter);
+                modSeqSb.Append(_aminoAcids[i].Letter);
 
                 // Handle Amino Acid Modification (1-based)
                 if ((mod = _modifications[i + 1]) != null)  
@@ -884,15 +820,11 @@ namespace CSMSL.Proteomics
                 modSeqSb.Append(']');
             }
             
-            _sequenceWithMods = modSeqSb.ToString();
-            
-            IsDirty = false;
+            return modSeqSb.ToString();
         }
 
         private void ParseSequence(string sequence)
         {
-            IsDirty = true;
-
             if (string.IsNullOrEmpty(sequence))
                 return;
 
@@ -994,7 +926,7 @@ namespace CSMSL.Proteomics
            
             Length = index;
             Array.Resize(ref _aminoAcids, Length);
-            Array.Resize(ref _modifications, Length + 2);          
+            Array.Resize(ref _modifications, Length + 2);    
             IsDirty = true;             
         }
 
@@ -1004,6 +936,54 @@ namespace CSMSL.Proteomics
 
         public static IEqualityComparer<AminoAcidPolymer> CompareBySequence { get { return new PeptideSequenceComparer(); } }
         
+        public static IEnumerable<Tuple<int, int>> GetDigestionPoints(string sequence, IProtease protease, int maxMissedCleavages = 3, int minLength = 1, int maxLength = int.MaxValue)
+        {
+            return GetDigestionPoints(sequence, new[] {protease}, maxMissedCleavages, minLength, maxLength);
+        }
+
+        /// <summary>
+        /// Gets the digestion points (starting index and length) of a amino acid sequence
+        /// </summary>
+        /// <param name="sequence"></param>
+        /// <param name="proteases"></param>
+        /// <param name="maxMissedCleavages"></param>
+        /// <param name="minLength"></param>
+        /// <param name="maxLength"></param>
+        /// <returns></returns>
+        public static IEnumerable<Tuple<int, int>> GetDigestionPoints(string sequence, IEnumerable<IProtease> proteases, int maxMissedCleavages = 3, int minLength = 1, int maxLength = int.MaxValue)
+        {
+            if (maxMissedCleavages < 0)
+                throw new ArgumentOutOfRangeException("maxMissedCleavages", "The maximum number of missedcleavages must be >= 0");
+            
+            // Combine all the proteases digestion sites
+            SortedSet<int> locations = new SortedSet<int> { -1 };
+            foreach (IProtease protease in proteases)
+            {
+                if (protease == null)
+                    continue;
+
+                locations.UnionWith(protease.GetDigestionSites(sequence));
+            }
+            locations.Add(sequence.Length - 1);
+
+            int[] indices = locations.ToArray();
+
+            int indiciesCount = indices.Length;
+            for (int missedCleavages = 0; missedCleavages <= maxMissedCleavages; missedCleavages++)
+            {
+                int max = indiciesCount - missedCleavages - 1;
+                for (int i = 0; i < max; i++)
+                {
+                    int len = indices[i + missedCleavages + 1] - indices[i];
+                    if (len < minLength || len > maxLength) 
+                        continue;
+
+                    int begin = indices[i] + 1;
+                    yield return new Tuple<int, int>(begin, len);
+                }
+            }
+        }
+
         public static IEnumerable<string> Digest(string sequence, Protease protease, int maxMissedCleavages = 0, int minLength = 1, int maxLength = int.MaxValue)
         {
             return Digest(sequence, new[] { protease }, maxMissedCleavages, minLength, maxLength);
@@ -1011,42 +991,9 @@ namespace CSMSL.Proteomics
 
         public static IEnumerable<string> Digest(string sequence, IEnumerable<IProtease> proteases, int maxMissedCleavages = 3, int minLength = 1, int maxLength = int.MaxValue)
         {
-            if (maxMissedCleavages < 0)
-            {
-                throw new ArgumentOutOfRangeException("maxMissedCleavages", "The maximum number of missedcleavages must be >= 0");
-            }
-                       
-            // Combine all the proteases digestion sites
-            SortedSet<int> locations = new SortedSet<int> { -1 };
-            foreach (IProtease protease in proteases)
-            {
-                if (protease != null)
-                {
-                    locations.UnionWith(protease.GetDigestionSites(sequence));
-                }
-            }
-            locations.Add(sequence.Length - 1);
-
-            IList<int> indices = new List<int>(locations);
-         
-
-            int indiciesCount = indices.Count;
-            for (int missedCleavages = 0; missedCleavages <= maxMissedCleavages; missedCleavages++)
-            {
-                int max = indiciesCount - missedCleavages - 1;
-                for (int i = 0; i < max; i++)
-                {
-                    int len = indices[i + missedCleavages + 1] - indices[i];
-                    if (len >= minLength && len <= maxLength)
-                    {
-                        int begin = indices[i] + 1;
-                        yield return sequence.Substring(begin, len);
-                       // yield return new Peptide(this, begin, len);
-                    }
-                }
-            }
+            return GetDigestionPoints(sequence, proteases, maxMissedCleavages, minLength, maxLength).Select(points => sequence.Substring(points.Item1, points.Item2));
         }
- 
+
         public static double GetMass(string sequence)
         {
             double mass = Constants.Water;
@@ -1062,8 +1009,9 @@ namespace CSMSL.Proteomics
         }
 
         #endregion
-
     }
+
+
 
     class PeptideSequenceComparer : IEqualityComparer<AminoAcidPolymer>
     {

@@ -76,7 +76,6 @@ namespace CSMSL.Tests.Proteomics
 
             Peptide peptide = new Peptide("QSGSVPSQ");
             peptide.SetModification(NamedChemicalFormula.iTRAQ4Plex, Terminus.C);
-
             var peptides = prot.Digest(Protease.Trypsin, 0, 5, 10).ToList();
 
             Assert.Contains(peptide, peptides);
