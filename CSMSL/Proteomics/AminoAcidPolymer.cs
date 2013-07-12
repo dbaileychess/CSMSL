@@ -944,44 +944,59 @@ namespace CSMSL.Proteomics
         /// <summary>
         /// Gets the digestion points (starting index and length) of a amino acid sequence
         /// </summary>
-        /// <param name="sequence"></param>
-        /// <param name="proteases"></param>
-        /// <param name="maxMissedCleavages"></param>
-        /// <param name="minLength"></param>
-        /// <param name="maxLength"></param>
-        /// <returns></returns>
+        /// <param name="sequence">The sequence to cleave</param>
+        /// <param name="proteases">The proteases to cleave with</param>
+        /// <param name="maxMissedCleavages">The maximum number of missed clevages to allow</param>
+        /// <param name="minLength">The minimum amino acid length of the peptides</param>
+        /// <param name="maxLength">The maximum amino acid length of the peptides</param>
+        /// <returns>A collection of clevage points and the length of the cut (Item1 = index, Item2 = length)</returns>
         public static IEnumerable<Tuple<int, int>> GetDigestionPoints(string sequence, IEnumerable<IProtease> proteases, int maxMissedCleavages = 3, int minLength = 1, int maxLength = int.MaxValue)
         {
             if (maxMissedCleavages < 0)
                 throw new ArgumentOutOfRangeException("maxMissedCleavages", "The maximum number of missedcleavages must be >= 0");
             
-            // Combine all the proteases digestion sites
-            SortedSet<int> locations = new SortedSet<int> { -1 };
-            foreach (IProtease protease in proteases)
-            {
-                if (protease == null)
-                    continue;
+            int[] indices = GetCleavageIndices(sequence, proteases).ToArray();
 
-                locations.UnionWith(protease.GetDigestionSites(sequence));
-            }
-            locations.Add(sequence.Length - 1);
-
-            int[] indices = locations.ToArray();
-
-            int indiciesCount = indices.Length;
+            int indiciesCount = indices.Length - 1;
             for (int missedCleavages = 0; missedCleavages <= maxMissedCleavages; missedCleavages++)
             {
-                int max = indiciesCount - missedCleavages - 1;
+                int max = indiciesCount - missedCleavages;
+                int offset = missedCleavages + 1;
                 for (int i = 0; i < max; i++)
                 {
-                    int len = indices[i + missedCleavages + 1] - indices[i];
+                    int begin = indices[i];
+                    int len = indices[i + offset] - begin;
                     if (len < minLength || len > maxLength) 
-                        continue;
+                        continue; 
 
-                    int begin = indices[i] + 1;
-                    yield return new Tuple<int, int>(begin, len);
+                    yield return new Tuple<int, int>(begin + 1, len);
                 }
             }
+        }
+
+        /// <summary>
+        /// Gets the location of all the possible cleavage points for a given sequence and set of protesases
+        /// </summary>
+        /// <param name="sequence">The sequence to determine the clevage points for</param>
+        /// <param name="proteases">The proteases to cleave with</param>
+        /// <param name="includeTermini">Include the N and C terminus (-1 and Lenght + 1)</param>
+        /// <returns>A collection of all the sites where the proteases would cleave</returns>
+        public static IEnumerable<int> GetCleavageIndices(string sequence, IEnumerable<IProtease> proteases, bool includeTermini = true)
+        {
+            // Combine all the proteases digestion sites
+            SortedSet<int> locations = new SortedSet<int>();
+            foreach (IProtease protease in proteases.Where(protease => protease != null))
+            {
+                locations.UnionWith(protease.GetDigestionSites(sequence));
+            }
+
+            if (includeTermini)
+            {
+                locations.Add(-1);
+                locations.Add(sequence.Length - 1);
+            }
+
+            return locations;
         }
 
         public static IEnumerable<string> Digest(string sequence, Protease protease, int maxMissedCleavages = 0, int minLength = 1, int maxLength = int.MaxValue)

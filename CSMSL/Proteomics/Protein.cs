@@ -18,7 +18,6 @@
 //  along with CSMSL.  If not, see <http://www.gnu.org/licenses/>.        /
 ///////////////////////////////////////////////////////////////////////////
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using CSMSL.IO;
@@ -73,7 +72,7 @@ namespace CSMSL.Proteomics
         {
             return GetDigestionPoints(Sequence, proteases, maxMissedCleavages, minLength, maxLength).Select(points => new Peptide(this, points.Item1, points.Item2));
         }
-
+      
         #endregion
 
     
