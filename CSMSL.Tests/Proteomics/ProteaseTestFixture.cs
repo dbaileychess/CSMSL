@@ -1,13 +1,12 @@
 ﻿using CSMSL.Chemistry;
 using CSMSL.Proteomics;
 using NUnit.Framework;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace CSMSL.Tests.Proteomics
 {
-    [TestFixture ( Category = "Protease") ]
+    [TestFixture, Category("Protease")]
     public sealed class ProteaseTestFixture
     {        
         private Protein _proteinA;
@@ -82,14 +81,6 @@ namespace CSMSL.Tests.Proteomics
 
             Assert.Contains(peptide, peptides);
         }
-
-        [Test]
-        [ExpectedException(typeof(ArgumentOutOfRangeException))]
-        public void InvalidMaxMissedClevages()
-        {
-            Assert.Throws<ArgumentOutOfRangeException>(() => _proteinA.Digest(Protease.Trypsin, -1));
-        }
-
 
     }
 }

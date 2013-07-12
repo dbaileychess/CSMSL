@@ -2,7 +2,7 @@
 
 namespace CSMSL.Tests
 {
-    [TestFixture]
+    [TestFixture, Category("Range")]
     public sealed class RangeTestFixture
     {
         // ReSharper disable NotAccessedField.Local

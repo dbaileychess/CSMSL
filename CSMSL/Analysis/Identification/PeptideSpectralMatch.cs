@@ -17,7 +17,7 @@ namespace CSMSL.Analysis.Identification
 
         public virtual string FileName { get; set; }
 
-        public virtual double PrecursorMz { get { return Peptide.Mass.ToMz(Charge); } }
+        public virtual double PrecursorMz { get { return Peptide.ToMz(Charge); } }
 
         private Dictionary<string, string> _extraData;
 

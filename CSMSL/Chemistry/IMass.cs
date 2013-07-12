@@ -23,11 +23,6 @@ namespace CSMSL.Chemistry
     public interface IMass
     {
         /// <summary>
-        /// The mass of this object
-        /// </summary>
-        //Mass Mass { get; }
-
-        /// <summary>
         /// The monoisotopic mass of this object
         /// </summary>
         double MonoisotopicMass { get; }

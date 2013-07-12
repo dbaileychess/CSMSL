@@ -484,8 +484,8 @@ namespace CSMSL.Analysis.Quantitation
                 {
                     ExperimentalCondition condition = GetCondition(peptide, conditions);
                              
-                    Mass mass = GetReporterMass(peptide, condition);
-                    double mz = mass.ToMz(1);
+                    double mass = GetReporterMass(peptide, condition);
+                    double mz = Mass.MzFromMass(mass,1);
                     if (spectrum.TryGetPeaks(MassRange.FromDa(mz, 0.05), out peaks))
                     {
                         MZPeak peak = peaks.OrderBy(p => p.Intensity).ToArray()[0];
@@ -509,16 +509,16 @@ namespace CSMSL.Analysis.Quantitation
             }
         }
 
-        private static Mass GetReporterMass(Peptide peptide, IEnumerable<IQuantitationChannel> channels)
+        private static double GetReporterMass(Peptide peptide, IEnumerable<IQuantitationChannel> channels)
         {            
             foreach (IQuantitationChannel channel in channels)
             {
                 if (!channel.IsSequenceDependent)
                 {
-                    return channel.ReporterMass;
+                    return channel.MonoisotopicMass;
                 }               
             }
-            return peptide.Mass;
+            return peptide.MonoisotopicMass;
         }
       
 

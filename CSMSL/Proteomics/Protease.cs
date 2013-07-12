@@ -107,7 +107,7 @@ namespace CSMSL.Proteomics
 
         public ReadOnlyCollection<int> GetDigestionSites(string sequence)
         {
-            return new ReadOnlyCollection<int>((from Match match in _cleavageRegex.Matches(sequence) select match.Groups["cleave"].Index - 1).ToList());
+            return new ReadOnlyCollection<int>((from Match match in _cleavageRegex.Matches(sequence) select match.Groups["cleave"].Index - 1).AsParallel().ToList());
         }
     }
 }

@@ -46,16 +46,9 @@ namespace CSMSL.Proteomics
             Type = type;
             Number = number;
             Parent = parent;
-            //Mass = mass;
-            //Mass.Add(FragmentIonCaps[type]);
             MonoisotopicMass = monoisotopicMass + FragmentIonCaps[type].MonoisotopicMass;
         }
-
-        /// <summary>
-        /// The Mass of the fragment
-        /// </summary>
-        public Mass Mass { get; private set; }
-
+     
         public double MonoisotopicMass { get; private set; }
 
         public int Number { get; private set; }

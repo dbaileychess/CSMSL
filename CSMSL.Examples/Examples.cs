@@ -50,7 +50,7 @@ namespace CSMSL.Examples
             //VennDiagramExamples();
             
             // Example programs
-            //TrypticDigestion.Start(Protease.Trypsin);
+            TrypticDigestion.Start(Protease.Trypsin);
 
             // Example Protein Grouping
             //ProteinGroupingExample.Start(Protease.Trypsin);
@@ -59,7 +59,7 @@ namespace CSMSL.Examples
             //TMT6plexExample.Start();
 
             //Example IO
-            MsDataFileExamples.Start();
+            //MsDataFileExamples.Start();
 
             // Omssa Reader
             //OmssaReader.Start();
@@ -204,7 +204,7 @@ namespace CSMSL.Examples
         {
             ChemicalFormula formula;
             peptide.TryGetChemicalFormula(out formula);
-            Console.WriteLine("{0,-5} {1,-5} {2,-5}", peptide, formula, peptide.Mass.MonoisotopicMass);
+            Console.WriteLine("{0,-5} {1,-5} {2,-5}", peptide, formula, peptide.MonoisotopicMass);
         }
 
         private static void WriteFragmentToConsole(Fragment frag)
