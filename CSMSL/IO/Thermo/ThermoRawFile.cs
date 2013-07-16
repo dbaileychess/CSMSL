@@ -32,18 +32,21 @@ namespace CSMSL.IO.Thermo
                 
         private IXRawfile5 _rawConnection;
 
-        public ThermoRawFile(string filePath, bool openImmediately = false)
-            : base(filePath, MSDataFileType.ThermoRawFile, openImmediately) { }
+        public ThermoRawFile(string filePath)
+            : base(filePath, MSDataFileType.ThermoRawFile) { }
 
+        /// <summary>
+        /// Opens the connection to the underlying data
+        /// </summary>
         public override void Open()
         {
-            if (!IsOpen || _rawConnection == null)
-            {
-                _rawConnection = (IXRawfile5)new MSFileReader_XRawfile();
-                _rawConnection.Open(FilePath);
-                _rawConnection.SetCurrentController(0, 1); // first 0 is for mass spectrometer
-                base.Open();
-            }
+            if (IsOpen && _rawConnection != null)
+                return;
+
+            _rawConnection = (IXRawfile5)new MSFileReader_XRawfile();
+            _rawConnection.Open(FilePath);
+            _rawConnection.SetCurrentController(0, 1); // first 0 is for mass spectrometer
+            base.Open();
         }
 
         public override void Dispose()
@@ -59,48 +62,42 @@ namespace CSMSL.IO.Thermo
         protected override int GetFirstSpectrumNumber()
         {
             int spectrumNumber = 0;
-            if (_rawConnection != null)
-                _rawConnection.GetFirstSpectrumNumber(ref spectrumNumber);
+            _rawConnection.GetFirstSpectrumNumber(ref spectrumNumber);
             return spectrumNumber;
         }
 
         protected override int GetLastSpectrumNumber()
         {
             int spectrumNumber = 0;
-            if (_rawConnection != null)
-                _rawConnection.GetLastSpectrumNumber(ref spectrumNumber);
+            _rawConnection.GetLastSpectrumNumber(ref spectrumNumber);
             return spectrumNumber;
         }
 
         public override double GetRetentionTime(int spectrumNumber)
         {
             double retentionTime = 0;
-            if (_rawConnection != null)
-                _rawConnection.RTFromScanNum(spectrumNumber, ref retentionTime);
+            _rawConnection.RTFromScanNum(spectrumNumber, ref retentionTime);
             return retentionTime;
         }
 
         public override int GetMsnOrder(int spectrumNumber)
         {
             int msnOrder = 0;
-            if (_rawConnection != null)
-                _rawConnection.GetMSOrderForScanNum(spectrumNumber, ref msnOrder);
+            _rawConnection.GetMSOrderForScanNum(spectrumNumber, ref msnOrder);
             return msnOrder;
         }
 
         private object GetExtraValue(int spectrumNumber, string filter)
         {
             object value = null;
-            if (_rawConnection != null)              
-                _rawConnection.GetTrailerExtraValueForScanNum(spectrumNumber, filter, ref value);
+            _rawConnection.GetTrailerExtraValueForScanNum(spectrumNumber, filter, ref value);
             return value;
         }
 
         private string GetScanFilter(int spectrumNumber)
         {
             string filter = null;
-            if(_rawConnection != null)
-                _rawConnection.GetFilterForScanNum(spectrumNumber, ref filter);
+            _rawConnection.GetFilterForScanNum(spectrumNumber, ref filter);
             return filter;
         }
 
@@ -109,14 +106,7 @@ namespace CSMSL.IO.Thermo
         public override Polarity GetPolarity(int spectrumNumber)
         {
             string filter = GetScanFilter(spectrumNumber);
-            if (_polarityRegex.IsMatch(filter))
-            {
-                return Polarity.Positive;
-            }
-            else
-            {
-                return Polarity.Negative;
-            }
+            return _polarityRegex.IsMatch(filter) ? Polarity.Positive : Polarity.Negative;
         }
 
         public override MassSpectrum GetMzSpectrum(int spectrumNumber)
@@ -154,25 +144,23 @@ namespace CSMSL.IO.Thermo
             object peak_flags = null;
             int array_size = -1;
             double centroidPeakWidth = double.NaN;
-            if (_rawConnection != null)
-                _rawConnection.GetMassListFromScanNum(ref spectrumNumber, null, 0, 0, 0, Convert.ToInt32(true), ref centroidPeakWidth, ref mass_list, ref peak_flags, ref array_size);
+            _rawConnection.GetMassListFromScanNum(ref spectrumNumber, null, 0, 0, 0, Convert.ToInt32(true), ref centroidPeakWidth, ref mass_list, ref peak_flags, ref array_size);
             return (double[,])mass_list;                
         }
 
         private double[,] GetLabeledData(int spectrumNumber)
         {
             object labels = null;
-            object flags = null;            
-            if(_rawConnection !=null)       
-                _rawConnection.GetLabelData(ref labels, ref flags, ref spectrumNumber);
+            object flags = null; 
+            _rawConnection.GetLabelData(ref labels, ref flags, ref spectrumNumber);
             return (double[,])labels; 
         }        
 
         public override MZAnalyzerType GetMzAnalyzer(int spectrumNumber)
         {
             int mzanalyzer = 0;
-            if(_rawConnection != null)
-                _rawConnection.GetMassAnalyzerTypeForScanNum(spectrumNumber, ref mzanalyzer);
+            _rawConnection.GetMassAnalyzerTypeForScanNum(spectrumNumber, ref mzanalyzer);
+            
             switch ((ThermoMzAnalyzer)mzanalyzer)
             {
                 case ThermoMzAnalyzer.FTMS:

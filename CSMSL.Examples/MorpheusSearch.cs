@@ -37,9 +37,9 @@ namespace CSMSL.Examples
             engine.ProductMassTolerance = MassTolerance.FromPPM(10);
          
             engine.LoadPeptides(peptides);
-            using (MSDataFile msDataFile = new ThermoRawFile("Resources/ThermoRawFileMS1MS2.raw", true))
+            using (MSDataFile msDataFile = new ThermoRawFile("Resources/ThermoRawFileMS1MS2.raw"))
             {
-                SortedMaxSizedContainer<PeptideSpectralMatch> psms = engine.Search(msDataFile.Where(scan => scan.MsnOrder > 1));
+                //SortedMaxSizedContainer<PeptideSpectralMatch> psms = engine.Search(msDataFile.Where(scan => scan.MsnOrder > 1));
                 
                 //foreach (MSDataScan scan in msDataFile.Where(scan => scan.MsnOrder > 1))
                 //{

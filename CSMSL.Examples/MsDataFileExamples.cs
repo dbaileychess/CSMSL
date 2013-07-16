@@ -20,7 +20,7 @@ namespace CSMSL.Examples
                 {
                     new ThermoRawFile("Resources/ThermoRawFileMS1MS2.raw"),
                     new Mzml("Resources/ThermoRawFileMS1MS2_Profile.mzML"),
-                    new Mzml("Resources/ThermoRawFileMS1MS2_Centroided.mzML")
+                    //new Mzml("Resources/ThermoRawFileMS1MS2_Centroided.mzML")
                 };
 
             foreach (MSDataFile dataFile in exampleRawFiles)

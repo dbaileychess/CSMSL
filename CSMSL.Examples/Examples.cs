@@ -28,7 +28,7 @@ namespace CSMSL.Examples
 {
     internal class Examples
     {
-        private static void Main(string[] args)
+        private static void Main()
         {
             Console.WriteLine("==CSMSL Examples==");
             Stopwatch watch = new Stopwatch();
@@ -50,7 +50,7 @@ namespace CSMSL.Examples
             //VennDiagramExamples();
             
             // Example programs
-            TrypticDigestion.Start(Protease.Trypsin, 5, maxLength: int.MaxValue, storeSequenceString: true);
+            //TrypticDigestion.Start(Protease.Trypsin, 5, maxLength: int.MaxValue, storeSequenceString: true);
 
             // Example Protein Grouping
             //ProteinGroupingExample.Start(Protease.Trypsin);

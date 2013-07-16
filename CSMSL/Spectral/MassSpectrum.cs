@@ -130,6 +130,16 @@ namespace CSMSL.Spectral
             get { return this; }
         }
 
+        public double[] GetMasses()
+        {
+            return Peaks.Select(p => p.MZ).ToArray();
+        }
+
+        public double[] GetIntensities()
+        {
+            return Peaks.Select(p => p.Intensity).ToArray();
+        }
+
         public IEnumerator<MZPeak> GetEnumerator()
         {
             return ((MZPeak[])Peaks).ToList().GetEnumerator();

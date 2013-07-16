@@ -45,8 +45,8 @@ namespace CSMSL.IO.MzML
         private indexedmzML _indexedmzMLConnection;
         private mzMLType _mzMLConnection;
         
-        public Mzml(string filePath, bool openImmediately = false)
-            : base(filePath, MSDataFileType.Mzml, openImmediately) { }
+        public Mzml(string filePath)
+            : base(filePath, MSDataFileType.Mzml) { }
 
         public override void Open()
         {
