@@ -935,10 +935,10 @@ namespace CSMSL.Proteomics
         #region Statics
 
         public static IEqualityComparer<AminoAcidPolymer> CompareBySequence { get { return new PeptideSequenceComparer(); } }
-        
-        public static IEnumerable<Tuple<int, int>> GetDigestionPoints(string sequence, IProtease protease, int maxMissedCleavages = 3, int minLength = 1, int maxLength = int.MaxValue)
+
+        public static IEnumerable<Tuple<int, int>> GetDigestionPoints(string sequence, IProtease protease, int maxMissedCleavages = 3, int minLength = 1, int maxLength = int.MaxValue, bool methionineInitiator = true)
         {
-            return GetDigestionPoints(sequence, new[] {protease}, maxMissedCleavages, minLength, maxLength);
+            return GetDigestionPoints(sequence, new[] { protease }, maxMissedCleavages, minLength, maxLength, methionineInitiator);
         }
 
         /// <summary>
@@ -950,12 +950,12 @@ namespace CSMSL.Proteomics
         /// <param name="minLength">The minimum amino acid length of the peptides</param>
         /// <param name="maxLength">The maximum amino acid length of the peptides</param>
         /// <returns>A collection of clevage points and the length of the cut (Item1 = index, Item2 = length)</returns>
-        public static IEnumerable<Tuple<int, int>> GetDigestionPoints(string sequence, IEnumerable<IProtease> proteases, int maxMissedCleavages = 3, int minLength = 1, int maxLength = int.MaxValue)
+        public static IEnumerable<Tuple<int, int>> GetDigestionPoints(string sequence, IEnumerable<IProtease> proteases, int maxMissedCleavages = 3, int minLength = 1, int maxLength = int.MaxValue, bool methionineInitiator = true)
         {
             if (maxMissedCleavages < 0)
                 throw new ArgumentOutOfRangeException("maxMissedCleavages", "The maximum number of missedcleavages must be >= 0");
-            
-            int[] indices = GetCleavageIndices(sequence, proteases).ToArray();
+
+            int[] indices = GetCleavageIndices(sequence, proteases, methionineInitiator: methionineInitiator).ToArray();
 
             int indiciesCount = indices.Length - 1;
             for (int missedCleavages = 0; missedCleavages <= maxMissedCleavages; missedCleavages++)
@@ -980,14 +980,21 @@ namespace CSMSL.Proteomics
         /// <param name="sequence">The sequence to determine the clevage points for</param>
         /// <param name="proteases">The proteases to cleave with</param>
         /// <param name="includeTermini">Include the N and C terminus (-1 and Lenght + 1)</param>
+        /// <param name="methionineInitiator"></param>
         /// <returns>A collection of all the sites where the proteases would cleave</returns>
-        public static IEnumerable<int> GetCleavageIndices(string sequence, IEnumerable<IProtease> proteases, bool includeTermini = true)
+        public static IEnumerable<int> GetCleavageIndices(string sequence, IEnumerable<IProtease> proteases, bool includeTermini = true, bool methionineInitiator = true)
         {
             // Combine all the proteases digestion sites
             SortedSet<int> locations = new SortedSet<int>();
             foreach (IProtease protease in proteases.Where(protease => protease != null))
             {
                 locations.UnionWith(protease.GetDigestionSites(sequence));
+            }
+
+            // Add a cleavage point after the initial methionine, if present
+            if (methionineInitiator && sequence[0] == 'M')
+            {
+                locations.Add(0);
             }
 
             if (includeTermini)
@@ -999,14 +1006,14 @@ namespace CSMSL.Proteomics
             return locations;
         }
 
-        public static IEnumerable<string> Digest(string sequence, Protease protease, int maxMissedCleavages = 0, int minLength = 1, int maxLength = int.MaxValue)
+        public static IEnumerable<string> Digest(string sequence, Protease protease, int maxMissedCleavages = 0, int minLength = 1, int maxLength = int.MaxValue, bool methionineInitiator = true)
         {
-            return Digest(sequence, new[] { protease }, maxMissedCleavages, minLength, maxLength);
+            return Digest(sequence, new[] { protease }, maxMissedCleavages, minLength, maxLength, methionineInitiator);
         }
 
-        public static IEnumerable<string> Digest(string sequence, IEnumerable<IProtease> proteases, int maxMissedCleavages = 3, int minLength = 1, int maxLength = int.MaxValue)
+        public static IEnumerable<string> Digest(string sequence, IEnumerable<IProtease> proteases, int maxMissedCleavages = 3, int minLength = 1, int maxLength = int.MaxValue, bool methionineInitiator = true)
         {
-            return GetDigestionPoints(sequence, proteases, maxMissedCleavages, minLength, maxLength).Select(points => sequence.Substring(points.Item1, points.Item2));
+            return GetDigestionPoints(sequence, proteases, maxMissedCleavages, minLength, maxLength, methionineInitiator).Select(points => sequence.Substring(points.Item1, points.Item2));
         }
 
         public static double GetMass(string sequence)

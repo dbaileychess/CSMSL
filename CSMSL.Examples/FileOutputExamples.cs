@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
 using System.Text;
 using CSMSL.IO;
@@ -14,6 +15,9 @@ namespace CSMSL.Examples
         {
             BasicCsvWriting(Path.GetTempPath() + "BasicCsvWriting.csv");
             RawFileToCsv(new ThermoRawFile("Resources/ThermoRawFileMS1MS2.raw"), Path.GetTempPath() + "RawFileToCsv.csv");
+
+            // Opens up a file browser to the temporary location the above files are written to
+            Process.Start(Path.GetTempPath());
         }
 
         public static void BasicCsvWriting(string outputFilePath)

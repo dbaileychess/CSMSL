@@ -1,6 +1,5 @@
 ﻿using System;
 
-
 namespace CSMSL.Spectral
 {
     public class ChromatographicPeak : IPeak

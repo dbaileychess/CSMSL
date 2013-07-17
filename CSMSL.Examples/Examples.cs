@@ -59,7 +59,7 @@ namespace CSMSL.Examples
             //TMT6plexExample.Start();
 
             // Example IO
-            //MsDataFileExamples.Start();
+            MsDataFileExamples.Start();
 
             // Omssa Reader
             //OmssaReader.Start();
@@ -68,7 +68,7 @@ namespace CSMSL.Examples
             //MorpheusSearch.Start(Protease.Trypsin);
 
             // Writing data to files
-            FileOutputExamples.Start();
+            //FileOutputExamples.Start();
         }
 
    

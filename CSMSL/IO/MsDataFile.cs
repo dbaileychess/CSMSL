@@ -162,6 +162,27 @@ namespace CSMSL.IO
             return GetMSDataScan(spectrumNumber);
         }
 
+        public virtual void LoadAllScansInMemory()
+        {
+            if (!CacheScans)
+            {
+                throw new ArgumentException("Cache scans needs to be enabled for this to work properly", "CacheScans");
+            }
+
+            if (Scans == null)
+            {
+                Scans = new MSDataScan[LastSpectrumNumber + 1];
+            }
+
+            for (int spectrumNumber = FirstSpectrumNumber; spectrumNumber < LastSpectrumNumber; spectrumNumber++)
+            {
+                if (Scans[spectrumNumber] == null)
+                {
+                    Scans[spectrumNumber] = GetMSDataScan(spectrumNumber);
+                }
+            }
+        }
+
         public virtual void ClearCachedScans()
         {
             if (Scans == null)
@@ -174,14 +195,7 @@ namespace CSMSL.IO
             MSDataScan scan;
             int msn = GetMsnOrder(spectrumNumber);
             
-            if (msn > 1)
-            {
-                scan = new MsnDataScan(spectrumNumber, msn, this);
-            }
-            else
-            {
-                scan = new MSDataScan(spectrumNumber, msn, this);
-            }
+            scan = msn > 1 ? new MsnDataScan(spectrumNumber, msn, this) : new MSDataScan(spectrumNumber, msn, this);
 
             return scan;            
         }

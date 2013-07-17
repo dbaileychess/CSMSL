@@ -5,6 +5,7 @@ using CSMSL.Spectral;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using ChromatogramType = CSMSL.Spectral.ChromatogramType;
 
 namespace CSMSL.Examples
 {
@@ -20,7 +21,7 @@ namespace CSMSL.Examples
                 {
                     new ThermoRawFile("Resources/ThermoRawFileMS1MS2.raw"),
                     new Mzml("Resources/ThermoRawFileMS1MS2_Profile.mzML"),
-                    //new Mzml("Resources/ThermoRawFileMS1MS2_Centroided.mzML")
+                    new Mzml("Resources/ThermoRawFileMS1MS2_Centroided.mzML")
                 };
 
             foreach (MSDataFile dataFile in exampleRawFiles)
@@ -28,6 +29,9 @@ namespace CSMSL.Examples
                 dataFile.Open();               
                 Stopwatch watch = new Stopwatch();
                 watch.Start();
+                Chromatogram basePeak = dataFile.GetChromatogram();
+                Chromatogram ticChrom = dataFile.GetChromatogram(ChromatogramType.TotalIonCurrent);
+
                 foreach (MSDataScan scan in dataFile)
                 {
                     List<MZPeak> peaks;

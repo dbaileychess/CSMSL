@@ -117,7 +117,6 @@
     <Compile Include="Proteomics\ModificationSites.cs" />
     <Compile Include="Proteomics\ProteinGroup.cs" />
     <Compile Include="Spectral\Chromatogram.cs" />
-    <Compile Include="Spectral\ChromatogramPoint.cs" />
     <Compile Include="Spectral\ChromatographicPeak.cs" />
     <Compile Include="Spectral\ILabeledPeak.cs" />
     <Compile Include="Spectral\IMassSpectrum.cs" />
