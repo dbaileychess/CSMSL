@@ -111,40 +111,53 @@ namespace CSMSL.IO.Thermo
 
         public override MassSpectrum GetMzSpectrum(int spectrumNumber)
         {
+            return GetMzSpectrum(spectrumNumber);
+        }
+
+        public MassSpectrum GetMzSpectrum(int spectrumNumber, bool profileIfAvailable = false)
+        {
             MZAnalyzerType mzAnalyzer = GetMzAnalyzer(spectrumNumber);
             double[,] peakData;
             int count;
-            switch (mzAnalyzer)
+            bool useProfile = false;
+
+            if (profileIfAvailable)
             {
-                default:
-                case MZAnalyzerType.Orbitrap:
-                    peakData = GetLabeledData(spectrumNumber);
-                    count = peakData.GetLength(1);
-                    List<ThermoLabeledPeak> peaks = new List<ThermoLabeledPeak>();
-                    for (int i = 0; i < count; i++)
-                    {
-                        peaks.Add(new ThermoLabeledPeak(peakData[0, i], (float)peakData[1, i], (short)peakData[5, i], (float)peakData[4, i]));
-                    }
-                    return new MassSpectrum(peaks);
-                case MZAnalyzerType.IonTrap2D:
-                    peakData = GetUnlabeledData(spectrumNumber);
-                    count = peakData.GetLength(1);
-                    List<MZPeak> low_res_peaks = new List<MZPeak>();
-                    for (int i = 0; i < count; i++)
-                    {
-                        low_res_peaks.Add(new MZPeak(peakData[0, i], (float)peakData[1, i]));
-                    }
-                    return new MassSpectrum(low_res_peaks);                    
+                int isProfile = 0;
+                _rawConnection.IsProfileScanForScanNum(spectrumNumber, ref isProfile);
+                useProfile = isProfile == 1;
             }
+
+
+            if (useProfile || mzAnalyzer == MZAnalyzerType.IonTrap2D)
+            {
+                peakData = GetUnlabeledData(spectrumNumber, !useProfile);
+                count = peakData.GetLength(1);
+                List<MZPeak> low_res_peaks = new List<MZPeak>();
+                for (int i = 0; i < count; i++)
+                {
+                    low_res_peaks.Add(new MZPeak(peakData[0, i], (float)peakData[1, i]));
+                }
+                return new MassSpectrum(low_res_peaks);     
+            }
+            
+            peakData = GetLabeledData(spectrumNumber);
+            count = peakData.GetLength(1);
+            List<ThermoLabeledPeak> peaks = new List<ThermoLabeledPeak>();
+            for (int i = 0; i < count; i++)
+            {
+                peaks.Add(new ThermoLabeledPeak(peakData[0, i], (float)peakData[1, i], (short)peakData[5, i], (float)peakData[4, i]));
+            }
+            return new MassSpectrum(peaks);    
         }
 
-        private double[,] GetUnlabeledData(int spectrumNumber)
+        private double[,] GetUnlabeledData(int spectrumNumber, bool useCentroid)
         {
             object mass_list = null;
             object peak_flags = null;
             int array_size = -1;
             double centroidPeakWidth = double.NaN;
-            _rawConnection.GetMassListFromScanNum(ref spectrumNumber, null, 0, 0, 0, Convert.ToInt32(true), ref centroidPeakWidth, ref mass_list, ref peak_flags, ref array_size);
+            _rawConnection.GetMassListFromScanNum(ref spectrumNumber, null, 0, 0, 0, Convert.ToInt32(useCentroid), ref centroidPeakWidth, ref mass_list, ref peak_flags, ref array_size);
             return (double[,])mass_list;                
         }
 
