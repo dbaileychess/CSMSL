@@ -42,6 +42,50 @@ namespace CSMSL
 
         public double Value { get; set; }
 
+        public MassRange GetMassRange(double mass)
+        {
+            double tol;
+            switch (Type)
+            {
+                case MassToleranceType.MMU:
+                    tol = Value/2000.0;
+                    break;
+                case MassToleranceType.PPM:
+                    tol = Value * mass / 2e6;
+                    break;
+                default:
+                    tol = Value / 2.0;
+                    break;
+            }
+            return new MassRange(mass - tol, mass + tol);
+        }
+
+        public double GetMinimumValue(double mass)
+        {
+            switch (Type)
+            {
+                case MassToleranceType.MMU:
+                    return mass - Value / 2000.0;
+                case MassToleranceType.PPM:
+                    return mass * (1 - (Value / 2e6));
+                default:
+                    return mass - Value / 2.0;
+            }
+        }
+
+        public double GetMaximumValue(double mass)
+        {
+            switch (Type)
+            {
+                case MassToleranceType.MMU:
+                    return mass + Value / 2000.0;
+                case MassToleranceType.PPM:
+                    return mass * (1 + (Value / 2e6));
+                default:
+                    return mass + Value / 2.0;
+            }
+        }
+
         public static double GetTolerance(double experimental, double theoretical, MassToleranceType type)
         {
             switch (type)
@@ -54,7 +98,7 @@ namespace CSMSL
                     return experimental - theoretical;
             }
         }
-
+        
         public static MassTolerance FromPPM(double value)
         {
             return new MassTolerance(MassToleranceType.PPM, value);

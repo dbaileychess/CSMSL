@@ -8,7 +8,7 @@ using System.Diagnostics;
 
 namespace CSMSL.Examples
 {
-    public class MsDataFileExamples
+    public static class MsDataFileExamples
     {
 
         public static void Start()

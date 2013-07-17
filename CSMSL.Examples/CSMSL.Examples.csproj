@@ -61,6 +61,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Examples.cs" />
+    <Compile Include="FileOutputExamples.cs" />
     <Compile Include="MsDataFileExamples.cs" />
     <Compile Include="OmssaReader.cs" />
     <Compile Include="ProteinGroupingExample.cs" />

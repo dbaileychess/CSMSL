@@ -55,7 +55,14 @@ namespace CSMSL.Util.Collections
                 {
                     return false;
                 }
-                Insert(item);
+                if (MaxSize == 1)
+                {
+                    _items[0] = item;
+                }
+                else
+                {
+                    Insert(item);
+                }
                 return true;
             }
             else if (Count == 1)

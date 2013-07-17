@@ -55,13 +55,13 @@ namespace CSMSL.Analysis.Identification
            
             PeptideSpectralMatch psm = new PeptideSpectralMatch(DefaultPsmScoreType) { Peptide = peptide };
             double[] tMasses = peptide.Fragment(fragmentTypes).Select(frag => Mass.MzFromMass(frag.MonoisotopicMass, 1)).OrderBy(val => val).ToArray();
-            double score = Search(eMasses, eIntenisties, tMasses, productMassTolerance.Value, tic);
+            double score = Search(eMasses, eIntenisties, tMasses, productMassTolerance, tic);
             psm.Score = score;
 
             return psm;
         }
 
-        public override SortedMaxSizedContainer<PeptideSpectralMatch> Search(IMassSpectrum spectrum, IEnumerable<Peptide> peptides)
+        public override SortedMaxSizedContainer<PeptideSpectralMatch> Search(IMassSpectrum spectrum, IEnumerable<Peptide> peptides, FragmentTypes fragmentTypes, MassTolerance productMassTolerance)
         {
             SortedMaxSizedContainer<PeptideSpectralMatch> results = new SortedMaxSizedContainer<PeptideSpectralMatch>(MaxMatchesPerSpectrum);
 
@@ -73,11 +73,11 @@ namespace CSMSL.Analysis.Identification
             {
                 PeptideSpectralMatch psm = new PeptideSpectralMatch(DefaultPsmScoreType) {Peptide = peptide};
                 double[] tMasses =
-                    peptide.Fragment(DefaultFragmentType)
+                    peptide.Fragment(fragmentTypes)
                             .Select(frag => Mass.MzFromMass(frag.MonoisotopicMass, 1))
                             .OrderBy(val => val)
                             .ToArray();
-                double score = Search(eMasses, eIntenisties, tMasses, ProductMassTolerance.Value, tic);
+                double score = Search(eMasses, eIntenisties, tMasses, productMassTolerance, tic);
                 psm.Score = score;
                 results.Add(psm);
             }
@@ -142,7 +142,7 @@ namespace CSMSL.Analysis.Identification
         /// <param name="productTolerance">The product mass tolerance</param>
         /// <param name="tic">The total ion current of the experimental peaks</param>
         /// <returns></returns>
-        private double Search(double[] eMasses, double[] eIntenisties, double[] tMasses, double productTolerance, double tic)
+        private double Search(double[] eMasses, double[] eIntenisties, double[] tMasses, MassTolerance productTolerance, double tic)
         {
             double score = 0.0;
             double intensities = 0.0;
@@ -150,14 +150,15 @@ namespace CSMSL.Analysis.Identification
             int tLength = tMasses.Length;
             int e = 0;
 
-            bool forceCheck = tMasses[tLength - 1] - productTolerance >= eMasses[eLength - 1];
+            bool forceCheck = productTolerance.GetMinimumValue(tMasses[tLength - 1]) >= eMasses[eLength - 1];
             if (forceCheck)
             {
                 foreach (double t in tMasses)
                 {
-                    double minMZ = t - productTolerance;
-                    double maxMZ = t + productTolerance;
-
+                    MassRange range = productTolerance.GetMassRange(t);
+                    double minMZ = range.Minimum;
+                    double maxMZ = range.Maximum;
+                 
                     while (e < eLength && eMasses[e] < minMZ)
                         e++;
 
@@ -181,8 +182,10 @@ namespace CSMSL.Analysis.Identification
             {
                 foreach (double t in tMasses)
                 {
-                    double minMZ = t - productTolerance;
-                    double maxMZ = t + productTolerance;
+                    MassRange range = productTolerance.GetMassRange(t);
+                    double minMZ = range.Minimum;
+                    double maxMZ = range.Maximum;
+                 
 
                     while (eMasses[e] < minMZ)
                         e++;

@@ -58,7 +58,7 @@ namespace CSMSL.Examples
             // Example TMT 6-plex quantitation
             //TMT6plexExample.Start();
 
-            //Example IO
+            // Example IO
             //MsDataFileExamples.Start();
 
             // Omssa Reader
@@ -66,6 +66,9 @@ namespace CSMSL.Examples
 
             // MS/MS searching
             //MorpheusSearch.Start(Protease.Trypsin);
+
+            // Writing data to files
+            FileOutputExamples.Start();
         }
 
    
