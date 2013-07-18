@@ -98,6 +98,51 @@ namespace CSMSL.Spectral
             peaks = GetPeaks(minX, maxX);
             return peaks != null;
         }
+
+        public T GetClosestPeak(double mean, double tolerance)
+        {
+            if (Count == 0)
+                return default(T);
+            
+            int index = Array.BinarySearch(Peaks, mean);
+
+            if (index >= 0)
+                return Peaks[index];
+     
+            index = ~index;
+
+            int indexm1 = index - 1;
+
+            double minMZ = mean - tolerance;
+            if (index >= Count)
+            {
+                // only the indexm1 peak can be closer
+
+                if (indexm1 >= 0 && Peaks[indexm1].X >= minMZ)
+                {
+                    return Peaks[indexm1];
+                }
+
+                return default(T);
+            }
+
+            double maxMZ = mean + tolerance;
+            double p1 = Peaks[indexm1].X;
+            double p2 = Peaks[index].X;
+            if (p2 > maxMZ)
+            {
+                if (p1 >= minMZ)
+                    return Peaks[indexm1];
+                return default(T);
+            }
+            if (p1 >= minMZ)
+            {
+                if (mean - p1 > p2 - mean)
+                    return Peaks[index];
+                return Peaks[indexm1];
+            }
+            return Peaks[index];
+        }
         
         private void LoadPeaks(IEnumerable<T> peaks)
         {

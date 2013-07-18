@@ -953,9 +953,11 @@ namespace CSMSL.Proteomics
         public static IEnumerable<Tuple<int, int>> GetDigestionPoints(string sequence, IEnumerable<IProtease> proteases, int maxMissedCleavages = 3, int minLength = 1, int maxLength = int.MaxValue, bool methionineInitiator = true)
         {
             if (maxMissedCleavages < 0)
-                throw new ArgumentOutOfRangeException("maxMissedCleavages", "The maximum number of missedcleavages must be >= 0");
+                throw new ArgumentOutOfRangeException("maxMissedCleavages", "The maximum number of missed cleavages must be >= 0");
 
-            int[] indices = GetCleavageIndices(sequence, proteases, methionineInitiator: methionineInitiator).ToArray();
+            int[] indices = GetCleavageIndices(sequence, proteases).ToArray();
+
+            bool includeMethionineCut = methionineInitiator && sequence[0] == 'M';
 
             int indiciesCount = indices.Length - 1;
             for (int missedCleavages = 0; missedCleavages <= maxMissedCleavages; missedCleavages++)
@@ -966,6 +968,16 @@ namespace CSMSL.Proteomics
                 {
                     int begin = indices[i];
                     int len = indices[i + offset] - begin;
+
+                    // Case for initiator methionine
+                    if (begin == -1 && includeMethionineCut)
+                    {
+                        int newLength = len - 1;
+                        if (newLength >= minLength && newLength <= maxLength)
+                            yield return new Tuple<int, int>(begin + 2, newLength);
+                    }
+
+                    
                     if (len < minLength || len > maxLength) 
                         continue; 
 
@@ -975,14 +987,13 @@ namespace CSMSL.Proteomics
         }
 
         /// <summary>
-        /// Gets the location of all the possible cleavage points for a given sequence and set of protesases
+        /// Gets the location of all the possible cleavage points for a given sequence and set of proteases
         /// </summary>
-        /// <param name="sequence">The sequence to determine the clevage points for</param>
+        /// <param name="sequence">The sequence to determine the cleavage points for</param>
         /// <param name="proteases">The proteases to cleave with</param>
-        /// <param name="includeTermini">Include the N and C terminus (-1 and Lenght + 1)</param>
-        /// <param name="methionineInitiator"></param>
+        /// <param name="includeTermini">Include the N and C terminus (-1 and Length + 1)</param>
         /// <returns>A collection of all the sites where the proteases would cleave</returns>
-        public static IEnumerable<int> GetCleavageIndices(string sequence, IEnumerable<IProtease> proteases, bool includeTermini = true, bool methionineInitiator = true)
+        public static IEnumerable<int> GetCleavageIndices(string sequence, IEnumerable<IProtease> proteases, bool includeTermini = true)
         {
             // Combine all the proteases digestion sites
             SortedSet<int> locations = new SortedSet<int>();
@@ -991,18 +1002,12 @@ namespace CSMSL.Proteomics
                 locations.UnionWith(protease.GetDigestionSites(sequence));
             }
 
-            // Add a cleavage point after the initial methionine, if present
-            if (methionineInitiator && sequence[0] == 'M')
-            {
-                locations.Add(0);
-            }
-
             if (includeTermini)
             {
                 locations.Add(-1);
                 locations.Add(sequence.Length - 1);
             }
-
+           
             return locations;
         }
 

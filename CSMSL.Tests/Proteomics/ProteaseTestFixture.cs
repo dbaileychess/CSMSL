@@ -46,7 +46,7 @@ namespace CSMSL.Tests.Proteomics
         [Test]
         public void NullEnzymeDigestion()
         {
-            List<Peptide> peptides = _proteinA.Digest((IProtease)null).ToList();
+            List<Peptide> peptides = _proteinA.Digest((IProtease)null, initiatorMethonine: false).ToList();
 
             Assert.AreEqual(1, peptides.Count);
         }
@@ -66,6 +66,14 @@ namespace CSMSL.Tests.Proteomics
             List<Peptide> peptides = _proteinA.Digest(proteases, maxMissedCleavages: 1, maxLength: 5).ToList();
             Assert.Contains(new Peptide("NWSK"), peptides);
             Assert.Contains(new Peptide("ENWSK"), peptides);
+        }
+
+        [Test]
+        public void InitiatorMethonineCleaved()
+        {
+            List<Peptide> peptides = _proteinA.Digest(Protease.LysC, 1, initiatorMethonine: true).ToList();
+            Assert.Contains(new Peptide("MRGFK"), peptides);
+            Assert.Contains(new Peptide("MMRGFK"), peptides);
         }
         
         [Test]
