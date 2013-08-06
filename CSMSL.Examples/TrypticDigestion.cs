@@ -28,7 +28,7 @@ namespace CSMSL.Examples
 {
     public class TrypticDigestion
     {
-        public static void Start(IProtease protease, int maxMissed = 3, int minLength = 5, int maxLength = 35, bool storeSequenceString = true)
+        public static void Start(IProtease protease, int maxMissed = 3, int minLength = 0, int maxLength = int.MaxValue, bool storeSequenceString = true)
         {
             Console.WriteLine("**Start Digestion**");
             Stopwatch watch = new Stopwatch();
@@ -50,7 +50,7 @@ namespace CSMSL.Examples
                 }
             }       
             watch.Stop();
-            Console.WriteLine("{0:N0} proteins produced {1:N0} peptides using {2:N0} missed clevages", prots.Count, peps.Count, maxMissed);
+            Console.WriteLine("{0:N0} proteins produced {1:N0} peptides using {2:N0} missed cleavages", prots.Count, peps.Count, maxMissed);
             Console.WriteLine("Time elapsed: {0}", watch.Elapsed);
             Console.WriteLine("Memory used: {0:N0} MB", System.Environment.WorkingSet / (1024 * 1024));
             Console.WriteLine("**End Digestion**");

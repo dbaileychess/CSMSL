@@ -14,7 +14,7 @@ namespace CSMSL.Tests.Proteomics
         [TestFixtureSetUp]
         public void Setup()
         {
-            _proteinA = new Protein( "MMRGFKQRLIKKTTGSSSSSSSKKKDKEKEKEKSSTTSSTSKKPASASSSSHGTTHSSASSTGSKSTTEKGKQSGSVPSQ" +
+            _proteinA = new Protein("MMRGFKQRLIKKTTGSSSSSSSKKKDKEKEKEKSSTTSSTSKKPASASSSSHGTTHSSASSTGSKSTTEKGKQSGSVPSQ" +
                                     "GKHHSSSTSKTKTATTPSSSSSSSRSSSVSRSGSSSTKKTSSRKGQEQSKQSQQPSQSQKQGSSSSSAAIMNPTPVLTVT" +
                                     "KDDKSTSGEDHAHPTLLGAVSAVPSSPISNASGTAVSSDVENGNSNNNNMNINTSNTQDANHASSQSIDIPRSSHSFERL" +
                                     "PTPTKLNPDTDLELIKTPQRHSSSRFEPSRYTPLTKLPNFNEVSPEERIPLFIAKVDQCNTMFDFNDPSFDIQGKEIKRS" +
@@ -84,9 +84,19 @@ namespace CSMSL.Tests.Proteomics
 
             Peptide peptide = new Peptide("QSGSVPSQ");
             peptide.SetModification(NamedChemicalFormula.iTRAQ4Plex, Terminus.C);
-            var peptides = prot.Digest(Protease.Trypsin, 0, 5, 10).ToList();
+            var peptides = prot.Digest(Protease.Trypsin, 0, 5, 10, includeModifications: true).ToList();
 
             Assert.Contains(peptide, peptides);
+        }
+
+        [Test]
+        public void SemiTrypiticDigestion()
+        {
+            Protein prot = new Protein("MMRGFKQRLIKKTTGSSSSSSSKKKDKEKEKEKSSTTSSTSKKPASASSSSHGTTHSSASSTGSKSTTEKGKQSGSVPSQ");
+         
+            var peptides = prot.Digest(Protease.Trypsin, 0, 5, 10, semiDigestion: true).ToList();
+
+            Assert.AreEqual(17, peptides.Count);
         }
 
     }

@@ -200,7 +200,7 @@ namespace CSMSL.Tests.Proteomics
             NamedChemicalFormula.AddModification("C2H3NO", "Test");
             Peptide peptide = new Peptide("T[TMT 6-plex]HGEAK[Test]K[TMT 6-plex]");
 
-            Assert.AreEqual(1284.7555796218198, peptide.MonoisotopicMass);
+            Assert.AreEqual(1284.7555796218201, peptide.MonoisotopicMass);
         }
 
         [Test]
@@ -488,7 +488,7 @@ namespace CSMSL.Tests.Proteomics
         {
             Peptide pepA = new Peptide("DEREK");  
             pepA.SetModification(new ChemicalFormula("H2O"), Terminus.C);
-            Peptide pepB = new Peptide(pepA, 2, 4);
+            Peptide pepB = new Peptide(pepA, 2, 3);
 
             Peptide pepC = new Peptide("REK");
             pepC.SetModification(new ChemicalFormula("H2O"), Terminus.C);

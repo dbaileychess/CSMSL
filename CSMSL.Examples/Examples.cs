@@ -50,7 +50,7 @@ namespace CSMSL.Examples
             //VennDiagramExamples();
             
             // Example programs
-            //TrypticDigestion.Start(Protease.Trypsin, 5, maxLength: int.MaxValue, storeSequenceString: true);
+            //TrypticDigestion.Start(minLength: 5, maxLength: 50, protease:Protease.Trypsin);
 
             // Example Protein Grouping
             //ProteinGroupingExample.Start(Protease.Trypsin);
@@ -59,7 +59,7 @@ namespace CSMSL.Examples
             //TMT6plexExample.Start();
 
             // Example IO
-            MsDataFileExamples.Start();
+            //MsDataFileExamples.Start();
 
             // Omssa Reader
             //OmssaReader.Start();
@@ -69,6 +69,9 @@ namespace CSMSL.Examples
 
             // Writing data to files
             //FileOutputExamples.Start();
+
+            //Purity Correction
+            //TMT6plexExample.PurityCorrection();
         }
 
    

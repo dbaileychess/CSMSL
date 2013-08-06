@@ -55,10 +55,11 @@ namespace CSMSL.Proteomics
         /// <param name="minLength">The minimum length (in amino acids) of the peptide</param>
         /// <param name="maxLength">The maximum length (in amino acids) of the peptide</param>
         /// <param name="initiatorMethonine"></param>
+        /// <param name="includeModifications"></param>
         /// <returns>A list of digested peptides</returns>
-        public virtual IEnumerable<Peptide> Digest(IProtease protease, int maxMissedCleavages = 3, int minLength = 1, int maxLength = int.MaxValue, bool initiatorMethonine = true)
+        public virtual IEnumerable<Peptide> Digest(IProtease protease, int maxMissedCleavages = 3, int minLength = 1, int maxLength = int.MaxValue, bool initiatorMethonine = true, bool includeModifications = false, bool semiDigestion = false)
         {
-            return Digest(new[] { protease }, maxMissedCleavages, minLength, maxLength, initiatorMethonine);
+            return Digest(new[] { protease }, maxMissedCleavages, minLength, maxLength, initiatorMethonine, includeModifications, semiDigestion);
         }
 
         /// <summary>
@@ -69,10 +70,11 @@ namespace CSMSL.Proteomics
         /// <param name="minLength">The minimum length (in amino acids) of the peptide</param>
         /// <param name="maxLength">The maximum length (in amino acids) of the peptide</param>
         /// <param name="initiatorMethonine"></param>
+        /// <param name="includeModifications"></param>
         /// <returns>A list of digested peptides</returns>
-        public virtual IEnumerable<Peptide> Digest(IEnumerable<IProtease> proteases, int maxMissedCleavages = 3, int minLength = 1, int maxLength = int.MaxValue, bool initiatorMethonine = true)
+        public virtual IEnumerable<Peptide> Digest(IEnumerable<IProtease> proteases, int maxMissedCleavages = 3, int minLength = 1, int maxLength = int.MaxValue, bool initiatorMethonine = true, bool includeModifications = false, bool semiDigestion = false)
         {
-            return GetDigestionPoints(Sequence, proteases, maxMissedCleavages, minLength, maxLength, initiatorMethonine).Select(points => new Peptide(this, points.Item1, points.Item2));
+            return GetDigestionPoints(Sequence, proteases, maxMissedCleavages, minLength, maxLength, initiatorMethonine,semiDigestion).Select(points => new Peptide(this, points.Item1, points.Item2, includeModifications));
         }
       
         #endregion

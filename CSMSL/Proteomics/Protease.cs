@@ -100,14 +100,14 @@ namespace CSMSL.Proteomics
             return Name;
         }
 
-        public ReadOnlyCollection<int> GetDigestionSites(IAminoAcidSequence aminoacidpolymer)
+        public IEnumerable<int> GetDigestionSites(IAminoAcidSequence aminoacidpolymer)
         {
             return GetDigestionSites(aminoacidpolymer.Sequence);
         }
 
-        public ReadOnlyCollection<int> GetDigestionSites(string sequence)
+        public IEnumerable<int> GetDigestionSites(string sequence)
         {
-            return new ReadOnlyCollection<int>((from Match match in _cleavageRegex.Matches(sequence) select match.Groups["cleave"].Index - 1).AsParallel().ToList());
+            return (from Match match in _cleavageRegex.Matches(sequence) select match.Groups["cleave"].Index - 1);
         }
     }
 }

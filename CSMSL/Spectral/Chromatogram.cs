@@ -29,9 +29,22 @@ namespace CSMSL.Spectral
         }
     }
 
-    public class Chromatogram : IEnumerable<ChromatographicPeak>
+    public class Chromatogram : Chromatogram<ChromatographicPeak>
     {
-        public ChromatographicPeak this[int index]
+        public Chromatogram(ChromatogramType type = ChromatogramType.BasePeak)
+            : base(type)
+        {
+        }
+
+        public Chromatogram(IEnumerable<ChromatographicPeak> peaks, ChromatogramType type = ChromatogramType.BasePeak)
+            : base(peaks, type)
+        {
+        }
+    }
+
+    public class Chromatogram<T> : IEnumerable<T> where T: IPeak
+    {
+        public T this[int index]
         {
             get
             {
@@ -39,7 +52,7 @@ namespace CSMSL.Spectral
             }
         }
 
-        private readonly SortedList<double, ChromatographicPeak> _curve;
+        private readonly SortedList<double, T> _curve;
         
         public double TotalIonCurrent { get; private set; }
 
@@ -50,28 +63,25 @@ namespace CSMSL.Spectral
 
         public ChromatogramType Type { get; private set; }
 
-        private int _basePeakIndex = -1;
-
-        public ChromatographicPeak BasePeak { get; private set; }
+        public T BasePeak { get; private set; }
 
         public Chromatogram(ChromatogramType type = ChromatogramType.BasePeak)
         {
             Type = type;
-            _curve = new SortedList<double, ChromatographicPeak>();
+            _curve = new SortedList<double, T>();
             TotalIonCurrent = 0.0;
         }
-   
-        public void AddPoint(ChromatographicPeak point)
+
+        public Chromatogram(IEnumerable<T> points, ChromatogramType type = ChromatogramType.BasePeak)
         {
-            int index = _curve.IndexOfKey(point.Time);
-            if (index > -1)
-            {
-                _curve.Values[index].CombinePoints(point);
-            }
-            else
-            {
-                _curve.Add(point.Time, point);
-            }
+            Type = type;
+            _curve = new SortedList<double, T>(points.ToDictionary(p => p.X));
+            TotalIonCurrent = _curve.Values.Sum(p => p.Y);
+        }
+
+        public void AddPoint(T point)
+        {
+            _curve.Add(point.X, point);
 
             if (BasePeak == null)
             {
@@ -79,59 +89,21 @@ namespace CSMSL.Spectral
             }
             else
             {
-                if (point.Intensity > BasePeak.Intensity)
+                if (point.Y > BasePeak.Y)
                 {
                     BasePeak = point;
                 }
             }
-            TotalIonCurrent += (float)point.Intensity;
+
+            TotalIonCurrent += point.Y;
         }
 
         public override string ToString()
         {
             return string.Format("Count = {0:N0} TIC = {1:G4} ({2})", Count, TotalIonCurrent, Enum.GetName(typeof(ChromatogramType), Type));
         }
-
-        private Chromatogram BoxCarSmooth(int points)
-        {
-            Chromatogram chrom = new Chromatogram(Type);
-            for (int i = 0; i < Count; i++)
-            {
-                double time = 0;
-                float intensity = 0;
-                int j = 0;
-                while (j < points)
-                {
-                    if (i + j >= Count) 
-                        break;
-                    time += this[i + j].Time;
-                    intensity += (float)this[i + j].Intensity;
-                    j++;
-                }
-                chrom.AddPoint(new ChromatographicPeak(time/j, intensity/j));
-            }
-            return chrom;
-        }
-
-        private Chromatogram SavitzkyGolaySmooth(int points)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Chromatogram Smooth(SmoothingType type, int points)
-        {
-            switch (type)
-            {
-                case SmoothingType.BoxCar:
-                    return BoxCarSmooth(points);
-                case SmoothingType.SavitzkyGolay:
-                    return SavitzkyGolaySmooth(points);
-                default:
-                    return this;
-            }
-        }
-
-        public IEnumerator<ChromatographicPeak> GetEnumerator()
+        
+        public IEnumerator<T> GetEnumerator()
         {
             return _curve.Values.GetEnumerator();
         }

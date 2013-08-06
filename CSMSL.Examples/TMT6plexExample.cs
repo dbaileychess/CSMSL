@@ -27,6 +27,21 @@ namespace CSMSL.Examples
             Console.WriteLine("**End TMT 6-plex Experiment**");
         }
 
+        public static void PurityCorrection()
+        {
+            Console.WriteLine("**Start TMT 6-plex Experiment**");
+            Stopwatch watch = new Stopwatch();
+            watch.Start();
+
+           // IsobaricTagPurityCorrection purityMatrix = IsobaricTagPurityCorrection.Create();
+           
+
+            watch.Stop();
+            Console.WriteLine("Time elapsed: {0}", watch.Elapsed);
+            Console.WriteLine("Memory used: {0:N0} MB", System.Environment.WorkingSet / (1024 * 1024));
+            Console.WriteLine("**End TMT 6-plex Experiment**");
+        }
+
         private static void Quantify()
         {
             // Initial input files

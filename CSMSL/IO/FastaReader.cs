@@ -62,26 +62,26 @@ namespace CSMSL.IO
 
         public IEnumerable<Fasta> ReadNextFasta()
         {
-            StringBuilder sequenceSB = new StringBuilder(50);
-            StringBuilder headerSB = new StringBuilder(80);
+            StringBuilder sequenceSb = new StringBuilder(50);
+            StringBuilder headerSb = new StringBuilder(80);
             foreach (string line in ReadNextLine().Where(line => !string.IsNullOrEmpty(line)))
             {
                 if (Array.IndexOf(Delimiters, line[0]) >= 0)
                 {
-                    if (sequenceSB.Length > 0)
+                    if (sequenceSb.Length > 0)
                     {
-                        yield return new Fasta(sequenceSB.ToString(), headerSB.ToString());
-                        sequenceSB.Clear();
-                        headerSB.Clear();
+                        yield return new Fasta(sequenceSb.ToString(), headerSb.ToString());
+                        sequenceSb.Clear();
+                        headerSb.Clear();
                     }
-                    headerSB.Append(line.TrimStart(Delimiters));
+                    headerSb.Append(line.TrimStart(Delimiters));
                 }
                 else
                 {
-                    sequenceSB.Append(line);
+                    sequenceSb.Append(line);
                 }
             }
-            yield return new Fasta(sequenceSB.ToString(), headerSB.ToString());
+            yield return new Fasta(sequenceSb.ToString(), headerSb.ToString());
         }
 
 

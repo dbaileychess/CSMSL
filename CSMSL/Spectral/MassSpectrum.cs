@@ -142,7 +142,7 @@ namespace CSMSL.Spectral
 
         public IEnumerator<MZPeak> GetEnumerator()
         {
-            return ((MZPeak[])Peaks).ToList().GetEnumerator();
+            return Peaks.ToList().GetEnumerator();
         }
 
         System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
