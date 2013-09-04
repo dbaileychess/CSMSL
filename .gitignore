@@ -48,7 +48,6 @@ TestResults/
 *.psess
 *.vsp
 
-
 # Nuget #
 #########
 !NuGet.exe

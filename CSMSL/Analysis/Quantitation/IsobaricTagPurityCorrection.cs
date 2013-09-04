@@ -35,6 +35,11 @@ namespace CSMSL.Analysis.Quantitation
             return _purityMatrix.LU().Solve(new DenseVector(rawData)).ToArray();
         }
 
+        /// <summary>
+        /// Creates a matrix with the solutions to isobaric purity corrections
+        /// </summary>
+        /// <param name="purityValues"></param>
+        /// <returns></returns>
         public static IsobaricTagPurityCorrection Create(double[,] purityValues)
         {
             int rows = purityValues.GetLength(0);
