@@ -144,22 +144,20 @@ namespace CSMSL.IO
         /// <returns></returns>
         public virtual MSDataScan GetMsScan(int spectrumNumber)
         {
-            if (CacheScans)
+            if (!CacheScans)
+                return GetMSDataScan(spectrumNumber);
+
+            if (Scans == null)
             {
-                if (Scans == null)
-                {
-                    Scans = new MSDataScan[LastSpectrumNumber + 1];
-                }
-
-                if (Scans[spectrumNumber] == null)
-                {
-                    return Scans[spectrumNumber] = GetMSDataScan(spectrumNumber);
-                }
-
-                return Scans[spectrumNumber];
+                Scans = new MSDataScan[LastSpectrumNumber + 1];
             }
 
-            return GetMSDataScan(spectrumNumber);
+            if (Scans[spectrumNumber] == null)
+            {
+                return Scans[spectrumNumber] = GetMSDataScan(spectrumNumber);
+            }
+
+            return Scans[spectrumNumber];
         }
 
         public virtual void LoadAllScansInMemory()

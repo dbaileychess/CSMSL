@@ -1,18 +1,37 @@
-﻿using MathNet.Numerics.LinearAlgebra.Double;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using MathNet.Numerics.LinearAlgebra.Double;
 
 namespace CSMSL.Analysis.Quantitation
 {
     public class IsobaricTagPurityCorrection
     {
-        private readonly Matrix _purityMatrix;       
+        private readonly Matrix _purityMatrix;
+        private int _rows;
 
         private IsobaricTagPurityCorrection(Matrix matrix)
         {
-            _purityMatrix = matrix;    
-        }            
+            _purityMatrix = matrix;
+            _rows = matrix.RowCount;
+        }
+
+        public double Determinant()
+        {
+            return _purityMatrix.Determinant();
+        }
+
+        public double[] ApplyPurityCorrection(IEnumerable<double> rawData)
+        {
+            return ApplyPurityCorrection(rawData.ToArray());
+        }
 
         public double[] ApplyPurityCorrection(double[] rawData)
         {
+            if (rawData.Length != _rows)
+            {
+                throw new ArgumentException("Not enough data points");
+            }
             return _purityMatrix.LU().Solve(new DenseVector(rawData)).ToArray();
         }
 

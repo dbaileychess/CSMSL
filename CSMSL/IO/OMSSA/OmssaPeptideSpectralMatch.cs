@@ -1,10 +1,11 @@
-﻿
+﻿using CsvHelper.TypeConversion;
+
 namespace CSMSL.IO.OMSSA
 {
     
     public class OmssaPeptideSpectralMatch
-    {             
-
+    {
+        //[CsvField(Name = "Spectrum Number")]
         public int SpectrumNumber { get; set; }
 
         //[CsvField(Name = "E-value")]

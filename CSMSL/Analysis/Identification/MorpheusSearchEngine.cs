@@ -28,12 +28,11 @@
 ///////////////////////////////////////////////////////////////////////////
 
 using CSMSL.Chemistry;
+using CSMSL.Proteomics;
 using CSMSL.Spectral;
 using CSMSL.Util.Collections;
-using CSMSL.Proteomics;
-using System.Linq;
-using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace CSMSL.Analysis.Identification
 {

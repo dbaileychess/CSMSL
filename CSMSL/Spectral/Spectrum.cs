@@ -99,6 +99,16 @@ namespace CSMSL.Spectral
             return peaks != null;
         }
 
+        public T GetClosestPeak(MassRange massRange)
+        {
+            return GetClosestPeak(massRange.Mean, massRange.Width);
+        }
+
+        public T GetClosestPeak(double mean, MassTolerance tolerance)
+        {
+            return GetClosestPeak(mean, tolerance.GetMassRange(mean).Width);
+        }
+
         public T GetClosestPeak(double mean, double tolerance)
         {
             if (Count == 0)

@@ -18,9 +18,9 @@
 //  along with CSMSL.  If not, see <http://www.gnu.org/licenses/>.        /
 ///////////////////////////////////////////////////////////////////////////
 
+using CSMSL.IO;
 using System.Collections.Generic;
 using System.Linq;
-using CSMSL.IO;
 
 namespace CSMSL.Proteomics
 {

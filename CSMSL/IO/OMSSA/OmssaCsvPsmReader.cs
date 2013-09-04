@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Xml;
+using CsvHelper.Configuration;
 
 namespace CSMSL.IO.OMSSA
 {
@@ -34,6 +35,7 @@ namespace CSMSL.IO.OMSSA
                 _userDynamicMods = LoadMods(userModFile);
             }
             _userModFile = userModFile;
+            _reader.Configuration.RegisterClassMap<OmssaPSMMap>();
         }
 
         private static Dictionary<string, IMass> LoadMods(string file)
@@ -100,7 +102,6 @@ namespace CSMSL.IO.OMSSA
                 {
                     peptide.Parent = prot;
                 }
-                
               
                 PeptideSpectralMatch psm = new PeptideSpectralMatch();
                 if (_extraColumns.Count > 0)
@@ -146,4 +147,27 @@ namespace CSMSL.IO.OMSSA
 
    
     }
+
+    public class OmssaPSMMap : CsvClassMap<OmssaPeptideSpectralMatch>
+    {
+        public override void CreateMap()
+        {
+            Map(m => m.SpectrumNumber).Name("Spectrum number");
+            Map(m => m.EValue).Name("E-value");
+            Map(m => m.Mass).Name("Mass");
+            Map(m => m.TheoreticalMass).Name("Theo Mass");
+            Map(m => m.Sequence).Name("Peptide");
+            Map(m => m.Defline).Name("Defline");
+            Map(m => m.FileName).Name("Filename/id");
+            Map(m => m.Accession).Name("Accession");
+            Map(m => m.PValue).Name("P-value");
+            Map(m => m.Modifications).Name("Mods");
+            Map(m => m.Charge).Name("Charge");
+            Map(m => m.StartResidue).Name("Start");
+            Map(m => m.StopResidue).Name("Stop");
+            Map(m => m.GI).Name("gi");
+            Map(m => m.NistScore).Name("NIST score");
+        }
+    }
 }
+  
