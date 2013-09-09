@@ -63,7 +63,15 @@ namespace CSMSL.Proteomics
 
         internal bool IsDirty { get; set; }
 
-        internal IMass[] Modifications { get { return _modifications; } }
+        internal IMass[] Modifications
+        {
+            get { return _modifications; }
+        }
+
+        internal AminoAcid[] AminoAcids
+        {
+            get { return _aminoAcids; }
+        }
 
         #region Constructors
 
@@ -253,6 +261,11 @@ namespace CSMSL.Proteomics
 
         #region Fragmentation
 
+        public IEnumerable<Fragment> GetSiteDeterminingFragments(AminoAcidPolymer other, FragmentTypes type)
+        {
+            return GetSiteDeterminingFragments(this, other, type);
+        }
+
         public Fragment Fragment(FragmentTypes type, int number)
         {
             if (type == FragmentTypes.None)
@@ -307,12 +320,7 @@ namespace CSMSL.Proteomics
         {
             return Fragment(types, 1, Length - 1);
         }
-
-        //public IEnumerable<Fragment> Fragment(FragmentTypes types, int number)
-        //{
-        //    return Fragment(types, number, number);
-        //}
-
+   
         public IEnumerable<Fragment> Fragment(FragmentTypes types, int min, int max)
         {
             if (types == FragmentTypes.None)
@@ -383,7 +391,7 @@ namespace CSMSL.Proteomics
         #endregion
 
         #region Modifications
-
+        
         public IMass[] GetModifications()
         {
             IMass[] mods = new IMass[_modifications.Length];
@@ -751,6 +759,8 @@ namespace CSMSL.Proteomics
             return true;
         }
 
+
+
         #region Private Methods
 
         private void ReplaceTerminus(ref IChemicalFormula terminus, IChemicalFormula value)
@@ -942,6 +952,28 @@ namespace CSMSL.Proteomics
         #endregion
 
         #region Statics
+
+        public static IEnumerable<Fragment> GetSiteDeterminingFragments(AminoAcidPolymer peptideA, AminoAcidPolymer peptideB, FragmentTypes types)
+        {
+            if (peptideA == null)
+            {
+                // Only b is not null, return all of its fragments
+                if (peptideB != null)
+                {
+                    return peptideB.Fragment(types);
+                }
+                throw new ArgumentNullException("Both peptides cannot be null");
+            }
+
+            if (peptideB == null)
+            {
+                return peptideA.Fragment(types);
+            }
+            HashSet<Fragment> aFrags = new HashSet<Fragment>(peptideA.Fragment(types));
+            HashSet<Fragment> bfrags = new HashSet<Fragment>(peptideB.Fragment(types));
+            aFrags.SymmetricExceptWith(bfrags);
+            return aFrags;
+        }
 
         public static IEqualityComparer<AminoAcidPolymer> CompareBySequence { get { return new PeptideSequenceComparer(); } }
 

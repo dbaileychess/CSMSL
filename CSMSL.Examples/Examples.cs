@@ -18,6 +18,8 @@
 //  along with CSMSL.  If not, see <http://www.gnu.org/licenses/>.        /
 ///////////////////////////////////////////////////////////////////////////
 
+using System.Collections.Generic;
+using System.Linq;
 using CSMSL.Chemistry;
 using CSMSL.Proteomics;
 using CSMSL.Util.Collections;
@@ -44,7 +46,7 @@ namespace CSMSL.Examples
         {   
             // Examples coding
             //ChemicalFormulaExamples();
-            //PeptideExamples();
+            PeptideExamples();
                       
             // Example Objects
             //VennDiagramExamples();
@@ -109,7 +111,10 @@ namespace CSMSL.Examples
             // Simple Peptide creation
             Peptide peptide1 = new Peptide("ACDEFGHIKLMNPQRSTVWY");
             WritePeptideToConsole(peptide1);
-                     
+
+            Modification newMod = new Modification(25.243, "test", ModificationSites.A | ModificationSites.I | ModificationSites.NPep | ModificationSites.PepC);
+            Modification mod2 = new Modification(32.12, "test2", ModificationSites.D | ModificationSites.I);
+            List<Peptide> peptides = peptide1.GenerateIsoforms(newMod, mod2).ToList();
 
             // Fragmenting a peptide is simple, you can include as many fragment types as you want
             Console.WriteLine("{0,-4} {1,-20} {2,-5}", "Type", "Formula", "Mass");

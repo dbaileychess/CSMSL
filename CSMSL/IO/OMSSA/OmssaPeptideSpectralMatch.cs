@@ -1,53 +1,70 @@
-﻿using CsvHelper.TypeConversion;
+﻿using CsvHelper.Configuration;
+using CsvHelper.TypeConversion;
 
 namespace CSMSL.IO.OMSSA
 {
-    
-    public class OmssaPeptideSpectralMatch
+
+    public class OmssaPeptideSpectralMatch : CsvClassMap<OmssaPeptideSpectralMatch>
     {
-        //[CsvField(Name = "Spectrum Number")]
+        public override void CreateMap()
+        {
+            Map(m => m.SpectrumNumber).Name("Spectrum number");
+            Map(m => m.EValue).Name("E-value");
+            Map(m => m.Mass).Name("Mass");
+            Map(m => m.TheoreticalMass).Name("Theo Mass");
+            Map(m => m.Sequence).Name("Peptide");
+            Map(m => m.Defline).Name("Defline");
+            Map(m => m.FileName).Name("Filename/id");
+            Map(m => m.Accession).Name("Accession");
+            Map(m => m.PValue).Name("P-value");
+            Map(m => m.Modifications).Name("Mods");
+            Map(m => m.Charge).Name("Charge");
+            Map(m => m.StartResidue).Name("Start");
+            Map(m => m.StopResidue).Name("Stop");
+            Map(m => m.GI).Name("gi");
+            Map(m => m.NistScore).Name("NIST score");
+        }
+
         public int SpectrumNumber { get; set; }
 
-        //[CsvField(Name = "E-value")]
+
         public double EValue { get; set; }
 
-        //[CsvField(Name = "Mass")]
+
         public double Mass { get; set; }
-        
-        //[CsvField(Name = "Theo Mass")]
+
         public double TheoreticalMass { get; set; }
-             
-        //[CsvField(Name = "Peptide")]     
+
+
         public string Sequence { get; set; }
- 
-        //[CsvField(Name = "Defline")]
+
+
         public string Defline { get; set; }
 
-       // [CsvField(Name = "Filename/id")]
+
         public string FileName { get; set; }
 
-        //[CsvField(Name = "Accession")]
+
         public string Accession { get; set; }
 
-        //[CsvField(Name = "P-value")]
+
         public double PValue { get; set; }
 
-       // [CsvField(Name = "Mods")]
+
         public string Modifications { get; set; }
-         
-        //[CsvField(Name = "Charge")]
+
+
         public int Charge { get; set; }
 
-        //[CsvField(Name = "Start")]
+
         public int StartResidue { get; set; }
 
-        //[CsvField(Name = "Stop")]
-        public int StopResidue { get; set; }       
 
-        //[CsvField(Name = "gi")]
+        public int StopResidue { get; set; }
+
+
         public int GI { get; set; }
-        
-       // [CsvField(Name = "NIST score")]
+
         public double NistScore { get; set; }
     }
 }

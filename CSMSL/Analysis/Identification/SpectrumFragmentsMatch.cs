@@ -22,6 +22,11 @@ namespace CSMSL.Analysis.Identification
             }
         }
 
+        public bool Contains(Fragment fragment)
+        {
+            return _fragmentSpectralMatches.Select(f => f.Fragment).Contains(fragment);
+        }
+
         public void Add(FragmentSpectralMatch fsm)
         {
             _fragmentSpectralMatches.Add(fsm);

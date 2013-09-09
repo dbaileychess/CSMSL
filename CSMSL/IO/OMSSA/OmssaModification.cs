@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Xml;
 using CSMSL.Chemistry;
+using CSMSL.Proteomics;
 
 namespace CSMSL.IO.OMSSA
 {
-    public class OmssaModification : IMass
+    public class OmssaModification : Modification
     {
         private static readonly Dictionary<int, string> _modificationKeyDicitonary;
         private static readonly Dictionary<string, OmssaModification> _modifications; 
@@ -17,27 +19,22 @@ namespace CSMSL.IO.OMSSA
             _modifications = new Dictionary<string, OmssaModification>();
 
             // Load in the default omssa mods
-            LoadOmssaModifications("Resources/mods.xml");         
+            LoadOmssaModifications("Resources/mods.xml", false);         
         }
-
-        public string Name { get; set; }
-
+        
         public int ID { get; set; }
 
         public OmssaModification(string name, int id, double mono, double average)
+            : base(mono, name)
         {
-            Name = name;
             ID = id;
-            MonoisotopicMass = mono;
         }
-
+         
         public override string ToString()
         {
             return Name;
         }
-
-        public double MonoisotopicMass { get; private set; }
-
+        
         public static bool TryGetModification(int id, out OmssaModification modification)
         {
             string name;
@@ -52,7 +49,7 @@ namespace CSMSL.IO.OMSSA
 
         private static readonly char[] _omssaModDelimiter = { ',', ';' };
 
-        public static void LoadOmssaModifications(string file)
+        public static void LoadOmssaModifications(string file, bool userMod = true)
         {
             XmlDocument mods_xml = new XmlDocument();
             mods_xml.Load(file);
@@ -65,9 +62,11 @@ namespace CSMSL.IO.OMSSA
                 int id = int.Parse(mod_node.SelectSingleNode("./omssa:MSModSpec_mod/omssa:MSMod", mods_xml_ns).FirstChild.Value);
                 double mono = double.Parse(mod_node.SelectSingleNode("./omssa:MSModSpec_monomass", mods_xml_ns).FirstChild.Value);
                 double average = double.Parse(mod_node.SelectSingleNode("./omssa:MSModSpec_averagemass", mods_xml_ns).FirstChild.Value);
+                if (userMod)
+                    name += "*";
                 OmssaModification mod = new OmssaModification(name, id, mono, average);
                 _modifications.Add(name, mod);
-                _modificationKeyDicitonary.Add(id, name);
+                _modificationKeyDicitonary[id] = name;
             }
         }
 

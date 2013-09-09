@@ -2833,22 +2833,6 @@
     <MSModSpec_unimod>262</MSModSpec_unimod>
     <MSModSpec_psi-ms>Label:2H(3)</MSModSpec_psi-ms>
 </MSModSpec>
-<MSModSpec>
-    <MSModSpec_mod>
-      <MSMod value="mod198">198</MSMod>
-    </MSModSpec_mod>
-    <MSModSpec_type>
-      <MSModType value="modaa">0</MSModType>
-    </MSModSpec_type>
-    <MSModSpec_name>TMT duplex on K</MSModSpec_name>
-    <MSModSpec_monomass>225.155833</MSModSpec_monomass>
-    <MSModSpec_averagemass>225.2921</MSModSpec_averagemass>
-    <MSModSpec_n15mass>0</MSModSpec_n15mass>
-    <MSModSpec_residues>
-      <MSModSpec_residues_E>K</MSModSpec_residues_E>
-    </MSModSpec_residues>
-    <MSModSpec_unimod>738</MSModSpec_unimod>
-</MSModSpec>
   <MSModSpec>
     <MSModSpec_mod>
       <MSMod value="mod199">199</MSMod>

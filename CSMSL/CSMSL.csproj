@@ -135,6 +135,7 @@
     <Compile Include="Proteomics\IAminoAcid.cs" />
     <Compile Include="Proteomics\IAminoAcidSequence.cs" />
     <Compile Include="Proteomics\IProtease.cs" />
+    <Compile Include="Proteomics\Modification.cs" />
     <Compile Include="Proteomics\ModificationCollection.cs" />
     <Compile Include="Proteomics\ModificationSites.cs" />
     <Compile Include="Proteomics\ProteinGroup.cs" />

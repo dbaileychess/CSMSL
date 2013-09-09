@@ -24,11 +24,11 @@ namespace CSMSL.IO.OMSSA
            
             if (!string.IsNullOrEmpty(userModFile))
             {
-                OmssaModification.LoadOmssaModifications(userModFile);
-
+                OmssaModification.LoadOmssaModifications(userModFile, true);
             }
+
             _userModFile = userModFile;
-            _reader.Configuration.RegisterClassMap<OmssaPSMMap>();
+            _reader.Configuration.RegisterClassMap<OmssaPeptideSpectralMatch>();
         }
 
         public IMass AddFixedModification(int modID, ModificationSites sites)
@@ -40,13 +40,12 @@ namespace CSMSL.IO.OMSSA
             }
             return modification;
         }
-        
 
         private void SetDynamicMods(AminoAcidPolymer peptide, string modifications)
         {
             if (peptide == null || string.IsNullOrEmpty(modifications))
                 return;
-
+            
             foreach (string modification in modifications.Split(',',';'))
             {
                 string[] modParts = modification.Trim().Split(':');
@@ -78,7 +77,6 @@ namespace CSMSL.IO.OMSSA
             MSDataFile dataFile;
             foreach (OmssaPeptideSpectralMatch omssaPSM in _reader.GetRecords<OmssaPeptideSpectralMatch>())
             {
-               
                 Peptide peptide = new Peptide(omssaPSM.Sequence.ToUpper());               
                 SetFixedMods(peptide);
                 SetDynamicMods(peptide, omssaPSM.Modifications);
@@ -114,7 +112,6 @@ namespace CSMSL.IO.OMSSA
 
                 yield return psm;
             }
-            yield break;
         }          
 
         protected override void Dispose(bool disposing)
@@ -131,28 +128,6 @@ namespace CSMSL.IO.OMSSA
             base.Dispose(disposing);
         }
    
-    }
-
-    public class OmssaPSMMap : CsvClassMap<OmssaPeptideSpectralMatch>
-    {
-        public override void CreateMap()
-        {
-            Map(m => m.SpectrumNumber).Name("Spectrum number");
-            Map(m => m.EValue).Name("E-value");
-            Map(m => m.Mass).Name("Mass");
-            Map(m => m.TheoreticalMass).Name("Theo Mass");
-            Map(m => m.Sequence).Name("Peptide");
-            Map(m => m.Defline).Name("Defline");
-            Map(m => m.FileName).Name("Filename/id");
-            Map(m => m.Accession).Name("Accession");
-            Map(m => m.PValue).Name("P-value");
-            Map(m => m.Modifications).Name("Mods");
-            Map(m => m.Charge).Name("Charge");
-            Map(m => m.StartResidue).Name("Start");
-            Map(m => m.StopResidue).Name("Stop");
-            Map(m => m.GI).Name("gi");
-            Map(m => m.NistScore).Name("NIST score");
-        }
     }
 }
   
