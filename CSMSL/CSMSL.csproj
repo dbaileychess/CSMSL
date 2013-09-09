@@ -85,7 +85,7 @@
       <HintPath>..\packages\Combinatorics.1.0.3.2\lib\net40\Combinatorics.dll</HintPath>
     </Reference>
     <Reference Include="MathNet.Numerics">
-      <HintPath>..\..\CoonWare\TagQuant2\packages\MathNet.Numerics.3.0.0-alpha1\lib\net40\MathNet.Numerics.dll</HintPath>
+      <HintPath>..\..\Compass\TagQuant\packages\MathNet.Numerics.3.0.0-alpha1\lib\net40\MathNet.Numerics.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -101,6 +101,7 @@
     <Compile Include="Analysis\Identification\MSSearchEngine.cs" />
     <Compile Include="Analysis\Identification\PeptideSpectralMatch.cs" />
     <Compile Include="Analysis\Identification\PeptideSpectralMatchScoreType.cs" />
+    <Compile Include="Analysis\Identification\SpectrumFragmentsMatch.cs" />
     <Compile Include="Analysis\Quantitation\IntensityWeightingType.cs" />
     <Compile Include="Analysis\Quantitation\IQuantitationChannel.cs" />
     <Compile Include="Analysis\Quantitation\IsobaricTag.cs" />
@@ -137,13 +138,14 @@
     <Compile Include="Proteomics\ModificationCollection.cs" />
     <Compile Include="Proteomics\ModificationSites.cs" />
     <Compile Include="Proteomics\ProteinGroup.cs" />
-    <Compile Include="Spectral\Chromatogram.cs" />
-    <Compile Include="Spectral\ChromatographicPeak.cs" />
-    <Compile Include="Spectral\ILabeledPeak.cs" />
-    <Compile Include="Spectral\IMassSpectrum.cs" />
-    <Compile Include="Spectral\IPeak.cs" />
-    <Compile Include="Spectral\MsnDataScan.cs" />
-    <Compile Include="Spectral\MSDataScan.cs" />
+    <Compile Include="Proteomics\Spectral\Chromatogram.cs" />
+    <Compile Include="Proteomics\Spectral\ChromatographicPeak.cs" />
+    <Compile Include="Analysis\Identification\FragmentSpectralMatch.cs" />
+    <Compile Include="Proteomics\Spectral\ILabeledPeak.cs" />
+    <Compile Include="Proteomics\Spectral\IMassSpectrum.cs" />
+    <Compile Include="Proteomics\Spectral\IPeak.cs" />
+    <Compile Include="Proteomics\Spectral\MsnDataScan.cs" />
+    <Compile Include="Proteomics\Spectral\MSDataScan.cs" />
     <Compile Include="IRange.cs" />
     <Compile Include="Chemistry\Mass.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -156,11 +158,11 @@
     <Compile Include="Proteomics\Protein.cs" />
     <Compile Include="Proteomics\Terminus.cs" />
     <Compile Include="Range.cs" />
-    <Compile Include="Spectral\MZAnalyzerType.cs" />
-    <Compile Include="Spectral\MZPeak.cs" />
-    <Compile Include="Spectral\Polarity.cs" />
-    <Compile Include="Spectral\MassSpectrum.cs" />
-    <Compile Include="Spectral\Spectrum.cs" />
+    <Compile Include="Proteomics\Spectral\MZAnalyzerType.cs" />
+    <Compile Include="Proteomics\Spectral\MZPeak.cs" />
+    <Compile Include="Proteomics\Spectral\Polarity.cs" />
+    <Compile Include="Proteomics\Spectral\MassSpectrum.cs" />
+    <Compile Include="Proteomics\Spectral\Spectrum.cs" />
     <Compile Include="MassTolerance.cs" />
     <Compile Include="Util\Collections\BinaryTree.cs" />
     <Compile Include="Util\Collections\BinaryTreeNode.cs" />

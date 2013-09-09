@@ -328,17 +328,19 @@ namespace CSMSL.Proteomics
                 if (type == FragmentTypes.None || type == FragmentTypes.Internal) continue;
                 if ((types & type) == type)
                 {
+                    List<IMass> mods = new List<IMass>();
                     double monoMass = 0;
                     int start = min;
                     int end = max;
 
-                   if (type >= FragmentTypes.x)
+                    if (type >= FragmentTypes.x)
                     {
                         monoMass += CTerminus.MonoisotopicMass;
 
                         if (CTerminusModification != null)
                         {
                             monoMass += CTerminusModification.MonoisotopicMass;
+                            mods.Add(CTerminusModification);
                         }                           
                         for (int i = end; i >= start; i--)
                         {
@@ -347,8 +349,9 @@ namespace CSMSL.Proteomics
                             if (_modifications[i + 1] != null)
                             {
                                 monoMass += _modifications[i + 1].MonoisotopicMass;
+                                mods.Add(_modifications[i + 1]);
                             }
-                            yield return new Fragment(type, Length - i, monoMass, this);
+                            yield return new Fragment(type, Length - i, monoMass, this, mods);
                         }
                     }
                     else
@@ -358,6 +361,7 @@ namespace CSMSL.Proteomics
                         if (NTerminusModification != null)
                         {
                             monoMass += NTerminusModification.MonoisotopicMass;
+                            mods.Add(NTerminusModification);
                         }                            
 
                         for (int i = start; i <= end; i++)
@@ -367,8 +371,9 @@ namespace CSMSL.Proteomics
                             if (_modifications[i] != null)
                             {
                                 monoMass += _modifications[i].MonoisotopicMass;
+                                mods.Add(_modifications[i + 1]);
                             }
-                            yield return new Fragment(type, i, monoMass, this);
+                            yield return new Fragment(type, i, monoMass, this, mods);
                         }
                     }
                 }
@@ -378,6 +383,13 @@ namespace CSMSL.Proteomics
         #endregion
 
         #region Modifications
+
+        public IMass[] GetModifications()
+        {
+            IMass[] mods = new IMass[_modifications.Length];
+            Array.Copy(_modifications, mods, _modifications.Length);
+            return mods;
+        }
 
         /// <summary>
         /// Gets or sets the modification of the C terminus on this amino acid polymer

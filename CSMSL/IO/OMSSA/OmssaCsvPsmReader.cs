@@ -16,15 +16,7 @@ namespace CSMSL.IO.OMSSA
         private CsvReader _reader;
 
         private string _userModFile;
-
-        private static Dictionary<string, IMass> _dynamicMods;
-        private Dictionary<string, IMass> _userDynamicMods;
-
-        static OmssaCsvPsmReader()
-        {
-            _dynamicMods = LoadMods("Resources/mods.xml");            
-        }
-
+   
         public OmssaCsvPsmReader(string filePath, string userModFile = "")
             : base(filePath)
         {
@@ -32,29 +24,23 @@ namespace CSMSL.IO.OMSSA
            
             if (!string.IsNullOrEmpty(userModFile))
             {
-                _userDynamicMods = LoadMods(userModFile);
+                OmssaModification.LoadOmssaModifications(userModFile);
+
             }
             _userModFile = userModFile;
             _reader.Configuration.RegisterClassMap<OmssaPSMMap>();
         }
 
-        private static Dictionary<string, IMass> LoadMods(string file)
+        public IMass AddFixedModification(int modID, ModificationSites sites)
         {
-            XmlDocument mods_xml = new XmlDocument();
-            mods_xml.Load(file);
-            XmlNamespaceManager mods_xml_ns = new XmlNamespaceManager(mods_xml.NameTable);
-            mods_xml_ns.AddNamespace("omssa", mods_xml.ChildNodes[1].Attributes["xmlns"].Value);
-            Dictionary<string, IMass> mods = new Dictionary<string, IMass>();
-            foreach (XmlNode mod_node in mods_xml.SelectNodes("/omssa:MSModSpecSet/omssa:MSModSpec", mods_xml_ns))
+            OmssaModification modification = null;
+            if (OmssaModification.TryGetModification(modID, out modification))
             {
-                string name = mod_node.SelectSingleNode("./omssa:MSModSpec_name", mods_xml_ns).FirstChild.Value;
-                double mono = double.Parse(mod_node.SelectSingleNode("./omssa:MSModSpec_monomass", mods_xml_ns).FirstChild.Value);
-                double average = double.Parse(mod_node.SelectSingleNode("./omssa:MSModSpec_averagemass", mods_xml_ns).FirstChild.Value);
-                OmssaModification mod = new OmssaModification(name, mono, average);
-                mods.Add(name, mod);
+                _fixedMods.Add(new Tuple<IMass, ModificationSites>(modification, sites));
             }
-            return mods;
-        }               
+            return modification;
+        }
+        
 
         private void SetDynamicMods(AminoAcidPolymer peptide, string modifications)
         {
@@ -144,7 +130,6 @@ namespace CSMSL.IO.OMSSA
             }
             base.Dispose(disposing);
         }
-
    
     }
 

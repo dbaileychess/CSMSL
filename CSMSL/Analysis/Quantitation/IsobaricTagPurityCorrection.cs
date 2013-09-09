@@ -1,7 +1,7 @@
-﻿using System;
+﻿using MathNet.Numerics.LinearAlgebra.Double;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using MathNet.Numerics.LinearAlgebra.Double;
 
 namespace CSMSL.Analysis.Quantitation
 {
@@ -14,6 +14,11 @@ namespace CSMSL.Analysis.Quantitation
         {
             _purityMatrix = matrix;
             _rows = matrix.RowCount;
+        }
+
+        public double[,] GetMatrix()
+        {
+            return _purityMatrix.Storage.ToArray();
         }
 
         public double Determinant()
@@ -50,22 +55,26 @@ namespace CSMSL.Analysis.Quantitation
             // w x y z part of iTracker Paper
             for (int i = 0; i < rows; i++)
             {
-                purityMatrix[i, i] = 1.0;
+                double startvalue = 100;
                 for (int j = 0; j < inputCount; j++)
                 {
-                    purityMatrix[i, i] -= purityValues[i, j] / 100;
+                    startvalue -= purityValues[i, j];
                 }
-            }
 
-            // Setting up the C matrix
-            for (int i = 0; i < rows; i++)
-            {
                 for (int j = 0; j < rows; j++)
                 {
-                    if (j == i) continue; // Handled in the above code                  
-                    int k = (j > i) ? 3 - j + i : 2 - j + i;
-                    purityMatrix[i, j] = (k < inputCount && k > 0) ? purityValues[j, k] / 100 : 0; // Zero fill missing values
+                    if (j == i) continue; // Handled in the above code   
+                    double value = 0; // Zero fill;
+
+                    int k = (j > i) ? 2 - j + i : i - j + 1;
+
+                    if (k < inputCount && k >= 0)
+                        value = purityValues[j, k];
+                 
+                    purityMatrix[i, j] = value;
                 }
+
+                purityMatrix[i, i] = startvalue;
             }
 
             return new IsobaricTagPurityCorrection(purityMatrix);

@@ -68,14 +68,15 @@ namespace CSMSL.IO
             _variableMods.Add(name, modification);
         }
 
-        public void AddFixedModification(string chemicalFormula, ModificationSites sites)
+        public IMass AddFixedModification(string chemicalFormula, ModificationSites sites)
         {
-            AddFixedModification(new ChemicalFormula(chemicalFormula), sites);
+            return AddFixedModification(new ChemicalFormula(chemicalFormula), sites);
         }
 
-        public void AddFixedModification(IMass modification, ModificationSites sites)
+        public IMass AddFixedModification(IMass modification, ModificationSites sites)
         {
             _fixedMods.Add(new Tuple<IMass, ModificationSites>(modification, sites));
+            return modification;
         }
 
         protected virtual void SetFixedMods(AminoAcidPolymer peptide)
