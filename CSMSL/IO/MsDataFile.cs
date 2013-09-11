@@ -138,6 +138,17 @@ namespace CSMSL.IO
         public abstract int GetMsnOrder(int spectrumNumber);
 
         /// <summary>
+        /// Get the spectrum number of the parent scan that caused this scan to be executed.
+        /// Typically MS1s will return 0 and MS2s will return the preceding MS1 scan (if in DDA mode)
+        /// </summary>
+        /// <param name="spectrumNumber">The spectrum number to get the parent scan number of</param>
+        /// <returns>The spectrum number of the parent scan. 0 if no parent</returns>
+        public virtual int GetParentSpectrumNumber(int spectrumNumber)
+        {
+            return 0;
+        }
+
+        /// <summary>
         /// Get the MS Scan at the specific spectrum number.
         /// </summary>
         /// <param name="spectrumNumber">The spectrum number to get the MS Scan at</param>      

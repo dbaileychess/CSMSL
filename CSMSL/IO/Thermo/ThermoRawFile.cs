@@ -87,6 +87,12 @@ namespace CSMSL.IO.Thermo
             return msnOrder;
         }
 
+        public override int GetParentSpectrumNumber(int spectrumNumber)
+        {
+            object parentScanNumber = GetExtraValue(spectrumNumber, "Master Scan Number:");
+            return (int) parentScanNumber;
+        }
+
         private object GetExtraValue(int spectrumNumber, string filter)
         {
             object value = null;
