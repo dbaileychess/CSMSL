@@ -1657,11 +1657,11 @@
       <MSModSpec_residues_E>C</MSModSpec_residues_E>
     </MSModSpec_residues>
     <MSModSpec_neutralloss>
-      <MSMassSetSite>
-        <MSMassSetSite_monomass>97.976896</MSMassSetSite_monomass>
-        <MSMassSetSite_averagemass>97.9952</MSMassSetSite_averagemass>
-        <MSMassSetSite_n15mass>0</MSMassSetSite_n15mass>
-      </MSMassSetSite>
+      <MSMassSet>
+        <MSMassSet_monomass>97.976896</MSMassSet_monomass>
+        <MSMassSet_averagemass>97.9952</MSMassSet_averagemass>
+        <MSMassSet_n15mass>0</MSMassSet_n15mass>
+      </MSMassSet>
     </MSModSpec_neutralloss>
     <MSModSpec_unimod>21</MSModSpec_unimod>
     <MSModSpec_psi-ms>Phospho</MSModSpec_psi-ms>
@@ -1705,11 +1705,11 @@
       <MSModSpec_residues_E>H</MSModSpec_residues_E>
     </MSModSpec_residues>
     <MSModSpec_neutralloss>
-      <MSMassSetSite>
-        <MSMassSetSite_monomass>97.976896</MSMassSetSite_monomass>
-        <MSMassSetSite_averagemass>97.9952</MSMassSetSite_averagemass>
-        <MSMassSetSite_n15mass>0</MSMassSetSite_n15mass>
-      </MSMassSetSite>
+      <MSMassSet>
+        <MSMassSet_monomass>97.976896</MSMassSet_monomass>
+        <MSMassSet_averagemass>97.9952</MSMassSet_averagemass>
+        <MSMassSet_n15mass>0</MSMassSet_n15mass>
+      </MSMassSet>
     </MSModSpec_neutralloss>
     <MSModSpec_unimod>21</MSModSpec_unimod>
     <MSModSpec_psi-ms>Phospho</MSModSpec_psi-ms>
@@ -2060,11 +2060,11 @@
       <MSModSpec_residues_E>S</MSModSpec_residues_E>
     </MSModSpec_residues>
     <MSModSpec_neutralloss>
-      <MSMassSetSite>
-        <MSMassSetSite_monomass>97.976896</MSMassSetSite_monomass>
-        <MSMassSetSite_averagemass>97.9952</MSMassSetSite_averagemass>
-        <MSMassSetSite_n15mass>0</MSMassSetSite_n15mass>
-      </MSMassSetSite>
+      <MSMassSet>
+        <MSMassSet_monomass>97.976896</MSMassSet_monomass>
+        <MSMassSet_averagemass>97.9952</MSMassSet_averagemass>
+        <MSMassSet_n15mass>0</MSMassSet_n15mass>
+      </MSMassSet>
     </MSModSpec_neutralloss>
     <MSModSpec_unimod>21</MSModSpec_unimod>
     <MSModSpec_psi-ms>Phospho</MSModSpec_psi-ms>
@@ -2084,11 +2084,11 @@
       <MSModSpec_residues_E>T</MSModSpec_residues_E>
     </MSModSpec_residues>
     <MSModSpec_neutralloss>
-      <MSMassSetSite>
-        <MSMassSetSite_monomass>97.976896</MSMassSetSite_monomass>
-        <MSMassSetSite_averagemass>97.9952</MSMassSetSite_averagemass>
-        <MSMassSetSite_n15mass>0</MSMassSetSite_n15mass>
-      </MSMassSetSite>
+      <MSMassSet>
+        <MSMassSet_monomass>97.976896</MSMassSet_monomass>
+        <MSMassSet_averagemass>97.9952</MSMassSet_averagemass>
+        <MSMassSet_n15mass>0</MSMassSet_n15mass>
+      </MSMassSet>
     </MSModSpec_neutralloss>
     <MSModSpec_unimod>21</MSModSpec_unimod>
     <MSModSpec_psi-ms>Phospho</MSModSpec_psi-ms>
@@ -2108,11 +2108,11 @@
       <MSModSpec_residues_E>S</MSModSpec_residues_E>
     </MSModSpec_residues>
     <MSModSpec_neutralloss>
-      <MSMassSetSite>
-        <MSMassSetSite_monomass>2.016</MSMassSetSite_monomass>
-        <MSMassSetSite_averagemass>2.016</MSMassSetSite_averagemass>
-        <MSMassSetSite_n15mass>0</MSMassSetSite_n15mass>
-      </MSMassSetSite>
+      <MSMassSet>
+        <MSMassSet_monomass>2.016</MSMassSet_monomass>
+        <MSMassSet_averagemass>2.016</MSMassSet_averagemass>
+        <MSMassSet_n15mass>0</MSMassSet_n15mass>
+      </MSMassSet>
     </MSModSpec_neutralloss>
   </MSModSpec>
   <MSModSpec>
@@ -2130,11 +2130,11 @@
       <MSModSpec_residues_E>T</MSModSpec_residues_E>
     </MSModSpec_residues>
     <MSModSpec_neutralloss>
-      <MSMassSetSite>
-        <MSMassSetSite_monomass>2.016</MSMassSetSite_monomass>
-        <MSMassSetSite_averagemass>2.016</MSMassSetSite_averagemass>
-        <MSMassSetSite_n15mass>0</MSMassSetSite_n15mass>
-      </MSMassSetSite>
+      <MSMassSet>
+        <MSMassSet_monomass>2.016</MSMassSet_monomass>
+        <MSMassSet_averagemass>2.016</MSMassSet_averagemass>
+        <MSMassSet_n15mass>0</MSMassSet_n15mass>
+      </MSMassSet>
     </MSModSpec_neutralloss>
   </MSModSpec>
   <MSModSpec>

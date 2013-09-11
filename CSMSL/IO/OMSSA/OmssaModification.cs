@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.IO;
 using System.Linq;
 using System.Xml;
 using CSMSL.Chemistry;
@@ -20,7 +21,9 @@ namespace CSMSL.IO.OMSSA
             Modifications = new Dictionary<string, OmssaModification>();
 
             // Load in the default omssa mods
-            LoadOmssaModifications("Resources/mods.xml", false);         
+            var assembly = System.Reflection.Assembly.GetExecutingAssembly();
+      
+            LoadOmssaModifications(assembly.GetManifestResourceStream("CSMSL.IO.OMSSA.Resources.mods.xml"));
         }
         
         public int ID { get; set; }
@@ -49,6 +52,34 @@ namespace CSMSL.IO.OMSSA
         }
 
         private static readonly char[] _omssaModDelimiter = { ',', ';' };
+
+        public static void LoadOmssaModifications(Stream stream, bool userMod = true)
+        {
+            XmlDocument mods_xml = new XmlDocument();
+            mods_xml.Load(stream);
+            XmlNamespaceManager mods_xml_ns = new XmlNamespaceManager(mods_xml.NameTable);
+            mods_xml_ns.AddNamespace("omssa", mods_xml.ChildNodes[1].Attributes["xmlns"].Value);
+            foreach (XmlNode mod_node in mods_xml.SelectNodes("/omssa:MSModSpecSet/omssa:MSModSpec", mods_xml_ns))
+            {
+                string name = mod_node.SelectSingleNode("./omssa:MSModSpec_name", mods_xml_ns).FirstChild.Value;
+                int id = int.Parse(mod_node.SelectSingleNode("./omssa:MSModSpec_mod/omssa:MSMod", mods_xml_ns).FirstChild.Value);
+                double mono = double.Parse(mod_node.SelectSingleNode("./omssa:MSModSpec_monomass", mods_xml_ns).FirstChild.Value);
+                double average = double.Parse(mod_node.SelectSingleNode("./omssa:MSModSpec_averagemass", mods_xml_ns).FirstChild.Value);
+                ModificationSites sites = ModificationSites.None;
+                foreach (
+                    XmlNode node in
+                        mod_node.SelectNodes("./omssa:MSModSpec_residues/omssa:MSModSpec_residues_E", mods_xml_ns))
+                {
+                    string aa = node.FirstChild.Value;
+                    sites = sites.Set(aa[0]);
+                }
+                if (userMod)
+                    name += "*";
+                OmssaModification mod = new OmssaModification(name, id, mono, average, sites);
+                Modifications.Add(name, mod);
+                _modificationKeyDicitonary[id] = name;
+            }
+        }
 
         public static void LoadOmssaModifications(string file,  bool userMod = true)
         {
