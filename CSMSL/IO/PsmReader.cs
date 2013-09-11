@@ -14,7 +14,7 @@ namespace CSMSL.IO
         {
             FilePath = filePath;
             _proteins = new Dictionary<string, Protein>();
-            _fixedMods = new List<Tuple<IMass, ModificationSites>>();
+            _fixedMods = new List<Modification>();
             _variableMods = new Dictionary<string, IMass>();
             _dataFiles = new Dictionary<string, MSDataFile>();
             _extraColumns = new List<string>();
@@ -22,7 +22,7 @@ namespace CSMSL.IO
                        
         protected Dictionary<string, Protein> _proteins;
 
-        protected List<Tuple<IMass, ModificationSites>> _fixedMods;
+        protected List<Modification> _fixedMods;
         protected Dictionary<string, IMass> _variableMods;
         protected Dictionary<string, MSDataFile> _dataFiles;
 
@@ -67,23 +67,23 @@ namespace CSMSL.IO
         {
             _variableMods.Add(name, modification);
         }
-
-        public IMass AddFixedModification(string chemicalFormula, ModificationSites sites)
+    
+        public IMass AddFixedModification(Modification modification)
         {
-            return AddFixedModification(new ChemicalFormula(chemicalFormula), sites);
+            _fixedMods.Add(modification);
+            return modification;
         }
 
-        public IMass AddFixedModification(IMass modification, ModificationSites sites)
+        public virtual void AddFixedModifications(IEnumerable<Modification> modifications)
         {
-            _fixedMods.Add(new Tuple<IMass, ModificationSites>(modification, sites));
-            return modification;
+            _fixedMods.AddRange(modifications);
         }
 
         protected virtual void SetFixedMods(AminoAcidPolymer peptide)
         {
-            foreach (Tuple<IMass, ModificationSites> mods in _fixedMods)
+            foreach (Modification mod in _fixedMods)
             {
-                peptide.SetModification(mods.Item1, mods.Item2);
+                peptide.SetModification(mod);
             }
         }
 

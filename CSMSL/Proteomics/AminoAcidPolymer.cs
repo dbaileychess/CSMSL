@@ -60,14 +60,23 @@ namespace CSMSL.Proteomics
         private AminoAcid[] _aminoAcids;
         private string _sequenceWithMods;
         private string _sequence;
-
+        
+        /// <summary>
+        /// The internal flag to represent that the sequence with modifications have been changed and need to be updated
+        /// </summary>
         internal bool IsDirty { get; set; }
 
+        /// <summary>
+        /// The internal data store for the modifications (2 larger than the length to handle the N and C termini)
+        /// </summary>
         internal IMass[] Modifications
         {
             get { return _modifications; }
         }
 
+        /// <summary>
+        /// The internal data store for the amino acids
+        /// </summary>
         internal AminoAcid[] AminoAcids
         {
             get { return _aminoAcids; }
@@ -118,7 +127,6 @@ namespace CSMSL.Proteomics
             _cTerminus = isCterm ? aminoAcidPolymer.CTerminus : DefaultCTerminus;
 
             double monoMass =_nTerminus.MonoisotopicMass + _cTerminus.MonoisotopicMass;
-            //Array.Copy(aminoAcidPolymer._aminoAcids, firstResidue, _aminoAcids, 0, length);
            
             for (int i = 0; i < length; i++)
             {
@@ -175,15 +183,27 @@ namespace CSMSL.Proteomics
         /// </summary>
         public int Length { get; private set; }
         
+        /// <summary>
+        /// The total monoisotopic mass of this peptide and all of its modifications
+        /// </summary>
         public double MonoisotopicMass { get; private set; }
 
         #region Amino Acid Sequence
        
+        /// <summary>
+        /// Returns the amino acid sequence with all isoleucines (I) replaced with leucines (L);
+        /// </summary>
+        /// <returns>The amino acid sequence with all I's into L's</returns>
         public virtual string GetLeucineSequence()
         {
             return Sequence.Replace('I', 'L');
         }
 
+        /// <summary>
+        /// Checks if an amino acid residue with the value of 'residue' is contained in this polymer
+        /// </summary>
+        /// <param name="residue">The character code for the amino acid residue</param>
+        /// <returns>True if any amino acid residue is the same as the specified character</returns>
         public bool Contains(char residue)
         {
             return _aminoAcids.Any(aa => aa.Letter.Equals(residue));
@@ -201,6 +221,7 @@ namespace CSMSL.Proteomics
         {
             get
             {
+                // Don't store the string if we don't have too, just recreate it on the fly
                 if (!StoreSequenceString) 
                     return new string(_aminoAcids.Select(aa => aa.Letter).ToArray());
                 if (string.IsNullOrEmpty(_sequence))
@@ -218,6 +239,7 @@ namespace CSMSL.Proteomics
         {
             get
             {
+                // Don't store the string if we don't have too, just recreate it on the fly
                 if (!StoreSequenceString) 
                     return GetSequenceWithModifications();
                 if (!IsDirty && !string.IsNullOrEmpty(_sequenceWithMods)) 
@@ -593,6 +615,11 @@ namespace CSMSL.Proteomics
             ReplaceMod(residueNumber, mod);
         }
 
+        public void SetModification(Modification mod)
+        {
+            SetModification(mod, mod.Sites);
+        }
+
         /// <summary>
         /// 
         /// </summary>
@@ -962,7 +989,7 @@ namespace CSMSL.Proteomics
                 {
                     return peptideB.Fragment(types);
                 }
-                throw new ArgumentNullException("Both peptides cannot be null");
+                throw new ArgumentNullException("peptideA", "Cannot be null");
             }
 
             if (peptideB == null)
@@ -1100,7 +1127,6 @@ namespace CSMSL.Proteomics
             }
             return mass;
         }
-
         #endregion
     }
     

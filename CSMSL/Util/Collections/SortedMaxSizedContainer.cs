@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace CSMSL.Util.Collections
 {
-    public class SortedMaxSizedContainer<T>
+    public class SortedMaxSizedContainer<T> : IEnumerable<T>
     {
         /// <summary>
         /// The breaking point between using a linear search or a binary search.
@@ -161,6 +161,11 @@ namespace CSMSL.Util.Collections
                     throw new IndexOutOfRangeException();
                 return _items[index];
             }
+        }
+
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        {
+            return _items.GetEnumerator();
         }
     }
 }

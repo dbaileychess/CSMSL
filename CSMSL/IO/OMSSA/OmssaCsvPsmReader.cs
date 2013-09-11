@@ -6,8 +6,6 @@ using CsvHelper;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Xml;
-using CsvHelper.Configuration;
 
 namespace CSMSL.IO.OMSSA
 {
@@ -36,7 +34,7 @@ namespace CSMSL.IO.OMSSA
             OmssaModification modification = null;
             if (OmssaModification.TryGetModification(modID, out modification))
             {
-                _fixedMods.Add(new Tuple<IMass, ModificationSites>(modification, sites));
+                _fixedMods.Add(modification);
             }
             return modification;
         }
