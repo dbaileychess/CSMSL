@@ -53,7 +53,6 @@ namespace CSMSL.IO.OMSSA
 
         public string Modifications { get; set; }
 
-
         public int Charge { get; set; }
 
 

@@ -52,15 +52,15 @@ namespace CSMSL.IO.OMSSA
                 if (int.TryParse(modParts[1], out location))
                 {
                     SetVariableMods(peptide, modParts[0], location);
-
-                    //if ((_userDynamicMods != null && _userDynamicMods.TryGetValue(modParts[0], out mod)) || _dynamicMods.TryGetValue(modParts[0], out mod))
-                    //{
-                    //    peptide.SetModification(mod, location);
-                    //}
-                    //else
-                    //{
-                    //    throw new ArgumentException("Could not find the following OMSSA modification: " + modParts[0]);
-                    //}
+                    OmssaModification omssaModification;
+                    if (OmssaModification.TryGetModification(modParts[0], out omssaModification))
+                    {
+                        peptide.SetModification(omssaModification, location);
+                    }
+                    else
+                    {
+                        throw new ArgumentException("Could not find the following OMSSA modification: " + modParts[0]);
+                    }
                 }
                 else
                 {

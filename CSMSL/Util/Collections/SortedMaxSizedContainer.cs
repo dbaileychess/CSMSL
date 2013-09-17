@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace CSMSL.Util.Collections
 {
@@ -37,6 +38,11 @@ namespace CSMSL.Util.Collections
 
         public SortedMaxSizedContainer(int maxSize)
             : this(maxSize, Comparer<T>.Default) { }
+
+        public override string ToString()
+        {
+            return string.Format("Count = {0:N0} (Max = {1:N0})", Count, MaxSize);
+        }
 
         /// <summary>
         /// Adds an item to this container
@@ -150,7 +156,7 @@ namespace CSMSL.Util.Collections
 
         public IEnumerator<T> GetEnumerator()
         {
-            return ((IEnumerable<T>)_items).GetEnumerator();
+            return _items.Take(Count).GetEnumerator();
         }
 
         public T this[int index]
@@ -165,7 +171,7 @@ namespace CSMSL.Util.Collections
 
         System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
         {
-            return _items.GetEnumerator();
+            return _items.Take(Count).GetEnumerator();
         }
     }
 }

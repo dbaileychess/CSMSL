@@ -39,6 +39,8 @@ namespace CSMSL.Analysis.Identification
 
         public virtual MassTolerance PrecursorMassError { get; set; }
 
+        public virtual MassTolerance CorrectedPrecursorMassError { get; set; }
+
         private Dictionary<string, string> _extraData;
 
         public PeptideSpectralMatch(PeptideSpectralMatchScoreType type = PeptideSpectralMatchScoreType.LowerIsBetter)

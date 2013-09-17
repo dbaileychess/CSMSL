@@ -215,6 +215,8 @@ namespace CSMSL.IO
 
         public abstract double GetPrecusorMz(int spectrumNumber, int msnOrder = 2);
 
+        public abstract double GetPrecusorMz(int spectrumNumber, double searchMZ, int msnOrder = 2);
+
         public abstract double GetIsolationWidth(int spectrumNumber, int msnOrder = 2);
 
         public virtual MassRange GetIsolationRange(int spectrumNumber, int msnOrder = 2)

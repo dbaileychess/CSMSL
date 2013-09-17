@@ -23,7 +23,7 @@ namespace CSMSL.IO.OMSSA
             // Load in the default omssa mods
             var assembly = System.Reflection.Assembly.GetExecutingAssembly();
       
-            LoadOmssaModifications(assembly.GetManifestResourceStream("CSMSL.IO.OMSSA.Resources.mods.xml"));
+            LoadOmssaModifications(assembly.GetManifestResourceStream("CSMSL.IO.OMSSA.Resources.mods.xml"),false);
         }
         
         public int ID { get; set; }

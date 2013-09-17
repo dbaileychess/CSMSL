@@ -202,14 +202,25 @@ namespace CSMSL.IO.Thermo
             return mz;
         }
 
+        public override double GetPrecusorMz(int spectrumNumber, double searchMZ, int msnOrder = 2)
+        {
+            int parentScanNumber = GetParentSpectrumNumber(spectrumNumber);
+            MassSpectrum ms1Scan = GetMzSpectrum(parentScanNumber);
+            MZPeak peak = ms1Scan.GetClosestPeak(searchMZ, MassTolerance.FromDA(50));
+            if (peak != null)
+                return peak.MZ;
+            return double.NaN;
+        }
+
         public override double GetIsolationWidth(int spectrumNumber, int msnOrder = 2)
         {
             object width = GetExtraValue(spectrumNumber, string.Format("MS{0} Isolation Width:", msnOrder));
-            if (width is double)
-            {
-                return (double)width;
-            }
-            return (float)width;            
+            return Convert.ToDouble(width);
+            //if (width is double)
+            //{
+            //    return (double)width;
+            //}
+            //return (float)width;            
         }
 
         public override DissociationType GetDissociationType(int spectrumNumber, int msnOrder = 2)
