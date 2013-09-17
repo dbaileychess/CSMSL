@@ -41,13 +41,16 @@ namespace CSMSL.Proteomics
           {FragmentTypes.zdot, new ChemicalFormula("N-1H-1")},
         };
 
-        public Fragment(FragmentTypes type, int number, double monoisotopicMass, AminoAcidPolymer parent)
+        public Fragment(FragmentTypes type, int number, double monoisotopicMass, AminoAcidPolymer parent, IEnumerable<IMass> mods = null)
         {
             Type = type;
             Number = number;
             Parent = parent;
             MonoisotopicMass = monoisotopicMass + FragmentIonCaps[type].MonoisotopicMass;
+            Modifications = new List<IMass>(mods);
         }
+
+        public List<IMass> Modifications;
      
         public double MonoisotopicMass { get; private set; }
 

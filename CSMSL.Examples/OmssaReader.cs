@@ -22,8 +22,10 @@ namespace CSMSL.Examples
             using (PsmReader reader = new OmssaCsvPsmReader("Resources/Omssa_yeast.csv"))
             {               
                 reader.LoadProteins("Resources/yeast_uniprot_120226.fasta");
-                reader.AddFixedModification(NamedChemicalFormula.Carbamidomethyl, ModificationSites.C);
-                reader.AddFixedModification(NamedChemicalFormula.TMT6plex, ModificationSites.NPep | ModificationSites.K);                
+
+                reader.AddFixedModification(new Modification(NamedChemicalFormula.Carbamidomethyl.MonoisotopicMass,
+                    NamedChemicalFormula.Carbamidomethyl.Name, ModificationSites.C));
+                reader.AddFixedModification(new Modification(NamedChemicalFormula.TMT6plex.MonoisotopicMass,NamedChemicalFormula.TMT6plex.Name, ModificationSites.NPep | ModificationSites.K));                
                 reader.AddVariableModification(NamedChemicalFormula.Oxidation, "oxdiation of M");
                 psms = reader.ReadNextPsm().OrderBy(psm => psm.Score).ToList();
             }

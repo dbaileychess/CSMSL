@@ -19,6 +19,7 @@
 ///////////////////////////////////////////////////////////////////////////
 
 using System;
+using CSMSL.Chemistry;
 
 namespace CSMSL
 {
@@ -107,6 +108,21 @@ namespace CSMSL
         public static MassTolerance FromDA(double value)
         {
             return new MassTolerance(MassToleranceType.DA, value);
+        }
+
+        public static MassTolerance CalculatePrecursorMassError(double theoreticalMass, double observedMass, double difference = Constants.Carbon13 - Constants.Carbon,
+           MassToleranceType type = MassToleranceType.PPM)
+        {
+            double massError = observedMass - theoreticalMass;
+            double massOffset = Math.Round(massError / difference) * difference;
+            double experimentalNeutralMass = observedMass - massOffset;
+            return new MassTolerance(type, experimentalNeutralMass, theoreticalMass);
+        }
+
+        public static MassTolerance CalculatePrecursorMassError(double theoreticalMZ, double observedMZ, int charge, double difference = Constants.Carbon13 - Constants.Carbon, MassToleranceType type = MassToleranceType.PPM)
+        {
+            return CalculatePrecursorMassError(Mass.MassFromMz(theoreticalMZ, charge),
+                Mass.MassFromMz(observedMZ, charge), difference, type);
         }
 
         public override string ToString()

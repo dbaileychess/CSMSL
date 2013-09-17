@@ -124,6 +124,7 @@ namespace CSMSL.Spectral
             int indexm1 = index - 1;
 
             double minMZ = mean - tolerance;
+            double maxMZ = mean + tolerance;
             if (index >= Count)
             {
                 // only the indexm1 peak can be closer
@@ -134,9 +135,19 @@ namespace CSMSL.Spectral
                 }
 
                 return default(T);
+            } 
+            else if (index == 0)
+            {
+                // only the index can be closer
+                if (Peaks[index].X <= maxMZ)
+                {
+                    return Peaks[index];
+                }
+
+                return default(T);
             }
 
-            double maxMZ = mean + tolerance;
+            
             double p1 = Peaks[indexm1].X;
             double p2 = Peaks[index].X;
             if (p2 > maxMZ)

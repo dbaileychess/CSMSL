@@ -77,8 +77,8 @@ namespace CSMSL.Examples
                 psmReader.AddMSDataFile(dataFile);
 
                 // Set modifications
-                psmReader.AddFixedModification(NamedChemicalFormula.Carbamidomethyl, ModificationSites.C);
-                psmReader.AddFixedModification(tmt6plex, ModificationSites.K | ModificationSites.NPep);
+                //psmReader.AddFixedModification(NamedChemicalFormula.Carbamidomethyl, ModificationSites.C);
+                //psmReader.AddFixedModification(tmt6plex, ModificationSites.K | ModificationSites.NPep);
                 psmReader.AddVariableModification(NamedChemicalFormula.Oxidation, "oxidation of M");
                 psmReader.AddVariableModification(tmt6plex, "TMT_Tyrosine");
 

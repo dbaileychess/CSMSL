@@ -209,6 +209,27 @@ namespace CSMSL.Spectral
             }
         }
 
+        private int _parentScanNumber = -1;
+        public int ParentScanNumber
+        {
+            get
+            {
+                if(_parentScanNumber < 0)
+                {
+                    _parentScanNumber = ParentFile.GetParentSpectrumNumber(_spectrumNumber);
+                }
+                else
+                {
+                    throw new ArgumentException("The parent data file is closed");
+                }
+                return _parentScanNumber;
+            }
+            internal set
+            {
+                _parentScanNumber = value;
+            }
+        }
+
         public MSDataScan()
         {
 

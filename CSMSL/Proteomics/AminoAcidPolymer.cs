@@ -60,10 +60,27 @@ namespace CSMSL.Proteomics
         private AminoAcid[] _aminoAcids;
         private string _sequenceWithMods;
         private string _sequence;
-
+        
+        /// <summary>
+        /// The internal flag to represent that the sequence with modifications have been changed and need to be updated
+        /// </summary>
         internal bool IsDirty { get; set; }
 
-        internal IMass[] Modifications { get { return _modifications; } }
+        /// <summary>
+        /// The internal data store for the modifications (2 larger than the length to handle the N and C termini)
+        /// </summary>
+        internal IMass[] Modifications
+        {
+            get { return _modifications; }
+        }
+
+        /// <summary>
+        /// The internal data store for the amino acids
+        /// </summary>
+        internal AminoAcid[] AminoAcids
+        {
+            get { return _aminoAcids; }
+        }
 
         #region Constructors
 
@@ -110,7 +127,6 @@ namespace CSMSL.Proteomics
             _cTerminus = isCterm ? aminoAcidPolymer.CTerminus : DefaultCTerminus;
 
             double monoMass =_nTerminus.MonoisotopicMass + _cTerminus.MonoisotopicMass;
-            //Array.Copy(aminoAcidPolymer._aminoAcids, firstResidue, _aminoAcids, 0, length);
            
             for (int i = 0; i < length; i++)
             {
@@ -167,15 +183,27 @@ namespace CSMSL.Proteomics
         /// </summary>
         public int Length { get; private set; }
         
+        /// <summary>
+        /// The total monoisotopic mass of this peptide and all of its modifications
+        /// </summary>
         public double MonoisotopicMass { get; private set; }
 
         #region Amino Acid Sequence
        
+        /// <summary>
+        /// Returns the amino acid sequence with all isoleucines (I) replaced with leucines (L);
+        /// </summary>
+        /// <returns>The amino acid sequence with all I's into L's</returns>
         public virtual string GetLeucineSequence()
         {
             return Sequence.Replace('I', 'L');
         }
 
+        /// <summary>
+        /// Checks if an amino acid residue with the value of 'residue' is contained in this polymer
+        /// </summary>
+        /// <param name="residue">The character code for the amino acid residue</param>
+        /// <returns>True if any amino acid residue is the same as the specified character</returns>
         public bool Contains(char residue)
         {
             return _aminoAcids.Any(aa => aa.Letter.Equals(residue));
@@ -193,6 +221,7 @@ namespace CSMSL.Proteomics
         {
             get
             {
+                // Don't store the string if we don't have too, just recreate it on the fly
                 if (!StoreSequenceString) 
                     return new string(_aminoAcids.Select(aa => aa.Letter).ToArray());
                 if (string.IsNullOrEmpty(_sequence))
@@ -210,6 +239,7 @@ namespace CSMSL.Proteomics
         {
             get
             {
+                // Don't store the string if we don't have too, just recreate it on the fly
                 if (!StoreSequenceString) 
                     return GetSequenceWithModifications();
                 if (!IsDirty && !string.IsNullOrEmpty(_sequenceWithMods)) 
@@ -252,6 +282,11 @@ namespace CSMSL.Proteomics
         #endregion
 
         #region Fragmentation
+
+        public IEnumerable<Fragment> GetSiteDeterminingFragments(AminoAcidPolymer other, FragmentTypes type)
+        {
+            return GetSiteDeterminingFragments(this, other, type);
+        }
 
         public Fragment Fragment(FragmentTypes type, int number)
         {
@@ -307,12 +342,7 @@ namespace CSMSL.Proteomics
         {
             return Fragment(types, 1, Length - 1);
         }
-
-        //public IEnumerable<Fragment> Fragment(FragmentTypes types, int number)
-        //{
-        //    return Fragment(types, number, number);
-        //}
-
+   
         public IEnumerable<Fragment> Fragment(FragmentTypes types, int min, int max)
         {
             if (types == FragmentTypes.None)
@@ -328,17 +358,19 @@ namespace CSMSL.Proteomics
                 if (type == FragmentTypes.None || type == FragmentTypes.Internal) continue;
                 if ((types & type) == type)
                 {
+                    List<IMass> mods = new List<IMass>();
                     double monoMass = 0;
                     int start = min;
                     int end = max;
 
-                   if (type >= FragmentTypes.x)
+                    if (type >= FragmentTypes.x)
                     {
                         monoMass += CTerminus.MonoisotopicMass;
 
                         if (CTerminusModification != null)
                         {
                             monoMass += CTerminusModification.MonoisotopicMass;
+                            mods.Add(CTerminusModification);
                         }                           
                         for (int i = end; i >= start; i--)
                         {
@@ -347,8 +379,9 @@ namespace CSMSL.Proteomics
                             if (_modifications[i + 1] != null)
                             {
                                 monoMass += _modifications[i + 1].MonoisotopicMass;
+                                mods.Add(_modifications[i + 1]);
                             }
-                            yield return new Fragment(type, Length - i, monoMass, this);
+                            yield return new Fragment(type, Length - i, monoMass, this, mods);
                         }
                     }
                     else
@@ -358,6 +391,7 @@ namespace CSMSL.Proteomics
                         if (NTerminusModification != null)
                         {
                             monoMass += NTerminusModification.MonoisotopicMass;
+                            mods.Add(NTerminusModification);
                         }                            
 
                         for (int i = start; i <= end; i++)
@@ -367,8 +401,9 @@ namespace CSMSL.Proteomics
                             if (_modifications[i] != null)
                             {
                                 monoMass += _modifications[i].MonoisotopicMass;
+                                mods.Add(_modifications[i + 1]);
                             }
-                            yield return new Fragment(type, i, monoMass, this);
+                            yield return new Fragment(type, i, monoMass, this, mods);
                         }
                     }
                 }
@@ -378,6 +413,13 @@ namespace CSMSL.Proteomics
         #endregion
 
         #region Modifications
+        
+        public IMass[] GetModifications()
+        {
+            IMass[] mods = new IMass[_modifications.Length];
+            Array.Copy(_modifications, mods, _modifications.Length);
+            return mods;
+        }
 
         /// <summary>
         /// Gets or sets the modification of the C terminus on this amino acid polymer
@@ -573,6 +615,11 @@ namespace CSMSL.Proteomics
             ReplaceMod(residueNumber, mod);
         }
 
+        public void SetModification(Modification mod)
+        {
+            SetModification(mod, mod.Sites);
+        }
+
         /// <summary>
         /// 
         /// </summary>
@@ -738,6 +785,8 @@ namespace CSMSL.Proteomics
             }
             return true;
         }
+
+
 
         #region Private Methods
 
@@ -908,6 +957,8 @@ namespace CSMSL.Proteomics
                                 break;
                             case ' ':
                                 break;
+                            case '*':
+                                break;
                             default:
                                 throw new ArgumentException(string.Format("Amino Acid Letter {0} does not exist in the Amino Acid Dictionary", letter));
                         }
@@ -930,6 +981,28 @@ namespace CSMSL.Proteomics
         #endregion
 
         #region Statics
+
+        public static IEnumerable<Fragment> GetSiteDeterminingFragments(AminoAcidPolymer peptideA, AminoAcidPolymer peptideB, FragmentTypes types)
+        {
+            if (peptideA == null)
+            {
+                // Only b is not null, return all of its fragments
+                if (peptideB != null)
+                {
+                    return peptideB.Fragment(types);
+                }
+                throw new ArgumentNullException("peptideA", "Cannot be null");
+            }
+
+            if (peptideB == null)
+            {
+                return peptideA.Fragment(types);
+            }
+            HashSet<Fragment> aFrags = new HashSet<Fragment>(peptideA.Fragment(types));
+            HashSet<Fragment> bfrags = new HashSet<Fragment>(peptideB.Fragment(types));
+            aFrags.SymmetricExceptWith(bfrags);
+            return aFrags;
+        }
 
         public static IEqualityComparer<AminoAcidPolymer> CompareBySequence { get { return new PeptideSequenceComparer(); } }
 
@@ -1056,7 +1129,6 @@ namespace CSMSL.Proteomics
             }
             return mass;
         }
-
         #endregion
     }
     
