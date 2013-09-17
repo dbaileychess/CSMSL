@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Xml;
 using CSMSL.Chemistry;
 using CSMSL.Proteomics;
@@ -125,7 +126,26 @@ namespace CSMSL.IO.OMSSA
             }
         }
 
-    
+        public static string WriteModificationString(AminoAcidPolymer polymer)
+        {
+            IMass[] mods = polymer.GetModifications();
+            int count = mods.Length;
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < count; i++)
+            {
+                if (mods[i] == null)
+                    continue;
+                sb.Append(mods[i].ToString());
+                sb.Append(":");
+                sb.Append(i);
+                sb.Append(',');
+            }
+            if(sb.Length > 0) {
+                sb.Remove(sb.Length - 1, 1);
+            }
+            return sb.ToString();
+        }
+
 
         public static IEnumerable<OmssaModification> GetAllModifications()
         {

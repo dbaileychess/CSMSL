@@ -23,44 +23,33 @@ namespace CSMSL.IO.OMSSA
             Map(m => m.StopResidue).Name(" Stop");
             Map(m => m.GI).Name(" gi");
             Map(m => m.NistScore).Name(" NIST score");
-        }
+        }     
 
         public int SpectrumNumber { get; set; }
 
-
         public double EValue { get; set; }
-
 
         public double Mass { get; set; }
 
         public double TheoreticalMass { get; set; }
 
-
         public string Sequence { get; set; }
-
 
         public string Defline { get; set; }
 
-
         public string FileName { get; set; }
-
 
         public string Accession { get; set; }
 
-
         public double PValue { get; set; }
-
 
         public string Modifications { get; set; }
 
         public int Charge { get; set; }
 
-
         public int StartResidue { get; set; }
 
-
         public int StopResidue { get; set; }
-
 
         public int GI { get; set; }
 

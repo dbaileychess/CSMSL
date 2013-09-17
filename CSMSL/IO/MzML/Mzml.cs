@@ -371,5 +371,10 @@ namespace CSMSL.IO.MzML
             return convertedArray;
         }
 
+
+        public override double GetPrecusorMz(int spectrumNumber, double searchMZ, int msnOrder = 2)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
