@@ -206,6 +206,12 @@ namespace CSMSL.IO.Thermo
             return (float)width;            
         }
 
+        public double GetElapsedScanTime(int spectrumNumber)
+        {
+            object elapsedScanTime = GetExtraValue(spectrumNumber, "Elapsed Scan Time (sec):");
+            return (double)elapsedScanTime;
+        }
+
         public override DissociationType GetDissociationType(int spectrumNumber, int msnOrder = 2)
         {
             int type = 0;
