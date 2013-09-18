@@ -1,4 +1,5 @@
-﻿using CSMSL.Chemistry;
+﻿using System;
+using CSMSL.Chemistry;
 using CSMSL.Proteomics;
 
 namespace CSMSL
@@ -8,6 +9,11 @@ namespace CSMSL
         public static double ToMz(this IMass mass, int charge)
         {
             return Mass.MzFromMass(mass.MonoisotopicMass, charge);
+        }
+
+        public static bool MassEquals(this IMass mass1, IMass mass2)
+        {
+            return Math.Abs(mass1.MonoisotopicMass - mass2.MonoisotopicMass) < 0.00000000001;
         }
     }
 

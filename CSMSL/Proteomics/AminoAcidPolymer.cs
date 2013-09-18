@@ -830,7 +830,7 @@ namespace CSMSL.Proteomics
                 MonoisotopicMass += mod.MonoisotopicMass; // add the new mod mass
         }
 
-        private string GetSequenceWithModifications()
+        public string GetSequenceWithModifications(bool leucineSequence = false)
         {   
             StringBuilder modSeqSb = new StringBuilder(Length);
 
@@ -847,7 +847,10 @@ namespace CSMSL.Proteomics
             // Handle Amino Acid Residues
             for (int i = 0; i < Length; i++)
             {
-                modSeqSb.Append(_aminoAcids[i].Letter);
+                if (leucineSequence && _aminoAcids[i].Letter == 'I')
+                    modSeqSb.Append('L');
+                else
+                    modSeqSb.Append(_aminoAcids[i].Letter);
 
                 // Handle Amino Acid Modification (1-based)
                 if ((mod = _modifications[i + 1]) != null)  
