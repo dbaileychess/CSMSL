@@ -102,10 +102,8 @@ namespace CSMSL.IO.OMSSA
                     string aa = node.FirstChild.Value;
                     sites = sites.Set(aa[0]);
                 }
-                if (userMod)
-                    name += "*";
                 OmssaModification mod = new OmssaModification(name, id, mono, average, sites);
-                Modifications.Add(name, mod);
+                Modifications[name] = mod;
                 _modificationKeyDicitonary[id] = name;
             }
         }

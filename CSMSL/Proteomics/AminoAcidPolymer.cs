@@ -615,6 +615,15 @@ namespace CSMSL.Proteomics
             ReplaceMod(residueNumber, mod);
         }
 
+
+        public void SetModifications(IEnumerable<Modification> modifications)
+        {
+            foreach (Modification mod in modifications)
+            {
+                SetModification(mod, mod.Sites);
+            }
+        }
+
         public void SetModification(Modification mod)
         {
             SetModification(mod, mod.Sites);
@@ -1003,6 +1012,7 @@ namespace CSMSL.Proteomics
             }
             HashSet<Fragment> aFrags = new HashSet<Fragment>(peptideA.Fragment(types));
             HashSet<Fragment> bfrags = new HashSet<Fragment>(peptideB.Fragment(types));
+
             aFrags.SymmetricExceptWith(bfrags);
             return aFrags;
         }

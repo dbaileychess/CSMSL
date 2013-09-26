@@ -1,6 +1,7 @@
 ﻿using Agilent.MassSpectrometry.DataAnalysis;
 using Agilent.MassSpectrometry.DataAnalysis.Utilities;
 using CSMSL.IO;
+using CSMSL.Proteomics;
 using CSMSL.Spectral;
 using System;
 using System.IO;
@@ -12,17 +13,16 @@ namespace CSMSL.IO.Agilent
     {
         private IMsdrDataReader _msdr;
 
-        public AgilentDDirectory(string directoryPath, bool openImmediately = false)
-            : base(directoryPath, MsDataFileType.AgilentRawFile, openImmediately) { }       
+        public AgilentDDirectory(string directoryPath)
+            : base(directoryPath, MSDataFileType.AgilentRawFile) { }       
           
         public override void Open()
         {
-            if(!IsOpen)
-            {
-                _msdr = (IMsdrDataReader)new MassSpecDataReader();
-                _msdr.OpenDataFile(FilePath);
-                base.Open();
-            }
+            if (IsOpen) 
+                return;
+            _msdr = new MassSpecDataReader();
+            _msdr.OpenDataFile(FilePath);
+            base.Open();
         }
 
         public override void Dispose()
@@ -42,7 +42,7 @@ namespace CSMSL.IO.Agilent
 
         protected override int GetLastSpectrumNumber()
         {
-            return (int)(_msdr.MSScanFileInformation.TotalScansPresent);
+            return (int)(_msdr.MSScanFileInformation.TotalScansPresent);;
         }
 
         public override double GetRetentionTime(int spectrumNumber)
@@ -84,13 +84,10 @@ namespace CSMSL.IO.Agilent
             }
         }
 
-        public override Spectral.MassSpectrum GetMzSpectrum(int spectrumNumber)
+        public override MassSpectrum GetMzSpectrum(int spectrumNumber)
         {
             IBDASpecData spectrum = _msdr.GetSpectrum(spectrumNumber - 1);
-            int length = spectrum.YArray.GetLength(0);
-            double[] intensities = new double[length];
-            Array.Copy(spectrum.YArray, intensities, length);
-            return new MassSpectrum(spectrum.XArray, intensities);
+            return new MassSpectrum(spectrum.XArray, spectrum.YArray);
         }
 
         public override MZAnalyzerType GetMzAnalyzer(int spectrumNumber)
@@ -122,7 +119,7 @@ namespace CSMSL.IO.Agilent
         public override double GetIsolationWidth(int spectrumNumber, int msnOrder = 2)
         {
             string acquisition_method;
-            using(StreamReader acquisition_method_sr = new StreamReader(Path.Combine(_msdr.FileInformation.DataFileName, @"AcqData\AcqMethod.xml")))
+            using(StreamReader acquisition_method_sr = new StreamReader(Path.Combine(_msdr.FileInformation.DataFileName, @"/AcqData/AcqMethod.xml")))
             {
                 acquisition_method = acquisition_method_sr.ReadToEnd();
             }
@@ -134,9 +131,9 @@ namespace CSMSL.IO.Agilent
             return double.Parse(match.Groups[1].Value);
         }
 
-        public override Proteomics.DissociationType GetDissociationType(int spectrumNumber, int msnOrder = 2)
+        public override DissociationType GetDissociationType(int spectrumNumber, int msnOrder = 2)
         {
-            return Proteomics.DissociationType.CID;
+            return DissociationType.CID;
         }
 
         public override MassRange GetMzRange(int spectrumNumber)
@@ -185,6 +182,11 @@ namespace CSMSL.IO.Agilent
                 }
             }
             return num_transients * length_transient;  // may be off by a factor of two for extended dynamic range mode
+        }
+        
+        public override double GetResolution(int spectrumNumber)
+        {
+            return double.NaN;
         }
     }
 }

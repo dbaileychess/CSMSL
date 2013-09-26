@@ -223,82 +223,13 @@ namespace CSMSL.Analysis.Identification
             return Count(items, Comparer<TSource>.Default, maxFdr, removeDecoys, uniqueItems);
         }
 
-        public static int Count(IEnumerable<TSource> items, Comparer<TSource> comparer, double maxFdr = 0.01, bool removeDecoys = false, bool uniqueItems = false) 
+        public static int Count(IEnumerable<TSource> items, Comparer<TSource> comparer, double maxFdr = 0.01, bool removeDecoys = false, bool uniqueItems = false)
         {
-            //// Keep track of forward and decoy hits
-            long forward = 0;
-            long decoy = 0;
-
-            // Set the cutoff metrics to the default
-            TMetric storedCutoff = default(TMetric);
-            TMetric currentCutoff = default(TMetric);
-
-            // Set if the max FDR has been hit before to false (we are currently at a 0% FDR)
-            bool hitOnce = false;
-
-            // Sort the input data based on the comparer given
-            List<TSource> sorteditems = items.ToList();
-            sorteditems.Sort(comparer);
-            List<TSource> originalSortedItems = new List<TSource>(sorteditems);
-
-            // Filter away so only unique values (the best unique value) remains in the sorted list
-            if (uniqueItems)
-            {
-                sorteditems = sorteditems.Distinct().ToList();
-            }
-
-            // Problem could arise if the top hit is a decoy, so check if it is
-            if (sorteditems.Count > 0 && sorteditems[0].IsDecoy)
-            {
-                return 0;
-            }
-
-            // Loop over each item, from best scoring to worst (due to the above sort)
-            foreach (TSource item in sorteditems)
-            {
-                // Check to see if the item is a decoy or not
-                if (item.IsDecoy) decoy++;
-                else forward++;
-
-                // Calculate the local fdr rate
-                double fdr = decoy / (double)forward;
-
-                // Check to see if the local fdr rate is larger than the max
-                if (fdr > maxFdr)
-                {
-                    // If this is the first time reaching the fdr max
-                    if (!hitOnce)
-                    {
-                        // Save the cutoff value and mark that the fdr max has been hit once
-                        storedCutoff = currentCutoff;
-                        hitOnce = true;
-                    }
-                    else
-                    {
-                        // This is the second time hitting the MaxFDR, so we must exit
-                        // First check if to see if the stored cutoff is bigger than the current cutoff,
-                        // if so, set the stored cutoff to the current cutoff value
-                        if (storedCutoff.CompareTo(currentCutoff) > 0)
-                            storedCutoff = currentCutoff;
-                        break;
-                    }
-                }
-
-                // Set the cutoff value for the last item analyzed (which is the score metric)
-                currentCutoff = item.FdrScoreMetric;
-            }
-
-            // If the max fdr was never hit once, every item passes FDR filtering then return all items
-            if (!hitOnce)
-            {
-                if (removeDecoys)
-                    return originalSortedItems.Count(item => !item.IsDecoy);
-                return originalSortedItems.Count;
-            }
+            TMetric threshold = CalculateThreshold(items, comparer, maxFdr, uniqueItems);
 
             if (removeDecoys)
-                return originalSortedItems.Count(item => !item.IsDecoy && item.FdrScoreMetric.CompareTo(storedCutoff) <= 0);
-            return originalSortedItems.Count(item => item.FdrScoreMetric.CompareTo(storedCutoff) <= 0);
+                return items.Count(item => item.FdrScoreMetric.CompareTo(threshold) <= 0 && !item.IsDecoy);
+            return items.Count(item => item.FdrScoreMetric.CompareTo(threshold) <= 0);
         }
 
         public static TMetric CalculateThreshold(IEnumerable<TSource> items, double maxFdr = 0.01,
@@ -310,21 +241,17 @@ namespace CSMSL.Analysis.Identification
         public static TMetric CalculateThreshold(IEnumerable<TSource> items, Comparer<TSource> comparer,
             double maxFdr = 0.01, bool uniqueItems = false)
         {
-            // Keep track of forward and decoy hits
-            long forward = 0;
-            long decoy = 0;
-
             // Set the cutoff metrics to the default
             TMetric storedCutoff = default(TMetric);
-            TMetric currentCutoff = default(TMetric);
-
-            // Set if the max FDR has been hit before to false (we are currently at a 0% FDR)
-            bool hitOnce = false;
 
             // Sort the input data based on the comparer given
             List<TSource> sorteditems = items.ToList();
             sorteditems.Sort(comparer);
             List<TSource> originalSortedItems = new List<TSource>(sorteditems);
+            int count = sorteditems.Count;
+
+            if (count == 0)
+                return storedCutoff;
 
             // Filter away so only unique values (the best unique value) remains in the sorted list
             if (uniqueItems)
@@ -332,51 +259,49 @@ namespace CSMSL.Analysis.Identification
                 sorteditems = sorteditems.Distinct().ToList();
             }
 
-            // Problem could arise if the top hit is a decoy, so check if it is
-            if (sorteditems.Count > 0 && sorteditems[0].IsDecoy)
-            {
-                return storedCutoff;
-            }
+            // Keep track of forward and decoy hits
+            double forward = 0;
+            double decoy = 0;
+
+            double[] fdrs = new double[count];
+            double[] qvalues = new double[count];
 
             // Loop over each item, from best scoring to worst (due to the above sort)
-            foreach (TSource item in sorteditems)
+            for (int index = 0; index < count; index++)
             {
-                // Check to see if the item is a decoy or not
+                TSource item = sorteditems[index];
+
                 if (item.IsDecoy) decoy++;
                 else forward++;
 
                 // Calculate the local fdr rate
-                double fdr = decoy / (double)forward;
-
-                // Check to see if the local fdr rate is larger than the max
-                if (fdr > maxFdr)
-                {
-                    // If this is the first time reaching the fdr max
-                    if (!hitOnce)
-                    {
-                        // Save the cutoff value and mark that the fdr max has been hit once
-                        storedCutoff = currentCutoff;
-                        hitOnce = true;
-                    }
-                    else
-                    {
-                        // This is the second time hitting the MaxFDR, so we must exit
-                        // First check if to see if the stored cutoff is bigger than the current cutoff,
-                        // if so, set the stored cutoff to the current cutoff value
-                        if (storedCutoff.CompareTo(currentCutoff) > 0)
-                            storedCutoff = currentCutoff;
-                        break;
-                    }
-                }
-
-                // Set the cutoff value for the last item analyzed (which is the score metric)
-                currentCutoff = item.FdrScoreMetric;
+                double fdr = decoy/forward;
+                
+                fdrs[index] = fdr;
+                qvalues[index] = fdr;
             }
-            return storedCutoff;
+
+            double minQ = double.PositiveInfinity;
+            for (int index = count - 1; index >= 0; index--)
+            {
+                double fdr = fdrs[index];
+                if (fdr > minQ)
+                    qvalues[index] = minQ;
+                else
+                    minQ = qvalues[index];
+            }
+
+            for (int index = 0; index < count; index++)
+            {
+                if(qvalues[index] < maxFdr)
+                    continue;
+                return sorteditems[index-1].FdrScoreMetric;
+            }
+
+            return sorteditems[count-1].FdrScoreMetric;;
         }
 
         #endregion Static Methods
-
-   
+        
     }
 }

@@ -141,7 +141,7 @@ namespace CSMSL.Proteomics
                 // Create correct peptide mappings
                 foreach (Modification[] modArray in results)
                 {
-                    Peptide pep = new Peptide(peptide);
+                    Peptide pep = new Peptide(peptide, true);
                     for (int i = 0; i < modArray.Length; i++)
                     {
                         var mod = modArray[i];
@@ -239,7 +239,7 @@ namespace CSMSL.Proteomics
             for (long isoform = 0; isoform < isoforms; isoform++)
             {
                 // Create a new peptide based on the one passed in
-                Peptide pep = new Peptide(peptide, false);
+                Peptide pep = new Peptide(peptide, true);
 
                 long x = isoforms - isoform - 1;
                 long a = ptmsites;

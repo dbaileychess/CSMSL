@@ -43,10 +43,10 @@ namespace CSMSL.Examples
         }                
 
         private static void StartExamples()
-        {   
+        {
             // Examples coding
             //ChemicalFormulaExamples();
-            PeptideExamples();
+            //PeptideExamples();
                       
             // Example Objects
             //VennDiagramExamples();
@@ -61,7 +61,7 @@ namespace CSMSL.Examples
             //TMT6plexExample.Start();
 
             // Example IO
-            //MsDataFileExamples.Start();
+            MsDataFileExamples.Start();
 
             // Omssa Reader
             //OmssaReader.Start();

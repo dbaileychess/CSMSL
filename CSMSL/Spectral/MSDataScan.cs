@@ -87,7 +87,6 @@ namespace CSMSL.Spectral
         }
 
         private double _injectionTime = double.NaN;
-
         public virtual double InjectionTime
         {
             get
@@ -112,7 +111,6 @@ namespace CSMSL.Spectral
         }
 
         private double _retentionTime = double.NaN;
-
         public double RetentionTime
         {
             get
@@ -136,12 +134,12 @@ namespace CSMSL.Spectral
             }
         }
 
-        private Polarity _polarity = Polarity.Neutral;
+        private Polarity _polarity = Polarity.Unknown;
         public Polarity Polarity
         {
             get
             {
-                if (_polarity == Spectral.Polarity.Unknown)
+                if (_polarity == Polarity.Unknown)
                 {
                     if (ParentFile.IsOpen)
                     {
