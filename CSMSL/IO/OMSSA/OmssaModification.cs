@@ -34,12 +34,7 @@ namespace CSMSL.IO.OMSSA
         {
             ID = id;
         }
-         
-        public override string ToString()
-        {
-            return Name;
-        }
-        
+ 
         public static bool TryGetModification(int id, out OmssaModification modification)
         {
             string name;
@@ -108,9 +103,15 @@ namespace CSMSL.IO.OMSSA
             }
         }
 
+        public static IEnumerable<string> SplitModificationLine(string line)
+        {
+            return line.Split(_omssaModDelimiter, StringSplitOptions.RemoveEmptyEntries)
+                .Select(mod => mod.Split(':')[0]);
+        }
+
         public static IEnumerable<OmssaModification> ParseModificationLine(string line)
         {
-            foreach (string modname in line.Split(_omssaModDelimiter, StringSplitOptions.RemoveEmptyEntries).Select(mod => mod.Split(':')[0]))
+            foreach (string modname in SplitModificationLine(line))
             {
                 OmssaModification modification;
                 if (TryGetModification(modname, out modification))

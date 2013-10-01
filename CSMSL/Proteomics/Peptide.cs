@@ -119,7 +119,7 @@ namespace CSMSL.Proteomics
                 {
                     if (!allowedSites.TryGetValue(mod, out sites))
                     {
-                        allowedSites.Add(mod, mod.GetSites(peptide).ToList());
+                        allowedSites.Add(mod, mod.GetModifiableSites(peptide).ToList());
                     }
                 }
 
@@ -150,14 +150,15 @@ namespace CSMSL.Proteomics
 
                         if (i == 0)
                         {
-                            pep.NTerminusModification = mod;
-                        } else if (i == peptide.Length)
+                            pep.AddModification(mod, Terminus.N);
+                        }
+                        else if (i == peptide.Length)
                         {
-                            pep.CTerminusModification = mod;
+                            pep.AddModification(mod, Terminus.C);
                         }
                         else
                         {
-                            pep.SetModification(mod, i);
+                            pep.AddModification(mod, i);
                         }
 
                     }
@@ -227,7 +228,7 @@ namespace CSMSL.Proteomics
         public static IEnumerable<Peptide> GenerateIsoforms(Peptide peptide, Modification modification, long ptms)
         {
             // Get all the possible modified-residues' indices (zero-based)
-            List<int> sites = modification.GetSites(peptide).ToList();
+            List<int> sites = modification.GetModifiableSites(peptide).ToList();
 
             // Total number of PTM sites
             int ptmsites = sites.Count;
@@ -249,17 +250,18 @@ namespace CSMSL.Proteomics
                 for (int i = 0; i < ptms; i++)
                 {
                     long ans = Util.Combinatorics.LargestV(a, b, x);
-                    int index = (int)sites[(int)(ptmsites - ans - 1)];
+                    int index = sites[(int)(ptmsites - ans - 1)];
                     if (index == 0)
                     {
-                        pep.NTerminusModification = modification;
-                    } else if (index == pep.Length)
+                        pep.AddModification(modification, Terminus.N);
+                    } 
+                    else if (index > pep.Length)
                     {
-                        pep.CTerminusModification = modification;
+                        pep.AddModification(modification, Terminus.C);
                     }
                     else
                     {
-                        pep.SetModification(modification, index);
+                        pep.AddModification(modification, index);
                     }
                     x -= Util.Combinatorics.BinomCoefficient(ans, b);
                     a = ans;
@@ -268,10 +270,8 @@ namespace CSMSL.Proteomics
 
                 yield return pep;
             }
-
-            // All done!
-            yield break;
         }
+
     }
 
     class ModificationArrayComparer : IEqualityComparer<Modification[]>

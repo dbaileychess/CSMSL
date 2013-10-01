@@ -615,6 +615,40 @@ namespace CSMSL.Proteomics
             ReplaceMod(residueNumber, mod);
         }
 
+        /// <summary>
+        /// Adds the modification at the terminus of this amino acid polymer, combining modifications if a modification is already present
+        /// </summary>
+        /// <param name="mod">The modification to set</param>
+        /// <param name="terminus">The termini to set the mod at</param>
+        public virtual void AddModification(IMass mod, Terminus terminus)
+        {
+            IMass currentMod = null;
+            
+            if ((terminus & Terminus.N) == Terminus.N)
+            {
+                currentMod = NTerminusModification;
+                NTerminusModification = currentMod == null ? mod : new ModificationCollection(currentMod, mod);
+            }
+
+            if ((terminus & Terminus.C) == Terminus.C)
+            {
+                currentMod = CTerminusModification;
+                CTerminusModification = currentMod == null ? mod : new ModificationCollection(currentMod, mod);
+            }
+        }
+
+        /// <summary>
+        /// Adds the modification at specific sites on this amino acid polymer, combining modifications if a modification is already present
+        /// </summary>
+        /// <param name="mod">The modification to set</param>
+        /// <param name="residueNumber">The residue number to set the modification at</param>
+        public virtual void AddModification(IMass mod, int residueNumber)
+        {
+            if (residueNumber > Length || residueNumber < 1)
+                throw new IndexOutOfRangeException(string.Format("Residue number not in the correct range: [{0}-{1}] you specified: {2}", 1, Length, residueNumber));
+            IMass currentMod = _modifications[residueNumber];
+            ReplaceMod(residueNumber, currentMod == null ? mod : new ModificationCollection(currentMod, mod));
+        }
 
         public void SetModifications(IEnumerable<Modification> modifications)
         {
@@ -1145,7 +1179,7 @@ namespace CSMSL.Proteomics
         #endregion
     }
     
-    class PeptideSequenceComparer : IEqualityComparer<IAminoAcidSequence>
+    public class PeptideSequenceComparer : IEqualityComparer<IAminoAcidSequence>
     {
         public bool Equals(IAminoAcidSequence aap1, IAminoAcidSequence aap2)
         {
@@ -1157,5 +1191,17 @@ namespace CSMSL.Proteomics
             return aap.Sequence.GetHashCode();
         }
     }
-   
+
+    public class PeptideSequenceILComparer : IEqualityComparer<IAminoAcidSequence>
+    {
+        public bool Equals(IAminoAcidSequence aap1, IAminoAcidSequence aap2)
+        {
+            return aap1.GetLeucineSequence().Equals(aap2.GetLeucineSequence());
+        }
+
+        public int GetHashCode(IAminoAcidSequence aap)
+        {
+            return aap.GetLeucineSequence().GetHashCode();
+        }
+    }
 }

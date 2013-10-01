@@ -17,10 +17,10 @@ namespace CSMSL.Examples
         {
             Console.WriteLine("**MS I/O Examples**");
             Console.WriteLine("{0,-4} {1,3} {2,-6} {3,-5} {4,7} {5,-10} {6}", "SN", "Msn", "RT", "Polarity", "# Peaks", "Analyzer", "M/Z Range");
-
+     
             List<MSDataFile> exampleRawFiles = new List<MSDataFile>
                 {
-                    //new ThermoRawFile("Resources/ThermoRawFileMS1MS2.raw"),
+                    new ThermoRawFile("Resources/ThermoRawFileMS1MS2.raw"),
                     new AgilentDDirectory(@"Resources\AgilentDDirectoryMS1MS2.d"),
                     //new Mzml("Resources/ThermoRawFileMS1MS2_Profile.mzML"),
                     //new Mzml("Resources/ThermoRawFileMS1MS2_Centroided.mzML")

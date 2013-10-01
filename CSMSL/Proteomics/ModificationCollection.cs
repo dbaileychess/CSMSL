@@ -1,27 +1,35 @@
-﻿using CSMSL.Chemistry;
+﻿using System.Text;
+using CSMSL.Chemistry;
 using System.Collections.Generic;
 
 namespace CSMSL.Proteomics
 {
     public class ModificationCollection : ICollection<IMass>, IMass
     {
-        public string Name { get; set; }
-
         private readonly List<IMass> _modifications;
 
         public double MonoisotopicMass { get; private set; }
 
         public override string ToString()
-        {            
-            return Name;
+        {
+            StringBuilder sb = new StringBuilder();
+            foreach (IMass mod in _modifications)
+            {
+                sb.Append(mod);
+                sb.Append(" | ");
+            }
+            if (sb.Length > 0)
+            {
+                sb.Remove(sb.Length - 3, 3);
+            }
+            return sb.ToString();
         }
 
-        public ModificationCollection(string name = "")
+        public ModificationCollection(IMass mod1, IMass mod2)
         {
-            Name = name;
-            _modifications = new List<IMass>(2);
-            MonoisotopicMass = 0;
-        }        
+            _modifications = new List<IMass> {mod1, mod2};
+            MonoisotopicMass = mod1.MonoisotopicMass + mod2.MonoisotopicMass;
+        }
 
         public void Add(IMass item)
         {

@@ -44,6 +44,8 @@ namespace CSMSL.Examples
 
         private static void StartExamples()
         {
+
+            double ascore = CSMSL.Util.Combinatorics.AScore(5, 4, 1, 8);
             // Examples coding
             //ChemicalFormulaExamples();
             //PeptideExamples();

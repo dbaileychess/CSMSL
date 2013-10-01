@@ -43,15 +43,18 @@ namespace CSMSL.Analysis.Identification
             return string.Format("{0} Matches", Matches);
         }
 
-        public void MatchFragments(IEnumerable<Fragment> fragments, MassTolerance tolerance, params int[] chargeStates)
+        public void MatchFragments(IEnumerable<Fragment> fragments, MassTolerance tolerance, double percentCutoff, params int[] chargeStates)
         {
             List<IPeak> peaks = null;
+            double basePeakInt = MassSpectrum.BasePeak.Intensity;
+            double lowThreshold = basePeakInt*percentCutoff;
             foreach (Fragment fragment in fragments)
             {
                 foreach (int chargeState in chargeStates)
                 {
                     double mz = fragment.ToMz(chargeState);
-                    if (MassSpectrum.ContainsPeak(new MassRange(mz, tolerance)))
+                    var peak = MassSpectrum.GetClosestPeak(new MassRange(mz, tolerance));
+                    if (peak != null && peak.Intensity >= lowThreshold)
                     {
                         Add(new FragmentSpectralMatch(MassSpectrum, fragment, tolerance, chargeState));
                     }
