@@ -303,5 +303,30 @@ namespace CSMSL.IO.Thermo
             return resolution;
         }
 
+        public double GetElapsedScanTime(int spectrumNumber)
+        {
+            double elapsedScanTime = Convert.ToDouble(GetExtraValue(spectrumNumber, "Elapsed Scan Time (sec):")) * 1000;
+            return elapsedScanTime;
+        }
+
+        private Regex _etdReactTimeRegex = new Regex(@"@etd(\d+).(\d+)(\d+)", RegexOptions.Compiled);
+
+        public double GetETDReactionTime(int spectrumNumber)
+        {
+            string scanheader = GetScanFilter(spectrumNumber);
+            Match m = _etdReactTimeRegex.Match(scanheader);
+            if (m.Success)
+            {
+                string etdTime = m.ToString();
+                string Time = etdTime.Remove(0, 4);
+                double reactTime = double.Parse(Time);
+                return reactTime;
+            }
+            else
+            {
+                return double.NaN;
+            }
+        }
+
     }
 }

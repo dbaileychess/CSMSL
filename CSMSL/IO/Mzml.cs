@@ -12,7 +12,6 @@ using CSMSL.Spectral;
 using CSMSL.Proteomics;
 using System.Xml.Serialization;
 using System.Xml;
-using Ionic.Zlib;
 
 namespace CSMSL.IO
 {
@@ -365,10 +364,7 @@ namespace CSMSL.IO
         /// <returns>a decompressed, de-encoded double[]</returns>
         private static double[] ConvertBase64ToDoubles(byte[] bytes, bool zlibCompressed = false)
         {
-            if (zlibCompressed)
-            {
-                bytes = ZlibStream.UncompressBuffer(bytes); 
-            }      
+
          
             int length = bytes.Length / 8;
             double[] convertedArray = new double[length];
