@@ -7,19 +7,18 @@ namespace CSMSL.Util
         /// <summary>
         /// Calculates the exact cumulative binomial probability.
         /// </summary>
-        /// <param name="n">the number of successes</param>
+        /// <param name="s">the number of successes</param>
         /// <param name="p">the probability of success</param>
         /// <param name="N">the number of trials</param>
-        /// <returns>the probabilty of obtaining at least as many successes by random chance</returns>
-        public static double CumBinom(long n, double p, long N)
+        /// <returns>the probability of obtaining at least as many successes by random chance</returns>
+        public static double CumBinom(long s, double p, long N)
         {
             double prob = 0;
-
-            for (long k = n; k <= N; k++)
+            while(s <= N)
             {
-                prob += BinomCoefficient(N, k) * Math.Pow(p, k) * Math.Pow(1.0 - p, N - k);
+                prob += BinomCoefficient(N, s) * Math.Pow(p, s) * Math.Pow(1.0 - p, N - s);
+                s++;
             }
-
             return prob;
         }
 
@@ -35,10 +34,10 @@ namespace CSMSL.Util
             if (n == k) { return 1; }
             if (k > n - k) { k = n - k; }
             long c = 1;
-            for (long i = 0; i < k; i++)
+            for (long i = 1; i <= k; i++)
             {
-                c *= (n - i);
-                c /= (i + 1);
+                c *= n--;
+                c /= i;
             }
             return c;
         }
@@ -67,7 +66,7 @@ namespace CSMSL.Util
         /// <returns></returns>
         public static double AScore(int n1, int n2, double p, int N)
         {
-            // log(a) - log(b) = log(a/b)
+            // The difference of logs is the same as the log of the quotient log(a) - log(b) = log(a/b)
             return -10 * Math.Log10(CumBinom(n1, p, N) / CumBinom(n2, p, N));
         }
     }

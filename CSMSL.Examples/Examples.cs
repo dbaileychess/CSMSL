@@ -44,8 +44,6 @@ namespace CSMSL.Examples
 
         private static void StartExamples()
         {
-
-            double ascore = CSMSL.Util.Combinatorics.AScore(5, 4, 1, 8);
             // Examples coding
             //ChemicalFormulaExamples();
             //PeptideExamples();
@@ -63,7 +61,8 @@ namespace CSMSL.Examples
             //TMT6plexExample.Start();
 
             // Example IO
-            MsDataFileExamples.Start();
+            //MsDataFileExamples.Start();
+            MsDataFileExamples.WiffExample();
 
             // Omssa Reader
             //OmssaReader.Start();
@@ -113,10 +112,6 @@ namespace CSMSL.Examples
             // Simple Peptide creation
             Peptide peptide1 = new Peptide("ACDEFGHIKLMNPQRSTVWY");
             WritePeptideToConsole(peptide1);
-
-            Modification newMod = new Modification(25.243, "test", ModificationSites.A | ModificationSites.I | ModificationSites.NPep | ModificationSites.PepC);
-            Modification mod2 = new Modification(32.12, "test2", ModificationSites.D | ModificationSites.I);
-            List<Peptide> peptides = peptide1.GenerateIsoforms(newMod, mod2).ToList();
 
             // Fragmenting a peptide is simple, you can include as many fragment types as you want
             Console.WriteLine("{0,-4} {1,-20} {2,-5}", "Type", "Formula", "Mass");

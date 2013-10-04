@@ -401,7 +401,7 @@ namespace CSMSL.Proteomics
                             if (_modifications[i] != null)
                             {
                                 monoMass += _modifications[i].MonoisotopicMass;
-                                mods.Add(_modifications[i + 1]);
+                                mods.Add(_modifications[i]);
                             }
                             yield return new Fragment(type, i, monoMass, this, mods);
                         }

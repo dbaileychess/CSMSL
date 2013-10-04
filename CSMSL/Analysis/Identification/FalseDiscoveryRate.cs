@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 
 namespace CSMSL.Analysis.Identification
@@ -239,7 +240,7 @@ namespace CSMSL.Analysis.Identification
         }
 
         public static TMetric CalculateThreshold(IEnumerable<TSource> items, Comparer<TSource> comparer,
-            double maxFdr = 0.01, bool uniqueItems = false)
+            double maxFdr = 0.01, bool keepUniqueItemsOnly = false)
         {
             // Set the cutoff metrics to the default
             TMetric storedCutoff = default(TMetric);
@@ -247,14 +248,14 @@ namespace CSMSL.Analysis.Identification
             // Sort the input data based on the comparer given
             List<TSource> sorteditems = items.ToList();
             sorteditems.Sort(comparer);
-            List<TSource> originalSortedItems = new List<TSource>(sorteditems);
+
             int count = sorteditems.Count;
 
             if (count == 0)
                 return storedCutoff;
 
             // Filter away so only unique values (the best unique value) remains in the sorted list
-            if (uniqueItems)
+            if (keepUniqueItemsOnly)
             {
                 sorteditems = sorteditems.Distinct().ToList();
             }
@@ -281,6 +282,8 @@ namespace CSMSL.Analysis.Identification
                 qvalues[index] = fdr;
             }
 
+            // Start with the worst scoring item and calculating q-values by iterating backwards.
+            // Start with the minimum Q at positive infinity,
             double minQ = double.PositiveInfinity;
             for (int index = count - 1; index >= 0; index--)
             {
@@ -291,14 +294,16 @@ namespace CSMSL.Analysis.Identification
                     minQ = qvalues[index];
             }
 
+            // Filter the list until the q-value is > maximum false discovery rate allowed
             for (int index = 0; index < count; index++)
             {
-                if(qvalues[index] < maxFdr)
+                if(qvalues[index] <= maxFdr)
                     continue;
-                return sorteditems[index-1].FdrScoreMetric;
+                return sorteditems[index - 1].FdrScoreMetric;
             }
 
-            return sorteditems[count-1].FdrScoreMetric;;
+            // If we made it this far, everything passed
+            return sorteditems[count - 1].FdrScoreMetric;
         }
 
         #endregion Static Methods

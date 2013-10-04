@@ -260,9 +260,7 @@ namespace CSMSL.IO.Thermo
         public override double GetInjectionTime(int spectrumNumber)
         {
             object time = GetExtraValue(spectrumNumber, "Ion Injection Time (ms):");
-            if (time == null)
-                return double.NaN;
-            return (float) time;
+            return Convert.ToDouble(time);
         }
 
         public override double GetResolution(int spectrumNumber)

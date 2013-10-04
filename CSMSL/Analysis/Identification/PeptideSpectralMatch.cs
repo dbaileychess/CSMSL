@@ -37,9 +37,20 @@ namespace CSMSL.Analysis.Identification
 
         public virtual double IsolationMz { get; set; }
 
+        public virtual int IsotopeSelected { get; set; }
+
+        public virtual double AdjustedIsolationMass { get; set; }
+
         public virtual MassTolerance PrecursorMassError { get; set; }
 
         public virtual MassTolerance CorrectedPrecursorMassError { get; set; }
+
+        double IMass.MonoisotopicMass
+        {
+            get { return MonoisotopicMass; }
+        }
+
+        public double QValue { get; private set; }
 
         private Dictionary<string, string> _extraData;
 
