@@ -1,44 +1,188 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using CSMSL.Chemistry;
 using NUnit.Framework;
-using Should.Fluent;
-using CSMSL.Chemistry;
+using System;
 
 namespace CSMSL.Tests.Chemistry
 {
-    [TestFixture]
-    [Category("Mass")]
-    public sealed class MassTexsFixture
+    [TestFixture, Category("Mass")]
+    public class MassTestFixture
     {
-        private double massTolerance = 0.000000000001;
-
         [Test]
-        public void MassAndMZConversion()
+        public void DefaultMassMonoisotopic()
         {
-            double mz = 524.325;
-            int z = 2;
-            double mass = 1046.635447066376;
+            Mass m = new Mass();
 
-            // positive cases
-            Mass.MassFromMz(mz, z).Should().Be.InRange(mass - massTolerance, mass + massTolerance);
-            Mass.MzFromMass(mass, z).Should().Be.InRange(mz - massTolerance, mz + massTolerance);
-
-            // negative cases
-            z = -3;
-            mass = 1575.996829400436;
-            Mass.MassFromMz(mz, z).Should().Be.InRange(mass - massTolerance, mass + massTolerance);
-            Mass.MzFromMass(mass, z).Should().Be.InRange(mz - massTolerance, mz + massTolerance);
-            
-            // zero-cases
-            Mass.MzFromMass(0, 3).Should().Equal(0.0);
-            Mass.MzFromMass(mz, 0).Should().Equal(0.0);
-
-            Mass.MassFromMz(0, 3).Should().Equal(0.0);
-            Mass.MassFromMz(mass, 0).Should().Equal(0.0);
+            Assert.AreEqual(0.0, m.MonoisotopicMass);
         }
 
+        [Test]
+        public void DefaultMassAverage()
+        {
+            Mass m = new Mass();
+
+            Assert.AreEqual(0.0, m.Average);
+        }
+
+        [Test]
+        public void MonoisotopicOnlyMassInConstructor()
+        {
+            Mass m = new Mass(524.342);
+
+            Assert.AreEqual(524.342, m.MonoisotopicMass);
+        }
+
+        [Test]
+        public void AverageOnlyMassInConstructor()
+        {
+            Mass m = new Mass(average: 524.500);
+
+            Assert.AreEqual(524.500, m.Average);
+        }
+
+        [Test]
+        public void MonoisotopicMassInConstructor()
+        {
+            Mass m = new Mass(524.342, 524.500);
+
+            Assert.AreEqual(524.342, m.MonoisotopicMass);
+        }
+
+        [Test]
+        public void AverageMassInConstructor()
+        {
+            Mass m = new Mass(524.342, 524.500);
+
+            Assert.AreEqual(524.500, m.Average);
+        }
+
+        [Test]
+        public void MassEquality()
+        {
+            Mass m1 = new Mass(524.342, 524.500);
+            Mass m2 = new Mass(524.342, 524.500);
+
+            Assert.AreEqual(m1, m2);
+        }
+
+        [Test]
+        public void MassRefInequality()
+        {
+            Mass m1 = new Mass(524.342, 524.500);
+            Mass m2 = new Mass(524.342, 524.500);
+
+            Assert.AreNotSame(m1, m2);
+        }
+
+        [Test]
+        public void MassMonoisotopicInequality()
+        {
+            Mass m1 = new Mass(524.342, 524.500);
+            Mass m2 = new Mass(524.343, 524.500);
+
+            Assert.AreNotEqual(m1, m2);
+        }
+  
+        [Test]
+        public void MassBothInequality()
+        {
+            Mass m1 = new Mass(524.342, 524.500);
+            Mass m2 = new Mass(524.343, 524.501);
+
+            Assert.AreNotEqual(m1, m2);
+        }
+
+        [Test]
+        public void ConstructorIMass()
+        {
+            IMass m = new Mass(524.342, 524.500);
+            Mass m2 = new Mass(m);
+
+            Assert.AreEqual(m, m2);
+        }
+
+        [Test]
+        public void ConstructorIMassRefInequality()
+        {
+            IMass m = new Mass(524.342, 524.500);
+            Mass m2 = new Mass(m);
+
+            Assert.AreNotSame(m, m2);
+        }
+
+        [Test]
+        public void MassToMzPositiveCharge()
+        {
+            double mz = Mass.MzFromMass(1000, 2);
+            Assert.AreEqual(501.00727646681202, mz);
+        }
+
+        [Test]
+        public void MassToMzNegativeCharge()
+        {
+            double mz = Mass.MzFromMass(1000, -2);
+            Assert.AreEqual(498.99272353318798, mz);
+        }
+
+        [Test]
+        public void MassToMzZeroCharge()
+        {
+            var ex = Assert.Throws<DivideByZeroException>(() => Mass.MzFromMass(1000, 0));
+            Assert.That(ex.Message, Is.EqualTo("Charge cannot be zero"));
+        }
+
+        [Test]
+        public void MzToMassPostitiveCharge()
+        {
+            double mass = Mass.MassFromMz(524.3, 2);
+            Assert.AreEqual(1046.585447066376, mass);
+        }
+
+        [Test]
+        public void MzToMassNegativeCharge()
+        {
+            double mass = Mass.MassFromMz(524.3, -2);
+            Assert.AreEqual(1050.6145529336238, mass);
+        }
+
+        [Test]
+        public void MzTomassZeroCharge()
+        {
+            var ex = Assert.Throws<DivideByZeroException>(() => Mass.MassFromMz(524.3, 0));
+            Assert.That(ex.Message, Is.EqualTo("Charge cannot be zero"));
+        }
+
+        [Test]
+        public void MassIsIMass()
+        {
+            Mass m1 = new Mass(524.342, 524.500);
+
+            Assert.IsInstanceOf<IMass>(m1);
+        }
+
+        [Test]
+        public void MassObjectToMzPositiveCharge() 
+        {
+            Mass m1 = new Mass(1000);
+            double mz = m1.ToMz(2);
+
+            Assert.AreEqual(501.00727646681202, mz);
+        }
+
+        [Test]
+        public void MassObjectToMzNegativeCharge()
+        {
+            Mass m1 = new Mass(1000);
+            double mz = m1.ToMz(-2);
+
+            Assert.AreEqual(498.99272353318798, mz);
+        }
+
+        [Test]
+        public void MassObjectToMzZeroCharge()
+        {
+            Mass m1 = new Mass(1000);
+            var ex = Assert.Throws<DivideByZeroException>(() => m1.ToMz(0));
+            Assert.AreEqual(ex.Message, "Charge cannot be zero");
+        }
     }
 }

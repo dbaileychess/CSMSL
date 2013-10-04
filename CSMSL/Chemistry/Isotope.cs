@@ -18,8 +18,6 @@
 //  along with CSMSL.  If not, see <http://www.gnu.org/licenses/>.        /
 ///////////////////////////////////////////////////////////////////////////
 
-using System;
-
 namespace CSMSL.Chemistry
 {
 
@@ -48,7 +46,7 @@ namespace CSMSL.Chemistry
         /// <summary>
         /// Unique numerical ID used to optimized chemical formula construction 
         /// </summary>
-        internal int UniqueID { get; set; }
+        internal int UniqueId { get; set; }
 
         /// <summary>
         /// Is this the most abundant isotope of its parent element?

@@ -1,34 +1,37 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace CSMSL.Util.Collections
 {
-    public class SortedMaxSizedContainer<T>
+    public class SortedMaxSizedContainer<T> : IEnumerable<T>
     {
+        /// <summary>
+        /// The breaking point between using a linear search or a binary search.
+        /// </summary>
         private const int SizeForLinearOrBinaryInsert = 20;
 
-        private int _maxSize;
-        private int _currentSize;
-        private T[] _items;
-        private IComparer<T> _comparer;
+        private readonly T[] _items;
+        private readonly IComparer<T> _comparer;
 
         /// <summary>
-        /// The number of items
+        /// Gets the number of items that are currently stored in this container
         /// </summary>
-        public int Count { get { return _currentSize; } }
+        public int Count { get; private set; }
 
-        public int MaxSize { get { return _maxSize; } }
+        /// <summary>
+        /// Gets the max number of items to store in this container
+        /// </summary>
+        public int MaxSize { get; private set; }
 
         public SortedMaxSizedContainer(int maxSize, IComparer<T> comparer)
         {
             if (maxSize <= 0)
             {
-                throw new ArgumentOutOfRangeException("Max size must be a postive, non-zero value");
+                throw new ArgumentOutOfRangeException("maxSize", "Max size must be a positive, non-zero value");
             }
-            _maxSize = maxSize;
-            _currentSize = 0;
+            MaxSize = maxSize;
+            Count = 0;
             _items = new T[maxSize];
             _comparer = comparer;
         }
@@ -36,30 +39,39 @@ namespace CSMSL.Util.Collections
         public SortedMaxSizedContainer(int maxSize)
             : this(maxSize, Comparer<T>.Default) { }
 
+        public override string ToString()
+        {
+            return string.Format("Count = {0:N0} (Max = {1:N0})", Count, MaxSize);
+        }
+
         /// <summary>
-        /// Adds an item to this structure
+        /// Adds an item to this container
         /// </summary>
         /// <param name="item">The item to add</param>
         /// <returns>True if the item was added, false otherwise</returns>
         public bool Add(T item)
         {
-            if (_currentSize == 0)
+            if (Count == 0)
             {
                 _items[0] = item;
             }
-            else if (_currentSize == _maxSize)
+            else if (Count == MaxSize)
             {
-                if (_comparer.Compare(_items[_currentSize - 1], item) <= 0)
+                if (_comparer.Compare(_items[Count - 1], item) <= 0)
                 {
                     return false;
+                }
+                if (MaxSize == 1)
+                {
+                    _items[0] = item;
                 }
                 else
                 {
                     Insert(item);
-                    return true;
                 }
+                return true;
             }
-            else if (_currentSize == 1)
+            else if (Count == 1)
             {
                 if (_comparer.Compare(_items[0], item) <= 0)
                 {
@@ -73,23 +85,26 @@ namespace CSMSL.Util.Collections
             }
             else
             {
-                if (_comparer.Compare(_items[_currentSize - 1], item) <= 0)
+                if (_comparer.Compare(_items[Count - 1], item) <= 0)
                 {
-                    _items[_currentSize] = item;
+                    _items[Count] = item;
                 }
                 else
                 {
                     Insert(item);
                 }
             }
-            _currentSize++;
+            Count++;
             return true;
         }
 
+        /// <summary>
+        /// Remove all the items from this container
+        /// </summary>
         public void Clear()
         {
-            Array.Clear(_items, 0, _currentSize);
-            _currentSize = 0;
+            Array.Clear(_items, 0, Count);
+            Count = 0;
         }
 
         /// <summary>
@@ -99,40 +114,38 @@ namespace CSMSL.Util.Collections
         private void Insert(T item)
         {
             int start = 0;
-            if (_currentSize >= SizeForLinearOrBinaryInsert)
+            if (Count >= SizeForLinearOrBinaryInsert)
             {
-                start = Array.BinarySearch<T>(_items, 0, _currentSize, item, _comparer);
+                start = Array.BinarySearch(_items, 0, Count, item, _comparer);
                 if (start < 0)
                 {
                     start = ~start;
                 }
-                ShiftAndInsert(item, start, _currentSize);
+                ShiftAndInsert(item, start, Count);
                 return;
             }
-            else
+            for (int i = start; i < Count; i++)
             {
-                for (int i = start; i < _currentSize; i++)
+                if (_comparer.Compare(_items[i], item) > 0)
                 {
-                    if (_comparer.Compare(_items[i], item) > 0)
-                    {
-                        ShiftAndInsert(item, i, _currentSize);
-                        return;
-                    }
+                    ShiftAndInsert(item, i, Count);
+                    return;
                 }
-                _items[_currentSize] = item;
             }
+            _items[Count] = item;
         }
 
         /// <summary>
         /// 
         /// </summary>
+        /// <param name="item"></param>
         /// <param name="index"></param>
         /// <param name="maxIndex"></param>
         private void ShiftAndInsert(T item, int index, int maxIndex)
         {
-            if (maxIndex >= _maxSize)
+            if (maxIndex >= MaxSize)
             {
-                maxIndex = _maxSize - 1;
+                maxIndex = MaxSize - 1;
             }
             for (int i = maxIndex; i > index; i--)
             {
@@ -143,17 +156,22 @@ namespace CSMSL.Util.Collections
 
         public IEnumerator<T> GetEnumerator()
         {
-            return ((IEnumerable<T>)_items).GetEnumerator();
+            return _items.Take(Count).GetEnumerator();
         }
 
         public T this[int index]
         {
             get
             {
-                if (index < 0 || index > _currentSize)
-                    throw new ArgumentOutOfRangeException();
+                if (index < 0 || index > Count)
+                    throw new IndexOutOfRangeException();
                 return _items[index];
             }
+        }
+
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        {
+            return _items.Take(Count).GetEnumerator();
         }
     }
 }

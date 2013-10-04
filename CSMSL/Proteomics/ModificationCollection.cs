@@ -1,43 +1,46 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Text;
 using CSMSL.Chemistry;
+using System.Collections.Generic;
 
 namespace CSMSL.Proteomics
 {
     public class ModificationCollection : ICollection<IMass>, IMass
     {
-        public string Name { get; set; }
+        private readonly List<IMass> _modifications;
 
-        private List<IMass> _modifications;
-
-        private Mass _totalMass;
-
-        public Mass Mass { get { return _totalMass; } }
+        public double MonoisotopicMass { get; private set; }
 
         public override string ToString()
-        {            
-            return Name;
+        {
+            StringBuilder sb = new StringBuilder();
+            foreach (IMass mod in _modifications)
+            {
+                sb.Append(mod);
+                sb.Append(" | ");
+            }
+            if (sb.Length > 0)
+            {
+                sb.Remove(sb.Length - 3, 3);
+            }
+            return sb.ToString();
         }
 
-        public ModificationCollection(string name = "")
+        public ModificationCollection(IMass mod1, IMass mod2)
         {
-            Name = name;
-            _modifications = new List<IMass>(2);
-            _totalMass = new Mass();
-        }        
+            _modifications = new List<IMass> {mod1, mod2};
+            MonoisotopicMass = mod1.MonoisotopicMass + mod2.MonoisotopicMass;
+        }
 
         public void Add(IMass item)
         {
             _modifications.Add(item);
-            _totalMass.Add(item.Mass);
+            MonoisotopicMass += item.MonoisotopicMass;
         }
 
         public void Clear()
         {
             _modifications.Clear();
-            _totalMass = new Mass();
+            MonoisotopicMass = 0;
         }
 
         public bool Contains(IMass item)
@@ -64,7 +67,7 @@ namespace CSMSL.Proteomics
         {
             if (_modifications.Remove(item))
             {
-                _totalMass.Remove(item.Mass);
+                MonoisotopicMass -= item.MonoisotopicMass;
                 return true;
             }
             return false;
@@ -79,5 +82,6 @@ namespace CSMSL.Proteomics
         {
             return _modifications.GetEnumerator();
         }
+       
     }
 }

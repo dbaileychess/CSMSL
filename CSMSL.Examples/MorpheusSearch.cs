@@ -1,15 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Diagnostics;
+﻿using CSMSL.Analysis.Identification;
 using CSMSL.IO;
-using CSMSL.Chemistry;
-using CSMSL.Proteomics;
-using CSMSL.Spectral;
 using CSMSL.IO.Thermo;
+using CSMSL.Proteomics;
 using CSMSL.Util.Collections;
-using CSMSL.Analysis.Identification;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
 
 namespace CSMSL.Examples
 {
@@ -40,9 +37,9 @@ namespace CSMSL.Examples
             engine.ProductMassTolerance = MassTolerance.FromPPM(10);
          
             engine.LoadPeptides(peptides);
-            using (MSDataFile msDataFile = new ThermoRawFile("Resources/ThermoRawFileMS1MS2.raw", true))
+            using (MSDataFile msDataFile = new ThermoRawFile("Resources/ThermoRawFileMS1MS2.raw"))
             {
-                SortedMaxSizedContainer<PeptideSpectralMatch> psms = engine.Search(msDataFile.Where(scan => scan.MsnOrder > 1));
+                //SortedMaxSizedContainer<PeptideSpectralMatch> psms = engine.Search(msDataFile.Where(scan => scan.MsnOrder > 1));
                 
                 //foreach (MSDataScan scan in msDataFile.Where(scan => scan.MsnOrder > 1))
                 //{

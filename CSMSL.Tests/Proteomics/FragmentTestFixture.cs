@@ -1,123 +1,118 @@
-﻿using System;
+﻿using CSMSL.Chemistry;
+using CSMSL.Proteomics;
+using NUnit.Framework;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using CSMSL.Proteomics;
-using CSMSL.Chemistry;
-using NUnit.Framework;
-using Should.Fluent;
 
 namespace CSMSL.Tests.Proteomics
 {
-    [TestFixture]
-    [Category("Peptide Fragmentation")]
+    [TestFixture, Category("Peptide Fragmentation")]
     public sealed class FragmentTestFixture
     {
-        private Peptide MockPeptideEveryAminoAcid;
-        private Peptide MockTrypticPeptide;
+
+        private Peptide _mockPeptideEveryAminoAcid;
+       
 
         [SetUp]
         public void SetUp()
         {
-            MockPeptideEveryAminoAcid = new Peptide("ACDEFGHIKLMNPQRSTVWY");
-            MockTrypticPeptide = new Peptide("TTGSSSSSSSK");
+            _mockPeptideEveryAminoAcid = new Peptide("ACDEFGHIKLMNPQRSTVWY");
         }
        
         [Test]
-        [ExpectedException(typeof(IndexOutOfRangeException))]
         public void FragmentNumberToLow()
         {
-            Fragment fragment = MockPeptideEveryAminoAcid.CalculateFragment(FragmentTypes.b, 0);            
+            Assert.Throws<IndexOutOfRangeException>(() => _mockPeptideEveryAminoAcid.Fragment(FragmentTypes.b, 0));
         }
 
         [Test]
-        [ExpectedException(typeof(IndexOutOfRangeException))]
         public void FragmentNumberToHigh()
         {
-            Fragment fragment = MockPeptideEveryAminoAcid.CalculateFragment(FragmentTypes.b, 25);            
+            Assert.Throws<IndexOutOfRangeException>(() => _mockPeptideEveryAminoAcid.Fragment(FragmentTypes.b, 25));
         }
 
         [Test]
         public void FragmentName()
         {
-            Fragment fragment = MockPeptideEveryAminoAcid.CalculateFragment(FragmentTypes.a, 1);
-    
-            fragment.ToString().Should().Equal("a1");
+            Fragment fragment = _mockPeptideEveryAminoAcid.Fragment(FragmentTypes.a, 1);
+
+            Assert.AreEqual("a1", fragment.ToString());
         }
 
         [Test]
         public void FragmentAllBIons()
         {
-            List<Fragment> fragments = MockPeptideEveryAminoAcid.CalculateFragments(FragmentTypes.b).ToList();
+            List<Fragment> fragments = _mockPeptideEveryAminoAcid.Fragment(FragmentTypes.b).ToList();
 
-            fragments.Should().Count.Equals(19);
+            Assert.AreEqual(19,fragments.Count);
         }
 
         [Test]
         public void FragmentNTerminalMod()
         {
-            MockPeptideEveryAminoAcid.SetModification(NamedChemicalFormula.TMT6plex, Terminus.N);
-            Fragment fragment = MockPeptideEveryAminoAcid.CalculateFragment(FragmentTypes.a, 1);
+            _mockPeptideEveryAminoAcid.SetModification(NamedChemicalFormula.TMT6plex, Terminus.N);
+            Fragment fragment = _mockPeptideEveryAminoAcid.Fragment(FragmentTypes.a, 1);
             ChemicalFormula formula = new ChemicalFormula("C{13}4C10N{15}N2O2H25");
             
-            fragment.Mass.Should().Equal(formula.Mass);
+            Assert.AreEqual(fragment.MonoisotopicMass, formula.MonoisotopicMass);
         }
 
         [Test]
         public void FragmentCTerminalMod()
         {
-            MockPeptideEveryAminoAcid.SetModification(NamedChemicalFormula.TMT6plex, Terminus.C);
-            Fragment fragment = MockPeptideEveryAminoAcid.CalculateFragment(FragmentTypes.x, 1);          
+            _mockPeptideEveryAminoAcid.SetModification(NamedChemicalFormula.TMT6plex, Terminus.C);
+            Fragment fragment = _mockPeptideEveryAminoAcid.Fragment(FragmentTypes.x, 1);
 
-            fragment.Mass.Monoisotopic.Should().Equal(436.21608990639004);
+            Assert.AreEqual(436.21608990639004, fragment.MonoisotopicMass);
         }
 
-        [Test]       
+        [Test]
         public void FragmentChemicalFormulaAIon()
         {
-            Fragment fragment = MockPeptideEveryAminoAcid.CalculateFragment(FragmentTypes.a, 1);          
+            Fragment fragment = _mockPeptideEveryAminoAcid.Fragment(FragmentTypes.a, 1);
 
-            fragment.Mass.Monoisotopic.Should().Equal(43.042199165149988);
+            Assert.AreEqual(43.042199165149988, fragment.MonoisotopicMass);
         }
 
         [Test]
         public void FragmentChemicalFormulaBIon()
         {
-            Fragment fragment = MockPeptideEveryAminoAcid.CalculateFragment(FragmentTypes.b, 1);            
+            Fragment fragment = _mockPeptideEveryAminoAcid.Fragment(FragmentTypes.b, 1);
 
-            fragment.Mass.Monoisotopic.Should().Equal(71.037113784709987);
+            Assert.AreEqual(71.037113784709987, fragment.MonoisotopicMass);
         }
 
         [Test]
         public void FragmentChemicalFormulaCIon()
         {
-            Fragment fragment = MockPeptideEveryAminoAcid.CalculateFragment(FragmentTypes.c, 1);
- 
-            fragment.Mass.Monoisotopic.Should().Equal(88.063662885719992);
+            Fragment fragment = _mockPeptideEveryAminoAcid.Fragment(FragmentTypes.c, 1);
+
+            Assert.AreEqual(88.063662885719992, fragment.MonoisotopicMass);
         }
 
         [Test]
         public void FragmentChemicalFormulaXIon()
         {
-            Fragment fragment = MockPeptideEveryAminoAcid.CalculateFragment(FragmentTypes.x, 1);
+            Fragment fragment = _mockPeptideEveryAminoAcid.Fragment(FragmentTypes.x, 1);
 
-            fragment.Mass.Monoisotopic.Should().Equal(207.05315777167004);
+            Assert.AreEqual(207.05315777167004, fragment.MonoisotopicMass);
         }
 
         [Test]
         public void FragmentChemicalFormulaYIon()
         {
-            Fragment fragment = MockPeptideEveryAminoAcid.CalculateFragment(FragmentTypes.y, 1);
+            Fragment fragment = _mockPeptideEveryAminoAcid.Fragment(FragmentTypes.y, 1);
 
-            fragment.Mass.Monoisotopic.Should().Equal(181.07389321625004);
+            Assert.AreEqual(181.07389321625004, fragment.MonoisotopicMass);
         }
 
         [Test]
         public void FragmentChemicalFormulaZIon()
         {
-            Fragment fragment = MockPeptideEveryAminoAcid.CalculateFragment(FragmentTypes.z, 1);
+            Fragment fragment = _mockPeptideEveryAminoAcid.Fragment(FragmentTypes.z, 1);
 
-            fragment.Mass.Monoisotopic.Should().Equal(164.04734411524004);
+            Assert.AreEqual(164.04734411524004, fragment.MonoisotopicMass);
         }
     }
 }

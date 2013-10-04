@@ -26,24 +26,9 @@ namespace CSMSL.Spectral
 {
     public class MassSpectrum : Spectrum<MZPeak>, IMassSpectrum, IEnumerable<MZPeak>
     {
-        protected MZPeak _basePeak;
-        protected double _tic;
+        public MZPeak BasePeak { get; protected set; }
 
-        public MZPeak BasePeak
-        {
-            get
-            {
-                return _basePeak;
-            }
-        }
-
-        public double TotalIonCurrent
-        {
-            get
-            {
-                return _tic;
-            }
-        }
+        public double TotalIonCurrent { get; protected set; }
 
         public MassSpectrum Filter(double miniumSN)
         {
@@ -54,8 +39,7 @@ namespace CSMSL.Spectral
 
         public double GetNoiseLevel()
         {
-           
-            return _peaks.Average(p => p.Intensity);
+            return Peaks.Average(p => p.Intensity);
         }
 
         public MassSpectrum() { }        
@@ -68,12 +52,58 @@ namespace CSMSL.Spectral
         public MassSpectrum(double[] mzs, double[] intensities)          
         {
             LoadData(mzs, intensities);
-        }        
+        }
+
+        public MassSpectrum(double[] mzs, float[] intensities)
+        {
+            LoadData(mzs, intensities);
+        } 
 
         public MassSpectrum(IEnumerable<MZPeak> peaks)
-            : base(peaks)
         {
-            _tic = peaks.Sum(peak => peak.Intensity);
+            LoadData(peaks);
+        }
+
+        protected void LoadData(IEnumerable<MZPeak> peaks)
+        {
+            Peaks = peaks.ToArray();
+            Count = Peaks.Length;
+            TotalIonCurrent = 0;
+            double maxInt = 0;
+            for (int i = 0; i < Count; i++)
+            {
+                MZPeak peak = Peaks[i];
+                TotalIonCurrent += peak.Intensity;
+                if (peak.Intensity > maxInt)
+                {
+                    maxInt = peak.Intensity;
+                    BasePeak = peak;
+                }
+            }
+        }
+
+        private void LoadData(double[] mzs, float[] intensities)
+        {
+            int length;
+            if ((length = mzs.Length) != intensities.Length)
+            {
+                throw new FormatException("M/Z and Intensities arrays are not the same dimensions");
+            }
+            Count = length;
+            TotalIonCurrent = 0;
+            Peaks = new MZPeak[Count];
+            double maxInt = 0;
+            for (int i = 0; i < Count; i++)
+            {
+                double intensity = intensities[i];
+                Peaks[i] = new MZPeak(mzs[i], intensity);
+                TotalIonCurrent += intensity;
+                if (intensity > maxInt)
+                {
+                    maxInt = intensity;
+                    BasePeak = Peaks[i];
+                }
+            }
         }
 
         private void LoadData(double[] mzs, double[] intensities)
@@ -83,102 +113,72 @@ namespace CSMSL.Spectral
             {
                 throw new FormatException("M/Z and Intensities arrays are not the same dimensions");
             }
-            _count = length;
-            _tic = 0;
-            _peaks = new MZPeak[_count];
+            Count = length;
+            TotalIonCurrent = 0;
+            Peaks = new MZPeak[Count];
             double maxInt = 0;
-            for (int i = 0; i < _count; i++)
+            for (int i = 0; i < Count; i++)
             {
                 double intensity = intensities[i];
-                _peaks[i] = new MZPeak(mzs[i], intensity);
-                _tic += intensity;
+                Peaks[i] = new MZPeak(mzs[i], intensity);
+                TotalIonCurrent += intensity;
                 if (intensity > maxInt)
                 {
                     maxInt = intensity;
-                    _basePeak = _peaks[i];
+                    BasePeak = Peaks[i];
                 }
             }
         }
 
         private void LoadData(double[,] data)
         {
-            _count = data.GetLength(0);
-            _tic = 0;
-            _peaks = new MZPeak[_count];
+            Count = data.GetLength(0);
+            TotalIonCurrent = 0;
+            Peaks = new MZPeak[Count];
             double maxInt = 0;
-            for (int i = 0; i < _count; i++)
+            for (int i = 0; i < Count; i++)
             {
                 double intensity = data[i, 1];
-                _peaks[i] = new MZPeak(data[i, 0], intensity);
-                _tic += intensity;
+                Peaks[i] = new MZPeak(data[i, 0], intensity);
+                TotalIonCurrent += intensity;
                 if (intensity > maxInt)
                 {
                     maxInt = intensity;
-                    _basePeak = _peaks[i];
+                    BasePeak = Peaks[i];
                 }
             }
         }
 
+        public override Spectrum<MZPeak> Clone()
+        {
+            return new MassSpectrum(Peaks);
+        }
 
         MassSpectrum IMassSpectrum.MassSpectrum
         {
             get { return this; }
         }
 
+        public double[] GetMasses()
+        {
+            return Peaks.Select(p => p.MZ).ToArray();
+        }
+
+        public double[] GetIntensities()
+        {
+            return Peaks.Select(p => p.Intensity).ToArray();
+        }
+
         public IEnumerator<MZPeak> GetEnumerator()
         {
-            return ((MZPeak[])_peaks).ToList().GetEnumerator();
+            return Peaks.ToList().GetEnumerator();
         }
 
         System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
         {
-            return _peaks.GetEnumerator();
+            return Peaks.GetEnumerator();
         }
-
-        public MZPeak GetClosestPeak(MassRange mzRange)
-        {
-            List<MZPeak> peaks = new List<MZPeak>();
-            if (TryGetPeaks(mzRange, out peaks))
-            {
-                double mz = mzRange.Mean;
-                if (peaks.Count == 1)
-                {
-                    return peaks[0];
-                }
-                else if (peaks.Count == 2)
-                {
-                    if (Math.Abs(peaks[0].MZ - mz) < Math.Abs(peaks[1].MZ - mz))
-                    {
-                        return peaks[0];
-                    }
-                    else
-                    {
-                        return peaks[1];
-                    }
-                }
-                else
-                {
-
-                    double smallestDiff = double.MaxValue;
-                    MZPeak bestPeak = null;
-
-                    foreach (MZPeak peak in peaks)
-                    {
-                        double diff = Math.Abs(peak.MZ - mz);
-                        if (diff < smallestDiff)
-                        {
-                            smallestDiff = diff;
-                            bestPeak = peak;
-                        }
-                    }
-                    return bestPeak;
-                }
-            }
-            else
-            {
-                return null;
-            }
-        }
+        
     }   
     
 }

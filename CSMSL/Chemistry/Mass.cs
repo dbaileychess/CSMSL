@@ -27,7 +27,7 @@ namespace CSMSL.Chemistry
         /// <summary>
         /// The mass of all the isotopes (in unified atomic mass units)
         /// </summary>
-        public double Monoisotopic { get; internal set; }
+        public double MonoisotopicMass { get; internal set; }
 
         /// <summary>
         /// The average mass of all the elements (in unified atomic mass units)
@@ -35,11 +35,11 @@ namespace CSMSL.Chemistry
         public double Average { get; internal set;}   
 
         public Mass(IMass item)
-            : this(item.Mass.Monoisotopic, item.Mass.Average) { }
+            : this(item.MonoisotopicMass, 0) { }
                
         public Mass(double monoisotopic = 0, double average = 0)
         {
-            Monoisotopic = monoisotopic;
+            MonoisotopicMass = monoisotopic;
             Average = average;
         }
 
@@ -49,11 +49,11 @@ namespace CSMSL.Chemistry
         /// <param name="item">The item which possesses a mass</param>
         public void Add(IMass item)
         {
-            if (item != null)
-            {
-                Monoisotopic += item.Mass.Monoisotopic;
-                Average += item.Mass.Average;
-            }
+            if (item == null)
+                return;
+
+            MonoisotopicMass += item.MonoisotopicMass;
+            //Average += item.Mass.Average;
         }
 
         /// <summary>
@@ -62,11 +62,11 @@ namespace CSMSL.Chemistry
         /// <param name="item">The item which possesses a mass</param>
         public void Add(Mass item)
         {
-            if (item != null)
-            {
-                Monoisotopic += item.Monoisotopic;
-                Average += item.Average;
-            }
+            if (item == null)
+                return;
+
+            MonoisotopicMass += item.MonoisotopicMass;
+            Average += item.Average;
         }
 
         /// <summary>
@@ -75,11 +75,11 @@ namespace CSMSL.Chemistry
         /// <param name="item">The item which possesses a mass</param>
         public void Remove(Mass item)
         {
-            if (item != null)
-            {
-                Monoisotopic -= item.Monoisotopic;
-                Average -= item.Average;
-            }
+            if (item == null) 
+                return;
+
+            MonoisotopicMass -= item.MonoisotopicMass;
+            Average -= item.Average;
         }
 
         /// <summary>
@@ -89,74 +89,70 @@ namespace CSMSL.Chemistry
         /// <returns>The m/z for the moniosotopic mass at a given charge state</returns>
         public double ToMz(int charge)
         {
-            return MzFromMass(Monoisotopic, charge);
+            return MzFromMass(MonoisotopicMass, charge);
         }
 
         public override string ToString()
         {
-            return Monoisotopic.ToString("G5");            
+            return MonoisotopicMass.ToString("G5");            
         }
 
         public int CompareTo(Mass other)
         {
-            return Monoisotopic.CompareTo(other.Monoisotopic);
+            return MonoisotopicMass.CompareTo(other.MonoisotopicMass);
         }
                 
         public bool Equals(Mass other)
         {
-            return Monoisotopic.Equals(other.Monoisotopic);
+            return MonoisotopicMass.Equals(other.MonoisotopicMass);
         }
 
         public override bool Equals(object obj)
         {
-            Mass other = obj as Mass;
-            if (other != null)
-            {
-                return Equals(other);
-            }
-            return false;           
+            var other = obj as Mass;
+            return other != null && Equals(other);
         }
 
         public override int GetHashCode()
         {
-            return Monoisotopic.GetHashCode();
+            return MonoisotopicMass.GetHashCode();
         }
 
-        Mass IMass.Mass
-        {
-            get { return this; }
-        }
+        //double IMass.MonoisotopicMass
+        //{
+        //    get { return MonoisotopicMass; }
+        //}
 
         #region Static Methods
 
         public static Mass operator +(Mass left, IMass right)
         {
-            return new Mass(left.Monoisotopic + right.Mass.Monoisotopic, left.Average + right.Mass.Average);
+            return new Mass(left.MonoisotopicMass + right.MonoisotopicMass, 0);
         }
 
         public static Mass operator -(Mass left, IMass right)
         {
-            return new Mass(left.Monoisotopic - right.Mass.Monoisotopic, left.Average - right.Mass.Average);
+            return new Mass(left.MonoisotopicMass - right.MonoisotopicMass,0);
         }
 
         public static Mass operator /(Mass left, int right)
         {
-            return new Mass(left.Monoisotopic / right, left.Average / right);
+            return new Mass(left.MonoisotopicMass / right, 0);
         }
 
         public static Mass operator /(Mass left, double right)
         {
-            return new Mass(left.Monoisotopic / right, left.Average / right);
+            return new Mass(left.MonoisotopicMass / right,0);
         }
 
         public static Mass operator *(Mass left, int right)
         {
-            return new Mass(left.Monoisotopic * right, left.Average * right);
+            return new Mass(left.MonoisotopicMass * right, 0);
         }
 
         public static Mass operator *(Mass left, double right)
         {
-            return new Mass(left.Monoisotopic * right, left.Average * right);
+            return new Mass(left.MonoisotopicMass * right, 0);
         }
 
         /// <summary>
@@ -165,10 +161,11 @@ namespace CSMSL.Chemistry
         /// <param name="mz">The given m/z</param>
         /// <param name="charge">The given charge</param>    
         /// <returns>The mass</returns>
-        public static double MassFromMz(double mz, int charge )
+        public static double MassFromMz(double mz, int charge)
         {
-            if (mz == 0) return 0;
-            return Math.Abs(charge) * mz - charge * Constants.PROTON;
+            if (charge == 0)
+                throw new DivideByZeroException("Charge cannot be zero");
+            return Math.Abs(charge) * mz - charge * Constants.Proton;
         }
 
         /// <summary>
@@ -179,25 +176,13 @@ namespace CSMSL.Chemistry
         /// <returns>The m/z</returns>
         public static double MzFromMass(double mass, int charge)
         {
-            if (mass == 0 || charge == 0) return 0;
-            return mass / Math.Abs(charge) + Math.Sign(charge) * Constants.PROTON;
+            if (charge == 0)
+                throw new DivideByZeroException("Charge cannot be zero");
+            return mass / Math.Abs(charge) + Math.Sign(charge) * Constants.Proton;
         }
-
-        ///// <summary>
-        ///// Calculates the spacing of isotopes (C13 primarily) in m/z space at a given
-        ///// charge state
-        ///// </summary>
-        ///// <param name="charge">The charge state to calculate the spacing in</param>
-        ///// <returns>The distance (in Th) between successive isotopes</returns>
-        //public static double GetPeakSpacing(int charge)
-        //{
-        //    return (Constants.CARBON13 - Constants.CARBON) / Math.Abs(charge);
-        //}
 
         #endregion Static Methods
 
-
-
-
     }
+   
 }

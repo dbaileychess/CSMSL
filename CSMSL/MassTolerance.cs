@@ -19,14 +19,12 @@
 ///////////////////////////////////////////////////////////////////////////
 
 using System;
+using CSMSL.Chemistry;
 
 namespace CSMSL
 {
     public class MassTolerance
     {
-        private MassToleranceType _type;
-        private double _value;
-
         /// <summary>
         /// 
         /// </summary>
@@ -34,23 +32,59 @@ namespace CSMSL
         /// <param name="value"></param>
         public MassTolerance(MassToleranceType type, double value)
         {
-            _type = type;
-            _value = value;
+            Type = type;
+            Value = value;
         }
 
         public MassTolerance(MassToleranceType type, double experimental, double theoretical)
             : this(type, GetTolerance(experimental, theoretical, type)) { }
 
-        public MassToleranceType Type
+        public MassToleranceType Type { get; set; }
+
+        public double Value { get; set; }
+
+        public MassRange GetMassRange(double mass)
         {
-            get { return _type; }
-            set { _type = value; }
+            double tol;
+            switch (Type)
+            {
+                case MassToleranceType.MMU:
+                    tol = Value/2000.0;
+                    break;
+                case MassToleranceType.PPM:
+                    tol = Value * mass / 2e6;
+                    break;
+                default:
+                    tol = Value / 2.0;
+                    break;
+            }
+            return new MassRange(mass - tol, mass + tol);
         }
 
-        public double Value
+        public double GetMinimumValue(double mass)
         {
-            get { return _value; }
-            set { _value = value; }
+            switch (Type)
+            {
+                case MassToleranceType.MMU:
+                    return mass - Value / 2000.0;
+                case MassToleranceType.PPM:
+                    return mass * (1 - (Value / 2e6));
+                default:
+                    return mass - Value / 2.0;
+            }
+        }
+
+        public double GetMaximumValue(double mass)
+        {
+            switch (Type)
+            {
+                case MassToleranceType.MMU:
+                    return mass + Value / 2000.0;
+                case MassToleranceType.PPM:
+                    return mass * (1 + (Value / 2e6));
+                default:
+                    return mass + Value / 2.0;
+            }
         }
 
         public static double GetTolerance(double experimental, double theoretical, MassToleranceType type)
@@ -61,12 +95,11 @@ namespace CSMSL
                     return (experimental - theoretical) * 1000.0;
                 case MassToleranceType.PPM:
                     return (experimental - theoretical) / theoretical * 1000000.0;
-                case MassToleranceType.DA:
                 default:
                     return experimental - theoretical;
             }
         }
-
+        
         public static MassTolerance FromPPM(double value)
         {
             return new MassTolerance(MassToleranceType.PPM, value);
@@ -77,9 +110,24 @@ namespace CSMSL
             return new MassTolerance(MassToleranceType.DA, value);
         }
 
+        public static MassTolerance CalculatePrecursorMassError(double theoreticalMass, double observedMass, double difference = Constants.Carbon13 - Constants.Carbon,
+           MassToleranceType type = MassToleranceType.PPM)
+        {
+            double massError = observedMass - theoreticalMass;
+            double massOffset = Math.Round(massError / difference) * difference;
+            double experimentalNeutralMass = observedMass - massOffset;
+            return new MassTolerance(type, experimentalNeutralMass, theoreticalMass);
+        }
+
+        public static MassTolerance CalculatePrecursorMassError(double theoreticalMZ, double observedMZ, int charge, double difference = Constants.Carbon13 - Constants.Carbon, MassToleranceType type = MassToleranceType.PPM)
+        {
+            return CalculatePrecursorMassError(Mass.MassFromMz(theoreticalMZ, charge),
+                Mass.MassFromMz(observedMZ, charge), difference, type);
+        }
+
         public override string ToString()
         {
-            return string.Format("{0:f4} {1}", _value, Enum.GetName(typeof(MassToleranceType), _type));
+            return string.Format("{0:f4} {1}", Value, Enum.GetName(typeof(MassToleranceType), Type));
         }
     }
 }

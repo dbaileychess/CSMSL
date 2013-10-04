@@ -1,18 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace CSMSL.Spectral
 {
     public class Spectrum<T> where T : IPeak
     {
-        protected int _count;
-        protected T[] _peaks;       
+        protected T[] Peaks;       
 
         protected Spectrum() 
         {
-            _count = 0;         
+            Count = 0;         
         }
 
         public Spectrum(IEnumerable<T> peaks)            
@@ -20,29 +18,44 @@ namespace CSMSL.Spectral
         {
             LoadPeaks(peaks);
         }
-        
-        public int Count
+
+        public T FirstPeak
         {
-            get
-            {
-                return _count;
-            }
+            get { return Count == 0 ? default(T) : Peaks[0]; }
         }
 
-        public bool ContainsPeaks(IRange<double> range)
+        public T LastPeak
         {
-            return ContainsPeaks(range.Minimum, range.Maximum);
+            get { return Count == 0 ? default(T) : Peaks[Count-1]; }
         }
 
-        public bool ContainsPeaks(double min, double max)
+        public int Count { get; protected set; }
+
+        public bool ContainsPeak()
         {
-            int index = Array.BinarySearch(_peaks, min);
+            return Count > 0;
+        }
+
+        public bool ContainsPeak(IRange<double> range)
+        {
+            return ContainsPeak(range.Minimum, range.Maximum);
+        }
+
+        public bool ContainsPeak(double min, double max)
+        {
+            if (Count == 0)
+                return false;
+
+            int index = Array.BinarySearch(Peaks, min);
             if (index < 0)
                 index = ~index;
 
-            if (index >= _peaks.Length || _peaks[index].X > max)
-                return false;
-            return true;          
+            return (index < Count && Peaks[index].X <= max);
+        }
+
+        public virtual Spectrum<T> Clone()
+        {
+            return new Spectrum<T>(Peaks);
         }
         
         public List<T> GetPeaks(IRange<double> range)
@@ -54,8 +67,24 @@ namespace CSMSL.Spectral
 
         public List<T> GetPeaks(double minMZ, double maxMZ)
         {
-            List<T> peaks = null;
-            TryGetPeaks(minMZ, maxMZ, out peaks);
+            if (Count == 0)
+                return null;
+
+            int index = Array.BinarySearch(Peaks, minMZ);
+            if (index < 0)
+                index = ~index;
+            
+            T peak;
+            if (index >= Count || (peak = Peaks[index]).X > maxMZ)
+                return null;
+
+            var peaks = new List<T>();
+            do
+            {
+                peaks.Add(peak);
+                index++;
+            } while (index < Count && (peak = Peaks[index]).X <= maxMZ);
+
             return peaks;
         }
 
@@ -66,62 +95,85 @@ namespace CSMSL.Spectral
 
         public bool TryGetPeaks(double minX, double maxX, out List<T> peaks)
         {
-            int index = Array.BinarySearch(_peaks, minX);
-            if (index < 0)
-                index = ~index;
-
-            peaks = new List<T>();
-            T peak;
-            if (index >= _peaks.Length || (peak = _peaks[index]).X > maxX) 
-                return false;
-
-            do
-            {
-                peaks.Add(peak);
-                index++;
-            } while (index < _peaks.Length && (peak = _peaks[index]).X <= maxX);
-
-            return true;
+            peaks = GetPeaks(minX, maxX);
+            return peaks != null;
         }
 
-        public bool RemovePeaks(IEnumerable<IRange<double>> ranges)
+        public T GetClosestPeak(MassRange massRange)
         {
-            int removed = 0;
-            IPeak peak;
-            foreach (IRange<double> range in ranges)
+            return GetClosestPeak(massRange.Mean, massRange.Width);
+        }
+
+        public T GetClosestPeak(double mean, MassTolerance tolerance)
+        {
+            return GetClosestPeak(mean, tolerance.GetMassRange(mean).Width);
+        }
+
+        public T GetClosestPeak(double mean, double tolerance)
+        {
+            if (Count == 0)
+                return default(T);
+            
+            int index = Array.BinarySearch(Peaks, mean);
+
+            if (index >= 0)
+                return Peaks[index];
+     
+            index = ~index;
+
+            int indexm1 = index - 1;
+
+            double minMZ = mean - tolerance;
+            double maxMZ = mean + tolerance;
+            if (index >= Count)
             {
-                int index = Array.BinarySearch(_peaks, range.Minimum);
-                if (index < 0)
-                    index = ~index;      
+                // only the indexm1 peak can be closer
+
+                if (indexm1 >= 0 && Peaks[indexm1].X >= minMZ)
+                {
+                    return Peaks[indexm1];
+                }
+
+                return default(T);
+            } 
+            else if (index == 0)
+            {
+                // only the index can be closer
+                if (Peaks[index].X <= maxMZ)
+                {
+                    return Peaks[index];
+                }
+
+                return default(T);
             }
 
-            return removed > 0;
+            
+            double p1 = Peaks[indexm1].X;
+            double p2 = Peaks[index].X;
+            if (p2 > maxMZ)
+            {
+                if (p1 >= minMZ)
+                    return Peaks[indexm1];
+                return default(T);
+            }
+            if (p1 >= minMZ)
+            {
+                if (mean - p1 > p2 - mean)
+                    return Peaks[index];
+                return Peaks[indexm1];
+            }
+            return Peaks[index];
         }
-
-        public Spectrum<T> Clean(IEnumerable<IRange<double>> ranges)
-        {
-            Spectrum<T> spec = new Spectrum<T>(_peaks);
-            spec.RemovePeaks(ranges);
-            return spec;
-        }
-
+        
         private void LoadPeaks(IEnumerable<T> peaks)
         {
-            _peaks = peaks.ToArray();
-            _count = _peaks.Length;       
+            Peaks = peaks.ToArray();
+            Count = Peaks.Length;       
         }
         
         public override string ToString()
         {
             return string.Format("{0:G0} Peaks", Count);
         }
-    
-        public void Clear()
-        {
-            if (_peaks != null)
-                Array.Clear(_peaks, 0, _peaks.Length);
-            _count = 0;
-        }
-       
     }
 }

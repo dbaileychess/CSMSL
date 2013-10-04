@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using CSMSL.Chemistry;
+﻿using CSMSL.Chemistry;
 
 namespace CSMSL.Analysis.Quantitation
 {
@@ -24,7 +20,7 @@ namespace CSMSL.Analysis.Quantitation
         {
             get
             {
-                return _reporterFormula.Mass.Monoisotopic;
+                return _reporterFormula.Mass.MonoisotopicMass;
             }
         }
         

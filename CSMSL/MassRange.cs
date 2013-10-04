@@ -1,29 +1,23 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace CSMSL
+﻿namespace CSMSL
 {
     public class MassRange : Range<double>, IRange<double>
     {
-        protected double _mean;
+        private double _mean;
 
-        protected double _width;
+        private double _width;
 
         public MassRange()
             : this(0, 0) { }
 
         public MassRange(double minimum, double maximum)
+            : base(minimum, maximum)
         {
-            _min = minimum;
-            _max = maximum;
-            _width = _max - _min;
-            _mean = (_max + _min) / 2.0;
+            _width = base.Maximum - base.Minimum;
+            _mean = (base.Maximum + base.Minimum) / 2.0;
         }
 
-        public MassRange(MassRange range)
-            : this(range._min, range._max) { }
+        public MassRange(IRange<double> range)
+            : this(range.Minimum, range.Maximum) { }
 
         public MassRange(double mean, MassTolerance tolerance)
         {
@@ -33,38 +27,46 @@ namespace CSMSL
 
         private void SetTolerance(MassTolerance tolerance)
         {
+            if (tolerance == null)
+            {
+                base.Minimum = base.Maximum = _mean;
+                _width = 0.0;
+                return;
+            }
+
+            double value = System.Math.Abs(tolerance.Value);
+
             switch (tolerance.Type)
             {
                 default:
-                case MassToleranceType.DA:
-                    _min = _mean - tolerance.Value / 2;
-                    _max = _mean + tolerance.Value / 2;
+                    base.Minimum = _mean - value / 2.0;
+                    base.Maximum = _mean + value / 2.0;
                     break;
 
                 case MassToleranceType.MMU:
-                    _min = _mean - tolerance.Value / 2000;
-                    _max = _mean + tolerance.Value / 2000;
+                    base.Minimum = _mean - value / 2000.0;
+                    base.Maximum = _mean + value / 2000.0;
                     break;
 
                 case MassToleranceType.PPM:
-                    _min = _mean * (1 - (tolerance.Value / 2e6));
-                    _max = _mean * (1 + (tolerance.Value / 2e6));
+                    base.Minimum = _mean * (1 - (value / 2e6));
+                    base.Maximum = _mean * (1 + (value / 2e6));
                     break;
             }
-            _width = _max - _min;
+            _width = base.Maximum - base.Minimum;
         }
 
         public new double Maximum
         {
             get
             {
-                return _max;
+                return base.Maximum;
             }
             set
             {
-                _max = value;
-                _width = _max - _min;
-                _mean = (_max + _min) / 2.0;
+                base.Maximum = value;
+                _width = base.Maximum - base.Minimum;
+                _mean = (base.Maximum + base.Minimum) / 2.0;
             }
         }
 
@@ -77,8 +79,8 @@ namespace CSMSL
             set
             {
                 _mean = value;
-                _min = _mean - (_width / 2.0);
-                _max = _mean + (_width / 2.0);
+                base.Minimum = _mean - (_width / 2.0);
+                base.Maximum = _mean + (_width / 2.0);
             }
         }
 
@@ -86,13 +88,13 @@ namespace CSMSL
         {
             get
             {
-                return _min;
+                return base.Minimum;
             }
             set
             {
-                _min = value;
-                _width = _max - _min;
-                _mean = (_max + _min) / 2.0;
+                base.Minimum = value;
+                _width = base.Maximum - base.Minimum;
+                _mean = (base.Maximum + base.Minimum) / 2.0;
             }
         }
 
@@ -105,8 +107,8 @@ namespace CSMSL
             set
             {
                 _width = value;
-                _min = _mean - (_width / 2.0);
-                _max = _mean + (_width / 2.0);
+                base.Minimum = _mean - (_width / 2.0);
+                base.Maximum = _mean + (_width / 2.0);
             }
         }
 

@@ -1,5 +1,5 @@
-﻿using System;
-using CSMSL.IO;
+﻿using CSMSL.IO;
+using System;
 
 namespace CSMSL.Spectral
 {
@@ -87,7 +87,6 @@ namespace CSMSL.Spectral
         }
 
         private double _injectionTime = double.NaN;
-
         public virtual double InjectionTime
         {
             get
@@ -112,7 +111,6 @@ namespace CSMSL.Spectral
         }
 
         private double _retentionTime = double.NaN;
-
         public double RetentionTime
         {
             get
@@ -136,12 +134,12 @@ namespace CSMSL.Spectral
             }
         }
 
-        private Polarity _polarity = Polarity.Neutral;
+        private Polarity _polarity = Polarity.Unknown;
         public Polarity Polarity
         {
             get
             {
-                if (_polarity == Spectral.Polarity.Unknown)
+                if (_polarity == Polarity.Unknown)
                 {
                     if (ParentFile.IsOpen)
                     {
@@ -206,6 +204,27 @@ namespace CSMSL.Spectral
             internal set
             {
                 _mzRange = value;
+            }
+        }
+
+        private int _parentScanNumber = -1;
+        public int ParentScanNumber
+        {
+            get
+            {
+                if(_parentScanNumber < 0)
+                {
+                    _parentScanNumber = ParentFile.GetParentSpectrumNumber(_spectrumNumber);
+                }
+                else
+                {
+                    throw new ArgumentException("The parent data file is closed");
+                }
+                return _parentScanNumber;
+            }
+            internal set
+            {
+                _parentScanNumber = value;
             }
         }
 

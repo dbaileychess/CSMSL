@@ -1,40 +1,17 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace CSMSL.Spectral
 {
     public class ChromatographicPeak : IPeak
     {
-        protected double _time;
+        public double Time { get; protected set; }
 
-        public double Time
-        {
-            get
-            {
-                return _time;
-            }
-        }
-
-        protected double _intensity;
-
-        public double Intensity
-        {
-            get
-            {
-                return _intensity;
-            }
-            private set
-            {
-                _intensity = value;
-            }
-        }
+        public double Intensity { get; protected set; }
 
         public ChromatographicPeak(double time, double intensity)
         {
-            _time = time;
-            _intensity = intensity;
+            Time = time;
+            Intensity = intensity;
         }
 
         public void CombinePoints(ChromatographicPeak otherPoint)
@@ -43,7 +20,7 @@ namespace CSMSL.Spectral
             {
                 throw new ArgumentException("The two chromatogram points don't have the same time");
             }
-            this._intensity += otherPoint.Intensity;           
+            Intensity += otherPoint.Intensity;           
         }
 
         public override string ToString()
@@ -68,7 +45,7 @@ namespace CSMSL.Spectral
 
         public int CompareTo(object other)
         {
-            throw new NotImplementedException();            
+            return 0;
         }
 
         double IPeak.X

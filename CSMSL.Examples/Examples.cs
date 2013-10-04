@@ -18,23 +18,19 @@
 //  along with CSMSL.  If not, see <http://www.gnu.org/licenses/>.        /
 ///////////////////////////////////////////////////////////////////////////
 
-using System;
-using System.Diagnostics;
 using System.Collections.Generic;
 using System.Linq;
-using CSMSL;
 using CSMSL.Chemistry;
 using CSMSL.Proteomics;
 using CSMSL.Util.Collections;
-using CSMSL.IO;
-using CSMSL.Spectral;
-using CSMSL.Analysis.Quantitation;
+using System;
+using System.Diagnostics;
 
 namespace CSMSL.Examples
 {
     internal class Examples
     {
-        private static void Main(string[] args)
+        private static void Main()
         {
             Console.WriteLine("==CSMSL Examples==");
             Stopwatch watch = new Stopwatch();
@@ -47,7 +43,9 @@ namespace CSMSL.Examples
         }                
 
         private static void StartExamples()
-        {   
+        {
+
+            double ascore = CSMSL.Util.Combinatorics.AScore(5, 4, 1, 8);
             // Examples coding
             //ChemicalFormulaExamples();
             //PeptideExamples();
@@ -56,7 +54,7 @@ namespace CSMSL.Examples
             //VennDiagramExamples();
             
             // Example programs
-            //TrypticDigestion.Start(Protease.Trypsin);
+            //TrypticDigestion.Start(minLength: 5, maxLength: 50, protease:Protease.Trypsin);
 
             // Example Protein Grouping
             //ProteinGroupingExample.Start(Protease.Trypsin);
@@ -64,7 +62,7 @@ namespace CSMSL.Examples
             // Example TMT 6-plex quantitation
             //TMT6plexExample.Start();
 
-            //Example IO
+            // Example IO
             MsDataFileExamples.Start();
 
             // Omssa Reader
@@ -72,6 +70,12 @@ namespace CSMSL.Examples
 
             // MS/MS searching
             //MorpheusSearch.Start(Protease.Trypsin);
+
+            // Writing data to files
+            //FileOutputExamples.Start();
+
+            //Purity Correction
+            //TMT6plexExample.PurityCorrection();
         }
 
    
@@ -109,15 +113,18 @@ namespace CSMSL.Examples
             // Simple Peptide creation
             Peptide peptide1 = new Peptide("ACDEFGHIKLMNPQRSTVWY");
             WritePeptideToConsole(peptide1);
-                     
+
+            Modification newMod = new Modification(25.243, "test", ModificationSites.A | ModificationSites.I | ModificationSites.NPep | ModificationSites.PepC);
+            Modification mod2 = new Modification(32.12, "test2", ModificationSites.D | ModificationSites.I);
+            List<Peptide> peptides = peptide1.GenerateIsoforms(newMod, mod2).ToList();
 
             // Fragmenting a peptide is simple, you can include as many fragment types as you want
             Console.WriteLine("{0,-4} {1,-20} {2,-5}", "Type", "Formula", "Mass");
-            foreach (Fragment fragment in peptide1.CalculateFragments(FragmentTypes.b | FragmentTypes.y))
+            foreach (Fragment fragment in peptide1.Fragment(FragmentTypes.b | FragmentTypes.y))
             {
                 WriteFragmentToConsole(fragment);
             }
-                       
+           
             // Modifications can be applied to any residue or termini
             Console.WriteLine("Lets add some Iron to our peptide...");
             peptide1.SetModification(new NamedChemicalFormula("Fe"), Terminus.C | Terminus.N);
@@ -131,7 +138,7 @@ namespace CSMSL.Examples
 
             // If you fragment a modified peptide, the modifications stay part of the fragments
             Console.WriteLine("{0,-4} {1,-20} {2,-5}", "Type", "Formula", "Mass");
-            foreach (Fragment fragment in peptide1.CalculateFragments(FragmentTypes.b, 3, 5))
+            foreach (Fragment fragment in peptide1.Fragment(FragmentTypes.b, 3, 5))
             {
                 WriteFragmentToConsole(fragment);
             }
@@ -203,19 +210,19 @@ namespace CSMSL.Examples
         /// <param name="formula"></param>
         private static void WriteFormulaToConsole(ChemicalFormula formula)
         {
-            Console.WriteLine("Formula {0} mass is {1}", formula, formula.Mass.Monoisotopic);
+            Console.WriteLine("Formula {0} mass is {1} or {2}", formula, formula.Mass.MonoisotopicMass, formula.MonoisotopicMass);
         }
 
         private static void WritePeptideToConsole(Peptide peptide)
         {
             ChemicalFormula formula;
             peptide.TryGetChemicalFormula(out formula);
-            Console.WriteLine("{0,-5} {1,-5} {2,-5}", peptide, formula, peptide.Mass.Monoisotopic);
+            Console.WriteLine("{0,-5} {1,-5} {2,-5}", peptide, formula, peptide.MonoisotopicMass);
         }
 
         private static void WriteFragmentToConsole(Fragment frag)
         {
-            Console.WriteLine("{0,-4} {1,-20}", frag, frag.Mass.Monoisotopic);
+            Console.WriteLine("{0,-4} {1,-20}", frag, frag.MonoisotopicMass);
         }
     }
 }

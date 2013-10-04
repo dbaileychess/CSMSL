@@ -1,19 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Diagnostics;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.IO;
-using System.Threading.Tasks;
-using System.Text.RegularExpressions;
+﻿using CSMSL.Proteomics;
 using CSMSL.Spectral;
-using CSMSL.Proteomics;
+using Ionic.Zlib;
+using System;
+using System.IO;
 using System.Xml.Serialization;
-using System.Xml;
 
-namespace CSMSL.IO
+namespace CSMSL.IO.MzML
 {
 
     public class Mzml : MSDataFile
@@ -53,8 +45,8 @@ namespace CSMSL.IO
         private indexedmzML _indexedmzMLConnection;
         private mzMLType _mzMLConnection;
         
-        public Mzml(string filePath, bool openImmediately = false)
-            : base(filePath, MSDataFileType.Mzml, openImmediately) { }
+        public Mzml(string filePath)
+            : base(filePath, MSDataFileType.Mzml) { }
 
         public override void Open()
         {
@@ -67,13 +59,13 @@ namespace CSMSL.IO
                     _indexedmzMLConnection = _indexedSerializer.Deserialize(stream) as indexedmzML;
                     _mzMLConnection = _indexedmzMLConnection.mzML;
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                     try
                     {
                         _mzMLConnection = _mzMLSerializer.Deserialize(stream) as mzMLType;
                     }
-                    catch (Exception e2)
+                    catch (Exception)
                     {
                         throw new InvalidDataException("Unable to parse " + FilePath + " as a mzML file!");
                     }
@@ -375,6 +367,6 @@ namespace CSMSL.IO
             }
             return convertedArray;
         }
-
-    }
+        
+  }
 }

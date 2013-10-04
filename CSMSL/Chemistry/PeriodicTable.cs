@@ -20,8 +20,8 @@
 
 using System;
 using System.Collections.Generic;
-using System.Xml;
 using System.IO;
+using System.Xml;
 
 namespace CSMSL.Chemistry
 {
@@ -39,10 +39,12 @@ namespace CSMSL.Chemistry
         /// <summary>
         /// The internal dictionary housing all the elements, keyed by their unique atomic symbol
         /// </summary>
-        private Dictionary<string, Element> _elements;
+        private readonly Dictionary<string, Element> _elements;
 
-        private const int DefaultID = 11;
-        internal const int RecommendedID = 5;
+        /// <summary>
+        /// The default size for chemical formula arrays. This is recommend based on the 5 most common elements for proteomics (C H O N P)
+        /// </summary>
+        internal const int RecommendedId = 5;
 
         static PeriodicTable() { }
 
@@ -52,10 +54,13 @@ namespace CSMSL.Chemistry
         private PeriodicTable()
         {
             _elements = new Dictionary<string, Element>();
-            _uniqueID = DefaultID;
-            _isotopes = new Isotope[300];
-            LoadElements("Resources/Elements.xml");
-            Array.Resize(ref _isotopes, _uniqueID);
+           
+            // from: http://stackoverflow.com/questions/3314140/how-to-read-embedded-resource-text-file
+            var assembly = System.Reflection.Assembly.GetExecutingAssembly();
+            LoadElements(assembly.GetManifestResourceStream("CSMSL.Resources.Elements.xml"));
+
+            // For reading from an content file
+            //LoadElements("Resources/Elements.xml");
         }
 
         /// <summary>
@@ -69,10 +74,16 @@ namespace CSMSL.Chemistry
             }
         }
    
-        private int _uniqueID;
+        /// <summary>
+        /// The number of unique isotopes in this periodic table
+        /// </summary>
+        private int _uniqueId;
 
+        /// <summary>
+        /// The main data store for all the isotopes in this periodic table. The isotope unique ID serves as the index in the array, these IDs are unique for each isotope.
+        /// </summary>
         private Isotope[] _isotopes;
-
+      
         public Element this[string element]
         {
             get
@@ -81,11 +92,11 @@ namespace CSMSL.Chemistry
             }
         }
 
-        internal Isotope this[int uniqueID]
+        internal Isotope this[int uniqueId]
         {
             get
             {
-                return _isotopes[uniqueID];
+                return _isotopes[uniqueId];
             }
         }
 
@@ -97,11 +108,14 @@ namespace CSMSL.Chemistry
         /// <summary>
         /// Load a xml file containing elemental and isotopic data into the periodic table
         /// </summary>
-        /// <param name="elementListXML">The xml file containing the data</param>
-        public void LoadElements(string elementListXML)
-        {          
-            using (XmlReader reader = XmlReader.Create(elementListXML))            
+        public void LoadElements(Stream elementsListXml)
+        {
+            using (XmlReader reader = XmlReader.Create(elementsListXml))
             {
+                reader.ReadToFollowing("PeriodicTable");
+                _uniqueId = int.Parse(reader.GetAttribute("defaultID"));
+                int isotopes = int.Parse(reader.GetAttribute("isotopesCount"));
+                _isotopes = new Isotope[isotopes];
                 while (reader.ReadToFollowing("Element"))
                 {                  
                     reader.ReadToFollowing("Name");   
@@ -115,7 +129,7 @@ namespace CSMSL.Chemistry
                     bool isStartNode = reader.ReadToFollowing("Isotope");
                     while(isStartNode)
                     {                        
-                        string unqiueID = reader.GetAttribute("uniqueID");     
+                        string unqiueId = reader.GetAttribute("uniqueID");     
                         reader.ReadToFollowing("Mass");
                         double mass = reader.ReadElementContentAsDouble();
                         reader.ReadToFollowing("MassNumber");
@@ -125,16 +139,17 @@ namespace CSMSL.Chemistry
                         if (abundance > 0)
                         {
                             Isotope isotope = element.AddIsotope(massNumber, mass, abundance);
-                            if (unqiueID != null)
+                           
+                            if (unqiueId != null)
                             {
-                                int uniqueId = int.Parse(unqiueID);
-                                isotope.UniqueID = uniqueId;
+                                int uniqueId = int.Parse(unqiueId);
+                                isotope.UniqueId = uniqueId;
                                 _isotopes[uniqueId] = isotope;
                             }
                             else
                             {
-                                isotope.UniqueID = _uniqueID;
-                                _isotopes[_uniqueID++] = isotope;
+                                isotope.UniqueId = _uniqueId;
+                                _isotopes[_uniqueId++] = isotope;
                             }
                         }
                         if (!reader.IsStartElement("Isotope"))
@@ -142,7 +157,10 @@ namespace CSMSL.Chemistry
                     } 
                     AddElement(element);                 
                 }
-            }            
+            }
+
+            if(_isotopes.Length != _uniqueId)
+                Array.Resize(ref _isotopes, _uniqueId);
         }
 
         /// <summary>
@@ -158,11 +176,9 @@ namespace CSMSL.Chemistry
                 _elements[element.AtomicSymbol] = element;
                 return false;
             }
-            else
-            {
-                _elements.Add(element.AtomicSymbol, element);
-                return true;
-            }
+
+            _elements.Add(element.AtomicSymbol, element);
+            return true;
         }
     }
 }

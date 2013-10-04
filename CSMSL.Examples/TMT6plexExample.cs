@@ -1,18 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Diagnostics;
-using CSMSL;
-using CSMSL.IO;
-using CSMSL.Proteomics;
+﻿using CSMSL.Analysis.ExperimentalDesign;
 using CSMSL.Analysis.Identification;
 using CSMSL.Analysis.Quantitation;
 using CSMSL.Chemistry;
-using CSMSL.IO.Thermo;
+using CSMSL.IO;
 using CSMSL.IO.OMSSA;
-using CSMSL.Analysis.ExperimentalDesign;
+using CSMSL.IO.Thermo;
+using CSMSL.Proteomics;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
 
 namespace CSMSL.Examples
 {
@@ -25,6 +22,21 @@ namespace CSMSL.Examples
             watch.Start();
             Quantify();
             watch.Stop(); 
+            Console.WriteLine("Time elapsed: {0}", watch.Elapsed);
+            Console.WriteLine("Memory used: {0:N0} MB", System.Environment.WorkingSet / (1024 * 1024));
+            Console.WriteLine("**End TMT 6-plex Experiment**");
+        }
+
+        public static void PurityCorrection()
+        {
+            Console.WriteLine("**Start TMT 6-plex Experiment**");
+            Stopwatch watch = new Stopwatch();
+            watch.Start();
+
+           // IsobaricTagPurityCorrection purityMatrix = IsobaricTagPurityCorrection.Create();
+           
+
+            watch.Stop();
             Console.WriteLine("Time elapsed: {0}", watch.Elapsed);
             Console.WriteLine("Memory used: {0:N0} MB", System.Environment.WorkingSet / (1024 * 1024));
             Console.WriteLine("**End TMT 6-plex Experiment**");
@@ -65,8 +77,8 @@ namespace CSMSL.Examples
                 psmReader.AddMSDataFile(dataFile);
 
                 // Set modifications
-                psmReader.AddFixedModification(NamedChemicalFormula.Carbamidomethyl, ModificationSites.C);
-                psmReader.AddFixedModification(tmt6plex, ModificationSites.K | ModificationSites.NPep);
+                //psmReader.AddFixedModification(NamedChemicalFormula.Carbamidomethyl, ModificationSites.C);
+                //psmReader.AddFixedModification(tmt6plex, ModificationSites.K | ModificationSites.NPep);
                 psmReader.AddVariableModification(NamedChemicalFormula.Oxidation, "oxidation of M");
                 psmReader.AddVariableModification(tmt6plex, "TMT_Tyrosine");
 

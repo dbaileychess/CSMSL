@@ -1,4 +1,4 @@
-﻿using System.Collections.ObjectModel;
+﻿using System.Collections.Generic;
 
 namespace CSMSL.Proteomics
 {
@@ -13,8 +13,8 @@ namespace CSMSL.Proteomics
         /// </summary>
         /// <param name="aminoAcidSequence">The Amino Acid Polymer to cut</param>
         /// <returns>A set of the 1-based indicies to cut at</returns>
-        ReadOnlyCollection<int> GetDigestionSites(string aminoAcidSequence);
+        IEnumerable<int> GetDigestionSites(string aminoAcidSequence);
 
-        ReadOnlyCollection<int> GetDigestionSites(AminoAcidPolymer aminoAcidPolymer);
+        IEnumerable<int> GetDigestionSites(IAminoAcidSequence aminoAcidSequence);
     }
 }

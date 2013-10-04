@@ -20,19 +20,14 @@
 
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Text;
-using CSMSL.Proteomics;
 
 namespace CSMSL.IO
 {
     public class Fasta : IEquatable<Fasta>
     {
-        public static string[] DECOY_IDENTIFIERS = {"DECOY", "REVERSE"};
+        public static string[] DecoyIdentifiers = {"DECOY", "REVERSE"};
 
         private string _description;
-        private string _sequence;
-        private bool _isDecoy;
 
         public Fasta(string sequence, string description)
         {
@@ -42,11 +37,8 @@ namespace CSMSL.IO
 
         public override bool Equals(object obj)
         {
-            if (obj is Fasta)
-            {
-                return this.Equals((Fasta)obj);
-            }
-            return false;
+            var a = obj as Fasta;
+            return a != null && Equals(a);
         }
 
         public override int GetHashCode()
@@ -58,25 +50,25 @@ namespace CSMSL.IO
         /// Generate a decoy version of the given fasta
         /// </summary>
         /// <param name="preText">The pretext to add to the description to indicated this is a decoy fasta</param>
-        /// <param name="Method">The decoy generation type</param>
+        /// <param name="method">The decoy generation type</param>
         /// <param name="excludeNTerminus">Exclude the n-terminal amino acid</param>
         /// <param name="onlyIfNTerminusIsMethionine">Exclude the n-terminal amino aicd only if it is a Methionine</param>
         /// <returns>The generated decoy fasta</returns>
-        public Fasta ToDecoy(string preText = "DECOY_", DecoyDatabaseMethod Method = DecoyDatabaseMethod.Reverse, bool excludeNTerminus = true, bool onlyIfNTerminusIsMethionine = true)
+        public Fasta ToDecoy(string preText = "DECOY_", DecoyDatabaseMethod method = DecoyDatabaseMethod.Reverse, bool excludeNTerminus = true, bool onlyIfNTerminusIsMethionine = true)
         {
-            return new Fasta(GenerateDecoySequence(Sequence, Method, excludeNTerminus, onlyIfNTerminusIsMethionine), preText + Description);
+            return new Fasta(GenerateDecoySequence(Sequence, method, excludeNTerminus, onlyIfNTerminusIsMethionine), preText + Description);
         }
 
         /**
          * Method to generate decoy sequence according to a given input sequence and other options like
          * decoy type and whether to exclude N-terminus. 
          **/
-        private static string GenerateDecoySequence(string sequence, DecoyDatabaseMethod DecoyType, bool excludeNTerminus, bool onlyIfNTerminusIsMethionine)
+        private static string GenerateDecoySequence(string sequence, DecoyDatabaseMethod decoyType, bool excludeNTerminus, bool onlyIfNTerminusIsMethionine)
         {
             char[] temp = new char[sequence.Length];
             bool keepNTerminus = excludeNTerminus && (!onlyIfNTerminusIsMethionine || sequence[0] == 'M');
 
-            switch (DecoyType)
+            switch (decoyType)
             {
                 case DecoyDatabaseMethod.Reverse:
 
@@ -107,7 +99,7 @@ namespace CSMSL.IO
                     // Generate Random Characters
                     while (index < sequence.Length)
                     {
-                        temp[index++] = AMINO_ACIDS[RANDOM.Next(AMINO_ACIDS.Count)];
+                        temp[index++] = AminoAcids[Random.Next(AminoAcids.Count)];
                     }
 
                     break;
@@ -116,25 +108,23 @@ namespace CSMSL.IO
             }
 
             // Create decoy sequence string from temporary char array.
-            string decoy_sequence = new string(temp);
-
-            return decoy_sequence;
+            return new string(temp);
         }
 
-        private static readonly Random RANDOM = new Random();
+        private static readonly Random Random = new Random();
 
-        private static readonly List<char> AMINO_ACIDS = new List<char>(new char[] { 'A', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'K', 'L', 'M', 'N', 'P', 'Q', 'R', 'S', 'T', 'V', 'W', 'Y' });
+        private static readonly List<char> AminoAcids = new List<char>(new[] { 'A', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'K', 'L', 'M', 'N', 'P', 'Q', 'R', 'S', 'T', 'V', 'W', 'Y' });
 
         private static void Shuffle(char[] array)
         {
             Shuffle(array, 0, array.Length);
         }
 
-        private static void Shuffle(char[] array, int startIndex, int Length)
+        private static void Shuffle(char[] array, int startIndex, int length)
         {
-            for (int i = startIndex + Length; i > startIndex + 1; i--)
+            for (int i = startIndex + length; i > startIndex + 1; i--)
             {
-                int k = RANDOM.Next(i - startIndex) + startIndex;
+                int k = Random.Next(i - startIndex) + startIndex;
                 char temp = array[k];
                 array[k] = array[i - 1];
                 array[i - 1] = temp;
@@ -146,26 +136,18 @@ namespace CSMSL.IO
             get { return _description; }
             set { 
                 _description = value;
-                foreach(string decoyIdentifier in DECOY_IDENTIFIERS) {
+                foreach(string decoyIdentifier in DecoyIdentifiers) {
                     if(_description.StartsWith(decoyIdentifier)) {
-                        _isDecoy = true;
+                        IsDecoy = true;
                         break;
                     }                        
                 }
             }
         }
 
-        public string Sequence
-        {
-            get { return _sequence; }
-            set { _sequence = value; }
-        }
+        public string Sequence { get; set; }
 
-        public bool IsDecoy
-        {
-            get { return _isDecoy; }
-            set { _isDecoy = value; }
-        }
+        public bool IsDecoy { get; set; }
 
         public bool Equals(Fasta other)
         {

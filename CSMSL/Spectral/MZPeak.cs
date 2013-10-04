@@ -27,21 +27,18 @@ namespace CSMSL.Spectral
     /// </summary>
     public class MZPeak : IPeak, IEquatable<MZPeak>
     {
-        private readonly double _intensity;
-        private readonly double _mz;
+        public double Intensity { get; private set; }
+        public double MZ { get; private set; }
 
-        public double Intensity { get { return _intensity; } }
-        public double MZ { get { return _mz; } }
-        
         public MZPeak(double mz, double intensity)
         {
-            _mz = mz;
-            _intensity = intensity;
+            MZ = mz;
+            Intensity = intensity;
         }       
 
         public bool Equals(IPeak other)
         {
-            if (object.ReferenceEquals(this, other)) return true;
+            if (ReferenceEquals(this, other)) return true;
             return MZ.Equals(other.X) && Intensity.Equals(other.Y);
         }
 
@@ -66,17 +63,17 @@ namespace CSMSL.Spectral
                 return MZ.CompareTo((double)other);
             if (other is IPeak)
                 return CompareTo((IPeak)other);
-            throw new System.InvalidOperationException("Unable to compare types");
+            throw new InvalidOperationException("Unable to compare types");
         }
 
         double IPeak.X
         {
-            get { return _mz; }
+            get { return MZ; }
         }
 
         double IPeak.Y
         {
-            get { return _intensity; }
+            get { return Intensity; }
         }
 
         public override bool Equals(object obj)
@@ -86,7 +83,7 @@ namespace CSMSL.Spectral
 
         public override int GetHashCode()
         {
-            return _mz.GetHashCode() ^ _intensity.GetHashCode();
+            return MZ.GetHashCode() ^ Intensity.GetHashCode();
         }
 
         public bool Equals(MZPeak other)

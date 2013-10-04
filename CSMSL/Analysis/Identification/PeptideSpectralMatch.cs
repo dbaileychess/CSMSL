@@ -1,13 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using CSMSL.Chemistry;
 using CSMSL.Proteomics;
 using CSMSL.Spectral;
+using System;
+using System.Collections.Generic;
 
 namespace CSMSL.Analysis.Identification
 {
-    public class PeptideSpectralMatch : IFalseDiscovery<double>, IMassSpectrum, IEquatable<MSDataScan>, IComparable<PeptideSpectralMatch>
+    public class PeptideSpectralMatch : IFalseDiscovery<double>, IMassSpectrum, IEquatable<MSDataScan>,
+        IComparable<PeptideSpectralMatch>, IMass
     {
         public virtual Peptide Peptide { get; set; }
 
@@ -15,11 +15,31 @@ namespace CSMSL.Analysis.Identification
 
         public virtual int Charge { get; set; }
 
-        public virtual int SpectrumNumber { get; set; }     
+        public virtual int SpectrumNumber { get; set; }
 
         public virtual string FileName { get; set; }
 
-        public virtual double PrecursorMZ { get { return Peptide.Mass.ToMz(Charge); } }
+        /// <summary>
+        /// Theoretical Precursor M/Z
+        /// </summary>
+        public virtual double PrecursorMz
+        {
+            get { return Peptide.ToMz(Charge); }
+        }
+
+        public virtual double MonoisotopicMass
+        {
+            get
+            {
+                return Peptide.MonoisotopicMass;
+            }
+        }
+
+        public virtual double IsolationMz { get; set; }
+
+        public virtual MassTolerance PrecursorMassError { get; set; }
+
+        public virtual MassTolerance CorrectedPrecursorMassError { get; set; }
 
         private Dictionary<string, string> _extraData;
 
@@ -33,11 +53,11 @@ namespace CSMSL.Analysis.Identification
         /// </summary>
         public virtual double Score { get; set; }
 
-        public virtual PeptideSpectralMatchScoreType ScoreType { get; set; }
+        public PeptideSpectralMatchScoreType ScoreType { get; set; }
 
-        public virtual bool IsDecoy { get;  set; }
-        
-        double IFalseDiscovery<double>.FDRScoreMetric
+        public virtual bool IsDecoy { get; set; }
+
+        double IFalseDiscovery<double>.FdrScoreMetric
         {
             get { return Score; }
         }
@@ -54,12 +74,13 @@ namespace CSMSL.Analysis.Identification
 
         public override string ToString()
         {
-            return string.Format("{0} (SN: {1} Score: {2:G3} {3})", Peptide, SpectrumNumber, Score, Enum.GetName(typeof(PeptideSpectralMatchScoreType), ScoreType));
+            return string.Format("{0} (SN: {1} Score: {2:G3} {3})", Peptide, SpectrumNumber, Score,
+                Enum.GetName(typeof (PeptideSpectralMatchScoreType), ScoreType));
         }
 
         public bool Equals(MSDataScan other)
         {
-            return this.Spectrum.Equals(other);
+            return Spectrum.Equals(other);
         }
 
         /// <summary>
@@ -78,7 +99,7 @@ namespace CSMSL.Analysis.Identification
             }
 
             // The sign of the scoretype enum indicates how they should be compared
-            return Score.CompareTo(other.Score) * Math.Sign((int)ScoreType);
+            return Score.CompareTo(other.Score)*Math.Sign((int) ScoreType);
         }
 
         public string this[string name]

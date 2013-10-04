@@ -1,57 +1,80 @@
-﻿using System;
+﻿using MathNet.Numerics.LinearAlgebra.Double;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using MathNet.Numerics.LinearAlgebra.Double;
-using MathNet.Numerics.LinearAlgebra.Double.Solvers.Iterative;
 
 namespace CSMSL.Analysis.Quantitation
 {
     public class IsobaricTagPurityCorrection
     {
-
-        private Matrix _purityMatrix;       
+        private readonly Matrix _purityMatrix;
+        private int _rows;
 
         private IsobaricTagPurityCorrection(Matrix matrix)
         {
-            _purityMatrix = matrix;    
-           
-        }            
+            _purityMatrix = matrix;
+            _rows = matrix.RowCount;
+        }
+
+        public double[,] GetMatrix()
+        {
+            return _purityMatrix.Storage.ToArray();
+        }
+
+        public double Determinant()
+        {
+            return _purityMatrix.Determinant();
+        }
+
+        public double[] ApplyPurityCorrection(IEnumerable<double> rawData)
+        {
+            return ApplyPurityCorrection(rawData.ToArray());
+        }
 
         public double[] ApplyPurityCorrection(double[] rawData)
         {
+            if (rawData.Length != _rows)
+            {
+                throw new ArgumentException("Not enough data points");
+            }
             return _purityMatrix.LU().Solve(new DenseVector(rawData)).ToArray();
-            //return _solver.Solve(_purityMatrix, new DenseVector(rawData)).ToArray();              
         }
 
+        /// <summary>
+        /// Creates a matrix with the solutions to isobaric purity corrections
+        /// </summary>
+        /// <param name="purityValues"></param>
+        /// <returns></returns>
         public static IsobaricTagPurityCorrection Create(double[,] purityValues)
         {
             int rows = purityValues.GetLength(0);
             int inputCount = purityValues.GetLength(1);
-            
 
             Matrix purityMatrix = new DenseMatrix(rows);
            
             // w x y z part of iTracker Paper
             for (int i = 0; i < rows; i++)
             {
-                purityMatrix[i, i] = 1.0;
+                double startvalue = 100;
                 for (int j = 0; j < inputCount; j++)
                 {
-                    purityMatrix[i, i] -= purityValues[i, j] / 100;
+                    startvalue -= purityValues[i, j];
                 }
-            }
 
-            // Setting up the C matrix
-            int k = 0;
-            for (int i = 0; i < rows; i++)
-            {
                 for (int j = 0; j < rows; j++)
                 {
-                    if (j == i) continue; // Handled in the above code                  
-                    k = (j > i) ? 3 - j + i : 2 - j + i;  // the k index changes based on if you are on the upper or lower diagonal     
-                    purityMatrix[i, j] = (k < inputCount && k > 0) ? purityValues[j, k] / 100 : 0; // Zero fill missing values
+                    if (j == i) continue; // Handled in the above code   
+                    double value = 0; // Zero fill;
+
+                    int k = (j > i) ? 2 - j + i : i - j + 1;
+
+                    if (k < inputCount && k >= 0)
+                        value = purityValues[j, k];
+                 
+                    purityMatrix[i, j] = value;
                 }
+
+                purityMatrix[i, i] = startvalue;
             }
 
             return new IsobaricTagPurityCorrection(purityMatrix);

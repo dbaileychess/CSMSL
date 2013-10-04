@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace CSMSL.Spectral
 {
@@ -19,26 +20,31 @@ namespace CSMSL.Spectral
 
     public class MzRangeChromatogram : Chromatogram
     {
-        private MassRange _range;
-
-        public MassRange MzRange
-        {
-            get
-            {
-                return _range;
-            }
-        }
+        public MassRange MzRange { get; private set; }
 
         public MzRangeChromatogram(MassRange range, ChromatogramType type = ChromatogramType.BasePeak)
             : base(type)
         {
-            _range = range;
+            MzRange = range;
         }
     }
 
-    public class Chromatogram : IEnumerable<ChromatogramPoint>
+    public class Chromatogram : Chromatogram<ChromatographicPeak>
     {
-        public ChromatogramPoint this[int index]
+        public Chromatogram(ChromatogramType type = ChromatogramType.BasePeak)
+            : base(type)
+        {
+        }
+
+        public Chromatogram(IEnumerable<ChromatographicPeak> peaks, ChromatogramType type = ChromatogramType.BasePeak)
+            : base(peaks, type)
+        {
+        }
+    }
+
+    public class Chromatogram<T> : IEnumerable<T> where T: IPeak
+    {
+        public T this[int index]
         {
             get
             {
@@ -46,107 +52,58 @@ namespace CSMSL.Spectral
             }
         }
 
-        private SortedList<double, ChromatogramPoint> _curve;
-        private ChromatogramType _type;
-
-        private float _tic;
-
-        public float TotalIonCurrent
-        {
-            get { return _tic; }
-        }
+        private readonly SortedList<double, T> _curve;
+        
+        public double TotalIonCurrent { get; private set; }
 
         public int Count
         {
             get { return _curve.Count; }
         }
 
-        private ChromatogramPoint _basePeak;
-        public ChromatogramPoint BasePeak
-        {
-            get
-            {
-                return _basePeak;
-            }
-        }
+        public ChromatogramType Type { get; private set; }
+
+        public T BasePeak { get; private set; }
 
         public Chromatogram(ChromatogramType type = ChromatogramType.BasePeak)
         {
-            _type = type;
-            _curve = new SortedList<double, ChromatogramPoint>();
-            _tic = 0;
+            Type = type;
+            _curve = new SortedList<double, T>();
+            TotalIonCurrent = 0.0;
         }
 
-        public void AddPoint(ChromatogramPoint point)
+        public Chromatogram(IEnumerable<T> points, ChromatogramType type = ChromatogramType.BasePeak)
         {
-            ChromatogramPoint otherPoint = null;
-            if (_curve.TryGetValue(point.Time, out otherPoint))
+            Type = type;
+            _curve = new SortedList<double, T>(points.ToDictionary(p => p.X));
+            TotalIonCurrent = _curve.Values.Sum(p => p.Y);
+        }
+
+        public void AddPoint(T point)
+        {
+            _curve.Add(point.X, point);
+
+            if (BasePeak == null)
             {
-                otherPoint.CombinePoints(point);
+                BasePeak = point;
             }
             else
             {
-                _curve.Add(point.Time, point);
-            }
-            if (_basePeak == null)
-            {
-                _basePeak = point;
-            }
-            else
-            {
-                if (point.Intensity > _basePeak.Intensity)
+                if (point.Y > BasePeak.Y)
                 {
-                    _basePeak = point;
+                    BasePeak = point;
                 }
             }
-            _tic += point.Intensity;
+
+            TotalIonCurrent += point.Y;
         }
 
         public override string ToString()
         {
-            return string.Format("Count = {0:N0} TIC = {1:G4} ({2})", Count, _tic, Enum.GetName(typeof(ChromatogramType), _type));
+            return string.Format("Count = {0:N0} TIC = {1:G4} ({2})", Count, TotalIonCurrent, Enum.GetName(typeof(ChromatogramType), Type));
         }
-
-        private Chromatogram BoxCarSmooth(int points)
-        {
-            Chromatogram chrom = new Chromatogram(_type);
-            for (int i = 0; i < this.Count; i++)
-            {
-                double time = 0;
-                float intensity = 0;
-                int j = 0;
-                while (j < points)
-                {
-                    if (i + j >= this.Count) break;
-                    time += this[i + j].Time;
-                    intensity += this[i + j].Intensity;
-                    j++;
-                }
-                chrom.AddPoint(new ChromatogramPoint(time / (double)j, intensity / (float)j));
-            }
-            return chrom;
-        }
-
-        private Chromatogram SavitzkyGolaySmooth(int points)
-        {
-            return this;
-        }
-
-        public Chromatogram Smooth(SmoothingType type, int points)
-        {
-            switch (type)
-            {
-                case SmoothingType.BoxCar:
-                    return BoxCarSmooth(points);
-                case SmoothingType.SavitzkyGolay:
-                    return SavitzkyGolaySmooth(points);
-                case SmoothingType.None:
-                default:
-                    return this;
-            }
-        }  
-
-        public IEnumerator<ChromatogramPoint> GetEnumerator()
+        
+        public IEnumerator<T> GetEnumerator()
         {
             return _curve.Values.GetEnumerator();
         }
@@ -155,63 +112,40 @@ namespace CSMSL.Spectral
         {
             return _curve.Values.GetEnumerator();
         }
-
-        public MassRange DetectPeakBounds()
-        {
-            return DetectPeakBounds((float)(1.0 / Math.E));
-        }
-
-        public MassRange DetectPeakBounds(float fraction)
-        {
-            return DetectPeakBounds(BasePeak, BasePeak.Intensity * fraction);
-        }
-
-        public MassRange DetectPeakBounds(ChromatogramPoint point, float intensityThreshold)
-        {
-            MassRange bounds = new MassRange();           
-            int index = _curve.IndexOfValue(point);
-            int i = index;            
-            while (i > 0 && _curve.Values[i].Intensity >= intensityThreshold)  
-                i--;
-            bounds.Minimum = _curve.Values[i].Time;
-            i = index;
-            while (i < _curve.Count && _curve.Values[i].Intensity >= intensityThreshold)
-                i++;
-            bounds.Maximum = _curve.Values[i-1].Time;
-            return bounds;
-        }
     }
 
     public static class Extension
     {
-        public static Chromatogram GetChromatogram(this IEnumerable<MSDataScan> scans, ChromatogramType type = ChromatogramType.BasePeak, MassRange range = null)
+        public static Chromatogram GetChromatogram(this IEnumerable<MSDataScan> scans, ChromatogramType type = ChromatogramType.BasePeak, MassRange range = null, bool zeroFillMissingValues = true)
         {
             Chromatogram chrom;
             switch (type)
             {
                 default:
-                case ChromatogramType.BasePeak:
                     chrom = new Chromatogram(type);
                     foreach (MSDataScan scan in scans)
                     {
-                        LabeledChromatogramPoint point = new LabeledChromatogramPoint(scan.RetentionTime, scan.MassSpectrum.BasePeak);
+                        ChromatographicPeak point = new ChromatographicPeak(scan.RetentionTime, scan.MassSpectrum.BasePeak.Intensity);
                         chrom.AddPoint(point);
                     }
                     break;
-
                 case ChromatogramType.MzRange:
                     if (range == null)
                     {
                         throw new ArgumentException("A range must be declared for a m/z range chromatogram");
                     }
                     chrom = new MzRangeChromatogram(range, type);
-                    List<MZPeak> peaks = new List<MZPeak>();
                     foreach (MSDataScan scan in scans)
                     {
+                        List<MZPeak> peaks;
                         if (scan.MassSpectrum.TryGetPeaks(range, out peaks))
                         {
-                            //LabeledChromatogramPoint point = new LabeledChromatogramPoint(scan.RetentionTime, peaks);
-                            //chrom.AddPoint(point);
+                            ChromatographicPeak point = new ChromatographicPeak(scan.RetentionTime, peaks.Sum(p => p.Intensity));
+                            chrom.AddPoint(point);
+                        }
+                        else if (zeroFillMissingValues)
+                        {
+                            chrom.AddPoint(new ChromatographicPeak(scan.RetentionTime, 0.0));
                         }
                     }
                     break;
@@ -220,7 +154,7 @@ namespace CSMSL.Spectral
                     chrom = new Chromatogram(type);
                     foreach (MSDataScan scan in scans)
                     {
-                        ChromatogramPoint point = new ChromatogramPoint(scan.RetentionTime, (float)scan.MassSpectrum.TotalIonCurrent);
+                        ChromatographicPeak point = new ChromatographicPeak(scan.RetentionTime, scan.MassSpectrum.TotalIonCurrent);
                         chrom.AddPoint(point);
                     }
                     break;

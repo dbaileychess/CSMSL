@@ -8,7 +8,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
     <DebugSymbols>true</DebugSymbols>
-    <OutputPath>bin\x64\Debug\</OutputPath>
+    <OutputPath>..\bin\x64\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <DebugType>full</DebugType>
     <PlatformTarget>x64</PlatformTarget>
@@ -17,7 +17,7 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
-    <OutputPath>bin\x64\Release\</OutputPath>
+    <OutputPath>..\bin\x64\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <Optimize>true</Optimize>
     <DebugType>pdbonly</DebugType>
@@ -28,7 +28,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
     <DebugSymbols>true</DebugSymbols>
-    <OutputPath>bin\x86\Debug\</OutputPath>
+    <OutputPath>..\bin\x86\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <DebugType>full</DebugType>
     <PlatformTarget>x86</PlatformTarget>
@@ -37,11 +37,31 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
-    <OutputPath>bin\x86\Release\</OutputPath>
+    <OutputPath>..\bin\x86\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <Optimize>true</Optimize>
     <DebugType>pdbonly</DebugType>
     <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <Prefer32Bit>false</Prefer32Bit>
@@ -55,7 +75,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>CSMSL</RootNamespace>
     <AssemblyName>CSMSL</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile>
     </TargetFrameworkProfile>
@@ -64,18 +84,12 @@
     <Reference Include="Combinatorics">
       <HintPath>..\packages\Combinatorics.1.0.3.2\lib\net40\Combinatorics.dll</HintPath>
     </Reference>
-    <Reference Include="Ionic.Zip">
-      <HintPath>..\..\..\..\Desktop\GregPRM\packages\DotNetZip.1.9.1.8\lib\net20\Ionic.Zip.dll</HintPath>
-    </Reference>
-    <Reference Include="MathNet.Numerics">
-      <HintPath>..\packages\MathNet.Numerics.2.5.0\lib\net40\MathNet.Numerics.dll</HintPath>
-    </Reference>
-    <Reference Include="MathNet.Numerics.IO">
-      <HintPath>..\packages\MathNet.Numerics.2.5.0\lib\net40\MathNet.Numerics.IO.dll</HintPath>
+    <Reference Include="MathNet.Numerics, Version=0.3.1.32, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\MathNet.Numerics.3.0.0-alpha1\lib\net40\MathNet.Numerics.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Data.Linq" />
     <Reference Include="System.Numerics" />
     <Reference Include="System.Xml" />
   </ItemGroup>
@@ -88,6 +102,7 @@
     <Compile Include="Analysis\Identification\MSSearchEngine.cs" />
     <Compile Include="Analysis\Identification\PeptideSpectralMatch.cs" />
     <Compile Include="Analysis\Identification\PeptideSpectralMatchScoreType.cs" />
+    <Compile Include="Analysis\Identification\SpectrumFragmentsMatch.cs" />
     <Compile Include="Analysis\Quantitation\IntensityWeightingType.cs" />
     <Compile Include="Analysis\Quantitation\IQuantitationChannel.cs" />
     <Compile Include="Analysis\Quantitation\IsobaricTag.cs" />
@@ -105,6 +120,7 @@
     <Compile Include="Chemistry\IChemicalFormula.cs" />
     <Compile Include="Chemistry\Isotope.cs" />
     <Compile Include="Chemistry\PeriodicTable.cs" />
+    <Compile Include="ClassExtensions.cs" />
     <Compile Include="Constants.cs" />
     <Compile Include="Chemistry\IMass.cs" />
     <Compile Include="IO\Fasta.cs" />
@@ -112,8 +128,6 @@
     <Compile Include="IO\FastaWriter.cs" />
     <Compile Include="IO\MSDataFile.cs" />
     <Compile Include="IO\MsDataFileType.cs" />
-    <Compile Include="IO\Mzml.cs" />
-    <Compile Include="IO\mzMLSchema.cs" />
     <Compile Include="IO\PsmReader.cs" />
     <Compile Include="MassRange.cs" />
     <Compile Include="MassToleranceType.cs" />
@@ -122,17 +136,11 @@
     <Compile Include="Proteomics\IAminoAcid.cs" />
     <Compile Include="Proteomics\IAminoAcidSequence.cs" />
     <Compile Include="Proteomics\IProtease.cs" />
+    <Compile Include="Proteomics\Modification.cs" />
     <Compile Include="Proteomics\ModificationCollection.cs" />
     <Compile Include="Proteomics\ModificationSites.cs" />
     <Compile Include="Proteomics\ProteinGroup.cs" />
-    <Compile Include="Spectral\Chromatogram.cs" />
-    <Compile Include="Spectral\ChromatogramPoint.cs" />
-    <Compile Include="Spectral\ChromatographicPeak.cs" />
-    <Compile Include="Spectral\ILabeledPeak.cs" />
-    <Compile Include="Spectral\IMassSpectrum.cs" />
-    <Compile Include="Spectral\IPeak.cs" />
-    <Compile Include="Spectral\MsnDataScan.cs" />
-    <Compile Include="Spectral\MSDataScan.cs" />
+    <Compile Include="Analysis\Identification\FragmentSpectralMatch.cs" />
     <Compile Include="IRange.cs" />
     <Compile Include="Chemistry\Mass.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -145,12 +153,19 @@
     <Compile Include="Proteomics\Protein.cs" />
     <Compile Include="Proteomics\Terminus.cs" />
     <Compile Include="Range.cs" />
+    <Compile Include="MassTolerance.cs" />
+    <Compile Include="Spectral\Chromatogram.cs" />
+    <Compile Include="Spectral\ChromatographicPeak.cs" />
+    <Compile Include="Spectral\ILabeledPeak.cs" />
+    <Compile Include="Spectral\IMassSpectrum.cs" />
+    <Compile Include="Spectral\IPeak.cs" />
+    <Compile Include="Spectral\MassSpectrum.cs" />
+    <Compile Include="Spectral\MSDataScan.cs" />
+    <Compile Include="Spectral\MsnDataScan.cs" />
     <Compile Include="Spectral\MZAnalyzerType.cs" />
     <Compile Include="Spectral\MZPeak.cs" />
     <Compile Include="Spectral\Polarity.cs" />
-    <Compile Include="Spectral\MassSpectrum.cs" />
     <Compile Include="Spectral\Spectrum.cs" />
-    <Compile Include="MassTolerance.cs" />
     <Compile Include="Util\Collections\BinaryTree.cs" />
     <Compile Include="Util\Collections\BinaryTreeNode.cs" />
     <Compile Include="Util\Collections\SortedMaxSizedContainer.cs" />
@@ -162,14 +177,10 @@
     <Compile Include="Util\Collections\VennSet.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Resources\Elements.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    <EmbeddedResource Include="Resources\Elements.xml">
       <SubType>Designer</SubType>
-    </Content>
+    </EmbeddedResource>
     <None Include="packages.config" />
-    <None Include="Resources\mzlite_create.sqlite">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

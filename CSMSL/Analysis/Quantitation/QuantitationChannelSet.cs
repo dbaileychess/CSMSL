@@ -1,9 +1,8 @@
-﻿using System;
+﻿using CSMSL.Chemistry;
+using CSMSL.Proteomics;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using CSMSL.Proteomics;
-using CSMSL.Chemistry;
 
 namespace CSMSL.Analysis.Quantitation
 {
@@ -73,7 +72,7 @@ namespace CSMSL.Analysis.Quantitation
          
         public QuantitationChannelSetMassType MassType { get; set; }
 
-        private Mass _totalMass;
+        public double MonoisotopicMass { get; private set; }
 
         public IQuantitationChannel this[int index]
         {
@@ -102,29 +101,30 @@ namespace CSMSL.Analysis.Quantitation
         {
             Name = name;
             MassType = massType;
-            _totalMass = new Mass();
+            MonoisotopicMass = 0;
             _channels = new SortedList<double, IQuantitationChannel>();
             IsSequenceDependent = sequenceDependent;
         }
 
         public IQuantitationChannel Add(IQuantitationChannel channel)
         {
-            _channels.Add(channel.ReporterMass.Monoisotopic, channel);
-            _totalMass.Add(channel.Mass);        
+            _channels.Add(channel.ReporterMass.MonoisotopicMass, channel);
+            MonoisotopicMass += channel.MonoisotopicMass;        
+
             return channel;
         }
 
         public void Clear()
         {
             _channels.Clear();
-            _totalMass = new Mass();
+            MonoisotopicMass = 0;
         }
 
         public bool Remove(IQuantitationChannel channel)
         {
-            if (_channels.Remove(channel.Mass.Monoisotopic))
+            if (_channels.Remove(channel.MonoisotopicMass))
             {
-                _totalMass.Remove(channel.Mass);
+                MonoisotopicMass -= channel.MonoisotopicMass;
                 return true;
             }
             return false;
@@ -159,7 +159,7 @@ namespace CSMSL.Analysis.Quantitation
         {
             get
             {
-                return new MassRange(LightestChannel.ReporterMass.Monoisotopic, HeaviestChannel.ReporterMass.Monoisotopic);
+                return new MassRange(LightestChannel.ReporterMass.MonoisotopicMass, HeaviestChannel.ReporterMass.MonoisotopicMass);
             }
         }
 
@@ -176,35 +176,35 @@ namespace CSMSL.Analysis.Quantitation
             return Name;
         }
 
-        public Mass GetMass(QuantitationChannelSetMassType massType = QuantitationChannelSetMassType.Average)
+        public double GetMass(QuantitationChannelSetMassType massType = QuantitationChannelSetMassType.Average)
         {
             if (Count <= 1)
             {
-                return new Mass(_totalMass);
+                return MonoisotopicMass;
             }
 
             switch (massType)
             {
                 default:
                 case QuantitationChannelSetMassType.Average:
-                    return _totalMass / Count;
+                    return MonoisotopicMass / Count;
                 case QuantitationChannelSetMassType.Lightest:
-                    return new Mass(LightestChannel.Mass);
+                    return LightestChannel.MonoisotopicMass;
                 case QuantitationChannelSetMassType.Heaviest:
-                    return new Mass(HeaviestChannel.Mass);
+                    return HeaviestChannel.MonoisotopicMass;
                 case QuantitationChannelSetMassType.Median:
                     if (Count % 2 == 0)
                     {
-                        return (_channels.Values[(Count / 2) - 1].Mass + _channels.Values[Count / 2].Mass) / 2.0;
+                        return (_channels.Values[(Count / 2) - 1].MonoisotopicMass + _channels.Values[Count / 2].MonoisotopicMass) / 2.0;
                     }
                     else
                     {
-                        return new Mass(_channels.Values[Count / 2].Mass);
+                        return _channels.Values[Count / 2].MonoisotopicMass;
                     }
             }
         }
 
-        Mass IMass.Mass
+        double IMass.MonoisotopicMass
         {
             get
             {
@@ -281,9 +281,8 @@ namespace CSMSL.Analysis.Quantitation
                         Peptide toReturn = new Peptide(peptide, true);
                         foreach (int residue in locations[channel])
                         {
-                            toReturn.Modifications[residue] = channel;
+                            toReturn.SetModification(channel, residue);
                         }
-                        toReturn.IsDirty = true;                  
                         yield return toReturn;
                     }
                 }
@@ -305,7 +304,7 @@ namespace CSMSL.Analysis.Quantitation
                         {
                             if (modsToAdd.TryGetValue(residue, out modToAdd))
                             {
-                                ModificationCollection col = new ModificationCollection(channel.ToString() + ", " + modToAdd.ToString());
+                                ModificationCollection col = new ModificationCollection(channel, modToAdd);
                                 col.Add(channel);
                                 col.Add(modToAdd);
                                 modsToAdd[residue] = col;
@@ -318,9 +317,8 @@ namespace CSMSL.Analysis.Quantitation
                     }
                     foreach (KeyValuePair<int, IMass> kvp in modsToAdd)
                     {
-                        toReturn.Modifications[kvp.Key] = kvp.Value;
+                        toReturn.SetModification(kvp.Value, kvp.Key);
                     }
-                    toReturn.IsDirty = true;
                     yield return toReturn;
                 }
             }
@@ -384,5 +382,8 @@ namespace CSMSL.Analysis.Quantitation
         #endregion
 
 
+
+
+       
     }
 }

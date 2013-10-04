@@ -1,18 +1,23 @@
-﻿using System;
+﻿using CSMSL.Proteomics;
+using CSMSL.Spectral;
+using System;
 using System.Collections.Generic;
 using System.IO;
-using CSMSL.Spectral;
-using CSMSL.Proteomics;
 
 namespace CSMSL.IO
 {
     public abstract class MSDataFile : IDisposable, IEquatable<MSDataFile>, IEnumerable<MSDataScan>
     {
-        internal MSDataScan[] _scans = null;
+        /// <summary>
+        /// Defines if MS scans should be cached for quicker retrieval. Cached scans are held in an internal
+        /// array and don't get cleared until the file is disposed or the ClearCacheScans() method is called.
+        /// Of course, if you store the scans somewhere else, they will persist. The default value is True.
+        /// </summary>
+        public static bool CacheScans;
+
+        internal MSDataScan[] Scans = null;
 
         private string _filePath;
-
-        private MSDataFileType _fileType;
 
         private int _firstSpectrumNumber = -1;
 
@@ -22,7 +27,12 @@ namespace CSMSL.IO
 
         private string _name;
 
-        public MSDataFile(string filePath, MSDataFileType filetype = MSDataFileType.UnKnown, bool openImmediately = false)
+        static MSDataFile()
+        {
+            CacheScans = true;
+        }
+
+        protected MSDataFile(string filePath, MSDataFileType filetype = MSDataFileType.UnKnown)
         {
             if (!File.Exists(filePath) && !Directory.Exists(filePath))
             {
@@ -31,10 +41,7 @@ namespace CSMSL.IO
             FilePath = filePath;
             FileType = filetype;
             _isOpen = false;
-            if (openImmediately) Open();
         }
-
-
 
         public string FilePath
         {
@@ -46,11 +53,7 @@ namespace CSMSL.IO
             }
         }
 
-        public MSDataFileType FileType
-        {
-            get { return _fileType; }
-            private set { _fileType = value; }
-        }
+        public MSDataFileType FileType { get; private set; }
 
         public virtual int FirstSpectrumNumber
         {
@@ -86,8 +89,6 @@ namespace CSMSL.IO
             }
         }
 
-      
-
         public string Name
         {
             get { return _name; }
@@ -103,15 +104,15 @@ namespace CSMSL.IO
 
         System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
         {
-            return this.GetEnumerator();
+            return GetEnumerator();
         }
 
         public virtual void Dispose()
         {
-            if (_scans != null)
+            if (Scans != null)
             {               
                 ClearCachedScans();
-                _scans = null;                
+                Scans = null;                
             }
             _isOpen = false;
         }
@@ -119,7 +120,7 @@ namespace CSMSL.IO
         public bool Equals(MSDataFile other)
         {
             if (ReferenceEquals(this, other)) return true;
-            return this.FilePath.Equals(other.FilePath);
+            return FilePath.Equals(other.FilePath);
         }
 
         public IEnumerator<MSDataScan> GetEnumerator()
@@ -129,12 +130,23 @@ namespace CSMSL.IO
 
         public override int GetHashCode()
         {
-            return this.FilePath.GetHashCode();
+            return FilePath.GetHashCode();
         }
 
         public abstract DissociationType GetDissociationType(int spectrumNumber, int msnOrder = 2);
 
         public abstract int GetMsnOrder(int spectrumNumber);
+
+        /// <summary>
+        /// Get the spectrum number of the parent scan that caused this scan to be executed.
+        /// Typically MS1s will return 0 and MS2s will return the preceding MS1 scan (if in DDA mode)
+        /// </summary>
+        /// <param name="spectrumNumber">The spectrum number to get the parent scan number of</param>
+        /// <returns>The spectrum number of the parent scan. 0 if no parent</returns>
+        public virtual int GetParentSpectrumNumber(int spectrumNumber)
+        {
+            return 0;
+        }
 
         /// <summary>
         /// Get the MS Scan at the specific spectrum number.
@@ -143,50 +155,56 @@ namespace CSMSL.IO
         /// <returns></returns>
         public virtual MSDataScan GetMsScan(int spectrumNumber)
         {
-            if (_scans == null)
+            if (!CacheScans)
+                return GetMSDataScan(spectrumNumber);
+
+            if (Scans == null)
             {
-                _scans = new MSDataScan[LastSpectrumNumber + 1];
-            }
-           
-            if (_scans[spectrumNumber] == null)
-            {
-                return _scans[spectrumNumber] = GetMSDataScan(spectrumNumber);                
+                Scans = new MSDataScan[LastSpectrumNumber + 1];
             }
 
-            return _scans[spectrumNumber];
+            if (Scans[spectrumNumber] == null)
+            {
+                return Scans[spectrumNumber] = GetMSDataScan(spectrumNumber);
+            }
+
+            return Scans[spectrumNumber];
+        }
+
+        public virtual void LoadAllScansInMemory()
+        {
+            if (!CacheScans)
+            {
+                throw new ArgumentException("Cache scans needs to be enabled for this to work properly", "CacheScans");
+            }
+
+            if (Scans == null)
+            {
+                Scans = new MSDataScan[LastSpectrumNumber + 1];
+            }
+
+            for (int spectrumNumber = FirstSpectrumNumber; spectrumNumber < LastSpectrumNumber; spectrumNumber++)
+            {
+                if (Scans[spectrumNumber] == null)
+                {
+                    Scans[spectrumNumber] = GetMSDataScan(spectrumNumber);
+                }
+            }
         }
 
         public virtual void ClearCachedScans()
         {
-            if (_scans == null)
+            if (Scans == null)
                 return;
-            Array.Clear(_scans, 0, _scans.Length);
+            Array.Clear(Scans, 0, Scans.Length);
         }
 
         protected virtual MSDataScan GetMSDataScan(int spectrumNumber)
         {           
             MSDataScan scan;
             int msn = GetMsnOrder(spectrumNumber);
-            if (msn > 1)
-            {
-                MsnDataScan msnscan = new MsnDataScan(spectrumNumber, msn, this);
-               // msnscan.PrecursorMz = GetPrecusorMz(spectrumNumber, msn);               
-               // msnscan.IsolationRange = GetIsolationRange(spectrumNumber, msn);
-                //msnscan.DissociationType = GetDissociationType(spectrumNumber, msn);
-                //msnscan.PrecursorCharge = GetPrecusorCharge(spectrumNumber, msn);
-                scan = msnscan;
-            }
-            else
-            {
-                scan = new MSDataScan(spectrumNumber, msn, this);
-            }
-            //scan.MassSpectrum = GetMzSpectrum(spectrumNumber);
-            //scan.Resolution = GetResolution(spectrumNumber);
-            //scan.InjectionTime = GetInjectionTime(spectrumNumber);
-            //scan.RetentionTime = GetRetentionTime(spectrumNumber);
-            //scan.Polarity = GetPolarity(spectrumNumber);
-            //scan.MzAnalyzer = GetMzAnalyzer(spectrumNumber);
-            //scan.MzRange = GetMzRange(spectrumNumber);
+            
+            scan = msn > 1 ? new MsnDataScan(spectrumNumber, msn, this) : new MSDataScan(spectrumNumber, msn, this);
 
             return scan;            
         }
@@ -195,32 +213,31 @@ namespace CSMSL.IO
 
         public abstract MassRange GetMzRange(int spectrumNumber);
 
-        public IEnumerable<MSDataScan> GetMsScans()
-        {
-            return GetMsScans(FirstSpectrumNumber, LastSpectrumNumber);
-        }
-
         public abstract double GetPrecusorMz(int spectrumNumber, int msnOrder = 2);
-
+        
         public abstract double GetIsolationWidth(int spectrumNumber, int msnOrder = 2);
 
         public virtual MassRange GetIsolationRange(int spectrumNumber, int msnOrder = 2)
         {
             double precursormz = GetPrecusorMz(spectrumNumber, msnOrder);
-            double half_width = GetIsolationWidth(spectrumNumber, msnOrder) / 2;
-            return new MassRange(precursormz - half_width, precursormz + half_width);
+            double halfWidth = GetIsolationWidth(spectrumNumber, msnOrder) / 2;
+            return new MassRange(precursormz - halfWidth, precursormz + halfWidth);
         }
 
-        public IEnumerable<MSDataScan> GetMsScans(int firstSpectrumNumber, int lastSpectrumNumber)
+        public virtual IEnumerable<MSDataScan> GetMsScans()
+        {
+            return GetMsScans(FirstSpectrumNumber, LastSpectrumNumber);
+        }
+
+        public virtual IEnumerable<MSDataScan> GetMsScans(int firstSpectrumNumber, int lastSpectrumNumber)
         {
             for (int spectrumNumber = firstSpectrumNumber; spectrumNumber <= lastSpectrumNumber; spectrumNumber++)
             {
                 yield return GetMsScan(spectrumNumber);
             }
-            yield break;
         }
 
-        public IEnumerable<MSDataScan> GetMsScans(IRange<int> range)
+        public virtual IEnumerable<MSDataScan> GetMsScans(IRange<int> range)
         {
             return GetMsScans(range.Minimum, range.Maximum);
         }
@@ -236,6 +253,8 @@ namespace CSMSL.IO
         public abstract double GetInjectionTime(int spectrumNumber);
 
         public abstract double GetResolution(int spectrumNumber);
+
+        public abstract int GetSpectrumNumber(double retentionTime);     
 
         /// <summary>
         /// Open up a connection to the underlying MS data stream
@@ -254,6 +273,6 @@ namespace CSMSL.IO
 
         protected abstract int GetLastSpectrumNumber();
 
-        public abstract int GetSpectrumNumber(double retentionTime);     
+       
     }
 }

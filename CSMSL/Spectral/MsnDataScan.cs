@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using CSMSL.IO;
+﻿using CSMSL.IO;
 using CSMSL.Proteomics;
+using System;
 
 namespace CSMSL.Spectral
 {

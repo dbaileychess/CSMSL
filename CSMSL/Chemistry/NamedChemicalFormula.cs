@@ -42,7 +42,7 @@ namespace CSMSL.Chemistry
 
         #endregion
 
-        private static Dictionary<string, NamedChemicalFormula> _modifications;
+        private static readonly Dictionary<string, NamedChemicalFormula> _modifications;
 
         static NamedChemicalFormula()
         {
@@ -98,7 +98,7 @@ namespace CSMSL.Chemistry
         }
         
 
-        private string _name;
+        private readonly string _name;
 
         /// <summary>
         /// Gets the name of the modification. If the name is null or empty
@@ -134,7 +134,7 @@ namespace CSMSL.Chemistry
 
         public NamedChemicalFormula Append(NamedChemicalFormula mod)
         {          
-            return new NamedChemicalFormula(this + mod, string.Format("{0} + {1}", this.Name, mod.Name));;
+            return new NamedChemicalFormula(this + mod, string.Format("{0} + {1}", Name, mod.Name));
         }
 
         public override string ToString()
@@ -149,12 +149,12 @@ namespace CSMSL.Chemistry
             Isotope n14 = Element.PeriodicTable["N"][14];
             Isotope c13 = Element.PeriodicTable["C"][13];
             Isotope n15 = Element.PeriodicTable["N"][15];
-            int c12_count = aminoAcidResidue.ChemicalFormula.Count(c12);
-            int n14_count = aminoAcidResidue.ChemicalFormula.Count(n14);
-            formula.Add(c13, c12_count);
-            formula.Add(n15, n14_count);
-            formula.Remove(c12, c12_count);
-            formula.Remove(n14, n14_count);
+            int c12Count = aminoAcidResidue.ChemicalFormula.Count(c12);
+            int n14Count = aminoAcidResidue.ChemicalFormula.Count(n14);
+            formula.Add(c13, c12Count);
+            formula.Add(n15, n14Count);
+            formula.Remove(c12, c12Count);
+            formula.Remove(n14, n14Count);
             return new NamedChemicalFormula(formula.ToString(), "#");
         }
 
@@ -169,10 +169,7 @@ namespace CSMSL.Chemistry
             {
                 return Name.Equals(other.Name);
             }
-            else
-            {
-                return false;
-            }
+            return false;
         }
     }
 }
