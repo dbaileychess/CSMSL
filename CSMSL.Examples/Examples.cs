@@ -43,14 +43,15 @@ namespace CSMSL.Examples
         }                
 
         private static void StartExamples()
-        {   
+        {
             // Examples coding
             //ChemicalFormulaExamples();
-            PeptideExamples();
-                      
+            //PeptideExamples();
+            //ChemicalFormulaGeneratorExample();
+
             // Example Objects
             //VennDiagramExamples();
-            
+
             // Example programs
             //TrypticDigestion.Start(minLength: 5, maxLength: 50, protease:Protease.Trypsin);
 
@@ -76,7 +77,14 @@ namespace CSMSL.Examples
             //TMT6plexExample.PurityCorrection();
         }
 
-   
+        private static void ChemicalFormulaGeneratorExample()
+        {
+            ChemicalFormulaGenerator generator = new ChemicalFormulaGenerator();
+            generator.AddConstraint(new ChemicalFormula("C2H3NO"), new ChemicalFormula("C3H4N2O2"));
+
+            List<ChemicalFormula> formulas = generator.FromMass(501, 502).ToList();
+        }
+
         private static void VennDiagramExamples()
         {
             Console.WriteLine("**Venn Diagram Examples**");
@@ -112,9 +120,6 @@ namespace CSMSL.Examples
             Peptide peptide1 = new Peptide("ACDE");
             WritePeptideToConsole(peptide1);
 
-            Modification newMod = new Modification(25.243, "test", ModificationSites.C | ModificationSites.E);
-            Modification mod2 = new Modification(32.12, "test2", ModificationSites.C | ModificationSites.E);
-            List<Peptide> peptides = peptide1.GenerateIsoforms(newMod, mod2).ToList();
 
             // Fragmenting a peptide is simple, you can include as many fragment types as you want
             Console.WriteLine("{0,-4} {1,-20} {2,-5}", "Type", "Formula", "Mass");

@@ -48,16 +48,11 @@ namespace CSMSL.IO
         }
 
         public string FileName { get; set; }
-
-        public void Close()
+        
+        public void Dispose()
         {
             _reader.Close();
             LineNumber = 0;
-        }
-
-        public void Dispose()
-        {
-            Close();
         }
 
         public IEnumerable<Fasta> ReadNextFasta()
@@ -97,10 +92,9 @@ namespace CSMSL.IO
 
         private IEnumerable<string> ReadNextLine()
         {
-            while (_reader.Peek() >= 0)
+            while (!_reader.EndOfStream)
             {
                 LineNumber++;
-               
                 yield return _reader.ReadLine();
             }
         }

@@ -304,7 +304,7 @@ namespace CSMSL.Analysis.Quantitation
                         {
                             if (modsToAdd.TryGetValue(residue, out modToAdd))
                             {
-                                ModificationCollection col = new ModificationCollection(channel.ToString() + ", " + modToAdd.ToString());
+                                ModificationCollection col = new ModificationCollection(channel, modToAdd);
                                 col.Add(channel);
                                 col.Add(modToAdd);
                                 modsToAdd[residue] = col;

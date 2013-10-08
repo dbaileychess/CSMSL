@@ -202,7 +202,7 @@ namespace CSMSL.IO.Thermo
             return mz;
         }
 
-        public override double GetPrecusorMz(int spectrumNumber, double searchMZ, int msnOrder = 2)
+        public double GetPrecusorMz(int spectrumNumber, double searchMZ, int msnOrder = 2)
         {
             int parentScanNumber = GetParentSpectrumNumber(spectrumNumber);
             MassSpectrum ms1Scan = GetMzSpectrum(parentScanNumber);
@@ -216,6 +216,7 @@ namespace CSMSL.IO.Thermo
         {
             object width = GetExtraValue(spectrumNumber, string.Format("MS{0} Isolation Width:", msnOrder));
             return Convert.ToDouble(width);
+
         
         }
 
@@ -243,6 +244,7 @@ namespace CSMSL.IO.Thermo
                                                        ref numberOfChannels, ref uniformTime, ref frequency);
 
             return totalIonCurrent;
+
         }
 
         public override DissociationType GetDissociationType(int spectrumNumber, int msnOrder = 2)
@@ -287,9 +289,7 @@ namespace CSMSL.IO.Thermo
         public override double GetInjectionTime(int spectrumNumber)
         {
             object time = GetExtraValue(spectrumNumber, "Ion Injection Time (ms):");
-            if (time == null)
-                return double.NaN;
-            return (float) time;
+            return Convert.ToDouble(time);
         }
 
         public override double GetResolution(int spectrumNumber)

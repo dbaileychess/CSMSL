@@ -26,15 +26,14 @@ namespace CSMSL.Util.Collections
 {
     public class VennSet<T> : IEnumerable<T> where T : IEquatable<T>
     {
-        private string _name;
-        private Dictionary<T, T> _data;
+        private readonly Dictionary<T, T> _data;
 
         public int Count { get { return _data.Count; } }
 
         public VennSet(IEnumerable<T> items, string name = "")           
         {
             Name = name;
-            _data = items.ToDictionary(Tkey => Tkey);
+            _data = items.ToDictionary(item => item);
         }
 
         public VennSet(string name = "")           
@@ -43,11 +42,7 @@ namespace CSMSL.Util.Collections
             _data = new Dictionary<T, T>();
         }
 
-        public string Name
-        {
-            get { return _name; }
-            set { _name = value; }
-        }
+        public string Name { get; set; }
 
         public void Add(T item)
         {

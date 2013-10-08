@@ -84,17 +84,9 @@
     <Reference Include="Combinatorics">
       <HintPath>..\packages\Combinatorics.1.0.3.2\lib\net40\Combinatorics.dll</HintPath>
     </Reference>
-    <Reference Include="CsvHelper">
-      <HintPath>..\..\documents\visual studio 2012\Projects\GenPeptideIsoforms_130919\packages\CsvHelper.2.2.2\lib\net20\CsvHelper.dll</HintPath>
-    </Reference>
-    <Reference Include="LumenWorks.Framework.IO">
-      <HintPath>..\..\documents\visual studio 2012\Projects\PeptideIsoforms_130919\packages\LumenWorks.Framework.IO.3.8.0\lib\net20\LumenWorks.Framework.IO.dll</HintPath>
-    </Reference>
-    <Reference Include="MathNet.Numerics">
-      <HintPath>..\..\Documents\Visual Studio 2012\Projects\GC_PeakFinder_Zedgraph\packages\MathNet.Numerics.2.6.1\lib\net40\MathNet.Numerics.dll</HintPath>
-    </Reference>
-    <Reference Include="MathNet.Numerics.IO">
-      <HintPath>..\..\Documents\Visual Studio 2012\Projects\GC_PeakFinder_Zedgraph\packages\MathNet.Numerics.2.6.1\lib\net40\MathNet.Numerics.IO.dll</HintPath>
+    <Reference Include="MathNet.Numerics, Version=3.0.0.38, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\MathNet.Numerics.3.0.0-alpha5\lib\net40\MathNet.Numerics.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -123,6 +115,7 @@
     <Compile Include="Analysis\Quantitation\QuantifiedPeptide.cs" />
     <Compile Include="Analysis\Quantitation\QuantitationChannelSetMassType.cs" />
     <Compile Include="Chemistry\ChemicalFormula.cs" />
+    <Compile Include="Chemistry\ChemicalFormulaGenerator.cs" />
     <Compile Include="Chemistry\NamedChemicalFormula.cs" />
     <Compile Include="Chemistry\Element.cs" />
     <Compile Include="Chemistry\IChemicalFormula.cs" />

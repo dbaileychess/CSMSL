@@ -7,6 +7,7 @@ namespace CSMSL.IO
         Mzml = 1,
         ThermoRawFile = 2,
         AgilentRawFile = 3,
-        BrukerRawFile = 4
+        BrukerRawFile = 4,
+        WiffRawFile = 5
     }
 }

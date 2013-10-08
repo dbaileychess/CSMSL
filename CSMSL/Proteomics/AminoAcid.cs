@@ -27,6 +27,8 @@ namespace CSMSL.Proteomics
 {
     public class AminoAcid : IAminoAcid
     {
+        #region The Twenty Common Amino Acids
+
         public static AminoAcid Alanine { get; private set; }
         public static AminoAcid Arginine { get; private set; }
         public static AminoAcid Asparagine { get; private set; }
@@ -49,6 +51,8 @@ namespace CSMSL.Proteomics
         public static AminoAcid Tyrosine { get; private set; }
         public static AminoAcid Valine { get; private set; }
 
+        #endregion
+
         private static readonly Dictionary<string, AminoAcid> Residues;
 
         private static readonly AminoAcid[] ResiduesByLetter;
@@ -67,7 +71,6 @@ namespace CSMSL.Proteomics
         {
             residue = ResiduesByLetter[letter];
             return residue != null;
-            //return Residues.TryGetValue(letter.ToString(CultureInfo.InvariantCulture), out residue);
         }
 
         public static bool TryGetResidue(string symbol, out AminoAcid residue)

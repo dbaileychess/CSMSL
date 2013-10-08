@@ -52,7 +52,12 @@ namespace CSMSL.Spectral
         public MassSpectrum(double[] mzs, double[] intensities)          
         {
             LoadData(mzs, intensities);
-        }        
+        }
+
+        public MassSpectrum(double[] mzs, float[] intensities)
+        {
+            LoadData(mzs, intensities);
+        } 
 
         public MassSpectrum(IEnumerable<MZPeak> peaks)
         {
@@ -73,6 +78,30 @@ namespace CSMSL.Spectral
                 {
                     maxInt = peak.Intensity;
                     BasePeak = peak;
+                }
+            }
+        }
+
+        private void LoadData(double[] mzs, float[] intensities)
+        {
+            int length;
+            if ((length = mzs.Length) != intensities.Length)
+            {
+                throw new FormatException("M/Z and Intensities arrays are not the same dimensions");
+            }
+            Count = length;
+            TotalIonCurrent = 0;
+            Peaks = new MZPeak[Count];
+            double maxInt = 0;
+            for (int i = 0; i < Count; i++)
+            {
+                double intensity = intensities[i];
+                Peaks[i] = new MZPeak(mzs[i], intensity);
+                TotalIonCurrent += intensity;
+                if (intensity > maxInt)
+                {
+                    maxInt = intensity;
+                    BasePeak = Peaks[i];
                 }
             }
         }
