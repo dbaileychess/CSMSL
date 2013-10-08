@@ -47,10 +47,11 @@ namespace CSMSL.Examples
             // Examples coding
             //ChemicalFormulaExamples();
             //PeptideExamples();
-                      
+            //ChemicalFormulaGeneratorExample();
+
             // Example Objects
             //VennDiagramExamples();
-            
+
             // Example programs
             //TrypticDigestion.Start(minLength: 5, maxLength: 50, protease:Protease.Trypsin);
 
@@ -62,7 +63,6 @@ namespace CSMSL.Examples
 
             // Example IO
             //MsDataFileExamples.Start();
-            MsDataFileExamples.WiffExample();
 
             // Omssa Reader
             //OmssaReader.Start();
@@ -77,7 +77,14 @@ namespace CSMSL.Examples
             //TMT6plexExample.PurityCorrection();
         }
 
-   
+        private static void ChemicalFormulaGeneratorExample()
+        {
+            ChemicalFormulaGenerator generator = new ChemicalFormulaGenerator();
+            generator.AddConstraint(new ChemicalFormula("C2H3NO"), new ChemicalFormula("C3H4N2O2"));
+
+            List<ChemicalFormula> formulas = generator.FromMass(501, 502).ToList();
+        }
+
         private static void VennDiagramExamples()
         {
             Console.WriteLine("**Venn Diagram Examples**");
