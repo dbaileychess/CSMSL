@@ -81,7 +81,7 @@ namespace CSMSL.Examples
         {
             ChemicalFormulaGenerator generator = new ChemicalFormulaGenerator();
             generator.AddConstraint(new ChemicalFormula("C2H3NO"), new ChemicalFormula("C3H4N2O2"));
-
+       
             List<ChemicalFormula> formulas = generator.FromMass(501, 502).ToList();
         }
 
