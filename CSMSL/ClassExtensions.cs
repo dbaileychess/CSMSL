@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Runtime.InteropServices.ComTypes;
 using CSMSL.Chemistry;
 using CSMSL.Proteomics;
+using System.Collections.Generic;
 
 namespace CSMSL
 {
@@ -29,6 +31,7 @@ namespace CSMSL
             return sites;
         }
     }
+
 }
 
 

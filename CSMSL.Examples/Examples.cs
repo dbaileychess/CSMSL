@@ -47,7 +47,7 @@ namespace CSMSL.Examples
             // Examples coding
             //ChemicalFormulaExamples();
             //PeptideExamples();
-            //ChemicalFormulaGeneratorExample();
+            ChemicalFormulaGeneratorExample();
 
             // Example Objects
             //VennDiagramExamples();
@@ -80,9 +80,9 @@ namespace CSMSL.Examples
         private static void ChemicalFormulaGeneratorExample()
         {
             ChemicalFormulaGenerator generator = new ChemicalFormulaGenerator();
-            generator.AddConstraint(new ChemicalFormula("C2H3NO"), new ChemicalFormula("C3H4N2O2"));
-       
-            List<ChemicalFormula> formulas = generator.FromMass(501, 502).ToList();
+            generator.AddConstraint(new ChemicalFormula("C2H3"), new ChemicalFormula("C10H50"));
+
+            List<ChemicalFormula> formulas = generator.AllFormulas().ToList();
         }
 
         private static void VennDiagramExamples()

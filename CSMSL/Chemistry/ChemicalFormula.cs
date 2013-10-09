@@ -855,11 +855,20 @@ namespace CSMSL.Chemistry
                     throw new ArgumentException(string.Format("Chemical Symbol {0} does not exist in the Periodic Table", chemsym));
                 }
             }
+          
         }
 
-        public int[] GetIsotopes()
+        #endregion
+
+        #region Internal
+
+        /// <summary>
+        /// Get the internal isotope array for this chemical formula as a deep copy.
+        /// </summary>
+        /// <returns>The isotopes that make up this chemical formula</returns>
+        internal int[] GetIsotopes()
         {
-            return (int[])this._isotopes.Clone();
+            return (int[])_isotopes.Clone();
         }
 
         #endregion
