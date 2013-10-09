@@ -124,7 +124,10 @@ namespace CSMSL.Chemistry
                     string symbol = reader.ReadElementContentAsString();
                     reader.ReadToFollowing("AtomicNumber");
                     int atomicnumber = reader.ReadElementContentAsInt();
-                    Element element = new Element(name, symbol, atomicnumber);
+                    reader.ReadToFollowing("ValenceElectrons");
+                    int valenceElectrons = reader.ReadElementContentAsInt();
+                    Element element = new Element(name, symbol, atomicnumber, valenceElectrons);
+
                  
                     bool isStartNode = reader.ReadToFollowing("Isotope");
                     while(isStartNode)

@@ -87,9 +87,10 @@ namespace CSMSL.Chemistry
             int[] maxValues = _maxFormula.GetIsotopes();
             int totalCombos = 1;
             int count = 0;
-            for (int i = 0; i < minValues.Length; i++)
+            for (int i = 0; i < maxValues.Length; i++)
             {
-                maxValues[i] -= minValues[i];
+                if(i < minValues.Length)
+                    maxValues[i] -= minValues[i];
                 if (maxValues[i] != 0)
                 {
                     totalCombos *= (maxValues[i] + 1);
