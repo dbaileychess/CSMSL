@@ -32,8 +32,7 @@ namespace CSMSL
         }
     }
 
-<<<<<<< HEAD
-    public static class ChemicalFormulaFilters
+    public static class ChemicalFormulaFilterExtension
     {
         [Flags]
         public enum FilterTypes
@@ -44,9 +43,11 @@ namespace CSMSL
             All = Int32.MaxValue,
         }
 
-        public IEnumerable<ChemicalFormula> GetValidatedMolecularFormulas(this FilterTypes filters, List<ChemicalFormula> formulas)
+        public static IEnumerable<ChemicalFormula> GetValidatedMolecularFormulas(this IEnumerable<ChemicalFormula> formulas, FilterTypes filters)
         {
-            //the number of atoms minus 1.
+            bool useValence = filters.HasFlag(FilterTypes.Valence);
+            bool useHydrogenCarbonRatio = filters.HasFlag(FilterTypes.HydrogenCarbonRatio);
+
             foreach (ChemicalFormula formula in formulas)
             {
                 bool valid = false;
@@ -59,33 +60,41 @@ namespace CSMSL
                 int[] isotopes = formula.GetIsotopes();
                 for (int i = 0; i < isotopes.Length; i++)
                 {
-                    if (isotopes[i] > 0)
+                    int numAtoms = isotopes[i];
+                    if (numAtoms > 0)
                     {
-                        string symbol = PeriodicTable.Instance[i].AtomicSymbol;
-                        int numValenceElectrons = PeriodicTable.Instance[i].ValenceElectrons;
-                        int numAtoms = isotopes[i];
-                        totalValence += numValenceElectrons * numAtoms;
-                        atomCount += numAtoms;
-                        if (symbol.Equals("H"))
+                        Isotope isotope = PeriodicTable.Instance[i];
+                        if (useHydrogenCarbonRatio)
                         {
-                            hydrogenCount = numAtoms;
+                            string symbol = isotope.AtomicSymbol;
+                            if (symbol.Equals("H"))
+                            {
+                                hydrogenCount = numAtoms;
+                            }
+                            if (symbol.Equals("C"))
+                            {
+                                carbonCount = numAtoms;
+                            }
                         }
-                        if (symbol.Equals("C"))
+
+                        if (useValence)
                         {
-                            carbonCount = numAtoms;
-                        }
-                        if (numValenceElectrons > maxValence)
-                        {
-                            maxValence = numValenceElectrons;
-                        }
-                        if (numValenceElectrons % 2 != 0)
-                        {
-                            oddValences += isotopes[i];
+                            int numValenceElectrons = isotope.ValenceElectrons;
+                            totalValence += numValenceElectrons * numAtoms;
+                            atomCount += numAtoms;
+                            if (numValenceElectrons > maxValence)
+                            {
+                                maxValence = numValenceElectrons;
+                            }
+                            if (numValenceElectrons % 2 != 0)
+                            {
+                                oddValences += numAtoms;
+                            }
                         }
                     }
                 }
 
-                if (filters.HasFlag(FilterTypes.Valence) || filters.HasFlag(FilterTypes.All))
+                if (useValence)
                 {
                     //Criteria
                     //i) The sum of valences or the total number of atoms having odd valences is even;
@@ -93,29 +102,20 @@ namespace CSMSL
                     //maximum valence;
                     //iii) The sum of valences is greater than or equal to twice
                     //the number of atoms minus 1.
-                    if ((totalValence % 2 == 0 || oddValences % 2 == 0) && (totalValence >= 2 * maxValence) && (totalValence >= ((2 * atomCount) - 1)))
+                    valid = ((totalValence % 2 == 0 || oddValences % 2 == 0) && (totalValence >= 2 * maxValence) && (totalValence >= ((2 * atomCount) - 1)));
+                    if (!valid)
                     {
-                        valid = true;
-                    }
-                    else
-                    {
-                        valid = false;
+                        continue;
                     }
                 }
 
-                if (filters.HasFlag(FilterTypes.HydrogenCarbonRatio) || filters.HasFlag(FilterTypes.All))
+
+                if (useHydrogenCarbonRatio)
                 {
                     //Criteria
                     // H/C ratio should be in the following range 2.0 > H/C > 0.5
                     double HCRatio = (double)hydrogenCount / (double)carbonCount;
-                    if (HCRatio > 0.5 && HCRatio < 2.0)
-                    {
-                        valid = true;
-                    }
-                    else
-                    {
-                        valid = false;
-                    }
+                    valid = (HCRatio > 0.5 && HCRatio < 2.0);
                 }
 
                 if (valid)
@@ -125,8 +125,6 @@ namespace CSMSL
             }
         }
     }
-=======
->>>>>>> e58ddc17e719254a92dce73da20f8d7238db3819
 }
 
 
