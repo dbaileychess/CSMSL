@@ -12,12 +12,14 @@ namespace CSMSL.Chemistry
 
         private int[] minValues;
         private int[] maxValues;
+        private int maxLength;
         private int maxUniqueID = 0;
 
         public ChemicalFormulaGenerator(ChemicalFormula baseChemicalFormula)
         {
             this.maxValues = baseChemicalFormula.GetIsotopes();
-            this.minValues = new int[this.maxValues.Length]; ;
+            this.minValues = new int[this.maxValues.Length];
+            this.maxLength = maxValues.Length;
         }
 
         public void AddConstraint(ChemicalFormula minimumChemicalFormula, ChemicalFormula maximumChemicalFormula)
@@ -39,13 +41,12 @@ namespace CSMSL.Chemistry
 
         public void AddConstraint(Isotope isotope, int min, int max)
         {
-            if (isotope.UniqueId > maxUniqueID)
+            if (maxUniqueID < isotope.UniqueId)
             {
                 maxUniqueID = isotope.UniqueId;
                 Array.Resize(ref minValues, maxUniqueID);
                 Array.Resize(ref maxValues, maxUniqueID);
             }
-            minValues[isotope.UniqueId] = min;
         }
 
         public void AddConstraint(Isotope isotope, Range<int> range) 
@@ -75,15 +76,15 @@ namespace CSMSL.Chemistry
         public IEnumerable<ChemicalFormula> FromMass(double lowMass, double highMass, int maxNumberOfResults = int.MaxValue)
         {
             List<ChemicalFormula> returnFormulas = new List<ChemicalFormula>();
-
+            int maxValue = minValues.Length;
             while (!minValues.SequenceEqual(maxValues))
             {
-                for (int i = 1; i <= minValues.Length; i++)
+                for (int i = 1; i <= maxValue; i++)
                 {
-                    minValues[minValues.Length - i]++;
-                    if (minValues[minValues.Length - i] > maxValues[minValues.Length - i])
+                    minValues[maxValue - i]++;
+                    if (minValues[maxValue - i] > maxValues[maxValue - i])
                     {
-                        minValues[minValues.Length - i] = 0;
+                        minValues[maxValue - i] = 0;
                     }
                     else
                     {

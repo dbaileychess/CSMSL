@@ -859,7 +859,7 @@ namespace CSMSL.Chemistry
 
         public int[] GetIsotopes()
         {
-            return this._isotopes;
+            return (int[])this._isotopes.Clone();
         }
 
         #endregion
