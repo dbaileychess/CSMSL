@@ -118,6 +118,24 @@ namespace CSMSL.Chemistry
             ChemicalFormulaConstructor(largestId + 1);
         }
 
+        internal ChemicalFormula(int[] uniqueIdCounts)
+        {           
+            int count = uniqueIdCounts.Length;
+            _isotopes = new int[count];
+            MonoisotopicMass = 0;
+            for (int i = 0; i < count; i++)
+            {
+                int isotopes = uniqueIdCounts[i];
+                if (isotopes != 0)
+                {
+                    _isotopes[i] = isotopes;
+                    MonoisotopicMass += isotopes * PeriodicTable.Instance[i].AtomicMass;
+                    _largestIsotopeId = i;
+                }
+            }               
+            _isFormulaDirty = _isDirty = true;
+        }
+
         /// <summary>
         /// Create an chemical formula from the given string representation
         /// </summary>
@@ -837,6 +855,11 @@ namespace CSMSL.Chemistry
                     throw new ArgumentException(string.Format("Chemical Symbol {0} does not exist in the Periodic Table", chemsym));
                 }
             }
+        }
+
+        public int[] GetIsotopes()
+        {
+            return (int[])this._isotopes.Clone();
         }
 
         #endregion
