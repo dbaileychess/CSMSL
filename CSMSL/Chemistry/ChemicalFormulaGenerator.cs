@@ -84,20 +84,20 @@ namespace CSMSL.Chemistry
                 returnFormulas.Add(_minFormula);
             }
 
-            int[] formulas = _maxFormula.GetIsotopes();
+            int[] maxValues = _maxFormula.GetIsotopes();
             int totalCombos = 1;
             int count = 0;
             for (int i = 0; i < minValues.Length; i++)
             {
-                formulas[i] -= minValues[i];
-                if (formulas[i] != 0)
+                maxValues[i] -= minValues[i];
+                if (maxValues[i] != 0)
                 {
-                    totalCombos *= (formulas[i] + 1);
+                    totalCombos *= (maxValues[i] + 1);
                     count = i;
                 }
             }
            
-            int[] currentFormula = new int[formulas.Length];
+            int[] currentFormula = new int[maxValues.Length];
 
             int combos = 0;
             totalCombos--;
@@ -106,7 +106,7 @@ namespace CSMSL.Chemistry
                 for (int i = 0; i <= count; i++)
                 {
                     currentFormula[count - i]++;
-                    if (currentFormula[count - i] > formulas[count - i])
+                    if (currentFormula[count - i] > maxValues[count - i])
                     {
                         currentFormula[count - i] = 0;
                     }
