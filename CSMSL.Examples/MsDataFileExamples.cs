@@ -1,5 +1,4 @@
 ﻿using CSMSL.IO;
-using CSMSL.IO.ABSciex;
 using CSMSL.IO.MzML;
 using CSMSL.IO.Thermo;
 using CSMSL.IO.Agilent;

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.InteropServices.ComTypes;
 using CSMSL.Chemistry;
 using CSMSL.Proteomics;
 using System.Collections.Generic;
@@ -31,6 +32,7 @@ namespace CSMSL
         }
     }
 
+<<<<<<< HEAD
     public static class ChemicalFormulaFilters
     {
         [Flags]
@@ -123,6 +125,8 @@ namespace CSMSL
             }
         }
     }
+=======
+>>>>>>> e58ddc17e719254a92dce73da20f8d7238db3819
 }
 
 
