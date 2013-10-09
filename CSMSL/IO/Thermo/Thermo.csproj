@@ -79,10 +79,6 @@
     <Reference Include="System.Numerics" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="EIMethods.cs" />
-    <Compile Include="Fragment.cs" />
-    <Compile Include="MyPeak.cs" />
-    <Compile Include="RTPeak.cs" />
     <Compile Include="ThermoLabeledPeak.cs" />
     <Compile Include="ThermoRawFile.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
