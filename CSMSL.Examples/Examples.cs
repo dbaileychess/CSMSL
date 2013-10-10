@@ -19,6 +19,7 @@
 ///////////////////////////////////////////////////////////////////////////
 
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using CSMSL.Chemistry;
 using CSMSL.Proteomics;
@@ -79,10 +80,10 @@ namespace CSMSL.Examples
 
         private static void ChemicalFormulaGeneratorExample()
         {
-            ChemicalFormulaGenerator generator = new ChemicalFormulaGenerator();
-            generator.AddConstraint(new ChemicalFormula("C2H3"), new ChemicalFormula("C300H500"));
+            ChemicalFormulaGenerator generator = new ChemicalFormulaGenerator(new ChemicalFormula("H3000C2000N60O50"));
 
-            List<ChemicalFormula> formulas = generator.AllFormulas().ToList();
+            List<ChemicalFormula> formulas = generator.FromMass(524,525).ToList();
+            Console.WriteLine("Unique Formulas: " + formulas.Count);
         }
 
         private static void VennDiagramExamples()

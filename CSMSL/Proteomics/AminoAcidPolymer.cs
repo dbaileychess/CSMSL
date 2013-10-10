@@ -831,9 +831,7 @@ namespace CSMSL.Proteomics
             }
             return true;
         }
-
-
-
+        
         #region Private Methods
 
         private void ReplaceTerminus(ref IChemicalFormula terminus, IChemicalFormula value)

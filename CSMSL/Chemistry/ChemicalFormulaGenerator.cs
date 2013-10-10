@@ -72,58 +72,100 @@ namespace CSMSL.Chemistry
             return FromMass(range.Minimum, range.Maximum, maxNumberOfResults);
         }
 
+        private static void GenerateFormulaHelper(double lowMass, double highMass, int length, double[] mass, int[] max, int index, int[] currentFormula, List<ChemicalFormula> formulas)
+        {
+            int maxCount = Math.Min((int)Math.Ceiling(highMass / mass[index]), max[index]);
+
+            for (int count = 0; count <= maxCount; count++)
+            {
+                currentFormula[index] = count;
+                if (index < length - 1)
+                {
+                    GenerateFormulaHelper(lowMass, highMass, length, mass, max, index + 1, currentFormula, formulas);
+                }
+                else
+                {
+                    var formula = new ChemicalFormula(currentFormula);
+                    if (formula.MonoisotopicMass < lowMass)
+                        continue;
+                    if (formula.MonoisotopicMass > highMass)
+                        return;
+                    formulas.Add(formula);
+                }
+            }
+
+            //if (index < length - 1)
+            //{
+            //    int maxCount = Math.Min((int)Math.Ceiling(highMass / mass[index]), max[index]);
+            //    for (int count = 0; count <= maxCount; count++)
+            //    {
+            //        currentFormula[index] = count;
+            //        GenerateFormulaHelper(lowMass, highMass, length, mass, max, index + 1, currentFormula, formulas);
+            //    }
+            //}
+            //else
+            //{
+            //    int maxCount = Math.Min((int)Math.Ceiling((highMass - new ChemicalFormula(currentFormula).MonoisotopicMass) / mass[index]), max[index]);
+            //    for (int count = 0; count <= maxCount; count++)
+            //    {
+            //        currentFormula[index] = count;
+            //        var formula = new ChemicalFormula(currentFormula);
+            //        if (formula.MonoisotopicMass >= lowMass && formula.MonoisotopicMass <= highMass)
+            //        {
+            //            formulas.Add(formula);
+            //        }
+            //    }
+            //}
+
+        }
+
         public IEnumerable<ChemicalFormula> FromMass(double lowMass, double highMass, int maxNumberOfResults = int.MaxValue)
         {
             List<ChemicalFormula> returnFormulas = new List<ChemicalFormula>();
 
+            // The minimum formula required for any return formulas
             int[] minValues = _minFormula.GetIsotopes();
             double minFormulaMass = _minFormula.MonoisotopicMass;
 
+            double correctedLowMass = lowMass - minFormulaMass;
+            double correctedHighMass = highMass - minFormulaMass;
+
+            // Add the minimum formula itself if it is within the bounds
             if (minFormulaMass >= lowMass && minFormulaMass <= highMass)
             {
                 returnFormulas.Add(_minFormula);
             }
-
-            int[] maxValues = _maxFormula.GetIsotopes();
+           
             int totalCombos = 1;
             int count = 0;
-            for (int i = 0; i < maxValues.Length; i++)
-            {
-                if(i < minValues.Length)
-                    maxValues[i] -= minValues[i];
-                if (maxValues[i] != 0)
-                {
-                    totalCombos *= (maxValues[i] + 1);
-                    count = i;
-                }
-            }
-           
+
+            // The maximum formula allowed, represented in number of isotopes
+            int[] maxValues = _maxFormula.GetIsotopes();
+
+            // The current formula represented in isotopes
             int[] currentFormula = new int[maxValues.Length];
 
-            int combos = 0;
-            totalCombos--;
-            while (combos < totalCombos)
-            {
-                for (int i = 0; i <= count; i++)
-                {
-                    currentFormula[count - i]++;
-                    if (currentFormula[count - i] > maxValues[count - i])
-                    {
-                        currentFormula[count - i] = 0;
-                    }
-                    else
-                    {
-                        combos++;
-                        ChemicalFormula formula = new ChemicalFormula(currentFormula);
-                        double totalMass = formula.MonoisotopicMass + minFormulaMass;
+            // A list of all the isotopes masses
+            double[] mass = new double[maxValues.Length];
 
-                        if (totalMass >= lowMass && totalMass <= highMass)
-                        {
-                            formula.Add(_minFormula);
-                            returnFormulas.Add(formula);
-                        }
-                        break;
-                    }
+            int length = maxValues.Length;
+
+            for (int j = 0; j < length; j++)
+            {
+                if(j < minValues.Length)
+                    maxValues[j] -= minValues[j];
+                if (maxValues[j] == 0)
+                    continue;
+                mass[j] = PeriodicTable.Instance[j].AtomicMass;
+            }
+
+            GenerateFormulaHelper(lowMass, highMass, length, mass, maxValues, 0, new int[maxValues.Length], returnFormulas);
+            
+            if (_minFormula.ElementCount > 0)
+            {
+                foreach (ChemicalFormula formula in returnFormulas)
+                {
+                    formula.Add(_minFormula);
                 }
             }
 
@@ -131,5 +173,6 @@ namespace CSMSL.Chemistry
 
             return returnFormulas.OrderBy(formula => Math.Abs(formula.MonoisotopicMass - meanValue)).Take(maxNumberOfResults);
         }
+
     }
 }
