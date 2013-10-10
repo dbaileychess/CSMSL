@@ -1,4 +1,4 @@
-<PeriodicTable defaultID="11" isotopesCount="288">
+<PeriodicTable defaultID="16" isotopesCount="288">
   <Element>
     <Name>Hydrogen</Name>
     <Symbol>H</Symbol>
@@ -141,7 +141,7 @@
     <AtomicNumber>9</AtomicNumber>
     <AverageMass>18.9984032</AverageMass>
     <ValenceElectrons>7</ValenceElectrons>
-    <Isotope>
+    <Isotope uniqueID ="13">
       <Mass>18.99840322</Mass>
       <MassNumber>19</MassNumber>
       <RelativeAbundance>1</RelativeAbundance>
@@ -282,12 +282,12 @@
     <AtomicNumber>17</AtomicNumber>
     <AverageMass>35.453</AverageMass>
     <ValenceElectrons>7</ValenceElectrons>
-    <Isotope>
+    <Isotope uniqueID="14">
       <Mass>34.96885268</Mass>
       <MassNumber>35</MassNumber>
       <RelativeAbundance>0.7576</RelativeAbundance>
     </Isotope>
-    <Isotope>
+    <Isotope uniqueID="15">
       <Mass>36.96590259</Mass>
       <MassNumber>37</MassNumber>
       <RelativeAbundance>0.2424</RelativeAbundance>
@@ -698,12 +698,12 @@
     <AtomicNumber>35</AtomicNumber>
     <AverageMass>79.904</AverageMass>
     <ValenceElectrons>7</ValenceElectrons>
-    <Isotope>
+    <Isotope uniqueID ="11">
       <Mass>78.9183371</Mass>
       <MassNumber>79</MassNumber>
       <RelativeAbundance>0.5069</RelativeAbundance>
     </Isotope>
-    <Isotope>
+    <Isotope uniqueID ="12">
       <Mass>80.9162906</Mass>
       <MassNumber>81</MassNumber>
       <RelativeAbundance>0.4931</RelativeAbundance>
