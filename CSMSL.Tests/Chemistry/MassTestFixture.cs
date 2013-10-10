@@ -22,7 +22,6 @@ namespace CSMSL.Tests.Chemistry
 
             Assert.AreEqual(524.342, m.MonoisotopicMass);
         }
-        
 
         [Test]
         public void MonoisotopicMassInConstructor()

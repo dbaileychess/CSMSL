@@ -25,20 +25,20 @@ namespace CSMSL.Proteomics
     [Flags]
     public enum FragmentTypes
     {
-        None = 0,
-        a = 1,
-        adot = 2,
-        b = 4,
-        bdot = 8,
-        c = 16,
-        cdot = 32,
-        x = 64,
-        xdot = 128,
-        y = 256,
-        ydot = 512,
-        z = 1024,
-        zdot = 2048,
-        Internal = 4096,    
+        None =      0,
+        a =         1 << 0,
+        adot =      1 << 1,
+        b =         1 << 2,
+        bdot =      1 << 3,
+        c =         1 << 4,
+        cdot =      1 << 5,
+        x =         1 << 6,
+        xdot =      1 << 7,
+        y =         1 << 8,
+        ydot =      1 << 9,
+        z =         1 << 10,
+        zdot =      1 << 11,
+        Internal =  1 << 12,    
         All = Int32.MaxValue
     }
 }

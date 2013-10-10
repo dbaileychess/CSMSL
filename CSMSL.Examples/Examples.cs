@@ -80,10 +80,7 @@ namespace CSMSL.Examples
 
         private static void ChemicalFormulaGeneratorExample()
         {
-            ChemicalFormulaGenerator generator = new ChemicalFormulaGenerator(new ChemicalFormula("H30000C20000N600O500"));
-           
-            List<ChemicalFormula> formulas = generator.FromMass(524,525).Validate().ToList();
-            Console.WriteLine("Unique Formulas: " + formulas.Count);
+          
         }
 
         private static void VennDiagramExamples()
