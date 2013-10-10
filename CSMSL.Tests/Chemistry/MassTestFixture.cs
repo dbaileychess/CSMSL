@@ -16,15 +16,16 @@ namespace CSMSL.Tests.Chemistry
         }
 
         [Test]
-        public void DefaultMassAverage()
+        public void MonoisotopicOnlyMassInConstructor()
         {
-            Mass m = new Mass();
+            Mass m = new Mass(524.342);
 
-            Assert.AreEqual(0.0, m.Average);
+            Assert.AreEqual(524.342, m.MonoisotopicMass);
         }
+        
 
         [Test]
-        public void MonoisotopicOnlyMassInConstructor()
+        public void MonoisotopicMassInConstructor()
         {
             Mass m = new Mass(524.342);
 
@@ -32,34 +33,10 @@ namespace CSMSL.Tests.Chemistry
         }
 
         [Test]
-        public void AverageOnlyMassInConstructor()
-        {
-            Mass m = new Mass(average: 524.500);
-
-            Assert.AreEqual(524.500, m.Average);
-        }
-
-        [Test]
-        public void MonoisotopicMassInConstructor()
-        {
-            Mass m = new Mass(524.342, 524.500);
-
-            Assert.AreEqual(524.342, m.MonoisotopicMass);
-        }
-
-        [Test]
-        public void AverageMassInConstructor()
-        {
-            Mass m = new Mass(524.342, 524.500);
-
-            Assert.AreEqual(524.500, m.Average);
-        }
-
-        [Test]
         public void MassEquality()
         {
-            Mass m1 = new Mass(524.342, 524.500);
-            Mass m2 = new Mass(524.342, 524.500);
+            Mass m1 = new Mass(524.342);
+            Mass m2 = new Mass(524.342);
 
             Assert.AreEqual(m1, m2);
         }
@@ -67,8 +44,8 @@ namespace CSMSL.Tests.Chemistry
         [Test]
         public void MassRefInequality()
         {
-            Mass m1 = new Mass(524.342, 524.500);
-            Mass m2 = new Mass(524.342, 524.500);
+            Mass m1 = new Mass(524.342);
+            Mass m2 = new Mass(524.342);
 
             Assert.AreNotSame(m1, m2);
         }
@@ -76,8 +53,8 @@ namespace CSMSL.Tests.Chemistry
         [Test]
         public void MassMonoisotopicInequality()
         {
-            Mass m1 = new Mass(524.342, 524.500);
-            Mass m2 = new Mass(524.343, 524.500);
+            Mass m1 = new Mass(524.342);
+            Mass m2 = new Mass(524.343);
 
             Assert.AreNotEqual(m1, m2);
         }
@@ -85,8 +62,8 @@ namespace CSMSL.Tests.Chemistry
         [Test]
         public void MassBothInequality()
         {
-            Mass m1 = new Mass(524.342, 524.500);
-            Mass m2 = new Mass(524.343, 524.501);
+            Mass m1 = new Mass(524.342);
+            Mass m2 = new Mass(524.343);
 
             Assert.AreNotEqual(m1, m2);
         }
@@ -94,7 +71,7 @@ namespace CSMSL.Tests.Chemistry
         [Test]
         public void ConstructorIMass()
         {
-            IMass m = new Mass(524.342, 524.500);
+            IMass m = new Mass(524.342);
             Mass m2 = new Mass(m);
 
             Assert.AreEqual(m, m2);
@@ -103,7 +80,7 @@ namespace CSMSL.Tests.Chemistry
         [Test]
         public void ConstructorIMassRefInequality()
         {
-            IMass m = new Mass(524.342, 524.500);
+            IMass m = new Mass(524.342);
             Mass m2 = new Mass(m);
 
             Assert.AreNotSame(m, m2);
@@ -154,7 +131,7 @@ namespace CSMSL.Tests.Chemistry
         [Test]
         public void MassIsIMass()
         {
-            Mass m1 = new Mass(524.342, 524.500);
+            Mass m1 = new Mass(524.342);
 
             Assert.IsInstanceOf<IMass>(m1);
         }

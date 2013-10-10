@@ -215,7 +215,7 @@ namespace CSMSL.Tests.Chemistry
         {
             ChemicalFormula water = new ChemicalFormula("H2O");
            
-            Assert.AreEqual(2 * Constants.Hydrogen + Constants.Oxygen, water.Mass.MonoisotopicMass);
+            Assert.AreEqual(2 * Constants.Hydrogen + Constants.Oxygen, water.MonoisotopicMass);
         }
 
         [Test]
@@ -223,7 +223,7 @@ namespace CSMSL.Tests.Chemistry
         {
             ChemicalFormula water = new ChemicalFormula("H2O");
 
-            Assert.AreEqual(18.015286435051941, water.Mass.Average);
+            Assert.AreEqual(18.015286435051941, water.AverageMass);
         }
 
         [Test]        
@@ -286,23 +286,18 @@ namespace CSMSL.Tests.Chemistry
 
             Assert.AreNotSame(formulaA, formulaB);
         }
-
-        [Test]
-        public void EmptyFormulaMassIsNotNull()
-        {
-            Assert.IsNotNull(EmptyFormula.Mass);
-        }
+        
 
         [Test]
         public void EmptyFormulaMonoisotopicMassIsZero()
         {           
-            Assert.AreEqual(0.0, EmptyFormula.Mass.MonoisotopicMass);
+            Assert.AreEqual(0.0, EmptyFormula.MonoisotopicMass);
         }
 
         [Test]
         public void EmptyFormulaAverageMassIsZero()
         {
-            Assert.AreEqual(0.0, EmptyFormula.Mass.Average);
+            Assert.AreEqual(0.0, EmptyFormula.AverageMass);
         }
         
         [Test]

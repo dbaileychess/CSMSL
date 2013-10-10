@@ -214,7 +214,7 @@ namespace CSMSL.Examples
         /// <param name="formula"></param>
         private static void WriteFormulaToConsole(ChemicalFormula formula)
         {
-            Console.WriteLine("Formula {0} mass is {1} or {2}", formula, formula.Mass.MonoisotopicMass, formula.MonoisotopicMass);
+            Console.WriteLine("Formula {0} mass is {1} or {2}", formula, formula.MonoisotopicMass, formula.MonoisotopicMass);
         }
 
         private static void WritePeptideToConsole(Peptide peptide)
