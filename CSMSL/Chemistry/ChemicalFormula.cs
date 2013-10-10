@@ -630,6 +630,17 @@ namespace CSMSL.Chemistry
             return protons;
         }
 
+        public double GetCarbonHydrogenRatio()
+        {
+            int hydrogenCount = Count("H");
+            int carbonCount = Count("C");
+
+            if (carbonCount == 0)
+                return 0;
+
+            return hydrogenCount / (double)carbonCount;
+        }
+
         #endregion
 
         public override int GetHashCode()

@@ -82,7 +82,7 @@ namespace CSMSL.Examples
         {
             ChemicalFormulaGenerator generator = new ChemicalFormulaGenerator(new ChemicalFormula("H3000C2000N60O50"));
            
-            List<ChemicalFormula> formulas = generator.FromMass(524,525).ToList();
+            List<ChemicalFormula> formulas = generator.FromMass(524,525).Validate().ToList();
             Console.WriteLine("Unique Formulas: " + formulas.Count);
         }
 
