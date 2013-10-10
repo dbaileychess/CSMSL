@@ -123,6 +123,11 @@ namespace CSMSL.Chemistry
 
         public IEnumerable<ChemicalFormula> FromMass(double lowMass, double highMass, int maxNumberOfResults = int.MaxValue)
         {
+            if (highMass <= lowMass)
+            {
+                throw new ArgumentException("The high mass must be greater than the low mass");
+            }
+
             List<ChemicalFormula> returnFormulas = new List<ChemicalFormula>();
 
             // The minimum formula required for any return formulas

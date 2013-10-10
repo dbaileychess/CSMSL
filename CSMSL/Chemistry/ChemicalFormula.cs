@@ -632,11 +632,12 @@ namespace CSMSL.Chemistry
 
         public double GetCarbonHydrogenRatio()
         {
-            int hydrogenCount = Count("H");
             int carbonCount = Count("C");
 
             if (carbonCount == 0)
                 return 0;
+
+            int hydrogenCount = Count("H");
 
             return hydrogenCount / (double)carbonCount;
         }

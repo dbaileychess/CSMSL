@@ -97,8 +97,6 @@ namespace CSMSL.Chemistry
         /// <summary>
         /// The most abundant (principal) isotope of this element
         /// </summary>
-        /// 
-
         public Isotope PrincipalIsotope { get; private set; }
 
         /// <summary>
