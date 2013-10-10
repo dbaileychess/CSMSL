@@ -76,10 +76,10 @@ namespace CSMSL.Chemistry
         {
             //int maxCount = Math.Min((int)Math.Ceiling(highMass / mass[index]), max[index]);
 
-            //for(int count = 0; count <= maxCount; count++)
+            //for (int count = 0; count <= maxCount; count++)
             //{
             //    currentFormula[index] = count;
-            //    if(index < length - 1)
+            //    if (index < length - 1)
             //    {
             //        GenerateFormulaHelper(lowMass, highMass, length, mass, max, index + 1, currentFormula, formulas);
             //    }
@@ -90,20 +90,27 @@ namespace CSMSL.Chemistry
             //        //    continue;
             //        //if(formula.MonoisotopicMass > highMass)
             //        //    return;
-            //        if(formula.MonoisotopicMass >= lowMass && formula.MonoisotopicMass <= highMass)
+            //        if (formula.MonoisotopicMass >= lowMass && formula.MonoisotopicMass <= highMass)
             //        {
             //            formulas.Add(formula);
             //        }
             //    }
             //}
-
-            if(index < length - 1)
+            if (index < length - 1)
             {
-                int maxCount = Math.Min((int)Math.Ceiling(highMass / mass[index]), max[index]);
-                for(int count = 0; count <= maxCount; count++)
+                if (max[index] == 0)
                 {
-                    currentFormula[index] = count;
                     GenerateFormulaHelper(lowMass, highMass, length, mass, max, index + 1, currentFormula, formulas);
+                }
+                else
+                {
+
+                    int maxCount = Math.Min((int) Math.Ceiling(highMass/mass[index]), max[index]);
+                    for (int count = 0; count <= maxCount; count++)
+                    {
+                        currentFormula[index] = count;
+                        GenerateFormulaHelper(lowMass, highMass, length, mass, max, index + 1, currentFormula, formulas);
+                    }
                 }
             }
             else
@@ -112,11 +119,11 @@ namespace CSMSL.Chemistry
                 double currentMass = new ChemicalFormula(currentFormula).MonoisotopicMass;
                 int minCount = Math.Max((int)Math.Floor((lowMass - currentMass) / mass[index]), 0);
                 int maxCount = Math.Min((int)Math.Ceiling((highMass - currentMass) / mass[index]), max[index]);
-                for(int count = minCount; count <= maxCount; count++)
+                for (int count = minCount; count <= maxCount; count++)
                 {
                     currentFormula[index] = count;
                     var formula = new ChemicalFormula(currentFormula);
-                    if(formula.MonoisotopicMass >= lowMass && formula.MonoisotopicMass <= highMass)
+                    if (formula.MonoisotopicMass >= lowMass && formula.MonoisotopicMass <= highMass)
                     {
                         formulas.Add(formula);
                     }
