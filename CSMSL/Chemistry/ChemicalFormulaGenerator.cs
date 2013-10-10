@@ -87,17 +87,17 @@ namespace CSMSL.Chemistry
 
         private static void GenerateFormulaHelper(double lowMass, double highMass, int length, double[] masses, int[] max, int index, int[] currentFormula, List<ChemicalFormula> formulas)
         {
-            while (index < length - 1 && max[index] == 0)
+            while (index >= 0 && max[index] == 0)
             {
-                index++;
+                index--;
             }
-            if (index < length - 1)
+            if (index > 0)
             {
-                int maxCount = Math.Min((int)Math.Ceiling(highMass / masses[index]), max[index]);
+                int maxCount = Math.Min((int) Math.Ceiling(highMass/masses[index]), max[index]);
                 for (int count = 0; count <= maxCount; count++)
                 {
                     currentFormula[index] = count;
-                    GenerateFormulaHelper(lowMass, highMass, length, masses, max, index + 1, currentFormula, formulas);
+                    GenerateFormulaHelper(lowMass, highMass, length, masses, max, index - 1, currentFormula, formulas);
                 }
             }
             else
@@ -109,7 +109,7 @@ namespace CSMSL.Chemistry
                 int maxCount = Math.Min((int) Math.Ceiling((highMass - currentMass)/massAtIndex), max[index]);
                 for (int count = minCount; count <= maxCount; count++)
                 {
-                    currentMass += count * massAtIndex;
+                    currentMass += count*massAtIndex;
                     currentFormula[index] = count;
 
                     if (currentMass >= lowMass && currentMass <= highMass)
@@ -157,8 +157,8 @@ namespace CSMSL.Chemistry
                     continue;
                 masses[j] = PeriodicTable.Instance[j].AtomicMass;
             }
-
-            GenerateFormulaHelper(correctedLowMass, correctedHighMass, length, masses, maxValues, 0, currentFormula, returnFormulas);
+            
+            GenerateFormulaHelper(correctedLowMass, correctedHighMass, length, masses, maxValues, length - 1, currentFormula, returnFormulas);
             
             if (_minFormula.ElementCount > 0)
             {
