@@ -70,7 +70,7 @@ namespace CSMSL.Examples
 
             // MS/MS searching
             //MorpheusSearch.Start(Protease.Trypsin);
-
+          
             // Writing data to files
             //FileOutputExamples.Start();
 
@@ -80,7 +80,14 @@ namespace CSMSL.Examples
 
         private static void ChemicalFormulaGeneratorExample()
         {
-          
+            ChemicalFormula tFormula = AminoAcid.Threonine.ChemicalFormula;
+            ChemicalFormulaGenerator generator = new ChemicalFormulaGenerator();
+            
+            generator.AddConstraint(tFormula, new ChemicalFormula("C100H100N50O50S10P10"));
+
+            MassRange range = MassRange.FromPPM(1055.53833 - Constants.Proton, 10);
+            var formulas = generator.FromMass(range).Validate().ToList();
+            Console.WriteLine("Unique Formulas: " + formulas.Count);
         }
 
         private static void VennDiagramExamples()

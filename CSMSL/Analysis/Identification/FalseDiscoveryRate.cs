@@ -299,6 +299,8 @@ namespace CSMSL.Analysis.Identification
             {
                 if(qvalues[index] <= maxFdr)
                     continue;
+                if (index == 0)
+                    return sorteditems[0].FdrScoreMetric;
                 return sorteditems[index - 1].FdrScoreMetric;
             }
 

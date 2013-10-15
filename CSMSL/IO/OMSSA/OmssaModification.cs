@@ -90,14 +90,35 @@ namespace CSMSL.IO.OMSSA
                 int id = int.Parse(mod_node.SelectSingleNode("./omssa:MSModSpec_mod/omssa:MSMod", mods_xml_ns).FirstChild.Value);
                 double mono = double.Parse(mod_node.SelectSingleNode("./omssa:MSModSpec_monomass", mods_xml_ns).FirstChild.Value);
                 double average = double.Parse(mod_node.SelectSingleNode("./omssa:MSModSpec_averagemass", mods_xml_ns).FirstChild.Value);
+                int modType = int.Parse(mod_node.SelectSingleNode("./omssa:MSModSpec_type/omssa:MSModType", mods_xml_ns).FirstChild.Value);
                 ModificationSites sites = ModificationSites.None;
-                foreach (
-                    XmlNode node in
-                        mod_node.SelectNodes("./omssa:MSModSpec_residues/omssa:MSModSpec_residues_E", mods_xml_ns))
+                switch (modType)
                 {
-                    string aa = node.FirstChild.Value;
-                    sites = sites.Set(aa[0]);
+                    case 0:
+                        foreach (
+                                           XmlNode node in
+                                               mod_node.SelectNodes("./omssa:MSModSpec_residues/omssa:MSModSpec_residues_E", mods_xml_ns))
+                        {
+                            string aa = node.FirstChild.Value;
+                            sites = sites.Set(aa[0]);
+                        }
+                        break;
+                    case 1:
+                        sites |= ModificationSites.NProt;
+                        break;
+                    case 3:
+                        sites |= ModificationSites.ProtC;
+                        break;
+                    case 5:
+                        sites |= ModificationSites.NPep;
+                        break;
+                    case 6:
+                        sites |= ModificationSites.PepC;
+                        break;
+
                 }
+               
+               
                 OmssaModification mod = new OmssaModification(name, id, mono, average, sites);
                 Modifications[name] = mod;
                 _modificationKeyDicitonary[id] = name;
