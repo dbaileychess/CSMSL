@@ -110,20 +110,21 @@ namespace CSMSL
             return new MassTolerance(MassToleranceType.DA, value);
         }
 
-        public static MassTolerance CalculatePrecursorMassError(double theoreticalMass, double observedMass, double difference = Constants.Carbon13 - Constants.Carbon,
+        public static MassTolerance CalculatePrecursorMassError(double theoreticalMass, double observedMass, out int nominalMassOffset, out double adjustedObservedMass, double difference = Constants.Carbon13 - Constants.Carbon,
            MassToleranceType type = MassToleranceType.PPM)
         {
             double massError = observedMass - theoreticalMass;
-            double massOffset = Math.Round(massError / difference) * difference;
-            double experimentalNeutralMass = observedMass - massOffset;
-            return new MassTolerance(type, experimentalNeutralMass, theoreticalMass);
+            nominalMassOffset = (int)Math.Round(massError / difference);
+            double massOffset = nominalMassOffset * difference;
+            adjustedObservedMass = observedMass - massOffset;
+            return new MassTolerance(type, adjustedObservedMass, theoreticalMass);
         }
 
-        public static MassTolerance CalculatePrecursorMassError(double theoreticalMZ, double observedMZ, int charge, double difference = Constants.Carbon13 - Constants.Carbon, MassToleranceType type = MassToleranceType.PPM)
-        {
-            return CalculatePrecursorMassError(Mass.MassFromMz(theoreticalMZ, charge),
-                Mass.MassFromMz(observedMZ, charge), difference, type);
-        }
+        //public static MassTolerance CalculatePrecursorMassError(double theoreticalMZ, double observedMZ, int charge, out int nominalMassOffset, out double experimentalNeutralMass, double difference = Constants.Carbon13 - Constants.Carbon, MassToleranceType type = MassToleranceType.PPM)
+        //{
+        //    return CalculatePrecursorMassError(Mass.MassFromMz(theoreticalMZ, charge),
+        //        Mass.MassFromMz(observedMZ, charge), out nominalMassOffset, out experimentalNeutralMass, difference, type);
+        //}
 
         public override string ToString()
         {

@@ -55,11 +55,13 @@ namespace CSMSL.Chemistry
         /// <param name="name">The name of the element</param>
         /// <param name="symbol">The symbol of the element</param>
         /// <param name="atomicNumber">The atomic number of the element</param>
-        internal Element(string name, string symbol, int atomicNumber)
+        /// <param name="valenceElectrons">The number of valence electrons of the element</param>
+        internal Element(string name, string symbol, int atomicNumber, int valenceElectrons)
         {
             Name = name;
             AtomicSymbol = symbol;
             AtomicNumber = atomicNumber;
+            ValenceElectrons = valenceElectrons;
             AverageMass = 0;
             TotalAbundance = 0;
             Isotopes = new Dictionary<int, Isotope>(4);
@@ -86,6 +88,11 @@ namespace CSMSL.Chemistry
         /// is due to the lack of percision in the raw NIST data)
         /// </summary>
         public double TotalAbundance { get; private set; }
+
+        /// <summary>
+        /// The total number of valence electrons for this element
+        /// </summary>
+        public int ValenceElectrons { get; private set; }
 
         /// <summary>
         /// The most abundant (principal) isotope of this element

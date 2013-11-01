@@ -1,9 +1,10 @@
-<PeriodicTable defaultID="11" isotopesCount="288">
+<PeriodicTable defaultID="16" isotopesCount="288">
   <Element>
     <Name>Hydrogen</Name>
     <Symbol>H</Symbol>
     <AtomicNumber>1</AtomicNumber>
     <AverageMass>1.00794</AverageMass>
+    <ValenceElectrons>1</ValenceElectrons>
     <Isotope uniqueID = "0">
       <Mass>1.00782503207</Mass>
       <MassNumber>1</MassNumber>
@@ -20,6 +21,7 @@
     <Symbol>He</Symbol>
     <AtomicNumber>2</AtomicNumber>
     <AverageMass>4.002602</AverageMass>
+    <ValenceElectrons>2</ValenceElectrons>
     <Isotope>
       <Mass>3.0160293191</Mass>
       <MassNumber>3</MassNumber>
@@ -36,6 +38,7 @@
     <Symbol>Li</Symbol>
     <AtomicNumber>3</AtomicNumber>
     <AverageMass>6.941</AverageMass>
+    <ValenceElectrons>1</ValenceElectrons>
     <Isotope>
       <Mass>6.015122795</Mass>
       <MassNumber>6</MassNumber>
@@ -52,6 +55,7 @@
     <Symbol>Be</Symbol>
     <AtomicNumber>4</AtomicNumber>
     <AverageMass>9.012182</AverageMass>
+    <ValenceElectrons>2</ValenceElectrons>
     <Isotope>
       <Mass>9.0121822</Mass>
       <MassNumber>9</MassNumber>
@@ -63,6 +67,7 @@
     <Symbol>B</Symbol>
     <AtomicNumber>5</AtomicNumber>
     <AverageMass>10.811</AverageMass>
+    <ValenceElectrons>3</ValenceElectrons>
     <Isotope>
       <Mass>10.0129370</Mass>
       <MassNumber>10</MassNumber>
@@ -79,6 +84,7 @@
     <Symbol>C</Symbol>
     <AtomicNumber>6</AtomicNumber>
     <AverageMass>12.0107</AverageMass>
+    <ValenceElectrons>4</ValenceElectrons>
     <Isotope uniqueID = "1">
       <Mass>12.0000000</Mass>
       <MassNumber>12</MassNumber>
@@ -95,6 +101,7 @@
     <Symbol>N</Symbol>
     <AtomicNumber>7</AtomicNumber>
     <AverageMass>14.0067</AverageMass>
+    <ValenceElectrons>5</ValenceElectrons>
     <Isotope uniqueID = "2">
       <Mass>14.0030740048</Mass>
       <MassNumber>14</MassNumber>
@@ -111,6 +118,7 @@
     <Symbol>O</Symbol>
     <AtomicNumber>8</AtomicNumber>
     <AverageMass>15.9994</AverageMass>
+    <ValenceElectrons>6</ValenceElectrons>
     <Isotope uniqueID = "3">
       <Mass>15.99491461956</Mass>
       <MassNumber>16</MassNumber>
@@ -132,7 +140,8 @@
     <Symbol>F</Symbol>
     <AtomicNumber>9</AtomicNumber>
     <AverageMass>18.9984032</AverageMass>
-    <Isotope>
+    <ValenceElectrons>7</ValenceElectrons>
+    <Isotope uniqueID ="13">
       <Mass>18.99840322</Mass>
       <MassNumber>19</MassNumber>
       <RelativeAbundance>1</RelativeAbundance>
@@ -143,6 +152,7 @@
     <Symbol>Ne</Symbol>
     <AtomicNumber>10</AtomicNumber>
     <AverageMass>20.1797</AverageMass>
+    <ValenceElectrons>8</ValenceElectrons>
     <Isotope>
       <Mass>19.9924401754</Mass>
       <MassNumber>20</MassNumber>
@@ -164,6 +174,7 @@
     <Symbol>Na</Symbol>
     <AtomicNumber>11</AtomicNumber>
     <AverageMass>22.98976928</AverageMass>
+    <ValenceElectrons>1</ValenceElectrons>
     <Isotope>
       <Mass>22.9897692809</Mass>
       <MassNumber>23</MassNumber>
@@ -175,6 +186,7 @@
     <Symbol>Mg</Symbol>
     <AtomicNumber>12</AtomicNumber>
     <AverageMass>24.3050</AverageMass>
+    <ValenceElectrons>2</ValenceElectrons>
     <Isotope>
       <Mass>23.985041700</Mass>
       <MassNumber>24</MassNumber>
@@ -196,6 +208,7 @@
     <Symbol>Al</Symbol>
     <AtomicNumber>13</AtomicNumber>
     <AverageMass>26.9815386</AverageMass>
+    <ValenceElectrons>3</ValenceElectrons>
     <Isotope>
       <Mass>26.98153863</Mass>
       <MassNumber>27</MassNumber>
@@ -207,6 +220,7 @@
     <Symbol>Si</Symbol>
     <AtomicNumber>14</AtomicNumber>
     <AverageMass>28.0855</AverageMass>
+    <ValenceElectrons>4</ValenceElectrons>
     <Isotope>
       <Mass>27.9769265325</Mass>
       <MassNumber>28</MassNumber>
@@ -228,6 +242,7 @@
     <Symbol>P</Symbol>
     <AtomicNumber>15</AtomicNumber>
     <AverageMass>30.973762</AverageMass>
+    <ValenceElectrons>5</ValenceElectrons>
     <Isotope uniqueID = "9">
       <Mass>30.97376163</Mass>
       <MassNumber>31</MassNumber>
@@ -239,6 +254,7 @@
     <Symbol>S</Symbol>
     <AtomicNumber>16</AtomicNumber>
     <AverageMass>32.065</AverageMass>
+    <ValenceElectrons>6</ValenceElectrons>
     <Isotope uniqueID = "4">
       <Mass>31.97207100</Mass>
       <MassNumber>32</MassNumber>
@@ -265,12 +281,13 @@
     <Symbol>Cl</Symbol>
     <AtomicNumber>17</AtomicNumber>
     <AverageMass>35.453</AverageMass>
-    <Isotope>
+    <ValenceElectrons>7</ValenceElectrons>
+    <Isotope uniqueID="14">
       <Mass>34.96885268</Mass>
       <MassNumber>35</MassNumber>
       <RelativeAbundance>0.7576</RelativeAbundance>
     </Isotope>
-    <Isotope>
+    <Isotope uniqueID="15">
       <Mass>36.96590259</Mass>
       <MassNumber>37</MassNumber>
       <RelativeAbundance>0.2424</RelativeAbundance>
@@ -281,6 +298,7 @@
     <Symbol>Ar</Symbol>
     <AtomicNumber>18</AtomicNumber>
     <AverageMass>39.948</AverageMass>
+    <ValenceElectrons>8</ValenceElectrons>
     <Isotope>
       <Mass>35.967545106</Mass>
       <MassNumber>36</MassNumber>
@@ -302,6 +320,7 @@
     <Symbol>K</Symbol>
     <AtomicNumber>19</AtomicNumber>
     <AverageMass>39.0983</AverageMass>
+    <ValenceElectrons>1</ValenceElectrons>
     <Isotope>
       <Mass>38.96370668</Mass>
       <MassNumber>39</MassNumber>
@@ -323,6 +342,7 @@
     <Symbol>Ca</Symbol>
     <AtomicNumber>20</AtomicNumber>
     <AverageMass>40.078</AverageMass>
+    <ValenceElectrons>2</ValenceElectrons>
     <Isotope>
       <Mass>39.96259098</Mass>
       <MassNumber>40</MassNumber>
@@ -359,6 +379,7 @@
     <Symbol>Sc</Symbol>
     <AtomicNumber>21</AtomicNumber>
     <AverageMass>44.955912</AverageMass>
+    <ValenceElectrons>3</ValenceElectrons>
     <Isotope>
       <Mass>44.9559119</Mass>
       <MassNumber>45</MassNumber>
@@ -370,6 +391,7 @@
     <Symbol>Ti</Symbol>
     <AtomicNumber>22</AtomicNumber>
     <AverageMass>47.867</AverageMass>
+    <ValenceElectrons>4</ValenceElectrons>
     <Isotope>
       <Mass>45.9526316</Mass>
       <MassNumber>46</MassNumber>
@@ -401,6 +423,7 @@
     <Symbol>V</Symbol>
     <AtomicNumber>23</AtomicNumber>
     <AverageMass>50.9415</AverageMass>
+    <ValenceElectrons>5</ValenceElectrons>
     <Isotope>
       <Mass>49.9471585</Mass>
       <MassNumber>50</MassNumber>
@@ -417,6 +440,7 @@
     <Symbol>Cr</Symbol>
     <AtomicNumber>24</AtomicNumber>
     <AverageMass>51.9961</AverageMass>
+    <ValenceElectrons>6</ValenceElectrons>
     <Isotope>
       <Mass>49.9460442</Mass>
       <MassNumber>50</MassNumber>
@@ -443,6 +467,7 @@
     <Symbol>Mn</Symbol>
     <AtomicNumber>25</AtomicNumber>
     <AverageMass>54.938045</AverageMass>
+    <ValenceElectrons>7</ValenceElectrons>
     <Isotope>
       <Mass>54.9380451</Mass>
       <MassNumber>55</MassNumber>
@@ -454,6 +479,7 @@
     <Symbol>Fe</Symbol>
     <AtomicNumber>26</AtomicNumber>
     <AverageMass>55.845</AverageMass>
+    <ValenceElectrons>8</ValenceElectrons>
     <Isotope>
       <Mass>53.9396105</Mass>
       <MassNumber>54</MassNumber>
@@ -480,6 +506,7 @@
     <Symbol>Co</Symbol>
     <AtomicNumber>27</AtomicNumber>
     <AverageMass>58.933195</AverageMass>
+    <ValenceElectrons>9</ValenceElectrons>
     <Isotope>
       <Mass>58.9331950</Mass>
       <MassNumber>59</MassNumber>
@@ -491,6 +518,7 @@
     <Symbol>Ni</Symbol>
     <AtomicNumber>28</AtomicNumber>
     <AverageMass>58.6934</AverageMass>
+    <ValenceElectrons>10</ValenceElectrons>
     <Isotope>
       <Mass>57.9353429</Mass>
       <MassNumber>58</MassNumber>
@@ -522,6 +550,7 @@
     <Symbol>Cu</Symbol>
     <AtomicNumber>29</AtomicNumber>
     <AverageMass>63.546</AverageMass>
+    <ValenceElectrons>11</ValenceElectrons>
     <Isotope>
       <Mass>62.9295975</Mass>
       <MassNumber>63</MassNumber>
@@ -538,6 +567,7 @@
     <Symbol>Zn</Symbol>
     <AtomicNumber>30</AtomicNumber>
     <AverageMass>65.38</AverageMass>
+    <ValenceElectrons>12</ValenceElectrons>
     <Isotope>
       <Mass>63.9291422</Mass>
       <MassNumber>64</MassNumber>
@@ -569,6 +599,7 @@
     <Symbol>Ga</Symbol>
     <AtomicNumber>31</AtomicNumber>
     <AverageMass>69.723</AverageMass>
+    <ValenceElectrons>3</ValenceElectrons>
     <Isotope>
       <Mass>68.9255736</Mass>
       <MassNumber>69</MassNumber>
@@ -585,6 +616,7 @@
     <Symbol>Ge</Symbol>
     <AtomicNumber>32</AtomicNumber>
     <AverageMass>72.64</AverageMass>
+    <ValenceElectrons>4</ValenceElectrons>
     <Isotope>
       <Mass>69.9242474</Mass>
       <MassNumber>70</MassNumber>
@@ -616,6 +648,7 @@
     <Symbol>As</Symbol>
     <AtomicNumber>33</AtomicNumber>
     <AverageMass>74.92160</AverageMass>
+    <ValenceElectrons>5</ValenceElectrons>
     <Isotope>
       <Mass>74.9215965</Mass>
       <MassNumber>75</MassNumber>
@@ -627,6 +660,7 @@
     <Symbol>Se</Symbol>
     <AtomicNumber>34</AtomicNumber>
     <AverageMass>78.96</AverageMass>
+    <ValenceElectrons>6</ValenceElectrons>
     <Isotope>
       <Mass>73.9224764</Mass>
       <MassNumber>74</MassNumber>
@@ -663,12 +697,13 @@
     <Symbol>Br</Symbol>
     <AtomicNumber>35</AtomicNumber>
     <AverageMass>79.904</AverageMass>
-    <Isotope>
+    <ValenceElectrons>7</ValenceElectrons>
+    <Isotope uniqueID ="11">
       <Mass>78.9183371</Mass>
       <MassNumber>79</MassNumber>
       <RelativeAbundance>0.5069</RelativeAbundance>
     </Isotope>
-    <Isotope>
+    <Isotope uniqueID ="12">
       <Mass>80.9162906</Mass>
       <MassNumber>81</MassNumber>
       <RelativeAbundance>0.4931</RelativeAbundance>
@@ -679,6 +714,7 @@
     <Symbol>Kr</Symbol>
     <AtomicNumber>36</AtomicNumber>
     <AverageMass>83.798</AverageMass>
+    <ValenceElectrons>8</ValenceElectrons>
     <Isotope>
       <Mass>77.9203648</Mass>
       <MassNumber>78</MassNumber>
@@ -715,6 +751,7 @@
     <Symbol>Rb</Symbol>
     <AtomicNumber>37</AtomicNumber>
     <AverageMass>85.4678</AverageMass>
+    <ValenceElectrons>1</ValenceElectrons>
     <Isotope>
       <Mass>84.911789738</Mass>
       <MassNumber>85</MassNumber>
@@ -731,6 +768,7 @@
     <Symbol>Sr</Symbol>
     <AtomicNumber>38</AtomicNumber>
     <AverageMass>87.62</AverageMass>
+    <ValenceElectrons>2</ValenceElectrons>
     <Isotope>
       <Mass>83.913425</Mass>
       <MassNumber>84</MassNumber>
@@ -757,6 +795,7 @@
     <Symbol>Y</Symbol>
     <AtomicNumber>39</AtomicNumber>
     <AverageMass>88.90585</AverageMass>
+    <ValenceElectrons>3</ValenceElectrons>
     <Isotope>
       <Mass>88.9058483</Mass>
       <MassNumber>89</MassNumber>
@@ -768,6 +807,7 @@
     <Symbol>Zr</Symbol>
     <AtomicNumber>40</AtomicNumber>
     <AverageMass>91.224</AverageMass>
+    <ValenceElectrons>4</ValenceElectrons>
     <Isotope>
       <Mass>89.9047044</Mass>
       <MassNumber>90</MassNumber>
@@ -799,6 +839,7 @@
     <Symbol>Nb</Symbol>
     <AtomicNumber>41</AtomicNumber>
     <AverageMass>92.90638</AverageMass>
+    <ValenceElectrons>5</ValenceElectrons>
     <Isotope>
       <Mass>92.9063781</Mass>
       <MassNumber>93</MassNumber>
@@ -810,6 +851,7 @@
     <Symbol>Mo</Symbol>
     <AtomicNumber>42</AtomicNumber>
     <AverageMass>95.96</AverageMass>
+    <ValenceElectrons>6</ValenceElectrons>
     <Isotope>
       <Mass>91.906811</Mass>
       <MassNumber>92</MassNumber>
@@ -851,12 +893,14 @@
     <Symbol>Tc</Symbol>
     <AtomicNumber>43</AtomicNumber>
     <AverageMass>[98]</AverageMass>
+    <ValenceElectrons>7</ValenceElectrons>
   </Element>
   <Element>
     <Name>Ruthenium</Name>
     <Symbol>Ru</Symbol>
     <AtomicNumber>44</AtomicNumber>
     <AverageMass>101.07</AverageMass>
+    <ValenceElectrons>8</ValenceElectrons>
     <Isotope>
       <Mass>95.907598</Mass>
       <MassNumber>96</MassNumber>
@@ -898,6 +942,7 @@
     <Symbol>Rh</Symbol>
     <AtomicNumber>45</AtomicNumber>
     <AverageMass>102.90550</AverageMass>
+    <ValenceElectrons>9</ValenceElectrons>
     <Isotope>
       <Mass>102.905504</Mass>
       <MassNumber>103</MassNumber>
@@ -909,6 +954,7 @@
     <Symbol>Pd</Symbol>
     <AtomicNumber>46</AtomicNumber>
     <AverageMass>106.42</AverageMass>
+    <ValenceElectrons>10</ValenceElectrons>
     <Isotope>
       <Mass>101.905609</Mass>
       <MassNumber>102</MassNumber>
@@ -945,6 +991,7 @@
     <Symbol>Ag</Symbol>
     <AtomicNumber>47</AtomicNumber>
     <AverageMass>107.8682</AverageMass>
+    <ValenceElectrons>11</ValenceElectrons>
     <Isotope>
       <Mass>106.905097</Mass>
       <MassNumber>107</MassNumber>
@@ -961,6 +1008,7 @@
     <Symbol>Cd</Symbol>
     <AtomicNumber>48</AtomicNumber>
     <AverageMass>112.411</AverageMass>
+    <ValenceElectrons>12</ValenceElectrons>
     <Isotope>
       <Mass>105.906459</Mass>
       <MassNumber>106</MassNumber>
@@ -1007,6 +1055,7 @@
     <Symbol>In</Symbol>
     <AtomicNumber>49</AtomicNumber>
     <AverageMass>114.818</AverageMass>
+    <ValenceElectrons>3</ValenceElectrons>
     <Isotope>
       <Mass>112.904058</Mass>
       <MassNumber>113</MassNumber>
@@ -1023,6 +1072,7 @@
     <Symbol>Sn</Symbol>
     <AtomicNumber>50</AtomicNumber>
     <AverageMass>118.710</AverageMass>
+    <ValenceElectrons>4</ValenceElectrons>
     <Isotope>
       <Mass>111.904818</Mass>
       <MassNumber>112</MassNumber>
@@ -1079,6 +1129,7 @@
     <Symbol>Sb</Symbol>
     <AtomicNumber>51</AtomicNumber>
     <AverageMass>121.760</AverageMass>
+    <ValenceElectrons>5</ValenceElectrons>
     <Isotope>
       <Mass>120.9038157</Mass>
       <MassNumber>121</MassNumber>
@@ -1095,6 +1146,7 @@
     <Symbol>Te</Symbol>
     <AtomicNumber>52</AtomicNumber>
     <AverageMass>127.60</AverageMass>
+    <ValenceElectrons>6</ValenceElectrons>
     <Isotope>
       <Mass>119.904020</Mass>
       <MassNumber>120</MassNumber>
@@ -1141,6 +1193,7 @@
     <Symbol>I</Symbol>
     <AtomicNumber>53</AtomicNumber>
     <AverageMass>126.90447</AverageMass>
+    <ValenceElectrons>7</ValenceElectrons>
     <Isotope>
       <Mass>126.904473</Mass>
       <MassNumber>127</MassNumber>
@@ -1152,6 +1205,7 @@
     <Symbol>Xe</Symbol>
     <AtomicNumber>54</AtomicNumber>
     <AverageMass>131.293</AverageMass>
+    <ValenceElectrons>8</ValenceElectrons>
     <Isotope>
       <Mass>123.9058930</Mass>
       <MassNumber>124</MassNumber>
@@ -1203,6 +1257,7 @@
     <Symbol>Cs</Symbol>
     <AtomicNumber>55</AtomicNumber>
     <AverageMass>132.9054519</AverageMass>
+    <ValenceElectrons>1</ValenceElectrons>
     <Isotope>
       <Mass>132.905451933</Mass>
       <MassNumber>133</MassNumber>
@@ -1214,6 +1269,7 @@
     <Symbol>Ba</Symbol>
     <AtomicNumber>56</AtomicNumber>
     <AverageMass>137.327</AverageMass>
+    <ValenceElectrons>2</ValenceElectrons>
     <Isotope>
       <Mass>129.9063208</Mass>
       <MassNumber>130</MassNumber>
@@ -1255,6 +1311,7 @@
     <Symbol>La</Symbol>
     <AtomicNumber>57</AtomicNumber>
     <AverageMass>138.90547</AverageMass>
+    <ValenceElectrons>2</ValenceElectrons>
     <Isotope>
       <Mass>137.907112</Mass>
       <MassNumber>138</MassNumber>
@@ -1271,6 +1328,7 @@
     <Symbol>Ce</Symbol>
     <AtomicNumber>58</AtomicNumber>
     <AverageMass>140.116</AverageMass>
+    <ValenceElectrons>2</ValenceElectrons>
     <Isotope>
       <Mass>135.907172</Mass>
       <MassNumber>136</MassNumber>
@@ -1297,6 +1355,7 @@
     <Symbol>Pr</Symbol>
     <AtomicNumber>59</AtomicNumber>
     <AverageMass>140.90765</AverageMass>
+    <ValenceElectrons>2</ValenceElectrons>
     <Isotope>
       <Mass>140.9076528</Mass>
       <MassNumber>141</MassNumber>
@@ -1308,6 +1367,7 @@
     <Symbol>Nd</Symbol>
     <AtomicNumber>60</AtomicNumber>
     <AverageMass>144.242</AverageMass>
+    <ValenceElectrons>2</ValenceElectrons>
     <Isotope>
       <Mass>141.9077233</Mass>
       <MassNumber>142</MassNumber>
@@ -1349,12 +1409,14 @@
     <Symbol>Pm</Symbol>
     <AtomicNumber>61</AtomicNumber>
     <AverageMass>[145]</AverageMass>
+    <ValenceElectrons>2</ValenceElectrons>
   </Element>
   <Element>
     <Name>Samarium</Name>
     <Symbol>Sm</Symbol>
     <AtomicNumber>62</AtomicNumber>
     <AverageMass>150.36</AverageMass>
+    <ValenceElectrons>2</ValenceElectrons>
     <Isotope>
       <Mass>143.911999</Mass>
       <MassNumber>144</MassNumber>
@@ -1396,6 +1458,7 @@
     <Symbol>Eu</Symbol>
     <AtomicNumber>63</AtomicNumber>
     <AverageMass>151.964</AverageMass>
+    <ValenceElectrons>2</ValenceElectrons>
     <Isotope>
       <Mass>150.9198502</Mass>
       <MassNumber>151</MassNumber>
@@ -1412,6 +1475,7 @@
     <Symbol>Gd</Symbol>
     <AtomicNumber>64</AtomicNumber>
     <AverageMass>157.25</AverageMass>
+    <ValenceElectrons>2</ValenceElectrons>
     <Isotope>
       <Mass>151.9197910</Mass>
       <MassNumber>152</MassNumber>
@@ -1453,6 +1517,7 @@
     <Symbol>Tb</Symbol>
     <AtomicNumber>65</AtomicNumber>
     <AverageMass>158.92535</AverageMass>
+    <ValenceElectrons>2</ValenceElectrons>
     <Isotope>
       <Mass>158.9253468</Mass>
       <MassNumber>159</MassNumber>
@@ -1464,6 +1529,7 @@
     <Symbol>Dy</Symbol>
     <AtomicNumber>66</AtomicNumber>
     <AverageMass>162.500</AverageMass>
+    <ValenceElectrons>2</ValenceElectrons>
     <Isotope>
       <Mass>155.924283</Mass>
       <MassNumber>156</MassNumber>
@@ -1505,6 +1571,7 @@
     <Symbol>Ho</Symbol>
     <AtomicNumber>67</AtomicNumber>
     <AverageMass>164.93032</AverageMass>
+    <ValenceElectrons>2</ValenceElectrons>
     <Isotope>
       <Mass>164.9303221</Mass>
       <MassNumber>165</MassNumber>
@@ -1516,6 +1583,7 @@
     <Symbol>Er</Symbol>
     <AtomicNumber>68</AtomicNumber>
     <AverageMass>167.259</AverageMass>
+    <ValenceElectrons>2</ValenceElectrons>
     <Isotope>
       <Mass>161.928778</Mass>
       <MassNumber>162</MassNumber>
@@ -1552,6 +1620,7 @@
     <Symbol>Tm</Symbol>
     <AtomicNumber>69</AtomicNumber>
     <AverageMass>168.93421</AverageMass>
+    <ValenceElectrons>2</ValenceElectrons>
     <Isotope>
       <Mass>168.9342133</Mass>
       <MassNumber>169</MassNumber>
@@ -1563,6 +1632,7 @@
     <Symbol>Yb</Symbol>
     <AtomicNumber>70</AtomicNumber>
     <AverageMass>173.054</AverageMass>
+    <ValenceElectrons>2</ValenceElectrons>
     <Isotope>
       <Mass>167.933897</Mass>
       <MassNumber>168</MassNumber>
@@ -1604,6 +1674,7 @@
     <Symbol>Lu</Symbol>
     <AtomicNumber>71</AtomicNumber>
     <AverageMass>174.9668</AverageMass>
+    <ValenceElectrons>2</ValenceElectrons>
     <Isotope>
       <Mass>174.9407718</Mass>
       <MassNumber>175</MassNumber>
@@ -1620,6 +1691,7 @@
     <Symbol>Hf</Symbol>
     <AtomicNumber>72</AtomicNumber>
     <AverageMass>178.49</AverageMass>
+    <ValenceElectrons>4</ValenceElectrons>
     <Isotope>
       <Mass>173.940046</Mass>
       <MassNumber>174</MassNumber>
@@ -1656,6 +1728,7 @@
     <Symbol>Ta</Symbol>
     <AtomicNumber>73</AtomicNumber>
     <AverageMass>180.94788</AverageMass>
+    <ValenceElectrons>5</ValenceElectrons>
     <Isotope>
       <Mass>179.9474648</Mass>
       <MassNumber>180</MassNumber>
@@ -1672,6 +1745,7 @@
     <Symbol>W</Symbol>
     <AtomicNumber>74</AtomicNumber>
     <AverageMass>183.84</AverageMass>
+    <ValenceElectrons>6</ValenceElectrons>
     <Isotope>
       <Mass>179.946704</Mass>
       <MassNumber>180</MassNumber>
@@ -1703,6 +1777,7 @@
     <Symbol>Re</Symbol>
     <AtomicNumber>75</AtomicNumber>
     <AverageMass>186.207</AverageMass>
+    <ValenceElectrons>7</ValenceElectrons>
     <Isotope>
       <Mass>184.9529550</Mass>
       <MassNumber>185</MassNumber>
@@ -1719,6 +1794,7 @@
     <Symbol>Os</Symbol>
     <AtomicNumber>76</AtomicNumber>
     <AverageMass>190.23</AverageMass>
+    <ValenceElectrons>8</ValenceElectrons>
     <Isotope>
       <Mass>183.9524891</Mass>
       <MassNumber>184</MassNumber>
@@ -1760,6 +1836,7 @@
     <Symbol>Ir</Symbol>
     <AtomicNumber>77</AtomicNumber>
     <AverageMass>192.217</AverageMass>
+    <ValenceElectrons>9</ValenceElectrons>
     <Isotope>
       <Mass>190.9605940</Mass>
       <MassNumber>191</MassNumber>
@@ -1776,6 +1853,7 @@
     <Symbol>Pt</Symbol>
     <AtomicNumber>78</AtomicNumber>
     <AverageMass>195.084</AverageMass>
+    <ValenceElectrons>10</ValenceElectrons>
     <Isotope>
       <Mass>189.959932</Mass>
       <MassNumber>190</MassNumber>
@@ -1812,6 +1890,7 @@
     <Symbol>Au</Symbol>
     <AtomicNumber>79</AtomicNumber>
     <AverageMass>196.966569</AverageMass>
+    <ValenceElectrons>11</ValenceElectrons>
     <Isotope>
       <Mass>196.9665687</Mass>
       <MassNumber>197</MassNumber>
@@ -1823,6 +1902,7 @@
     <Symbol>Hg</Symbol>
     <AtomicNumber>80</AtomicNumber>
     <AverageMass>200.59</AverageMass>
+    <ValenceElectrons>12</ValenceElectrons>
     <Isotope>
       <Mass>195.965833</Mass>
       <MassNumber>196</MassNumber>
@@ -1864,6 +1944,7 @@
     <Symbol>Tl</Symbol>
     <AtomicNumber>81</AtomicNumber>
     <AverageMass>204.3833</AverageMass>
+    <ValenceElectrons>3</ValenceElectrons>
     <Isotope>
       <Mass>202.9723442</Mass>
       <MassNumber>203</MassNumber>
@@ -1880,6 +1961,7 @@
     <Symbol>Pb</Symbol>
     <AtomicNumber>82</AtomicNumber>
     <AverageMass>207.2</AverageMass>
+    <ValenceElectrons>4</ValenceElectrons>
     <Isotope>
       <Mass>203.9730436</Mass>
       <MassNumber>204</MassNumber>
@@ -1906,6 +1988,7 @@
     <Symbol>Bi</Symbol>
     <AtomicNumber>83</AtomicNumber>
     <AverageMass>208.98040</AverageMass>
+    <ValenceElectrons>5</ValenceElectrons>
     <Isotope>
       <Mass>208.9803987</Mass>
       <MassNumber>209</MassNumber>
@@ -1917,42 +2000,49 @@
     <Symbol>Po</Symbol>
     <AtomicNumber>84</AtomicNumber>
     <AverageMass>[209]</AverageMass>
+    <ValenceElectrons>6</ValenceElectrons>
   </Element>
   <Element>
     <Name>Astatine</Name>
     <Symbol>At</Symbol>
     <AtomicNumber>85</AtomicNumber>
     <AverageMass>[210]</AverageMass>
+    <ValenceElectrons>7</ValenceElectrons>
   </Element>
   <Element>
     <Name>Radon</Name>
     <Symbol>Rn</Symbol>
     <AtomicNumber>86</AtomicNumber>
     <AverageMass>[222]</AverageMass>
+    <ValenceElectrons>8</ValenceElectrons>
   </Element>
   <Element>
     <Name>Francium</Name>
     <Symbol>Fr</Symbol>
     <AtomicNumber>87</AtomicNumber>
     <AverageMass>[223]</AverageMass>
+    <ValenceElectrons>1</ValenceElectrons>
   </Element>
   <Element>
     <Name>Radium</Name>
     <Symbol>Ra</Symbol>
     <AtomicNumber>88</AtomicNumber>
     <AverageMass>[226]</AverageMass>
+    <ValenceElectrons>2</ValenceElectrons>
   </Element>
   <Element>
     <Name>Actinium</Name>
     <Symbol>Ac</Symbol>
     <AtomicNumber>89</AtomicNumber>
     <AverageMass>[227]</AverageMass>
+    <ValenceElectrons>2</ValenceElectrons>
   </Element>
   <Element>
     <Name>Thorium</Name>
     <Symbol>Th</Symbol>
     <AtomicNumber>90</AtomicNumber>
     <AverageMass>232.03806</AverageMass>
+    <ValenceElectrons>2</ValenceElectrons>
     <Isotope>
       <Mass>232.0380553</Mass>
       <MassNumber>232</MassNumber>
@@ -1964,6 +2054,7 @@
     <Symbol>Pa</Symbol>
     <AtomicNumber>91</AtomicNumber>
     <AverageMass>231.03588</AverageMass>
+    <ValenceElectrons>2</ValenceElectrons>
     <Isotope>
       <Mass>231.0358840</Mass>
       <MassNumber>231</MassNumber>
@@ -1975,6 +2066,7 @@
     <Symbol>U</Symbol>
     <AtomicNumber>92</AtomicNumber>
     <AverageMass>238.02891</AverageMass>
+    <ValenceElectrons>2</ValenceElectrons>
     <Isotope>
       <Mass>234.0409521</Mass>
       <MassNumber>234</MassNumber>
@@ -1996,101 +2088,118 @@
     <Symbol>Np</Symbol>
     <AtomicNumber>93</AtomicNumber>
     <AverageMass>[237]</AverageMass>
+    <ValenceElectrons>2</ValenceElectrons>
   </Element>
   <Element>
     <Name>Plutonium</Name>
     <Symbol>Pu</Symbol>
     <AtomicNumber>94</AtomicNumber>
     <AverageMass>[244]</AverageMass>
+    <ValenceElectrons>2</ValenceElectrons>
   </Element>
   <Element>
     <Name>Americium</Name>
     <Symbol>Am</Symbol>
     <AtomicNumber>95</AtomicNumber>
     <AverageMass>[243]</AverageMass>
+    <ValenceElectrons>2</ValenceElectrons>
   </Element>
   <Element>
     <Name>Curium</Name>
     <Symbol>Cm</Symbol>
     <AtomicNumber>96</AtomicNumber>
     <AverageMass>[247]</AverageMass>
+    <ValenceElectrons>2</ValenceElectrons>
   </Element>
   <Element>
     <Name>Berkelium</Name>
     <Symbol>Bk</Symbol>
     <AtomicNumber>97</AtomicNumber>
     <AverageMass>[247]</AverageMass>
+    <ValenceElectrons>2</ValenceElectrons>
   </Element>
   <Element>
     <Name>Californium</Name>
     <Symbol>Cf</Symbol>
     <AtomicNumber>98</AtomicNumber>
     <AverageMass>[251]</AverageMass>
+    <ValenceElectrons>2</ValenceElectrons>
   </Element>
   <Element>
     <Name>Einsteinium</Name>
     <Symbol>Es</Symbol>
     <AtomicNumber>99</AtomicNumber>
     <AverageMass>[252]</AverageMass>
+    <ValenceElectrons>2</ValenceElectrons>
   </Element>
   <Element>
     <Name>Fermium</Name>
     <Symbol>Fm</Symbol>
     <AtomicNumber>100</AtomicNumber>
     <AverageMass>[257]</AverageMass>
+    <ValenceElectrons>2</ValenceElectrons>
   </Element>
   <Element>
     <Name>Mendelevium</Name>
     <Symbol>Md</Symbol>
     <AtomicNumber>101</AtomicNumber>
     <AverageMass>[258]</AverageMass>
+    <ValenceElectrons>2</ValenceElectrons>
   </Element>
   <Element>
     <Name>Nobelium</Name>
     <Symbol>No</Symbol>
     <AtomicNumber>102</AtomicNumber>
     <AverageMass>[259]</AverageMass>
+    <ValenceElectrons>2</ValenceElectrons>
   </Element>
   <Element>
     <Name>Lawrencium</Name>
     <Symbol>Lr</Symbol>
     <AtomicNumber>103</AtomicNumber>
     <AverageMass>[262]</AverageMass>
+    <ValenceElectrons>0</ValenceElectrons>
   </Element>
   <Element>
     <Name>Rutherfordium</Name>
     <Symbol>Rf</Symbol>
     <AtomicNumber>104</AtomicNumber>
     <AverageMass>[265]</AverageMass>
+    <ValenceElectrons>0</ValenceElectrons>
   </Element>
   <Element>
     <Name>Dubnium</Name>
     <Symbol>Db</Symbol>
     <AtomicNumber>105</AtomicNumber>
     <AverageMass>[268]</AverageMass>
+    <ValenceElectrons>0</ValenceElectrons>
   </Element>
   <Element>
     <Name>Seaborgium</Name>
     <Symbol>Sg</Symbol>
     <AtomicNumber>106</AtomicNumber>
     <AverageMass>[271]</AverageMass>
+    <ValenceElectrons>0</ValenceElectrons>
   </Element>
   <Element>
     <Name>Bohrium</Name>
     <Symbol>Bh</Symbol>
     <AtomicNumber>107</AtomicNumber>
     <AverageMass>[272]</AverageMass>
+    <ValenceElectrons>0</ValenceElectrons>
   </Element>
   <Element>
     <Name>Hassium</Name>
     <Symbol>Hs</Symbol>
     <AtomicNumber>108</AtomicNumber>
     <AverageMass>[270]</AverageMass>
+    <ValenceElectrons>0</ValenceElectrons>
   </Element>
   <Element>
     <Name>Meitnerium</Name>
     <Symbol>Mt</Symbol>
     <AtomicNumber>109</AtomicNumber>
     <AverageMass>[276]</AverageMass>
+    <ValenceElectrons>0</ValenceElectrons>
   </Element>
 </PeriodicTable>

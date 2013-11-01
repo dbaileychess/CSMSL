@@ -62,6 +62,14 @@ namespace CSMSL.Chemistry
         }
 
         /// <summary>
+        /// The number of valence electrons for this element
+        /// </summary>
+        public int ValenceElectrons
+        {
+            get { return Element.ValenceElectrons; }
+        }
+
+        /// <summary>
         /// The atomic number of the isotope's parent element (also the number of protons)
         /// </summary>
         public int AtomicNumber

@@ -48,6 +48,7 @@ namespace CSMSL.IO.OMSSA
         }
 
         private static readonly char[] _omssaModDelimiter = { ',', ';' };
+        private static readonly char[] _omssaModPartDelimiter = { ':' };
 
         public static void LoadOmssaModifications(Stream stream, bool userMod = true)
         {
@@ -89,38 +90,62 @@ namespace CSMSL.IO.OMSSA
                 int id = int.Parse(mod_node.SelectSingleNode("./omssa:MSModSpec_mod/omssa:MSMod", mods_xml_ns).FirstChild.Value);
                 double mono = double.Parse(mod_node.SelectSingleNode("./omssa:MSModSpec_monomass", mods_xml_ns).FirstChild.Value);
                 double average = double.Parse(mod_node.SelectSingleNode("./omssa:MSModSpec_averagemass", mods_xml_ns).FirstChild.Value);
+                int modType = int.Parse(mod_node.SelectSingleNode("./omssa:MSModSpec_type/omssa:MSModType", mods_xml_ns).FirstChild.Value);
                 ModificationSites sites = ModificationSites.None;
-                foreach (
-                    XmlNode node in
-                        mod_node.SelectNodes("./omssa:MSModSpec_residues/omssa:MSModSpec_residues_E", mods_xml_ns))
+                switch (modType)
                 {
-                    string aa = node.FirstChild.Value;
-                    sites = sites.Set(aa[0]);
+                    case 0:
+                        foreach (
+                                           XmlNode node in
+                                               mod_node.SelectNodes("./omssa:MSModSpec_residues/omssa:MSModSpec_residues_E", mods_xml_ns))
+                        {
+                            string aa = node.FirstChild.Value;
+                            sites = sites.Set(aa[0]);
+                        }
+                        break;
+                    case 1:
+                        sites |= ModificationSites.NProt;
+                        break;
+                    case 3:
+                        sites |= ModificationSites.ProtC;
+                        break;
+                    case 5:
+                        sites |= ModificationSites.NPep;
+                        break;
+                    case 6:
+                        sites |= ModificationSites.PepC;
+                        break;
+
                 }
+               
+               
                 OmssaModification mod = new OmssaModification(name, id, mono, average, sites);
                 Modifications[name] = mod;
                 _modificationKeyDicitonary[id] = name;
             }
         }
 
-        public static IEnumerable<string> SplitModificationLine(string line)
+        public static IEnumerable<Tuple<string,int>> SplitModificationLine(string line)
         {
-            return line.Split(_omssaModDelimiter, StringSplitOptions.RemoveEmptyEntries)
-                .Select(mod => mod.Split(':')[0]);
+            foreach (string mod in line.Split(_omssaModDelimiter, StringSplitOptions.RemoveEmptyEntries))
+            {
+                string[] modParts = mod.Split(_omssaModPartDelimiter, StringSplitOptions.RemoveEmptyEntries);
+                yield return new Tuple<string, int>(modParts[0], int.Parse(modParts[1]));
+            }
         }
 
-        public static IEnumerable<OmssaModification> ParseModificationLine(string line)
+        public static IEnumerable<Tuple<OmssaModification, int>> ParseModificationLine(string line)
         {
-            foreach (string modname in SplitModificationLine(line))
+            foreach (Tuple<string, int> mod in SplitModificationLine(line))
             {
                 OmssaModification modification;
-                if (TryGetModification(modname, out modification))
+                if (TryGetModification(mod.Item1, out modification))
                 {
-                    yield return modification;
+                    yield return new Tuple<OmssaModification, int>(modification, mod.Item2);
                 }
                 else
                 {
-                    throw new KeyNotFoundException("Modification: " + modname + " is not found in the modification dictionary");
+                    throw new KeyNotFoundException("Modification: " + mod.Item1 + " is not found in the modification dictionary");
                 }
             }
         }

@@ -2,7 +2,7 @@
 
 namespace CSMSL.Analysis.Quantitation
 {
-    public interface IQuantitationChannel: IMass
+    public interface IQuantitationChannel : IMass
     {   
         /// <summary>
         /// Does this channel depend upon the peptide sequence to calculate its mass?
@@ -12,7 +12,7 @@ namespace CSMSL.Analysis.Quantitation
         /// <summary>
         /// The mass of the reporter
         /// </summary>
-        Mass ReporterMass { get; }
+        double ReporterMass { get; }
 
         /// <summary>
         /// The name of the channel        

@@ -19,12 +19,15 @@
 ///////////////////////////////////////////////////////////////////////////
 
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Xml.Serialization;
 using CSMSL.Chemistry;
 using CSMSL.Proteomics;
 using CSMSL.Util.Collections;
 using System;
 using System.Diagnostics;
+using CSMSL.IO;
 
 namespace CSMSL.Examples
 {
@@ -44,15 +47,34 @@ namespace CSMSL.Examples
 
         private static void StartExamples()
         {
-
-            double ascore = CSMSL.Util.Combinatorics.AScore(5, 4, 1, 8);
             // Examples coding
             //ChemicalFormulaExamples();
             //PeptideExamples();
-                      
+            //ChemicalFormulaGeneratorExample();
+
+            //UniProtXml file = new UniProtXml(@"G:\uniprotALL.xml");
+
+            //List<String> values = new List<string>();
+            //foreach (var entry in file.Entries)
+            //{
+            //    foreach (var dbref in entry.dbReference)
+            //    {
+            //        if (dbref.type == "GO")
+            //        {
+            //            foreach (var properties in dbref.property)
+            //            {
+            //                values.Add(properties.value);
+            //                // Console.WriteLine(properties.type + ": " + properties.value);
+            //            }
+            //        }
+            //    }
+            //}
+
+
+
             // Example Objects
             //VennDiagramExamples();
-            
+
             // Example programs
             //TrypticDigestion.Start(minLength: 5, maxLength: 50, protease:Protease.Trypsin);
 
@@ -63,14 +85,14 @@ namespace CSMSL.Examples
             //TMT6plexExample.Start();
 
             // Example IO
-            MsDataFileExamples.Start();
+            //MsDataFileExamples.Start();
 
             // Omssa Reader
             //OmssaReader.Start();
 
             // MS/MS searching
             //MorpheusSearch.Start(Protease.Trypsin);
-
+          
             // Writing data to files
             //FileOutputExamples.Start();
 
@@ -78,7 +100,18 @@ namespace CSMSL.Examples
             //TMT6plexExample.PurityCorrection();
         }
 
-   
+        private static void ChemicalFormulaGeneratorExample()
+        {
+            ChemicalFormula tFormula = AminoAcid.Threonine.ChemicalFormula;
+            ChemicalFormulaGenerator generator = new ChemicalFormulaGenerator();
+            
+            generator.AddConstraint(tFormula, new ChemicalFormula("C100H100N50O50S10P10"));
+
+            MassRange range = MassRange.FromPPM(1055.53833 - Constants.Proton, 10);
+            var formulas = generator.FromMass(range).Validate().ToList();
+            Console.WriteLine("Unique Formulas: " + formulas.Count);
+        }
+
         private static void VennDiagramExamples()
         {
             Console.WriteLine("**Venn Diagram Examples**");
@@ -111,12 +144,9 @@ namespace CSMSL.Examples
             Console.WriteLine("**Peptide Examples**");
 
             // Simple Peptide creation
-            Peptide peptide1 = new Peptide("ACDEFGHIKLMNPQRSTVWY");
+            Peptide peptide1 = new Peptide("ACDE");
             WritePeptideToConsole(peptide1);
 
-            Modification newMod = new Modification(25.243, "test", ModificationSites.A | ModificationSites.I | ModificationSites.NPep | ModificationSites.PepC);
-            Modification mod2 = new Modification(32.12, "test2", ModificationSites.D | ModificationSites.I);
-            List<Peptide> peptides = peptide1.GenerateIsoforms(newMod, mod2).ToList();
 
             // Fragmenting a peptide is simple, you can include as many fragment types as you want
             Console.WriteLine("{0,-4} {1,-20} {2,-5}", "Type", "Formula", "Mass");
@@ -210,7 +240,7 @@ namespace CSMSL.Examples
         /// <param name="formula"></param>
         private static void WriteFormulaToConsole(ChemicalFormula formula)
         {
-            Console.WriteLine("Formula {0} mass is {1} or {2}", formula, formula.Mass.MonoisotopicMass, formula.MonoisotopicMass);
+            Console.WriteLine("Formula {0} mass is {1} or {2}", formula, formula.MonoisotopicMass, formula.MonoisotopicMass);
         }
 
         private static void WritePeptideToConsole(Peptide peptide)

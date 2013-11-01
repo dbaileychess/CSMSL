@@ -108,7 +108,7 @@ namespace CSMSL.Analysis.Quantitation
 
         public IQuantitationChannel Add(IQuantitationChannel channel)
         {
-            _channels.Add(channel.ReporterMass.MonoisotopicMass, channel);
+            _channels.Add(channel.ReporterMass, channel);
             MonoisotopicMass += channel.MonoisotopicMass;        
 
             return channel;
@@ -159,7 +159,7 @@ namespace CSMSL.Analysis.Quantitation
         {
             get
             {
-                return new MassRange(LightestChannel.ReporterMass.MonoisotopicMass, HeaviestChannel.ReporterMass.MonoisotopicMass);
+                return new MassRange(LightestChannel.ReporterMass, HeaviestChannel.ReporterMass);
             }
         }
 

@@ -216,6 +216,35 @@ namespace CSMSL.IO.Thermo
         {
             object width = GetExtraValue(spectrumNumber, string.Format("MS{0} Isolation Width:", msnOrder));
             return Convert.ToDouble(width);
+
+        
+        }
+
+        public double GetElapsedScanTime(int spectrumNumber)
+        {
+            object elapsedScanTime = GetExtraValue(spectrumNumber, "Elapsed Scan Time (sec):");
+            return (double)elapsedScanTime;
+        }
+
+        public double GetTIC(int spectrumNumber)
+        {
+            int numberOfPackets = -1;
+            double startTime = double.NaN;
+            double lowMass = double.NaN;
+            double highMass = double.NaN;
+            double totalIonCurrent = double.NaN;
+            double basePeakMass = double.NaN;
+            double basePeakIntensity = double.NaN;
+            int numberOfChannels = -1;
+            int uniformTime = -1;
+            double frequency = double.NaN;
+            _rawConnection.GetScanHeaderInfoForScanNum(spectrumNumber, ref numberOfPackets, ref startTime, ref lowMass,
+                                                       ref highMass,
+                                                       ref totalIonCurrent, ref basePeakMass, ref basePeakIntensity,
+                                                       ref numberOfChannels, ref uniformTime, ref frequency);
+
+            return totalIonCurrent;
+
         }
 
         public override DissociationType GetDissociationType(int spectrumNumber, int msnOrder = 2)
@@ -260,9 +289,7 @@ namespace CSMSL.IO.Thermo
         public override double GetInjectionTime(int spectrumNumber)
         {
             object time = GetExtraValue(spectrumNumber, "Ion Injection Time (ms):");
-            if (time == null)
-                return double.NaN;
-            return (float) time;
+            return Convert.ToDouble(time);
         }
 
         public override double GetResolution(int spectrumNumber)
@@ -270,6 +297,7 @@ namespace CSMSL.IO.Thermo
             double resolution = Convert.ToDouble(GetExtraValue(spectrumNumber, "FT Resolution:"));
             return resolution;
         }
+
 
         public double GetElapsedScanTime(int spectrumNumber)
         {
@@ -294,6 +322,38 @@ namespace CSMSL.IO.Thermo
             {
                 return double.NaN;
             }
+        }
+
+
+        public Chromatogram GetTICChroma()
+        {
+
+            Chromatogram returnChroma = new Chromatogram();
+            int nChroType1 = 1; //1=TIC 0=MassRange
+            int nChroOperator = 0;
+            int nChroType2 = 0;
+            string bstrFilter = null;
+            string bstrMassRanges1 = null;
+            string bstrMassRanges2 = null;
+            double dDelay = 0.0;
+            double dStartTime = 0.0;
+            double dEndTime = 0.0;
+            int nSmoothingType = 1; //0=None 1=Boxcar 2=Gaussian
+            int nSmoothingValue = 7;
+            object pvarChroData = null;
+            object pvarPeakFlags = null;
+            int pnArraySize = 0;
+
+            //(int nChroType1, int nChroOperator, int nChroType2, string bstrFilter, string bstrMassRanges1, string bstrMassRanges2, double dDelay, ref double pdStartTime, 
+            //ref double pdEndTime, int nSmoothingType, int nSmoothingValue, ref object pvarChroData, ref object pvarPeakFlags, ref int pnArraySize);
+            _rawConnection.GetChroData(nChroType1, nChroOperator, nChroType2, bstrFilter, bstrMassRanges1, bstrMassRanges2, dDelay, dStartTime, dEndTime, nSmoothingType, nSmoothingValue, ref pvarChroData, ref pvarPeakFlags, ref pnArraySize);
+
+            double[,] pvarArray = (double[,])pvarChroData;
+            for (int i = 0; i < pvarArray.Length / 2; i++)
+            {
+                returnChroma.AddPoint(new ChromatographicPeak(pvarArray[0, i], pvarArray[1, i]));
+            }
+            return returnChroma;
         }
 
     }

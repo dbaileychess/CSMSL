@@ -4,20 +4,10 @@ namespace CSMSL.IO.Thermo
 {
     public class ThermoLabeledPeak : MZPeak, ILabeledPeak
     {
-        private int _charge;
+        public int Charge { get; private set; }
 
-        public int Charge
-        {
-            get { return _charge; }
-        }
+        public double Noise { get; private set; }
 
-        private double _noise;
-
-        public double Noise
-        {
-            get { return _noise; }
-        }
-                
         public double SN
         {
             get
@@ -43,8 +33,8 @@ namespace CSMSL.IO.Thermo
         public ThermoLabeledPeak(double mz, double intensity, int charge, double noise)
             : base(mz, intensity)
         {
-            _charge = charge;
-            _noise = noise;
+            Charge = charge;
+            Noise = noise;
         }
 
         public double GetSignalToNoise()

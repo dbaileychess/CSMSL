@@ -76,9 +76,9 @@ namespace CSMSL.Chemistry
         private int _largestIsotopeId;
 
         /// <summary>
-        /// The mass of the chemical formula
+        /// The average mass of the chemical formula
         /// </summary>
-        private Mass _mass;
+        private double _averageMass;
 
         /// <summary>
         /// The number of atoms in this chemical formula. Atoms represent individual isotopes
@@ -116,6 +116,24 @@ namespace CSMSL.Chemistry
         private ChemicalFormula(int largestId)
         {
             ChemicalFormulaConstructor(largestId + 1);
+        }
+
+        internal ChemicalFormula(int[] uniqueIdCounts)
+        {           
+            int count = uniqueIdCounts.Length;
+            _isotopes = new int[count];
+            MonoisotopicMass = 0;
+            for (int i = 0; i < count; i++)
+            {
+                int isotopes = uniqueIdCounts[i];
+                if (isotopes != 0)
+                {
+                    _isotopes[i] = isotopes;
+                    MonoisotopicMass += isotopes * PeriodicTable.Instance[i].AtomicMass;
+                    _largestIsotopeId = i;
+                }
+            }               
+            _isFormulaDirty = _isDirty = true;
         }
 
         /// <summary>
@@ -175,9 +193,9 @@ namespace CSMSL.Chemistry
         #region Properties
 
         /// <summary>
-        /// Gets the mass of this chemical formula
+        /// Gets the averagte mass of this chemical formula
         /// </summary>
-        public Mass Mass
+        public double AverageMass
         {
             get
             {
@@ -185,7 +203,7 @@ namespace CSMSL.Chemistry
                 {
                     CleanUp();
                 }
-                return _mass;
+                return _averageMass;
             }
         }
 
@@ -612,6 +630,18 @@ namespace CSMSL.Chemistry
             return protons;
         }
 
+        public double GetCarbonHydrogenRatio()
+        {
+            int carbonCount = Count("C");
+
+            if (carbonCount == 0)
+                return 0;
+
+            int hydrogenCount = Count("H");
+
+            return hydrogenCount / (double)carbonCount;
+        }
+
         #endregion
 
         public override int GetHashCode()
@@ -670,25 +700,7 @@ namespace CSMSL.Chemistry
             }
             _largestIsotopeId = index;
         }
-
-        public double GetAverageMass()
-        {
-            double mass = 0;
-            for (int i = 0; i <= _largestIsotopeId; i++)
-            {
-                int count = _isotopes[i];
-
-                // Skip zero isotopes
-                if (count == 0)
-                    continue;
-
-                Element element = Element.PeriodicTable[i].Element;
-
-                mass += count*element.AverageMass;
-            }
-            return mass;
-        }
-
+        
         /// <summary>
         /// Recalculate parameters of the chemical formula
         /// </summary>
@@ -723,10 +735,10 @@ namespace CSMSL.Chemistry
 
             // Set the instance variables to their new values
             _elementCount = elements.Count;
-            //_monoisotopicMass = monoMass;
+            MonoisotopicMass = monoMass;
+            _averageMass = avgMass;
             _isotopeCount = isotopeCount;
             _atomCount = atomCount;
-            _mass = new Mass(monoMass, avgMass);
 
             // Mark as clean
             _isDirty = false;
@@ -837,6 +849,24 @@ namespace CSMSL.Chemistry
                     throw new ArgumentException(string.Format("Chemical Symbol {0} does not exist in the Periodic Table", chemsym));
                 }
             }
+          
+        }
+
+        #endregion
+
+        #region Internal
+
+        /// <summary>
+        /// Get the internal isotope array for this chemical formula as a deep copy.
+        /// </summary>
+        /// <returns>The isotopes that make up this chemical formula</returns>
+        internal int[] GetIsotopes()
+        {
+            if (_largestIsotopeId == 0)
+                return new int[0];
+            int[] isotopes = new int[_largestIsotopeId + 1];
+            Array.Copy(_isotopes, isotopes, _largestIsotopeId + 1);
+            return isotopes;
         }
 
         #endregion

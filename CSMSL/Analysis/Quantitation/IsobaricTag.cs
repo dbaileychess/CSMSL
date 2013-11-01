@@ -20,7 +20,7 @@ namespace CSMSL.Analysis.Quantitation
         {
             get
             {
-                return _reporterFormula.Mass.MonoisotopicMass;
+                return _reporterFormula.MonoisotopicMass;
             }
         }
         
@@ -54,9 +54,9 @@ namespace CSMSL.Analysis.Quantitation
             get { return false; }
         }
 
-        Mass IQuantitationChannel.ReporterMass
+        double IQuantitationChannel.ReporterMass
         {
-            get { return _reporterFormula.Mass; }
+            get { return _reporterFormula.MonoisotopicMass; }
         }
     }
 }

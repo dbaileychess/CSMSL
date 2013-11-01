@@ -21,6 +21,7 @@
 using System;
 using CSMSL.Chemistry;
 using System.Collections.Generic;
+using CSMSL.Spectral;
 
 namespace CSMSL.Proteomics
 {
@@ -48,7 +49,8 @@ namespace CSMSL.Proteomics
             Number = number;
             Parent = parent;
             MonoisotopicMass = monoisotopicMass + FragmentIonCaps[type].MonoisotopicMass;
-            Modifications = new List<IMass>(mods);
+            if(mods != null) 
+                Modifications = new List<IMass>(mods);
         }
 
         public List<IMass> Modifications;

@@ -297,7 +297,7 @@ namespace CSMSL.Proteomics
                 throw new IndexOutOfRangeException();
           
             double monoMass = 0.0;
-
+            List<IMass> mods = new List<IMass>();
             int start = 0;
             int end = number;
 
@@ -310,6 +310,7 @@ namespace CSMSL.Proteomics
                 if (CTerminusModification != null)
                 {
                     monoMass += CTerminusModification.MonoisotopicMass;
+                    mods.Add(CTerminusModification);
                 }
             }
             else
@@ -318,6 +319,7 @@ namespace CSMSL.Proteomics
                 if (NTerminusModification != null)
                 {
                     monoMass += NTerminusModification.MonoisotopicMass;
+                    mods.Add(NTerminusModification);
                 }
             }
 
@@ -327,10 +329,11 @@ namespace CSMSL.Proteomics
                 if (_modifications[i + 1] != null)
                 {
                     monoMass += _modifications[i + 1].MonoisotopicMass;
+                    mods.Add(_modifications[i + 1]);
                 }
             }
 
-            return new Fragment(type, number, monoMass, this);
+            return new Fragment(type, number, monoMass, this, mods);
         }
         
         /// <summary>
@@ -401,7 +404,7 @@ namespace CSMSL.Proteomics
                             if (_modifications[i] != null)
                             {
                                 monoMass += _modifications[i].MonoisotopicMass;
-                                mods.Add(_modifications[i + 1]);
+                                mods.Add(_modifications[i]);
                             }
                             yield return new Fragment(type, i, monoMass, this, mods);
                         }
@@ -828,9 +831,7 @@ namespace CSMSL.Proteomics
             }
             return true;
         }
-
-
-
+        
         #region Private Methods
 
         private void ReplaceTerminus(ref IChemicalFormula terminus, IChemicalFormula value)

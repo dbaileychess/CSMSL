@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
+
 namespace CSMSL.Analysis.Quantitation
 {
     public class IsobaricTagPurityCorrection
@@ -25,6 +26,7 @@ namespace CSMSL.Analysis.Quantitation
         {
             return _purityMatrix.Determinant();
         }
+
 
         public double[] ApplyPurityCorrection(IEnumerable<double> rawData)
         {
@@ -52,7 +54,8 @@ namespace CSMSL.Analysis.Quantitation
 
             Matrix purityMatrix = new DenseMatrix(rows);
            
-            // w x y z part of iTracker Paper
+
+             //w x y z part of iTracker Paper
             for (int i = 0; i < rows; i++)
             {
                 double startvalue = 100;
@@ -76,6 +79,7 @@ namespace CSMSL.Analysis.Quantitation
 
                 purityMatrix[i, i] = startvalue;
             }
+
 
             return new IsobaricTagPurityCorrection(purityMatrix);
         }

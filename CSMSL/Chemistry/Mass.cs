@@ -28,19 +28,13 @@ namespace CSMSL.Chemistry
         /// The mass of all the isotopes (in unified atomic mass units)
         /// </summary>
         public double MonoisotopicMass { get; internal set; }
-
-        /// <summary>
-        /// The average mass of all the elements (in unified atomic mass units)
-        /// </summary>
-        public double Average { get; internal set;}   
-
+        
         public Mass(IMass item)
-            : this(item.MonoisotopicMass, 0) { }
+            : this(item.MonoisotopicMass) { }
                
-        public Mass(double monoisotopic = 0, double average = 0)
+        public Mass(double monoisotopic = 0)
         {
             MonoisotopicMass = monoisotopic;
-            Average = average;
         }
 
         /// <summary>
@@ -53,7 +47,6 @@ namespace CSMSL.Chemistry
                 return;
 
             MonoisotopicMass += item.MonoisotopicMass;
-            //Average += item.Mass.Average;
         }
 
         /// <summary>
@@ -66,7 +59,6 @@ namespace CSMSL.Chemistry
                 return;
 
             MonoisotopicMass += item.MonoisotopicMass;
-            Average += item.Average;
         }
 
         /// <summary>
@@ -79,7 +71,6 @@ namespace CSMSL.Chemistry
                 return;
 
             MonoisotopicMass -= item.MonoisotopicMass;
-            Average -= item.Average;
         }
 
         /// <summary>
@@ -117,42 +108,37 @@ namespace CSMSL.Chemistry
         {
             return MonoisotopicMass.GetHashCode();
         }
-
-        //double IMass.MonoisotopicMass
-        //{
-        //    get { return MonoisotopicMass; }
-        //}
-
+        
         #region Static Methods
 
         public static Mass operator +(Mass left, IMass right)
         {
-            return new Mass(left.MonoisotopicMass + right.MonoisotopicMass, 0);
+            return new Mass(left.MonoisotopicMass + right.MonoisotopicMass);
         }
 
         public static Mass operator -(Mass left, IMass right)
         {
-            return new Mass(left.MonoisotopicMass - right.MonoisotopicMass,0);
+            return new Mass(left.MonoisotopicMass - right.MonoisotopicMass);
         }
 
         public static Mass operator /(Mass left, int right)
         {
-            return new Mass(left.MonoisotopicMass / right, 0);
+            return new Mass(left.MonoisotopicMass / right);
         }
 
         public static Mass operator /(Mass left, double right)
         {
-            return new Mass(left.MonoisotopicMass / right,0);
+            return new Mass(left.MonoisotopicMass / right);
         }
 
         public static Mass operator *(Mass left, int right)
         {
-            return new Mass(left.MonoisotopicMass * right, 0);
+            return new Mass(left.MonoisotopicMass * right);
         }
 
         public static Mass operator *(Mass left, double right)
         {
-            return new Mass(left.MonoisotopicMass * right, 0);
+            return new Mass(left.MonoisotopicMass * right);
         }
 
         /// <summary>
