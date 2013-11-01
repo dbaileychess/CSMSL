@@ -129,6 +129,10 @@
     <Compile Include="IO\MSDataFile.cs" />
     <Compile Include="IO\MsDataFileType.cs" />
     <Compile Include="IO\PsmReader.cs" />
+    <Compile Include="IO\uniprot.cs">
+      <DependentUpon>Uniprot.xsd</DependentUpon>
+    </Compile>
+    <Compile Include="IO\UniProtXML.cs" />
     <Compile Include="MassRange.cs" />
     <Compile Include="MassToleranceType.cs" />
     <Compile Include="Proteomics\DissociationType.cs" />
@@ -180,6 +184,9 @@
     <EmbeddedResource Include="Resources\Elements.xml">
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <None Include="IO\Uniprot.xsd">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>

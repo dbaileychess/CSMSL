@@ -21,11 +21,13 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Xml.Serialization;
 using CSMSL.Chemistry;
 using CSMSL.Proteomics;
 using CSMSL.Util.Collections;
 using System;
 using System.Diagnostics;
+using CSMSL.IO;
 
 namespace CSMSL.Examples
 {
@@ -48,7 +50,27 @@ namespace CSMSL.Examples
             // Examples coding
             //ChemicalFormulaExamples();
             //PeptideExamples();
-            ChemicalFormulaGeneratorExample();
+            //ChemicalFormulaGeneratorExample();
+
+            //UniProtXml file = new UniProtXml(@"G:\uniprotALL.xml");
+
+            //List<String> values = new List<string>();
+            //foreach (var entry in file.Entries)
+            //{
+            //    foreach (var dbref in entry.dbReference)
+            //    {
+            //        if (dbref.type == "GO")
+            //        {
+            //            foreach (var properties in dbref.property)
+            //            {
+            //                values.Add(properties.value);
+            //                // Console.WriteLine(properties.type + ": " + properties.value);
+            //            }
+            //        }
+            //    }
+            //}
+
+
 
             // Example Objects
             //VennDiagramExamples();
