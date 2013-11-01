@@ -84,9 +84,11 @@
     <Reference Include="Combinatorics">
       <HintPath>..\packages\Combinatorics.1.0.3.2\lib\net40\Combinatorics.dll</HintPath>
     </Reference>
-    <Reference Include="MathNet.Numerics, Version=0.3.1.32, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\MathNet.Numerics.3.0.0-alpha1\lib\net40\MathNet.Numerics.dll</HintPath>
+    <Reference Include="MathNet.Numerics">
+      <HintPath>..\..\..\Visual Studio 2012\Projects\RawAnalysis\packages\MathNet.Numerics.2.6.1\lib\net40\MathNet.Numerics.dll</HintPath>
+    </Reference>
+    <Reference Include="MathNet.Numerics.IO">
+      <HintPath>..\..\..\Visual Studio 2012\Projects\RawAnalysis\packages\MathNet.Numerics.2.6.1\lib\net40\MathNet.Numerics.IO.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
