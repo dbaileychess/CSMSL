@@ -587,6 +587,15 @@ namespace CSMSL.Tests.Chemistry
         }
 
         [Test]
+        public void ParsingFormulaWithDeuterium()
+        {
+            ChemicalFormula formulaA = new ChemicalFormula("C2D3H3NO");
+            ChemicalFormula formulaB = new ChemicalFormula("C2H{2}3H3NO");
+
+            Assert.AreEqual(formulaA, formulaB);
+        }
+
+        [Test]
         public void ParsingFormulaWithSpacesAtEnd()
         {
             ChemicalFormula formulaA = new ChemicalFormula("C2H3NO  ");

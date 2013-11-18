@@ -48,7 +48,7 @@ namespace CSMSL.Examples
         private static void StartExamples()
         {
             // Examples coding
-            //ChemicalFormulaExamples();
+            ChemicalFormulaExamples();
             //PeptideExamples();
             //ChemicalFormulaGeneratorExample();
 
@@ -187,7 +187,7 @@ namespace CSMSL.Examples
             // Simple chemical formula creation
             ChemicalFormula formula1 = new ChemicalFormula("C2H3NO");
             WriteFormulaToConsole(formula1);
-             
+           
             // Input order does not matter
             ChemicalFormula formula2 = new ChemicalFormula("NH3C2O");
             WriteFormulaToConsole(formula2);

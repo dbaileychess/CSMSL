@@ -127,9 +127,8 @@ namespace CSMSL.Chemistry
                     reader.ReadToFollowing("ValenceElectrons");
                     int valenceElectrons = reader.ReadElementContentAsInt();
                     Element element = new Element(name, symbol, atomicnumber, valenceElectrons);
-
-                 
-                    bool isStartNode = reader.ReadToFollowing("Isotope");
+                    
+                    bool isStartNode = reader.ReadToNextSibling("Isotope");
                     while(isStartNode)
                     {                        
                         string unqiueId = reader.GetAttribute("uniqueID");     
@@ -179,8 +178,14 @@ namespace CSMSL.Chemistry
                 _elements[element.AtomicSymbol] = element;
                 return false;
             }
-
+            
             _elements.Add(element.AtomicSymbol, element);
+
+            // Special case for Deuterium
+            if (element.AtomicSymbol == "H")
+            {
+                _elements.Add("D", element);
+            }
             return true;
         }
     }
