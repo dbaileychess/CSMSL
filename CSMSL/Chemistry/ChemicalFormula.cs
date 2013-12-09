@@ -829,15 +829,25 @@ namespace CSMSL.Chemistry
             foreach (Match match in FormulaRegex.Matches(formula))
             {
                 string chemsym = match.Groups[1].Value;             // Group 1: Chemical Symbol
+                
                 Element element;
                 if (Element.PeriodicTable.TryGetElement(chemsym, out element))
                 {
-                    Isotope isotope = match.Groups[2].Success ?     // Group 2 (optional): Isotope Mass Number
-                        element[int.Parse(match.Groups[2].Value)] :
-                        element.PrincipalIsotope;
+                    Isotope isotope = element.PrincipalIsotope;     // Start with the most abundant (principal) isotope
+
+                    if (chemsym.Equals("D"))                        // Special case for Deuterium
+                    {
+                        isotope = element.Isotopes[2];
+                    }
+                    else if (match.Groups[2].Success)               // Group 2 (optional): Isotope Mass Number
+                    {
+                        isotope = element[int.Parse(match.Groups[2].Value)];
+                    }
+
                     int sign = match.Groups[3].Success ?            // Group 3 (optional): Negative Sign
                         -1 :
                         1;
+
                     int numofelem = match.Groups[4].Success ?       // Group 4 (optional): Number of Elements
                         int.Parse(match.Groups[4].Value) :
                         1;
@@ -846,7 +856,7 @@ namespace CSMSL.Chemistry
                 }
                 else
                 {
-                    throw new ArgumentException(string.Format("Chemical Symbol {0} does not exist in the Periodic Table", chemsym));
+                    throw new ArgumentException(string.Format("The chemical Symbol '{0}' does not exist in the Periodic Table", chemsym));
                 }
             }
           

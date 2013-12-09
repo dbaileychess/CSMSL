@@ -4,6 +4,7 @@ namespace CSMSL.Util
 {
     public class Combinatorics
     {
+        
         /// <summary>
         /// Calculates the exact cumulative binomial probability.
         /// </summary>
@@ -31,16 +32,36 @@ namespace CSMSL.Util
         public static long BinomCoefficient(long n, long k)
         {
             if (k > n) { return 0; }
-            if (n == k) { return 1; }
+            if (k == 0 || n == k) { return 1; }
             if (k > n - k) { k = n - k; }
+
+            if (n < MaxBinomCoefficientMemoization)
+            {
+                long cachedValue = BinomCoefficients[k, n];
+                if (cachedValue > 0)
+                    return cachedValue;
+            }
+
+            long N = n; // store N for memorization technique
+          
             long c = 1;
             for (long i = 1; i <= k; i++)
             {
-                c *= n--;
+                c *= N--;
                 c /= i;
             }
+
+            if (n < MaxBinomCoefficientMemoization)
+            {
+                BinomCoefficients[k, n] = c;
+            }
+
             return c;
         }
+
+        private const int MaxBinomCoefficientMemoization = 50;
+        private static readonly long[,] BinomCoefficients = new long[MaxBinomCoefficientMemoization, MaxBinomCoefficientMemoization];
+     
 
         /// <summary>
         /// Returns the larget value v where v < a and Choose(v,b) <= x

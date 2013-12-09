@@ -29,10 +29,13 @@ namespace CSMSL.IO.OMSSA
         
         public int ID { get; set; }
 
-        public OmssaModification(string name, int id, double mono, double average, ModificationSites sites = ModificationSites.None)
+        public bool UserMod { get; set; }
+
+        public OmssaModification(string name, int id, double mono, double average, bool userMod, ModificationSites sites = ModificationSites.None)
             : base(mono, name, sites)
         {
             ID = id;
+            UserMod = userMod;
         }
  
         public static bool TryGetModification(int id, out OmssaModification modification)
@@ -70,15 +73,13 @@ namespace CSMSL.IO.OMSSA
                     string aa = node.FirstChild.Value;
                     sites = sites.Set(aa[0]);
                 }
-                if (userMod)
-                    name += "*";
-                OmssaModification mod = new OmssaModification(name, id, mono, average, sites);
+                OmssaModification mod = new OmssaModification(name, id, mono, average, userMod, sites);
                 Modifications.Add(name, mod);
                 _modificationKeyDicitonary[id] = name;
             }
         }
 
-        public static void LoadOmssaModifications(string file,  bool userMod = true)
+        public static void LoadOmssaModifications(string file, bool userMod = true)
         {
             XmlDocument mods_xml = new XmlDocument();
             mods_xml.Load(file);
@@ -119,7 +120,7 @@ namespace CSMSL.IO.OMSSA
                 }
                
                
-                OmssaModification mod = new OmssaModification(name, id, mono, average, sites);
+                OmssaModification mod = new OmssaModification(name, id, mono, average, userMod, sites);
                 Modifications[name] = mod;
                 _modificationKeyDicitonary[id] = name;
             }
@@ -130,22 +131,33 @@ namespace CSMSL.IO.OMSSA
             foreach (string mod in line.Split(_omssaModDelimiter, StringSplitOptions.RemoveEmptyEntries))
             {
                 string[] modParts = mod.Split(_omssaModPartDelimiter, StringSplitOptions.RemoveEmptyEntries);
-                yield return new Tuple<string, int>(modParts[0], int.Parse(modParts[1]));
+                yield return new Tuple<string, int>(modParts[0].Trim(), int.Parse(modParts[1]));
             }
         }
 
-        public static IEnumerable<Tuple<OmssaModification, int>> ParseModificationLine(string line)
+        public static Dictionary<string, Modification> GroupedModifications = new Dictionary<string, Modification>();
+
+        public static IEnumerable<Tuple<Modification, int>> ParseModificationLine(string line)
         {
             foreach (Tuple<string, int> mod in SplitModificationLine(line))
             {
-                OmssaModification modification;
-                if (TryGetModification(mod.Item1, out modification))
+                string modName = mod.Item1;
+                Modification groupedMod;
+                if (GroupedModifications.TryGetValue(modName, out groupedMod))
                 {
-                    yield return new Tuple<OmssaModification, int>(modification, mod.Item2);
+                    yield return new Tuple<Modification, int>(groupedMod, mod.Item2);
                 }
                 else
                 {
-                    throw new KeyNotFoundException("Modification: " + mod.Item1 + " is not found in the modification dictionary");
+                    OmssaModification modification;
+                    if (TryGetModification(modName, out modification))
+                    {
+                        yield return new Tuple<Modification, int>(modification, mod.Item2);
+                    }
+                    else
+                    {
+                        throw new KeyNotFoundException("Modification: " + mod.Item1 + " is not found in the modification dictionary");
+                    }
                 }
             }
         }
@@ -175,5 +187,12 @@ namespace CSMSL.IO.OMSSA
         {
             return Modifications.Values;
         }
+
+        //public override string ToString()
+        //{
+        //    if(UserMod)
+        //        return "*" + base.ToString();
+        //    return base.ToString();
+        //}
     }
 }

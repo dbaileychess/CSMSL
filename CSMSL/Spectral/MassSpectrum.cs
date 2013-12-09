@@ -169,6 +169,11 @@ namespace CSMSL.Spectral
             return Peaks.Select(p => p.Intensity).ToArray();
         }
 
+        public MZPeak[] GetPeaks()
+        {
+            return Peaks.ToArray();
+        }
+
         public IEnumerator<MZPeak> GetEnumerator()
         {
             return Peaks.ToList().GetEnumerator();
