@@ -70,7 +70,7 @@ namespace CSMSL.Proteomics
 
         public override int GetHashCode()
         {
-            return Number + Type.GetHashCode();
+            return Number + Type.GetHashCode() + Math.Round(MonoisotopicMass).GetHashCode();
         }
 
         public bool Equals(Fragment other)
