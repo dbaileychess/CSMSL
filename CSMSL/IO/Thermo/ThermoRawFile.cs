@@ -220,6 +220,12 @@ namespace CSMSL.IO.Thermo
         
         }
 
+        //public double GetElapsedScanTime(int spectrumNumber)
+        //{
+        //    double elapsedScanTime = Convert.ToDouble(GetExtraValue(spectrumNumber, "Elapsed Scan Time (sec):")) * 1000;
+        //    return elapsedScanTime;
+        //}
+
         public double GetElapsedScanTime(int spectrumNumber)
         {
             object elapsedScanTime = GetExtraValue(spectrumNumber, "Elapsed Scan Time (sec):");
@@ -299,11 +305,7 @@ namespace CSMSL.IO.Thermo
         }
 
 
-        public double GetElapsedScanTime(int spectrumNumber)
-        {
-            double elapsedScanTime = Convert.ToDouble(GetExtraValue(spectrumNumber, "Elapsed Scan Time (sec):")) * 1000;
-            return elapsedScanTime;
-        }
+     
 
         private Regex _etdReactTimeRegex = new Regex(@"@etd(\d+).(\d+)(\d+)", RegexOptions.Compiled);
 
