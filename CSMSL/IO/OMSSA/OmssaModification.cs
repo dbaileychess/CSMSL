@@ -190,7 +190,7 @@ namespace CSMSL.IO.OMSSA
 
         //public override string ToString()
         //{
-        //    if(UserMod)
+        //    if (UserMod)
         //        return "*" + base.ToString();
         //    return base.ToString();
         //}
