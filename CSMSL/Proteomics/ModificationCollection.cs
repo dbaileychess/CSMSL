@@ -1,10 +1,11 @@
-﻿using System.Text;
+﻿using System;
+using System.Text;
 using CSMSL.Chemistry;
 using System.Collections.Generic;
 
 namespace CSMSL.Proteomics
 {
-    public class ModificationCollection : ICollection<IMass>, IMass
+    public class ModificationCollection : ICollection<IMass>, IMass, IEquatable<ModificationCollection>
     {
         private readonly List<IMass> _modifications;
 
@@ -65,12 +66,10 @@ namespace CSMSL.Proteomics
 
         public bool Remove(IMass item)
         {
-            if (_modifications.Remove(item))
-            {
-                MonoisotopicMass -= item.MonoisotopicMass;
-                return true;
-            }
-            return false;
+            if (!_modifications.Remove(item)) 
+                return false;
+            MonoisotopicMass -= item.MonoisotopicMass;
+            return true;
         }
 
         public IEnumerator<IMass> GetEnumerator()
@@ -82,6 +81,29 @@ namespace CSMSL.Proteomics
         {
             return _modifications.GetEnumerator();
         }
-       
+
+        public override bool Equals(object obj)
+        {
+            ModificationCollection col = obj as ModificationCollection;
+            if (col == null)
+                return false;
+
+            return Equals(col);
+        }
+
+        public bool Equals(ModificationCollection other)
+        {
+            if (Count != other.Count)
+                return false;
+
+            return _modifications.ScrambledEquals(other._modifications);
+         
+            for (int i = 0; i < Count; i++)
+            {
+                if(!Contains(other._modifications[i]))
+                    return false;
+            }
+            return true;
+        }
     }
 }
