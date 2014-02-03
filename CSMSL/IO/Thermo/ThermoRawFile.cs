@@ -282,7 +282,7 @@ namespace CSMSL.IO.Thermo
 
         public override short GetPrecusorCharge(int spectrumNumber, int msnOrder = 2)
         {
-            return (short)GetExtraValue(spectrumNumber, "Charge State:");
+            return Convert.ToInt16(GetExtraValue(spectrumNumber, "Charge State:"));
         }
 
         public override int GetSpectrumNumber(double retentionTime)

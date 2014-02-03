@@ -63,6 +63,24 @@ namespace CSMSL
         }
     }
 
+    public static class ListExtension
+    {
+        public static double Median(this IList<double> values)
+        {
+            int length = values.Count;
+            int mid = length/2;
+            if (length%2 != 0)
+            {
+                return values[mid];
+            }
+            else
+            {
+                return (values[mid] + values[mid - 1])/2.0;
+            }
+        }
+
+    }
+
     public static class ChemicalFormulaFilterExtension
     {
         [Flags]

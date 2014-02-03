@@ -48,35 +48,17 @@ namespace CSMSL.Examples
         private static void StartExamples()
         {
             // Examples coding
-            ChemicalFormulaExamples();
+            
+            
+            //ChemicalFormulaExamples();
             //PeptideExamples();
             //ChemicalFormulaGeneratorExample();
-
-            //UniProtXml file = new UniProtXml(@"G:\uniprotALL.xml");
-
-            //List<String> values = new List<string>();
-            //foreach (var entry in file.Entries)
-            //{
-            //    foreach (var dbref in entry.dbReference)
-            //    {
-            //        if (dbref.type == "GO")
-            //        {
-            //            foreach (var properties in dbref.property)
-            //            {
-            //                values.Add(properties.value);
-            //                // Console.WriteLine(properties.type + ": " + properties.value);
-            //            }
-            //        }
-            //    }
-            //}
-
-
-
+                        
             // Example Objects
             //VennDiagramExamples();
 
             // Example programs
-            //TrypticDigestion.Start(minLength: 5, maxLength: 50, protease:Protease.Trypsin);
+            TrypticDigestion.Start(minLength: 5, maxLength: 50, protease:Protease.Trypsin);
 
             // Example Protein Grouping
             //ProteinGroupingExample.Start(Protease.Trypsin);
@@ -92,7 +74,7 @@ namespace CSMSL.Examples
 
             // MS/MS searching
             //MorpheusSearch.Start(Protease.Trypsin);
-          
+
             // Writing data to files
             //FileOutputExamples.Start();
 
