@@ -90,7 +90,7 @@ namespace CSMSL.IO.Thermo
         public override int GetParentSpectrumNumber(int spectrumNumber)
         {
             object parentScanNumber = GetExtraValue(spectrumNumber, "Master Scan Number:");
-            return (int) parentScanNumber;
+            return Convert.ToInt32(parentScanNumber);
         }
 
         private object GetExtraValue(int spectrumNumber, string filter)
@@ -216,8 +216,6 @@ namespace CSMSL.IO.Thermo
         {
             object width = GetExtraValue(spectrumNumber, string.Format("MS{0} Isolation Width:", msnOrder));
             return Convert.ToDouble(width);
-
-        
         }
 
         //public double GetElapsedScanTime(int spectrumNumber)
@@ -229,7 +227,7 @@ namespace CSMSL.IO.Thermo
         public double GetElapsedScanTime(int spectrumNumber)
         {
             object elapsedScanTime = GetExtraValue(spectrumNumber, "Elapsed Scan Time (sec):");
-            return (double)elapsedScanTime;
+            return Convert.ToDouble(elapsedScanTime);
         }
 
         public double GetTIC(int spectrumNumber)
@@ -303,10 +301,7 @@ namespace CSMSL.IO.Thermo
             double resolution = Convert.ToDouble(GetExtraValue(spectrumNumber, "FT Resolution:"));
             return resolution;
         }
-
-
-     
-
+        
         private Regex _etdReactTimeRegex = new Regex(@"@etd(\d+).(\d+)(\d+)", RegexOptions.Compiled);
 
         public double GetETDReactionTime(int spectrumNumber)
