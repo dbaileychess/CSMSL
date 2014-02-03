@@ -87,7 +87,7 @@ namespace CSMSL.Chemistry
 
         private static void GenerateFormulaHelper(double lowMass, double highMass, int length, double[] masses, int[] max, int index, int[] currentFormula, List<ChemicalFormula> formulas)
         {
-            while (index >= 0 && max[index] == 0)
+            while (index > 0 && max[index] == 0)
             {
                 index--;
             }
@@ -106,7 +106,8 @@ namespace CSMSL.Chemistry
                 currentFormula[index] = 0;
                 double currentMass = GetMass(currentFormula, masses);
                 int minCount = Math.Max((int) Math.Floor((lowMass - currentMass)/massAtIndex), 0);
-                int maxCount = Math.Min((int) Math.Ceiling((highMass - currentMass)/massAtIndex), max[index]);
+                int value = (int)Math.Ceiling((highMass - currentMass) / massAtIndex);
+                int maxCount = Math.Min(value, max[index]);
                 for (int count = minCount; count <= maxCount; count++)
                 {
                     currentMass += count*massAtIndex;
@@ -114,33 +115,45 @@ namespace CSMSL.Chemistry
 
                     if (currentMass >= lowMass && currentMass <= highMass)
                     {
-                        formulas.Add(new ChemicalFormula(currentFormula));
+                        ChemicalFormula formula = new ChemicalFormula(currentFormula);
+                        if(formula.AtomCount != 0)
+                            formulas.Add(formula);
                     }
                     currentMass -= count*massAtIndex;
                 }
             }
         }
 
-        public IEnumerable<ChemicalFormula> FromMass(double lowMass, double highMass, int maxNumberOfResults = int.MaxValue)
+        public IEnumerable<ChemicalFormula> FromMass(double lowMass, double highMass, int maxNumberOfResults = int.MaxValue, bool sort = true)
         {
             if (highMass <= lowMass)
             {
                 throw new ArgumentException("The high mass must be greater than the low mass");
             }
-
+            
             List<ChemicalFormula> returnFormulas = new List<ChemicalFormula>();
 
             // The minimum formula required for any return formulas
-            int[] minValues = _minFormula.GetIsotopes();
-            double minFormulaMass = _minFormula.MonoisotopicMass;
 
-            double correctedLowMass = lowMass - minFormulaMass;
-            double correctedHighMass = highMass - minFormulaMass;
+            double correctedLowMass = lowMass;
+            double correctedHighMass = highMass;
 
-            // Add the minimum formula itself if it is within the bounds
-            if (minFormulaMass >= lowMass && minFormulaMass <= highMass)
+            bool minFormulaExists = _minFormula.IsotopeCount != 0;
+            int[] minValues = null;
+
+            if (minFormulaExists)
             {
-                returnFormulas.Add(_minFormula);
+                minValues = _minFormula.GetIsotopes();
+                double minFormulaMass = _minFormula.MonoisotopicMass;
+
+                correctedLowMass -= minFormulaMass;
+                correctedHighMass -= minFormulaMass;
+
+                // Add the minimum formula itself if it is within the bounds
+                if (minFormulaMass >= lowMass && minFormulaMass <= highMass)
+                {
+                    returnFormulas.Add(_minFormula);
+                }
             }
         
             // The maximum formula allowed, represented in number of isotopes
@@ -153,19 +166,20 @@ namespace CSMSL.Chemistry
             double[] masses = new double[maxValues.Length];
 
             int length = maxValues.Length;
-
+                      
             for (int j = 0; j < length; j++)
             {
-                if(j < minValues.Length)
+                if (minFormulaExists && j < minValues.Length)
                     maxValues[j] -= minValues[j];
                 if (maxValues[j] == 0)
                     continue;
                 masses[j] = PeriodicTable.Instance[j].AtomicMass;
             }
+            masses[0] = PeriodicTable.Instance[0].AtomicMass;
             
             GenerateFormulaHelper(correctedLowMass, correctedHighMass, length, masses, maxValues, length - 1, currentFormula, returnFormulas);
-            
-            if (_minFormula.ElementCount > 0)
+
+            if (minFormulaExists)
             {
                 foreach (ChemicalFormula formula in returnFormulas)
                 {
@@ -173,8 +187,9 @@ namespace CSMSL.Chemistry
                 }
             }
 
+            if (!sort) 
+                return returnFormulas;
             double meanValue = (highMass + lowMass) / 2.0;
-
             return returnFormulas.OrderBy(formula => Math.Abs(formula.MonoisotopicMass - meanValue)).Take(maxNumberOfResults);
         }
 

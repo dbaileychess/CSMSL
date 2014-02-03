@@ -52,13 +52,13 @@ namespace CSMSL.Examples
             
             //ChemicalFormulaExamples();
             //PeptideExamples();
-            //ChemicalFormulaGeneratorExample();
+            ChemicalFormulaGeneratorExample();
                         
             // Example Objects
             //VennDiagramExamples();
 
             // Example programs
-            TrypticDigestion.Start(minLength: 5, maxLength: 50, protease:Protease.Trypsin);
+            //TrypticDigestion.Start(minLength: 5, maxLength: 50, protease:Protease.Trypsin);
 
             // Example Protein Grouping
             //ProteinGroupingExample.Start(Protease.Trypsin);
@@ -84,13 +84,10 @@ namespace CSMSL.Examples
 
         private static void ChemicalFormulaGeneratorExample()
         {
-            ChemicalFormula tFormula = AminoAcid.Threonine.ChemicalFormula;
-            ChemicalFormulaGenerator generator = new ChemicalFormulaGenerator();
-            
-            generator.AddConstraint(tFormula, new ChemicalFormula("C100H100N50O50S10P10"));
+          
+            ChemicalFormulaGenerator generator = new ChemicalFormulaGenerator(new ChemicalFormula("NCP"));
 
-            MassRange range = MassRange.FromPPM(1055.53833 - Constants.Proton, 10);
-            var formulas = generator.FromMass(range).Validate().ToList();
+            var formulas = generator.FromMass(0, 100).ToList();
             Console.WriteLine("Unique Formulas: " + formulas.Count);
         }
 
