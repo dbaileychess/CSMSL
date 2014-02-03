@@ -82,6 +82,13 @@ namespace CSMSL.Proteomics
             return _modifications.GetEnumerator();
         }
 
+        public override int GetHashCode()
+        {
+            int hCode = _modifications.GetHashCode();
+
+            return Count + hCode;
+        }
+
         public override bool Equals(object obj)
         {
             ModificationCollection col = obj as ModificationCollection;
@@ -96,14 +103,7 @@ namespace CSMSL.Proteomics
             if (Count != other.Count)
                 return false;
 
-            return _modifications.ScrambledEquals(other._modifications);
-         
-            for (int i = 0; i < Count; i++)
-            {
-                if(!Contains(other._modifications[i]))
-                    return false;
-            }
-            return true;
+            return _modifications.ScrambledEquals(other._modifications); 
         }
     }
 }

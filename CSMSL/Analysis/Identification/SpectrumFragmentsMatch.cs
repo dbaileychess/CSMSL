@@ -48,8 +48,7 @@ namespace CSMSL.Analysis.Identification
         }
 
         public IEnumerable<Fragment> MatchFragments(IEnumerable<Fragment> fragments, MassTolerance tolerance, double percentCutoff, params int[] chargeStates)
-        {
-            List<IPeak> peaks = null;
+        {           
             double basePeakInt = MassSpectrum.BasePeak.Intensity;
             double lowThreshold = basePeakInt*percentCutoff;
             foreach (Fragment fragment in fragments)
