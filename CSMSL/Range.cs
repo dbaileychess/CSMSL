@@ -118,7 +118,7 @@ namespace CSMSL
         {
             return string.Format("[{0} - {1}]", Minimum, Maximum);
         }
-
+                
         /// <summary>
         /// Compares if two ranges are identical
         /// </summary>

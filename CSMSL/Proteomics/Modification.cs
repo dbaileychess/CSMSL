@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using CSMSL.Chemistry;
+using System;
 
 namespace CSMSL.Proteomics
 {
@@ -40,6 +41,17 @@ namespace CSMSL.Proteomics
         public override string ToString()
         {
             return Name;
+        }
+
+        public static IEnumerable<ModificationSites> GetSites(ModificationSites sites)
+        {
+            foreach (ModificationSites site in Enum.GetValues(typeof(ModificationSites)))
+            {
+                if (site == ModificationSites.None)
+                    continue;
+                if ((sites & site) == site)
+                    yield return site;
+            }
         }
 
         internal IEnumerable<int> GetModifiableSites(AminoAcidPolymer peptide)

@@ -90,6 +90,7 @@
     <Compile Include="FileOutputExamples.cs" />
     <Compile Include="MsDataFileExamples.cs" />
     <Compile Include="OmssaReader.cs" />
+    <Compile Include="PepXmlExamples.cs" />
     <Compile Include="ProteinGroupingExample.cs" />
     <Compile Include="TMT6plexExample.cs" />
     <Compile Include="TrypticDigestion.cs" />
@@ -112,6 +113,10 @@
     <ProjectReference Include="..\CSMSL\IO\OMSSA\OMSSA.csproj">
       <Project>{45a71e18-42e8-41a4-9479-2852c4186993}</Project>
       <Name>OMSSA</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\CSMSL\IO\PepXml\PepXml.csproj">
+      <Project>{33de9ece-37a8-44af-9ed0-242763d2801d}</Project>
+      <Name>PepXml</Name>
     </ProjectReference>
     <ProjectReference Include="..\CSMSL\IO\Thermo\Thermo.csproj">
       <Project>{24dc85ff-e97b-4140-9614-77dd8fddd32f}</Project>

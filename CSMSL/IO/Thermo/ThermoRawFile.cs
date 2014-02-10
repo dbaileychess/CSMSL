@@ -29,6 +29,13 @@ namespace CSMSL.IO.Thermo
             FTMS = 4,
             Sector = 5
         }
+
+        public enum Smoothing
+        {
+            None = 0,
+            Boxcar = 1,
+            Gauusian = 2
+        }
                 
         private IXRawfile5 _rawConnection;
 
@@ -90,7 +97,28 @@ namespace CSMSL.IO.Thermo
         public override int GetParentSpectrumNumber(int spectrumNumber)
         {
             object parentScanNumber = GetExtraValue(spectrumNumber, "Master Scan Number:");
-            return Convert.ToInt32(parentScanNumber);
+            int scanNumber = Convert.ToInt32(parentScanNumber);
+
+            if (scanNumber == 0)
+            {
+                int masterIndex = Convert.ToInt32(GetExtraValue(spectrumNumber, "Master Index:"));
+                if (masterIndex == 0)
+                    throw new ArgumentException("Scan Number " + spectrumNumber + " has no parent");
+                int scanIndex = Convert.ToInt32(GetExtraValue(spectrumNumber, "Scan Event:"));
+                scanNumber = spectrumNumber - scanIndex + masterIndex;
+            }
+           
+            return scanNumber;           
+        }
+
+        public double[,] GetChro(string scanFilter, MassRange range, double startTime, double endTime, Smoothing smoothing = Smoothing.None, int smoothingPoints = 3)
+        {
+            object chro = null;
+            object flags =null;
+            int size = 0;
+            string mzrange = range.Minimum.ToString("F4") + "-" + range.Maximum.ToString("F4");
+            _rawConnection.GetChroData(0, 0, 0, scanFilter, mzrange, string.Empty, 0.0, startTime, endTime, (int)smoothing, smoothingPoints, ref chro, ref flags, ref size);
+            return (double[,])chro;
         }
 
         private object GetExtraValue(int spectrumNumber, string filter)

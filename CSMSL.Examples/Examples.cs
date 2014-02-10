@@ -33,32 +33,45 @@ namespace CSMSL.Examples
 {
     internal class Examples
     {
+        public static string BASE_DIRECTORY = Path.Combine(System.Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "CSMSL Examples");
+
+      
         private static void Main()
         {
-            Console.WriteLine("==CSMSL Examples==");
-            Stopwatch watch = new Stopwatch();
-            watch.Start();
-            StartExamples();
-            watch.Stop();
-            Console.WriteLine("==================");
-            Console.WriteLine(watch.Elapsed);
+
+            DirectoryInfo info = Directory.CreateDirectory(BASE_DIRECTORY);
+            if (!info.Exists)
+            {
+                Console.WriteLine("Unable to create/use directory" + BASE_DIRECTORY);
+            }
+            else
+            {
+                Console.WriteLine("==CSMSL Examples==");
+
+                Console.WriteLine("Outputting Files to " + BASE_DIRECTORY);
+                Stopwatch watch = new Stopwatch();
+                watch.Start();
+                StartExamples();
+                watch.Stop();
+                Console.WriteLine("==================");
+                Console.WriteLine(watch.Elapsed);
+            }
             Console.ReadKey();
         }                
 
         private static void StartExamples()
         {
-            // Examples coding
-            
+            // Examples coding           
             
             //ChemicalFormulaExamples();
             //PeptideExamples();
-            ChemicalFormulaGeneratorExample();
+            //ChemicalFormulaGeneratorExample();
                         
             // Example Objects
             //VennDiagramExamples();
 
             // Example programs
-            //TrypticDigestion.Start(minLength: 5, maxLength: 50, protease:Protease.Trypsin);
+            TrypticDigestion.Start(minLength: 5, maxLength: 50, protease:Protease.Trypsin);
 
             // Example Protein Grouping
             //ProteinGroupingExample.Start(Protease.Trypsin);
@@ -80,6 +93,8 @@ namespace CSMSL.Examples
 
             //Purity Correction
             //TMT6plexExample.PurityCorrection();
+
+            PepXmlExamples.WritePepXml();
         }
 
         private static void ChemicalFormulaGeneratorExample()

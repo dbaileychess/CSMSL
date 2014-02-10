@@ -20,12 +20,13 @@
 
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Text.RegularExpressions;
 
 namespace CSMSL.Proteomics
 {
     public class Protease: IProtease
-    {
+    {        
         public static Protease Trypsin {get; private set;}
         public static Protease TrypsinNoProlineRule { get; private set; }
         public static Protease GluC { get; private set; }
@@ -44,18 +45,18 @@ namespace CSMSL.Proteomics
         {
             Proteases = new Dictionary<string, Protease>(12);
 
-            Trypsin = AddProtease("Trypsin", Terminus.C, @"[K|R](?'cleave')(?!P)");
-            TrypsinNoProlineRule = AddProtease("Trypsin No Proline Rule", Terminus.C, @"[K|R](?'cleave')");
-            GluC = AddProtease("GluC", Terminus.C, @"E(?'cleave')");
-            LysN = AddProtease("LysN", Terminus.N, @"(?'cleave')K");
-            ArgC = AddProtease("ArgC", Terminus.C, @"R(?'cleave')");
-            Chymotrypsin = AddProtease("Chymotrypsin", Terminus.C, @"[Y|W|F|L](?'cleave')(?!P)");
-            LysC = AddProtease("LysC", Terminus.C, @"K(?'cleave')");
-            CNBr = AddProtease("CNBr", Terminus.C, @"M(?'cleave')");
-            AspN = AddProtease("AspN", Terminus.N, @"(?'cleave')[B|D]");
-            Thermolysin = AddProtease("Thermolysin", Terminus.N, @"(?<![D|E])(?'cleave')[A|F|I|L|M|V]");
-            None = AddProtease("None", Terminus.C, @"[A-Z](?'cleave')");
-        }
+            Trypsin = AddProtease("Trypsin", Terminus.C,"KR","P");
+            TrypsinNoProlineRule = AddProtease("Trypsin No Proline Rule", Terminus.C, "KR");
+            GluC = AddProtease("GluC", Terminus.C, "E");
+            LysN = AddProtease("LysN", Terminus.N,"K");
+            ArgC = AddProtease("ArgC", Terminus.C, "R");
+            Chymotrypsin = AddProtease("Chymotrypsin", Terminus.C, "YWFL","P");
+            LysC = AddProtease("LysC", Terminus.C, "K");
+            CNBr = AddProtease("CNBr", Terminus.C, "M");
+            AspN = AddProtease("AspN", Terminus.N, "BD");
+            Thermolysin = AddProtease("Thermolysin", Terminus.N, "AFILMV","DE");
+            None = AddProtease("None", Terminus.C,"ACDEFGHIKLMNPQRSTVWY");
+        }            
 
         public static IEnumerable<Protease> GetAllProteases()
         {
@@ -72,14 +73,17 @@ namespace CSMSL.Proteomics
             return Proteases.TryGetValue(name, out protease);
         }
         
-        public static Protease AddProtease(string name, Terminus terminus, string cleavePattern)
+        public static Protease AddProtease(string name, Terminus terminus, string cut, string noCut = "")
         {
-            Protease protease = new Protease(name, terminus, cleavePattern);
+            Protease protease = new Protease(name, terminus, cut, noCut);
             Proteases.Add(protease.Name, protease);
             return protease;
         }        
 
         private readonly Regex _cleavageRegex;
+
+        public string Cut { get; private set; }
+        public string NoCut { get; private set; }
 
         public string Name { get; set; }
 
@@ -87,11 +91,49 @@ namespace CSMSL.Proteomics
 
         public string CleavagePattern { get { return _cleavageRegex.ToString(); } }
 
-        public Protease(string name, Terminus terminus, string cleavePattern)
+        public Protease(string name, Terminus terminus, string cut, string nocut = "", string cleavePattern = "")
         {
             Name = name;
             Terminal = terminus;
-            _cleavageRegex = new Regex(cleavePattern, RegexOptions.Compiled);
+            Cut = cut;
+            NoCut = nocut;
+
+            if (string.IsNullOrEmpty(cleavePattern))
+            {
+
+                StringBuilder constructedRegex = new StringBuilder();
+
+                // Add grouping [ ] if more than one residue
+                string cutregex = (Cut.Length > 1) ? "[" + Cut + "]" : Cut;
+                string nocutregex = (NoCut.Length > 1) ? "[" + NoCut + "]" : NoCut;
+
+                if (terminus == Terminus.N)
+                {
+                    // Apply negative look-a-head for N-terminal no cuts
+                    if (!string.IsNullOrEmpty(nocut))
+                    {
+                        constructedRegex.Append("(?<!" + nocutregex + ")");
+                    }
+                    constructedRegex.Append("(?'cut')");
+                    constructedRegex.Append(cutregex);
+                }
+                else
+                {
+                    constructedRegex.Append(cutregex);
+                    constructedRegex.Append("(?'cut')");
+                    if (!string.IsNullOrEmpty(nocut))
+                    {
+                        constructedRegex.Append("(?!" + nocutregex + ")");
+                    }
+                }
+
+
+                _cleavageRegex = new Regex(constructedRegex.ToString(), RegexOptions.Compiled);
+            }
+            else
+            {
+                _cleavageRegex = new Regex(cleavePattern, RegexOptions.Compiled);
+            }          
         }
 
         public override string ToString()
@@ -106,7 +148,7 @@ namespace CSMSL.Proteomics
 
         public IEnumerable<int> GetDigestionSites(string sequence)
         {
-            return (from Match match in _cleavageRegex.Matches(sequence) select match.Groups["cleave"].Index - 1);
+            return (from Match match in _cleavageRegex.Matches(sequence) select match.Groups["cut"].Index - 1);
         }
     }
 }

@@ -67,6 +67,7 @@ namespace CSMSL.Proteomics
             return Residues[letter.ToString(CultureInfo.InvariantCulture)];
         }
 
+
         public static bool TryGetResidue(char letter, out AminoAcid residue)
         {
             residue = ResiduesByLetter[letter];
@@ -88,7 +89,7 @@ namespace CSMSL.Proteomics
         static AminoAcid()
         {
             Residues = new Dictionary<string, AminoAcid>(66);
-            ResiduesByLetter = new AminoAcid[Int16.MaxValue];
+            ResiduesByLetter = new AminoAcid[Int16.MaxValue];           
             Alanine = AddResidue("Alanine",'A',"Ala","C3H5NO" ,ModificationSites.A);
             Arginine = AddResidue("Arginine", 'R', "Arg", "C6H12N4O", ModificationSites.R);
             Asparagine = AddResidue("Asparagine", 'N', "Asn", "C4H6N2O2", ModificationSites.N);
@@ -117,7 +118,7 @@ namespace CSMSL.Proteomics
             Residues.Add(residue.Letter.ToString(CultureInfo.InvariantCulture), residue);
             Residues.Add(residue.Name, residue);
             Residues.Add(residue.Symbol, residue);
-            ResiduesByLetter[residue.Letter] = residue;
+            ResiduesByLetter[residue.Letter] = residue;            
         }
 
         internal AminoAcid(string name, char oneLetterAbbreviation, string threeLetterAbbreviation, string chemicalFormula, ModificationSites site)
@@ -150,5 +151,7 @@ namespace CSMSL.Proteomics
             return string.Format("{0} {1} ({2})", Letter, Symbol, Name);
         }
 
+
+      
     }
 }
