@@ -12,8 +12,14 @@ namespace CSMSL.IO.PepXML
 {
     public class PepXmlWriter : IDisposable
     {
+        public enum Stage
+        {
+            RunSummary,
+            SearchSummary
+        }
 
         public string FilePath { get; private set; }
+        public Stage CurrentStage { get; private set; }
 
         private XmlTextWriter _writer;
 
@@ -27,10 +33,54 @@ namespace CSMSL.IO.PepXML
             _writer.WriteAttributeString("date", DateTime.Now.ToString("s"));
             _writer.WriteAttributeString("summary_xml", filePath);
             _writer.WriteAttributeString("xmlns", "http://regis-web.systembiology.net/pepXML");
+
+            SetCurrentStage(Stage.RunSummary, false);    
         }
 
+        public void SetCurrentStage(Stage stage, bool endPreviousStage = true)
+        {
+            if (endPreviousStage)
+                _writer.WriteEndElement();
+            CurrentStage = stage;
+            switch (CurrentStage)
+            {
+                case Stage.RunSummary:
+                    _writer.WriteStartElement("msms_run_summary");
+                    break;
+                case Stage.SearchSummary:
+                    _writer.WriteStartElement("search_summary");
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        public void WriteProteinDatabase(string fastaFilePath, string name = "", string releaseDate = "")
+        {
+            if (CurrentStage != Stage.SearchSummary)
+                throw new ArgumentException("You must be in the Search Summary stage to write protein databases");
+
+            _writer.WriteStartElement("search_database");
+            _writer.WriteAttributeString("seq_type", "AA");
+            _writer.WriteAttributeString("local_path", fastaFilePath);          
+
+            name = (string.IsNullOrEmpty(name)) ? Path.GetFileNameWithoutExtension(fastaFilePath) : name;           
+            _writer.WriteAttributeString("database_name", name);
+
+            if (!string.IsNullOrEmpty(releaseDate))
+                _writer.WriteAttributeString("database_release_date", releaseDate);
+            
+            int entries = FastaReader.NumberOfEntries(fastaFilePath);
+            _writer.WriteAttributeString("size_in_db_entries", entries.ToString());
+
+            _writer.WriteEndElement(); // search_database
+        }
+           
         public void WriteModification(IMass modification, ModificationSites sites, bool fixedModification = true)
         {
+            if (CurrentStage != Stage.SearchSummary)
+                throw new ArgumentException("You must be in the Search Summary stage to write modifications");
+
             foreach (ModificationSites singleSite in Modification.GetSites(sites))
             {
                 double basemass = 0;
@@ -70,11 +120,14 @@ namespace CSMSL.IO.PepXML
 
         public void WriteProtease(Protease protease)
         {
+            if (CurrentStage != Stage.RunSummary)
+                throw new ArgumentException("You must be in the Run Summary stage to write proteases");
+
             _writer.WriteStartElement("sample_enzyme");
             _writer.WriteAttributeString("name", protease.Name);
             _writer.WriteStartElement("specificity");
             _writer.WriteAttributeString("sense", Enum.GetName(typeof(Terminus), protease.Terminal));
-            _writer.WriteAttributeString("pattern", protease.CleavagePattern);
+            //_writer.WriteAttributeString("pattern", protease.CleavagePattern); // not part of the schema
             _writer.WriteAttributeString("cut", protease.Cut);
             _writer.WriteAttributeString("no_cut", protease.NoCut);
             _writer.WriteEndElement(); // specificity
@@ -85,6 +138,7 @@ namespace CSMSL.IO.PepXML
         {
             if (_writer != null)
             {
+                _writer.WriteEndElement(); // msms_run_summary;
                 _writer.WriteEndElement(); // msms_pepeline_anlaysis;
                 _writer.WriteEndDocument();
                 _writer.Dispose();

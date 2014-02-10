@@ -18,8 +18,13 @@ namespace CSMSL.Examples
 
             Console.WriteLine("Writting to " + filePath);
             using (PepXmlWriter writer = new PepXmlWriter(filePath))
-            {
+            {                
                 writer.WriteProtease(Protease.Trypsin);
+
+                writer.SetCurrentStage(PepXmlWriter.Stage.SearchSummary);
+
+                writer.WriteProteinDatabase("Resources/yeast_uniprot_120226.fasta");
+
                 writer.WriteModification(NamedChemicalFormula.Acetyl, ModificationSites.K);
             }
 

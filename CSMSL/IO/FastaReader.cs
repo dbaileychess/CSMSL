@@ -90,6 +90,21 @@ namespace CSMSL.IO
             return FileName;
         }
 
+        public static int NumberOfEntries(string filePath)
+        {
+            int entries = 0;
+            using (StreamReader reader = new StreamReader(filePath))
+            {
+                string line;
+                while ((line = reader.ReadLine()) != null)
+                {
+                    if (line.StartsWith(">"))
+                        entries++;
+                }
+            }
+            return entries;
+        }
+
         private IEnumerable<string> ReadNextLine()
         {
             while (!_reader.EndOfStream)

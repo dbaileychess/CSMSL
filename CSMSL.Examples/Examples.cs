@@ -71,7 +71,7 @@ namespace CSMSL.Examples
             //VennDiagramExamples();
 
             // Example programs
-            TrypticDigestion.Start(minLength: 5, maxLength: 50, protease:Protease.Trypsin);
+            //TrypticDigestion.Start(minLength: 5, maxLength: 50, protease:Protease.Trypsin);
 
             // Example Protein Grouping
             //ProteinGroupingExample.Start(Protease.Trypsin);
