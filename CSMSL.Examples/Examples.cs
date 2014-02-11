@@ -65,7 +65,7 @@ namespace CSMSL.Examples
 
             //ChemicalFormulaExamples();
             //PeptideExamples();
-            //ChemicalFormulaGeneratorExample();
+            ChemicalFormulaGeneratorExample();
                         
             // Example Objects
             //VennDiagramExamples();
