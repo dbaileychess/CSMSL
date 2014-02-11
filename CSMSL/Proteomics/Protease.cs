@@ -91,6 +91,27 @@ namespace CSMSL.Proteomics
 
         public string CleavagePattern { get { return _cleavageRegex.ToString(); } }
 
+        public int MissedCleavages(string sequence)
+        {
+            MatchCollection matches = _cleavageRegex.Matches(sequence);
+
+            int count = matches.Count;
+
+            if (count == 0)
+                return 0;
+            
+            if (Terminal == Terminus.N)
+            {
+                if (matches[0].Index == 0)
+                    return count - 1;
+                return count;
+            }
+            if (matches[count-1].Index == sequence.Length - 1)
+                return count - 1;
+
+            return count;
+        }
+
         public Protease(string name, Terminus terminus, string cut, string nocut = "", string cleavePattern = "")
         {
             Name = name;

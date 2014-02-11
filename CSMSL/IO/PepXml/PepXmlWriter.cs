@@ -7,6 +7,7 @@ using System.Xml;
 using System.IO;
 using CSMSL.Chemistry;
 using CSMSL.Proteomics;
+using CSMSL.Analysis.Identification;
 
 namespace CSMSL.IO.PepXML
 {
@@ -15,17 +16,23 @@ namespace CSMSL.IO.PepXML
         public enum Stage
         {
             RunSummary,
-            SearchSummary
+            SearchSummary,
+            Spectra
         }
 
         public string FilePath { get; private set; }
+        public string BaseName { get; private set; }
         public Stage CurrentStage { get; private set; }
+
+        private int _spectrumIndex = 1;
 
         private XmlTextWriter _writer;
 
         public PepXmlWriter(string filePath)
         {
-            FilePath = filePath;            
+            FilePath = filePath;
+            BaseName = Path.GetFileNameWithoutExtension(filePath);
+
             _writer = new XmlTextWriter(filePath, Encoding.UTF8);
             _writer.Formatting = Formatting.Indented;
             _writer.WriteStartDocument();
@@ -36,6 +43,7 @@ namespace CSMSL.IO.PepXML
 
             SetCurrentStage(Stage.RunSummary, false);    
         }
+        
 
         public void SetCurrentStage(Stage stage, bool endPreviousStage = true)
         {
@@ -50,9 +58,88 @@ namespace CSMSL.IO.PepXML
                 case Stage.SearchSummary:
                     _writer.WriteStartElement("search_summary");
                     break;
+                case Stage.Spectra:                   
                 default:
                     break;
             }
+        }
+
+        public void WriteParameter(string name, string value)
+        {            
+            _writer.WriteStartElement("parameter");
+            _writer.WriteAttributeString("name", name);
+            _writer.WriteAttributeString("value", value);
+            _writer.WriteEndElement(); // parameter          
+        }
+
+        public void WriteComment(string comment)
+        {
+            _writer.WriteComment(comment);
+        }
+
+        private double spectrumNeutralMass;
+
+        public void StartSpectrum(int spectrumNumbner, double rt, double precursorNeutralMass, int chargeState, string title ="")
+        {
+            _writer.WriteStartElement("spectrum_query");
+            _writer.WriteAttributeString("spectrum", title);
+            _writer.WriteAttributeString("start_scan", spectrumNumbner.ToString());
+            _writer.WriteAttributeString("end_scan", spectrumNumbner.ToString());
+            _writer.WriteAttributeString("precursor_neutral_mass", precursorNeutralMass.ToString());
+            _writer.WriteAttributeString("assumed_charge", chargeState.ToString());
+            _writer.WriteAttributeString("index", _spectrumIndex.ToString());
+            _writer.WriteAttributeString("retention_time_min", rt.ToString());
+            _writer.WriteStartElement("search_result");
+            spectrumNeutralMass = precursorNeutralMass;
+        }
+
+        public void WritePSM(PeptideSpectralMatch psm, Protein protein, int hitRank = 1)
+        {
+            _writer.WriteStartElement("search_hit");
+            _writer.WriteAttributeString("hit_rank", hitRank.ToString());
+            _writer.WriteAttributeString("peptide", psm.Peptide.Sequence);
+            _writer.WriteAttributeString("peptide_prev_aa" , (psm.Peptide.PreviousAminoAcid != null) ? psm.Peptide.PreviousAminoAcid.Letter.ToString() : "-");
+            _writer.WriteAttributeString("peptide_next_aa", (psm.Peptide.NextAminoAcid != null) ? psm.Peptide.NextAminoAcid.Letter.ToString() : "-");
+
+            double pepMonoMass = psm.Peptide.MonoisotopicMass;
+            double massDifference = spectrumNeutralMass - pepMonoMass;
+            _writer.WriteAttributeString("calc_neutral_pep_mass", pepMonoMass.ToString());
+            _writer.WriteAttributeString("massdiff", massDifference.ToString());
+
+            protein = psm.Peptide.Parent as Protein;
+
+            if(protein != null) {
+                _writer.WriteAttributeString("protein", protein.Description);
+                _writer.WriteAttributeString("protein_descr", protein.Description);
+            }
+
+            _writer.WriteAttributeString("num_tot_proteins", "1");
+            _writer.WriteAttributeString("is_rejected", "0");
+
+            _writer.WriteStartElement("search_score");
+            _writer.WriteAttributeString("name", Enum.GetName(typeof(PeptideSpectralMatchScoreType), psm.ScoreType));
+            _writer.WriteAttributeString("value", psm.Score.ToString());
+            _writer.WriteEndElement(); // search_score
+
+            _writer.WriteEndElement(); // search_hit
+        }
+
+        public void EndSpectrum()
+        {
+            _spectrumIndex++;
+            _writer.WriteEndElement(); // search_result
+            _writer.WriteEndElement(); // spectrum_query
+        }
+
+        public void StartSearchSummary(string searchEngine, bool isPrecursorMassMonoisotopic, bool isProductMassMonoisotopic)
+        {
+            SetCurrentStage(Stage.SearchSummary, false);
+
+            _writer.WriteAttributeString("base_name", BaseName);
+            _writer.WriteAttributeString("search_engine", searchEngine);
+            _writer.WriteAttributeString("precursor_mass_type", (isPrecursorMassMonoisotopic) ? "monoisotopic": "average");
+            _writer.WriteAttributeString("fragment_mass_type", (isProductMassMonoisotopic) ? "monoisotopic" : "average");
+            _writer.WriteAttributeString("search_id", "1");
         }
 
         public void WriteProteinDatabase(string fastaFilePath, string name = "", string releaseDate = "")
@@ -118,7 +205,19 @@ namespace CSMSL.IO.PepXML
             }
         }
 
-        public void WriteProtease(Protease protease)
+        public void WriteSearchProtease(Protease protease, int maxMissedClevages, bool semiDigested = false)
+        {
+            if (CurrentStage != Stage.SearchSummary)
+                throw new ArgumentException("You must be in the Search Summary stage to write modifications");
+
+            _writer.WriteStartElement("enzymatic_search_constraint");
+            _writer.WriteAttributeString("enzyme", protease.Name);
+            _writer.WriteAttributeString("max_num_internal_clevages", maxMissedClevages.ToString());
+            _writer.WriteAttributeString("min_number_termini", (semiDigested) ? "1" : "2");
+            _writer.WriteEndElement();
+        }
+
+        public void WriteSampleProtease(Protease protease)
         {
             if (CurrentStage != Stage.RunSummary)
                 throw new ArgumentException("You must be in the Run Summary stage to write proteases");
@@ -133,7 +232,7 @@ namespace CSMSL.IO.PepXML
             _writer.WriteEndElement(); // specificity
             _writer.WriteEndElement(); // sample_enzyme
         }
-
+        
         public void Dispose()
         {
             if (_writer != null)

@@ -562,6 +562,22 @@ namespace CSMSL.Chemistry
             return Count(symbol) != 0;
         }
 
+        public bool Contains(ChemicalFormula formula)
+        {
+            int[] otherFormula = formula._isotopes;
+            int[] thisFormula = _isotopes;
+
+            int max = Math.Min(thisFormula.Length, otherFormula.Length);
+
+            for (int i = 0; i < max; i++)
+            {
+                if (thisFormula[i] < otherFormula[i])
+                    return false;
+            }
+
+            return true;
+        }
+
         public bool Contains(string symbol, int atomicNumber)
         {
             return Count(symbol, atomicNumber) != 0;

@@ -35,11 +35,16 @@ namespace CSMSL.Proteomics
 
         public AminoAcidPolymer Parent { get; set; }
 
+        public AminoAcid PreviousAminoAcid { get; set; }
+        public AminoAcid NextAminoAcid { get; set; }
+
         public Peptide()
         {
             Parent = null;
             StartResidue = 0;
             EndResidue = 0;
+            PreviousAminoAcid = null;
+            NextAminoAcid = null;
         }
 
         public Peptide(AminoAcidPolymer aminoAcidPolymer, bool includeModifications = true)
@@ -47,7 +52,11 @@ namespace CSMSL.Proteomics
         {
             Parent = aminoAcidPolymer;
             StartResidue = 0;
+            PreviousAminoAcid = null;
             EndResidue = StartResidue + Length - 1;
+
+            if (EndResidue < aminoAcidPolymer.Length - 1)
+                NextAminoAcid = aminoAcidPolymer.AminoAcids[EndResidue + 1];
         }
 
         public Peptide(AminoAcidPolymer aminoAcidPolymer, int firstResidue, int length, bool includeModifications = true)
@@ -56,6 +65,12 @@ namespace CSMSL.Proteomics
             Parent = aminoAcidPolymer;
             StartResidue = firstResidue;
             EndResidue = firstResidue + length - 1;
+            if (StartResidue > 0)
+                PreviousAminoAcid = aminoAcidPolymer.AminoAcids[StartResidue - 1];
+
+            if (EndResidue < aminoAcidPolymer.Length - 1)
+                NextAminoAcid = aminoAcidPolymer.AminoAcids[EndResidue + 1];
+
         }
 
         public Peptide(AminoAcidPolymer aminoAcidPolymer)
@@ -73,6 +88,17 @@ namespace CSMSL.Proteomics
             Parent = parent;
             StartResidue = startResidue;
             EndResidue = startResidue + Length - 1;
+
+            if (parent != null)
+            {
+
+                if (StartResidue > 0)
+                    PreviousAminoAcid = parent.AminoAcids[StartResidue - 1];
+
+                if (EndResidue < parent.Length - 1)
+                    NextAminoAcid = parent.AminoAcids[EndResidue + 1];
+            }
+
         }
 
         public IEnumerable<Peptide> GenerateIsoforms(params Modification[] modifications)
