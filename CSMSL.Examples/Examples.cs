@@ -65,7 +65,7 @@ namespace CSMSL.Examples
 
             //ChemicalFormulaExamples();
             //PeptideExamples();
-            //ChemicalFormulaGeneratorExample();
+            ChemicalFormulaGeneratorExample();
                         
             // Example Objects
             //VennDiagramExamples();
@@ -99,7 +99,7 @@ namespace CSMSL.Examples
 
         private static void ChemicalFormulaGeneratorExample()
         {
-            ChemicalFormulaGenerator generator = new ChemicalFormulaGenerator(new ChemicalFormula("C"), new ChemicalFormula("NCP"));
+            ChemicalFormulaGenerator generator = new ChemicalFormulaGenerator(new ChemicalFormula("H"), new ChemicalFormula("H2"));
 
             var formulas = generator.FromMass(0, 100).ToList();
             Console.WriteLine("Unique Formulas: " + formulas.Count);
