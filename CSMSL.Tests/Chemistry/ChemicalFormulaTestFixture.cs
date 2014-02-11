@@ -136,7 +136,7 @@ namespace CSMSL.Tests.Chemistry
             ChemicalFormula formulaB = new ChemicalFormula("C2H3NO");
                        
             formulaA.Add(NullElement, 1);
-
+                      
             Assert.AreEqual(formulaA, formulaB);
         }
 
