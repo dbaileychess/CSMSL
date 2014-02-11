@@ -888,8 +888,6 @@ namespace CSMSL.Chemistry
         /// <returns>The isotopes that make up this chemical formula</returns>
         internal int[] GetIsotopes()
         {
-            //if (_largestIsotopeId == 0)
-            //    return new int[1];
             int[] isotopes = new int[_largestIsotopeId + 1];
             Array.Copy(_isotopes, isotopes, _largestIsotopeId + 1);
             return isotopes;

@@ -99,7 +99,7 @@ namespace CSMSL.Examples
 
         private static void ChemicalFormulaGeneratorExample()
         {
-            ChemicalFormulaGenerator generator = new ChemicalFormulaGenerator(new ChemicalFormula("H"), new ChemicalFormula("H2"));
+            ChemicalFormulaGenerator generator = new ChemicalFormulaGenerator(new ChemicalFormula("H2"), new ChemicalFormula("C4H2"));
 
             var formulas = generator.FromMass(0, 100).ToList();
             Console.WriteLine("Unique Formulas: " + formulas.Count);
