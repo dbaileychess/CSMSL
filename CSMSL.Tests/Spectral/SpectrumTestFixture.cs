@@ -8,7 +8,7 @@ namespace CSMSL.Tests.Spectral
     [TestFixture, Category("Spectral"), System.Runtime.InteropServices.GuidAttribute("FEB664ED-51B1-4DD9-A224-E81E0E120AFE")]
     public sealed class SpectrumTestFixture
     {
-        private MassSpectrum mzSpectrum1000;
+        private MZSpectrum mzSpectrum1000;
         private Random random;
 
         [SetUp]
@@ -23,7 +23,7 @@ namespace CSMSL.Tests.Spectral
                 peaks.Add(new MZPeak(mz, intensity));
             }
             peaks.Sort();
-            mzSpectrum1000 = new MassSpectrum(peaks);
+            mzSpectrum1000 = new MZSpectrum(peaks);
         }
 
         [Test]

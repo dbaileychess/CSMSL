@@ -36,6 +36,70 @@ namespace CSMSL.Tests.Proteomics
         }
 
         [Test]
+        public void MissedClevageNoneCTerminus()
+        {
+            int missedClevages = Protease.Trypsin.MissedCleavages("DEFEK");
+
+            Assert.AreEqual(0, missedClevages);
+        }
+        
+        [Test]
+        public void MissedClevageNoneNTerminus()
+        {
+            int missedClevages = Protease.LysN.MissedCleavages("KERED");
+
+            Assert.AreEqual(0, missedClevages);
+        }
+
+        [Test]
+        public void MissedClevageOneInternalNTerminus()
+        {
+            int missedClevages = Protease.LysN.MissedCleavages("KEKED");
+
+            Assert.AreEqual(1, missedClevages);
+        }
+
+        [Test]
+        public void MissedClevageOneInternalCTerminus()
+        {
+            int missedClevages = Protease.Trypsin.MissedCleavages("DEKEK");
+
+            Assert.AreEqual(1, missedClevages);
+        }
+
+        [Test]
+        public void MissedClevageTwoInternalCTerminus()
+        {
+            int missedClevages = Protease.Trypsin.MissedCleavages("DEKAAKEK");
+
+            Assert.AreEqual(2, missedClevages);
+        }
+
+        [Test]
+        public void MissedClevageTwoInternalNTerminus()
+        {
+            int missedClevages = Protease.LysN.MissedCleavages("KEDEKEKED");
+
+            Assert.AreEqual(2, missedClevages);
+        }
+
+        [Test]
+        public void MissedClevageOneCTerminalProteinCTerminus()
+        {
+            int missedClevages = Protease.Trypsin.MissedCleavages("KEEEEEE");
+
+            Assert.AreEqual(1, missedClevages);
+        }
+
+        [Test]
+        public void MissedClevageOneNTerminalProteinNTerminus()
+        {
+            int missedClevages = Protease.LysN.MissedCleavages("EEEEEEEK");
+
+            Assert.AreEqual(1, missedClevages);
+        }
+
+        [Test]
         public void TryspinNoProlineRuleDigestion()
         {
             List<Peptide> peptides = _proteinA.Digest(Protease.TrypsinNoProlineRule).ToList();

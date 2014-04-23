@@ -155,11 +155,11 @@ namespace CSMSL.Analysis.Quantitation
             return _channels.Values;
         }
 
-        public MassRange MassRange
+        public DoubleRange MassRange
         {
             get
             {
-                return new MassRange(LightestChannel.ReporterMass, HeaviestChannel.ReporterMass);
+                return new DoubleRange(LightestChannel.ReporterMass, HeaviestChannel.ReporterMass);
             }
         }
 

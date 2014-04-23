@@ -3,6 +3,7 @@ using Agilent.MassSpectrometry.DataAnalysis.Utilities;
 using CSMSL.IO;
 using CSMSL.Proteomics;
 using CSMSL.Spectral;
+using CSMSL;
 using System;
 using System.IO;
 using System.Text.RegularExpressions;
@@ -84,10 +85,10 @@ namespace CSMSL.IO.Agilent
             }
         }
 
-        public override MassSpectrum GetMzSpectrum(int spectrumNumber)
+        public override MZSpectrum GetMzSpectrum(int spectrumNumber)
         {
             IBDASpecData spectrum = _msdr.GetSpectrum(spectrumNumber - 1);
-            return new MassSpectrum(spectrum.XArray, spectrum.YArray);
+            return new MZSpectrum(spectrum.XArray, spectrum.YArray);
         }
 
         public override MZAnalyzerType GetMzAnalyzer(int spectrumNumber)
@@ -136,10 +137,10 @@ namespace CSMSL.IO.Agilent
             return DissociationType.CID;
         }
 
-        public override MassRange GetMzRange(int spectrumNumber)
+        public override MzRange GetMzRange(int spectrumNumber)
         {
             IBDASpecData spectrum = _msdr.GetSpectrum(spectrumNumber - 1);
-            return new MassRange(spectrum.MeasuredMassRange.Start, spectrum.MeasuredMassRange.End);
+            return new MzRange(spectrum.MeasuredMassRange.Start, spectrum.MeasuredMassRange.End);
         }
 
         public override short GetPrecusorCharge(int spectrumNumber, int msnOrder = 2)

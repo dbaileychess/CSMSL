@@ -2,6 +2,7 @@
 {
     public enum PeptideSpectralMatchScoreType
     {
+        OmssaEvalue = 3,
         EValue = 1,
         LowerIsBetter = 2,
         HigherIsBetter = -3,

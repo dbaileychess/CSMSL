@@ -30,7 +30,6 @@ namespace CSMSL.Chemistry
     /// </summary>
     public sealed class PeriodicTable
     {    
-
         /// <summary>
         /// The singleton instance of the periodic table
         /// </summary>

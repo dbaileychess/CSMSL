@@ -49,7 +49,7 @@ namespace CSMSL
         /// Checks if an item is below, within, or above this range 
         /// </summary>
         /// <param name="item">The item to check</param>
-        /// <returns>-1 if the item is below, 0 if within, or 1 if above</returns>
+        /// <returns>-1 if the item is below, 0 if within (inclusive), or 1 if above</returns>
         int CompareTo(T item);
 
         /// <summary>

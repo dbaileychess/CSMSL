@@ -20,14 +20,12 @@
 
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using MathNet.Numerics.Statistics;
 
 namespace CSMSL.Proteomics
 {
-    public class Peptide : AminoAcidPolymer
+    public class Peptide : AminoAcidPolymer, IAminoAcidSequence
     {
         public int StartResidue { get; set; }
 
@@ -35,11 +33,16 @@ namespace CSMSL.Proteomics
 
         public AminoAcidPolymer Parent { get; set; }
 
+        public AminoAcid PreviousAminoAcid { get; set; }
+        public AminoAcid NextAminoAcid { get; set; }
+
         public Peptide()
         {
             Parent = null;
             StartResidue = 0;
             EndResidue = 0;
+            PreviousAminoAcid = null;
+            NextAminoAcid = null;
         }
 
         public Peptide(AminoAcidPolymer aminoAcidPolymer, bool includeModifications = true)
@@ -48,6 +51,8 @@ namespace CSMSL.Proteomics
             Parent = aminoAcidPolymer;
             StartResidue = 0;
             EndResidue = StartResidue + Length - 1;
+            PreviousAminoAcid = null;
+            NextAminoAcid = aminoAcidPolymer.GetResidue(EndResidue + 1);
         }
 
         public Peptide(AminoAcidPolymer aminoAcidPolymer, int firstResidue, int length, bool includeModifications = true)
@@ -56,6 +61,8 @@ namespace CSMSL.Proteomics
             Parent = aminoAcidPolymer;
             StartResidue = firstResidue;
             EndResidue = firstResidue + length - 1;
+            PreviousAminoAcid = aminoAcidPolymer.GetResidue(StartResidue - 1);
+            NextAminoAcid = aminoAcidPolymer.GetResidue(EndResidue + 1);
         }
 
         public Peptide(AminoAcidPolymer aminoAcidPolymer)
@@ -73,11 +80,41 @@ namespace CSMSL.Proteomics
             Parent = parent;
             StartResidue = startResidue;
             EndResidue = startResidue + Length - 1;
+
+            if (parent != null)
+            {
+
+                if (StartResidue > 0)
+                    PreviousAminoAcid = parent.AminoAcids[StartResidue - 1];
+
+                if (EndResidue < parent.Length - 1)
+                    NextAminoAcid = parent.AminoAcids[EndResidue + 1];
+            }
         }
 
-        public IEnumerable<Peptide> GenerateIsoforms(params Modification[] modifications)
+        public IEnumerable<Peptide> GenerateIsotopologues()
         {
-            return GenerateIsoforms(this, modifications); // Just call the static method
+            var isotopologues = GetUniqueModifications<Isotopologue>();
+
+            foreach (Isotopologue isotopologue in isotopologues)
+            {
+                foreach (Modification mod in isotopologue.GetModifications())
+                {
+                    Peptide pep2 = new Peptide(this, true);
+                    pep2.ReplaceModification(isotopologue, mod);
+                    yield return pep2;
+                }
+            }
+        }        
+
+        public IEnumerable<Peptide> GenerateIsoforms()
+        {            
+            return GenerateIsoforms(this, false, GetModifications().Where(mod => mod != null).Cast<Modification>().ToArray()); 
+        }
+
+        public IEnumerable<Peptide> GenerateIsoforms(bool keepBaseModifications, params Modification[] modifications)
+        {
+            return GenerateIsoforms(this, keepBaseModifications, modifications); // Just call the static method
         }
 
         public Peptide GetSubPeptide(int firstResidue, int length)
@@ -90,7 +127,7 @@ namespace CSMSL.Proteomics
             return base.Equals(other);
         }
 
-        public static IEnumerable<Peptide> GenerateIsoforms(Peptide peptide, params Modification[] modifications)
+        public static IEnumerable<Peptide> GenerateIsoforms(Peptide peptide, bool keepBaseModifications, params Modification[] modifications)
         {
             // Get the number of modifications to this peptide
             int numberOfModifications = modifications.Length;
@@ -141,7 +178,7 @@ namespace CSMSL.Proteomics
                 // Create correct peptide mappings
                 foreach (Modification[] modArray in results)
                 {
-                    Peptide pep = new Peptide(peptide, true);
+                    Peptide pep = new Peptide(peptide, keepBaseModifications);
                     for (int i = 0; i < modArray.Length; i++)
                     {
                         var mod = modArray[i];
@@ -152,7 +189,7 @@ namespace CSMSL.Proteomics
                         {
                             pep.AddModification(mod, Terminus.N);
                         }
-                        else if (i == peptide.Length)
+                        else if (i > peptide.Length)
                         {
                             pep.AddModification(mod, Terminus.C);
                         }

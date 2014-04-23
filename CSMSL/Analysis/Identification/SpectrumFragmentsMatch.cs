@@ -8,9 +8,9 @@ using CSMSL.Proteomics;
 
 namespace CSMSL.Analysis.Identification
 {
-    public class SpectrumFragmentsMatch : IMassSpectrum
+    public class SpectrumFragmentsMatch
     {
-        public MassSpectrum MassSpectrum { get; private set; }
+        public Spectrum MassSpectrum { get; private set; }
 
         private readonly HashSet<FragmentSpectralMatch> _fragmentSpectralMatches;
 
@@ -24,6 +24,8 @@ namespace CSMSL.Analysis.Identification
             }
         }
 
+        public double PercentTIC { get; private set; }
+
         public bool Contains(Fragment fragment)
         {
             return _fragments.Contains(fragment);
@@ -35,7 +37,7 @@ namespace CSMSL.Analysis.Identification
             _fragments.Add(fsm.Fragment);
         }
 
-        public SpectrumFragmentsMatch(MassSpectrum spectrum)
+        public SpectrumFragmentsMatch(Spectrum spectrum)
         {
             MassSpectrum = spectrum;
             _fragmentSpectralMatches = new HashSet<FragmentSpectralMatch>();
@@ -47,23 +49,27 @@ namespace CSMSL.Analysis.Identification
             return string.Format("{0} Matches", Matches);
         }
 
-        public IEnumerable<Fragment> MatchFragments(IEnumerable<Fragment> fragments, MassTolerance tolerance, double percentCutoff, params int[] chargeStates)
-        {           
-            double basePeakInt = MassSpectrum.BasePeak.Intensity;
+        public IEnumerable<Fragment> MatchFragments(IEnumerable<Fragment> fragments, Tolerance tolerance, double percentCutoff, params int[] chargeStates)
+        {    
+            double basePeakInt = MassSpectrum.GetBasePeakIntensity();
             double lowThreshold = basePeakInt*percentCutoff;
+            double summedIntensity = 0;
+            double totalIntensity = MassSpectrum.GetTotalIonCurrent();
             foreach (Fragment fragment in fragments)
             {
                 foreach (int chargeState in chargeStates)
                 {
-                    double mz = fragment.ToMz(chargeState);
-                    var peak = MassSpectrum.GetClosestPeak(new MassRange(mz, tolerance));
+                    double mz = fragment.ToMz(chargeState);  
+                    var peak = MassSpectrum.GetClosestPeak(tolerance.GetRange(mz));
                     if (peak != null && peak.Intensity >= lowThreshold)
                     {
                         Add(new FragmentSpectralMatch(MassSpectrum, fragment, tolerance, chargeState));
                         yield return fragment;
+                        summedIntensity += peak.Intensity;
                     }
                 }
             }
+            PercentTIC = 100.0 * summedIntensity / totalIntensity;
         }
     }
 }

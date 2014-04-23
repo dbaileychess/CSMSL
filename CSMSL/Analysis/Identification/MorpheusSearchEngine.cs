@@ -46,7 +46,7 @@ namespace CSMSL.Analysis.Identification
             DefaultPsmScoreType = PeptideSpectralMatchScoreType.Morpheus;
         }
 
-        public override PeptideSpectralMatch Search(IMassSpectrum massSpectrum, Peptide peptide, FragmentTypes fragmentTypes, MassTolerance productMassTolerance)
+        public override PeptideSpectralMatch Search(IMassSpectrum massSpectrum, Peptide peptide, FragmentTypes fragmentTypes, Tolerance productMassTolerance)
         {
             double[] eMasses = massSpectrum.MassSpectrum.GetMasses();
             double[] eIntenisties = massSpectrum.MassSpectrum.GetIntensities();
@@ -60,7 +60,7 @@ namespace CSMSL.Analysis.Identification
             return psm;
         }
 
-        public override SortedMaxSizedContainer<PeptideSpectralMatch> Search(IMassSpectrum spectrum, IEnumerable<Peptide> peptides, FragmentTypes fragmentTypes, MassTolerance productMassTolerance)
+        public override SortedMaxSizedContainer<PeptideSpectralMatch> Search(IMassSpectrum spectrum, IEnumerable<Peptide> peptides, FragmentTypes fragmentTypes, Tolerance productMassTolerance)
         {
             SortedMaxSizedContainer<PeptideSpectralMatch> results = new SortedMaxSizedContainer<PeptideSpectralMatch>(MaxMatchesPerSpectrum);
 
@@ -141,7 +141,7 @@ namespace CSMSL.Analysis.Identification
         /// <param name="productTolerance">The product mass tolerance</param>
         /// <param name="tic">The total ion current of the experimental peaks</param>
         /// <returns></returns>
-        private double Search(double[] eMasses, double[] eIntenisties, double[] tMasses, MassTolerance productTolerance, double tic)
+        private double Search(double[] eMasses, double[] eIntenisties, double[] tMasses, Tolerance productTolerance, double tic)
         {
             double score = 0.0;
             double intensities = 0.0;
@@ -154,7 +154,7 @@ namespace CSMSL.Analysis.Identification
             {
                 foreach (double t in tMasses)
                 {
-                    MassRange range = productTolerance.GetMassRange(t);
+                    IRange<double> range = productTolerance.GetRange(t);
                     double minMZ = range.Minimum;
                     double maxMZ = range.Maximum;
                  
@@ -181,7 +181,7 @@ namespace CSMSL.Analysis.Identification
             {
                 foreach (double t in tMasses)
                 {
-                    MassRange range = productTolerance.GetMassRange(t);
+                    IRange<double> range = productTolerance.GetRange(t);
                     double minMZ = range.Minimum;
                     double maxMZ = range.Maximum;
                  

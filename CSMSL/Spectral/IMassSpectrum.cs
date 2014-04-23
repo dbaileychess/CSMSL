@@ -2,6 +2,6 @@
 {
     public interface IMassSpectrum
     {
-        MassSpectrum MassSpectrum { get; }
+        MZSpectrum MassSpectrum { get; }
     }
 }

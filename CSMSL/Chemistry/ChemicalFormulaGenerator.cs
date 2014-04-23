@@ -31,6 +31,16 @@ namespace CSMSL.Chemistry
             _minFormula = new ChemicalFormula();
             _maxFormula = new ChemicalFormula(maximumChemicalFormula);
         }
+
+        /// <summary>
+        /// Creates a generator with a maximum chemical formula allowed
+        /// </summary>
+        /// <param name="maximumChemicalFormula">The maximum chemical formula to generate</param>
+        public ChemicalFormulaGenerator(ChemicalFormula minimumChemicalFormula, ChemicalFormula maximumChemicalFormula)
+        {
+            _minFormula = new ChemicalFormula(minimumChemicalFormula);
+            _maxFormula = new ChemicalFormula(maximumChemicalFormula);
+        }
         
         public void AddConstraint(ChemicalFormula minimumChemicalFormula, ChemicalFormula maximumChemicalFormula)
         {
@@ -63,7 +73,7 @@ namespace CSMSL.Chemistry
 
         public IEnumerable<ChemicalFormula> AllFormulas()
         {
-            return FromMass(0, double.MaxValue);
+            return FromMass(0, int.MaxValue - 1);
         }
 
         public IEnumerable<ChemicalFormula> FromMass(IRange<double> range, int maxNumberOfResults = int.MaxValue)
@@ -116,7 +126,7 @@ namespace CSMSL.Chemistry
                     if (currentMass >= lowMass && currentMass <= highMass)
                     {
                         ChemicalFormula formula = new ChemicalFormula(currentFormula);
-                        if(formula.AtomCount != 0)
+                        if (formula.MonoisotopicMass != 0.0)
                             formulas.Add(formula);
                     }
                     currentMass -= count*massAtIndex;
@@ -130,7 +140,12 @@ namespace CSMSL.Chemistry
             {
                 throw new ArgumentException("The high mass must be greater than the low mass");
             }
-            
+
+            if (!_maxFormula.Contains(_minFormula))
+            {
+                throw new ArgumentException("The maximum formula must include the minimum formula");
+            }
+
             List<ChemicalFormula> returnFormulas = new List<ChemicalFormula>();
 
             // The minimum formula required for any return formulas
@@ -140,20 +155,18 @@ namespace CSMSL.Chemistry
 
             bool minFormulaExists = _minFormula.IsotopeCount != 0;
             int[] minValues = null;
+            double minFormulaMass = 0;
 
             if (minFormulaExists)
             {
                 minValues = _minFormula.GetIsotopes();
-                double minFormulaMass = _minFormula.MonoisotopicMass;
+                minFormulaMass = _minFormula.MonoisotopicMass;
 
                 correctedLowMass -= minFormulaMass;
                 correctedHighMass -= minFormulaMass;
 
                 // Add the minimum formula itself if it is within the bounds
-                if (minFormulaMass >= lowMass && minFormulaMass <= highMass)
-                {
-                    returnFormulas.Add(_minFormula);
-                }
+              
             }
         
             // The maximum formula allowed, represented in number of isotopes
@@ -184,6 +197,10 @@ namespace CSMSL.Chemistry
                 foreach (ChemicalFormula formula in returnFormulas)
                 {
                     formula.Add(_minFormula);
+                }
+                if (minFormulaMass >= lowMass && minFormulaMass <= highMass)
+                {
+                    returnFormulas.Add(new ChemicalFormula(_minFormula));
                 }
             }
 

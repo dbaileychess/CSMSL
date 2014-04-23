@@ -142,7 +142,7 @@ namespace CSMSL.IO.MzML
             throw new ArgumentNullException("Couldn't find precursor charge in spectrum number " + spectrumNumber + 1);
         }
 
-        public override MassRange GetMzRange(int spectrumNumber)
+        public override MzRange GetMzRange(int spectrumNumber)
         {
             spectrumNumber--;
             double high = double.NaN;
@@ -162,8 +162,8 @@ namespace CSMSL.IO.MzML
             if (double.IsNaN(low) || double.IsNaN(high))
             {
                 throw new ArgumentNullException("Could not determine isolation width for " + spectrumNumber + 1);
-            }            
-            return new MassRange(low, high);        
+            }
+            return new MzRange(low, high);        
         }
 
         public override double GetPrecusorMz(int spectrumNumber, int msnOrder = 2)
@@ -229,7 +229,7 @@ namespace CSMSL.IO.MzML
             }
         }
 
-        public override Spectral.MassSpectrum GetMzSpectrum(int spectrumNumber)
+        public override Spectral.MZSpectrum GetMzSpectrum(int spectrumNumber)
         {
             spectrumNumber--; // 0-based indexing
         
@@ -272,9 +272,9 @@ namespace CSMSL.IO.MzML
             if (masses == null || intensities == null)
             {
                 throw new InvalidDataException("Unable to find spectral data for spectrum number " + spectrumNumber + 1);
-            }           
-           
-            return new MassSpectrum(masses, intensities);
+            }
+
+            return new MZSpectrum(masses, intensities);
         }
 
         public override Spectral.Polarity GetPolarity(int spectrumNumber)

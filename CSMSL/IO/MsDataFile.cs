@@ -211,17 +211,17 @@ namespace CSMSL.IO
 
         public abstract short GetPrecusorCharge(int spectrumNumber, int msnOrder = 2);
 
-        public abstract MassRange GetMzRange(int spectrumNumber);
+        public abstract MzRange GetMzRange(int spectrumNumber);
 
         public abstract double GetPrecusorMz(int spectrumNumber, int msnOrder = 2);
         
         public abstract double GetIsolationWidth(int spectrumNumber, int msnOrder = 2);
 
-        public virtual MassRange GetIsolationRange(int spectrumNumber, int msnOrder = 2)
+        public virtual MzRange GetIsolationRange(int spectrumNumber, int msnOrder = 2)
         {
             double precursormz = GetPrecusorMz(spectrumNumber, msnOrder);
             double halfWidth = GetIsolationWidth(spectrumNumber, msnOrder) / 2;
-            return new MassRange(precursormz - halfWidth, precursormz + halfWidth);
+            return new MzRange(precursormz - halfWidth, precursormz + halfWidth);
         }
 
         public virtual IEnumerable<MSDataScan> GetMsScans()
@@ -237,6 +237,21 @@ namespace CSMSL.IO
             }
         }
 
+        public virtual IEnumerable<MSDataScan> GetMsScans(double firstRT, double lastRT)
+        {
+            int spectrumNumber = GetSpectrumNumber(firstRT - 0.0000001);         
+            while (spectrumNumber <= LastSpectrumNumber)
+            {
+                MSDataScan scan = GetMsScan(spectrumNumber++);
+                double rt = scan.RetentionTime;
+                if (rt < firstRT)
+                    continue;
+                else if (rt > lastRT)
+                    yield break;
+                yield return scan;
+            }
+        }
+
         public virtual IEnumerable<MSDataScan> GetMsScans(IRange<int> range)
         {
             return GetMsScans(range.Minimum, range.Maximum);
@@ -244,7 +259,12 @@ namespace CSMSL.IO
 
         public abstract MZAnalyzerType GetMzAnalyzer(int spectrumNumber);
 
-        public abstract MassSpectrum GetMzSpectrum(int spectrumNumber);
+        public abstract MZSpectrum GetMzSpectrum(int spectrumNumber);
+
+        public virtual Spectrum GetReadOnlyMZSpectrum(int spectrumNumber, bool centroid)
+        {
+            return GetMzSpectrum(spectrumNumber).ToReadOnlySpectrum();
+        }
 
         public abstract Polarity GetPolarity(int spectrumNumber);
 
@@ -253,6 +273,11 @@ namespace CSMSL.IO
         public abstract double GetInjectionTime(int spectrumNumber);
 
         public abstract double GetResolution(int spectrumNumber);
+
+        public virtual string GetBase64Spectrum(int spectrumNumber, bool zlibCompressed = false)
+        {
+            return GetMzSpectrum(spectrumNumber).ToReadOnlySpectrum().ToBase64String(zlibCompressed);
+        }
 
         public abstract int GetSpectrumNumber(double retentionTime);     
 
@@ -273,6 +298,7 @@ namespace CSMSL.IO
 
         protected abstract int GetLastSpectrumNumber();
 
+        
        
     }
 }

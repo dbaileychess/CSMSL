@@ -43,7 +43,7 @@ namespace CSMSL.Proteomics
           {FragmentTypes.zdot, new ChemicalFormula("N-1H-1")},
         };
 
-        public Fragment(FragmentTypes type, int number, double monoisotopicMass, AminoAcidPolymer parent, IEnumerable<IMass> mods = null)
+        public Fragment(FragmentTypes type, int number, double monoisotopicMass, AminoAcidPolymer parent, IEnumerable<IMass> mods = null, string descrip = null)
         {
             Type = type;
             Number = number;
@@ -51,7 +51,10 @@ namespace CSMSL.Proteomics
             MonoisotopicMass = monoisotopicMass + FragmentIonCaps[type].MonoisotopicMass;
             if(mods != null) 
                 Modifications = new List<IMass>(mods);
+            Description = descrip;
         }
+
+        public string Description { get; private set; }
 
         public List<IMass> Modifications;
      
@@ -65,7 +68,9 @@ namespace CSMSL.Proteomics
 
         public override string ToString()
         {
-            return string.Format("{0}{1}", Enum.GetName(typeof(FragmentTypes), Type), Number);
+            if(string.IsNullOrEmpty(Description))
+                return string.Format("{0}{1}", Enum.GetName(typeof(FragmentTypes), Type), Number);
+            return string.Format("{0}{1}{2}", Enum.GetName(typeof(FragmentTypes), Type), Number, Description);
         }
 
         public override int GetHashCode()

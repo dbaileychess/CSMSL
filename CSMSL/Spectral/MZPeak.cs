@@ -44,7 +44,7 @@ namespace CSMSL.Spectral
 
         public override string ToString()
         {
-            return string.Format("({0:G5},{1:G5})", MZ, Intensity);
+            return string.Format("({0:F4},{1:G5})", MZ, Intensity);
         }        
                 
         public int CompareTo(double other)
@@ -54,6 +54,8 @@ namespace CSMSL.Spectral
 
         public int CompareTo(IPeak other)
         {
+            if (other == null)
+                return 1;
             return MZ.CompareTo(other.X);
         }
 

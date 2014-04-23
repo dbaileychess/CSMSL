@@ -5,15 +5,15 @@ using CSMSL.Proteomics;
 
 namespace CSMSL.Analysis.Identification
 {
-    public class FragmentSpectralMatch : IMassSpectrum, IMass,  IEquatable<FragmentSpectralMatch>
+    public class FragmentSpectralMatch : IMass,  IEquatable<FragmentSpectralMatch>
     {
-        public MassSpectrum MassSpectrum { get; private set; }
+        public Spectrum MassSpectrum { get; private set; }
 
         public Fragment Fragment { get; private set; }
 
         public int Charge { get; private set; }
 
-        public MassTolerance Tolerance { get; private set; }
+        public Tolerance Tolerance { get; private set; }
         
         public double MonoisotopicMass
         {
@@ -23,7 +23,7 @@ namespace CSMSL.Analysis.Identification
             }
         }
 
-        public FragmentSpectralMatch(MassSpectrum spectrum, Fragment fragment, MassTolerance tolerance, int charge = 1)
+        public FragmentSpectralMatch(Spectrum spectrum, Fragment fragment, Tolerance tolerance, int charge = 1)
         {
             MassSpectrum = spectrum;
             Fragment = fragment;

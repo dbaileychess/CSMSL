@@ -14,6 +14,7 @@ namespace CSMSL.Tests
         {
             var a = new Range<int>(5, 7);
             var b = new Range<int>(0, 10);
+          
             Assert.IsTrue(a.IsSubRange(b));
         }
 
@@ -22,6 +23,7 @@ namespace CSMSL.Tests
         {
             var a = new Range<int>(5, 7);
             var b = new Range<int>(0, 10);
+
             Assert.IsFalse(b.IsSubRange(a));
         }
 
@@ -137,25 +139,34 @@ namespace CSMSL.Tests
         [Test]
         public void RangeCompareToBelow()
         {
-            var range1 = new Range<int>(3, 10);
+            var range = new Range<int>(3, 10);            
+            int value = 1;
 
-            Assert.AreEqual(-1, range1.CompareTo(1));
+            int comp = range.CompareTo(value);
+
+            Assert.AreEqual(-1, comp);
         }
 
         [Test]
         public void RangeCompareToWithin()
         {
-            var range1 = new Range<int>(3, 10);
+            var range = new Range<int>(3, 10);
+            int value = 5;
 
-            Assert.AreEqual(0, range1.CompareTo(5));
+            int comp = range.CompareTo(value);
+
+            Assert.AreEqual(0, comp);
         }
 
         [Test]
         public void RangeCompareToAbove()
         {
-            var range1 = new Range<int>(3, 10);
+            var range = new Range<int>(3, 10);
+            int value = 12;
 
-            Assert.AreEqual(1, range1.CompareTo(12));
+            int comp = range.CompareTo(value);
+
+            Assert.AreEqual(1, comp);
         }
 
         [Test]
@@ -185,7 +196,7 @@ namespace CSMSL.Tests
         [Test]
         public void MassRangeFromDAWidth()
         {
-            var range1 = new MassRange(10, new MassTolerance(MassToleranceType.DA, 4));
+            var range1 = new DoubleRange(10, new Tolerance(ToleranceType.DA, 4));
 
             Assert.AreEqual(4, range1.Width);
         }
@@ -193,7 +204,7 @@ namespace CSMSL.Tests
         [Test]
         public void MassRangeFromDAMean()
         {
-            var range1 = new MassRange(10, new MassTolerance(MassToleranceType.DA, 4));
+            var range1 = new DoubleRange(10, new Tolerance(ToleranceType.DA, 4));
            
             Assert.AreEqual(10, range1.Mean);
         }
@@ -201,7 +212,7 @@ namespace CSMSL.Tests
         [Test]
         public void MassRangeFromDAMin()
         {
-            var range1 = new MassRange(10, new MassTolerance(MassToleranceType.DA, 4));
+            var range1 = new DoubleRange(10, new Tolerance(ToleranceType.DA, 4));
 
             Assert.AreEqual(8, range1.Minimum);
         }
@@ -209,7 +220,7 @@ namespace CSMSL.Tests
         [Test]
         public void MassRangeFromDAMax()
         {
-            var range1 = new MassRange(10, new MassTolerance(MassToleranceType.DA, 4));
+            var range1 = new DoubleRange(10, new Tolerance(ToleranceType.DA, 4));
 
             Assert.AreEqual(12, range1.Maximum);
         }
@@ -217,7 +228,7 @@ namespace CSMSL.Tests
         [Test]
         public void MassRangeFromDANullMean()
         {
-            var range1 = new MassRange(10, null);
+            var range1 = new DoubleRange(10, null);
 
             Assert.AreEqual(10, range1.Mean);
         }
@@ -225,7 +236,7 @@ namespace CSMSL.Tests
         [Test]
         public void MassRangeFromDANullWidth()
         {
-            var range1 = new MassRange(10, null);
+            var range1 = new DoubleRange(10, null);
 
             Assert.AreEqual(0, range1.Width);
         }
@@ -233,7 +244,7 @@ namespace CSMSL.Tests
         [Test]
         public void MassRangeFromDANullMin()
         {
-            var range1 = new MassRange(10, null);
+            var range1 = new DoubleRange(10, null);
 
             Assert.AreEqual(10, range1.Minimum);
         }
@@ -241,7 +252,7 @@ namespace CSMSL.Tests
         [Test]
         public void MassRangeFromDANullMax()
         {
-            var range1 = new MassRange(10, null);
+            var range1 = new DoubleRange(10, null);
 
             Assert.AreEqual(10, range1.Maximum);
         }
@@ -249,8 +260,8 @@ namespace CSMSL.Tests
         [Test]
         public void MassRangeFromDANegative()
         {
-            var range1 = new MassRange(10, new MassTolerance(MassToleranceType.DA, 4));
-            var range2 = new MassRange(10, new MassTolerance(MassToleranceType.DA, -4));
+            var range1 = new DoubleRange(10, new Tolerance(ToleranceType.DA, 4));
+            var range2 = new DoubleRange(10, new Tolerance(ToleranceType.DA, -4));
 
             Assert.AreEqual(range1, range2);
         }

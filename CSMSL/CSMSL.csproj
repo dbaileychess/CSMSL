@@ -133,8 +133,12 @@
       <DependentUpon>Uniprot.xsd</DependentUpon>
     </Compile>
     <Compile Include="IO\UniProtXML.cs" />
+    <Compile Include="DoubleRange.cs" />
     <Compile Include="MassRange.cs" />
-    <Compile Include="MassToleranceType.cs" />
+    <Compile Include="MzRange.cs" />
+    <Compile Include="Proteomics\Isotopologue.cs" />
+    <Compile Include="Spectral\ISpectrumTime.cs" />
+    <Compile Include="ToleranceType.cs" />
     <Compile Include="Proteomics\DissociationType.cs" />
     <Compile Include="Proteomics\FragmentCollection.cs" />
     <Compile Include="Proteomics\IAminoAcid.cs" />
@@ -157,21 +161,26 @@
     <Compile Include="Proteomics\Protein.cs" />
     <Compile Include="Proteomics\Terminus.cs" />
     <Compile Include="Range.cs" />
-    <Compile Include="MassTolerance.cs" />
+    <Compile Include="Tolerance.cs" />
     <Compile Include="Spectral\Chromatogram.cs" />
+    <Compile Include="Spectral\Chromatogram`1.cs" />
     <Compile Include="Spectral\ChromatographicPeak.cs" />
+    <Compile Include="Spectral\ISpectrum.cs" />
+    <Compile Include="Spectral\MassRangeChromatogram.cs" />
+    <Compile Include="Spectral\Spectrum.cs" />
     <Compile Include="Spectral\ILabeledPeak.cs" />
     <Compile Include="Spectral\IMassSpectrum.cs" />
     <Compile Include="Spectral\IPeak.cs" />
-    <Compile Include="Spectral\MassSpectrum.cs" />
+    <Compile Include="Spectral\MZSpectrum.cs" />
     <Compile Include="Spectral\MSDataScan.cs" />
     <Compile Include="Spectral\MsnDataScan.cs" />
     <Compile Include="Spectral\MZAnalyzerType.cs" />
     <Compile Include="Spectral\MZPeak.cs" />
     <Compile Include="Spectral\Polarity.cs" />
-    <Compile Include="Spectral\Spectrum.cs" />
+    <Compile Include="Spectral\Spectrum`1.cs" />
     <Compile Include="Util\Collections\BinaryTree.cs" />
     <Compile Include="Util\Collections\BinaryTreeNode.cs" />
+    <Compile Include="Util\Collections\SortableBindingList.cs" />
     <Compile Include="Util\Collections\SortedMaxSizedContainer.cs" />
     <Compile Include="Util\Combinatorics.cs" />
     <Compile Include="Util\LinearRegression.cs" />
