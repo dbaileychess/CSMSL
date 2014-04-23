@@ -62,7 +62,7 @@ namespace CSMSL.Examples
         private static void StartExamples()
         {
             // Examples coding  
-
+            
             //ChemicalFormulaExamples();
             //PeptideExamples();
             //ChemicalFormulaGeneratorExample();
@@ -78,6 +78,9 @@ namespace CSMSL.Examples
 
             // Example TMT 6-plex quantitation
             //TMT6plexExample.Start();
+
+            //Example Isotopologue
+            //IsotopologueExample();
 
             // Example IO
             //MsDataFileExamples.Start();
@@ -97,6 +100,33 @@ namespace CSMSL.Examples
             //PepXmlExamples.ReadPepXml();
 
             MzIdentMLExamples.ReadMzIdentML();
+        }
+
+        private static void IsotopologueExample()
+        {
+            Isotopologue iso1 = new Isotopologue("One", ModificationSites.K);
+            Isotopologue iso2 = new Isotopologue("Two", ModificationSites.R);
+            Isotopologue iso3 = new Isotopologue("Three", ModificationSites.E);
+
+            iso1.AddModification("C2", "1C2");
+            iso1.AddModification("C3", "1C3");
+
+            iso2.AddModification("C4", "2C4");
+            iso2.AddModification("C5", "2C5");
+
+            iso3.AddModification("C6", "3C6");
+            iso3.AddModification("C7", "3C7");
+            iso3.AddModification("C8", "3C8");
+
+            Peptide peptide = new Peptide("DEREK");
+            peptide.SetModification(iso1);
+            peptide.SetModification(iso2);
+            peptide.SetModification(iso3);
+
+            foreach (var iso in peptide.GenerateIsotopologues())
+            {
+                Console.WriteLine(iso +", "+iso.MonoisotopicMass);
+            }
         }
 
         private static void ChemicalFormulaGeneratorExample()

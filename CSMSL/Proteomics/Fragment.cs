@@ -66,6 +66,21 @@ namespace CSMSL.Proteomics
 
         public FragmentTypes Type { get; private set; }
 
+        public string GetSequence()
+        {
+            if (Parent == null)
+                return "";
+            string parentSeq = Parent.Sequence;
+            if (Type < FragmentTypes.x)
+            {
+                return parentSeq.Substring(0, Number);
+            }
+            else
+            {
+                return parentSeq.Substring(parentSeq.Length - Number, Number);
+            }
+        }
+
         public override string ToString()
         {
             if(string.IsNullOrEmpty(Description))
