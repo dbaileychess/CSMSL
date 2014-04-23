@@ -306,6 +306,24 @@ namespace CSMSL
             }
         }
     }
+
+    public static class MatrixExtension
+    {
+        public static double[,] Copy(this double[,] matrix)
+        {
+            int rows = matrix.GetLength(0);
+            int cols = matrix.GetLength(1);
+            double[,] newMatrix = new double[rows,cols];
+            for (int r = 0; r < rows; r++)
+            {
+                for (int c = 0; c < cols; c++)
+                {
+                    newMatrix[r, c] = matrix[r, c];
+                }
+            }
+            return newMatrix;
+        }
+    }
 }
 
 

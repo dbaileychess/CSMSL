@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 
 namespace CSMSL.Util
 {
@@ -89,6 +91,37 @@ namespace CSMSL.Util
         {
             // The difference of logs is the same as the log of the quotient log(a) - log(b) = log(a/b)
             return -10 * Math.Log10(CumBinom(n1, p, N) / CumBinom(n2, p, N));
+        }
+
+        public static IEnumerable<T[]> Combinations<T>(T[] input, int level)
+        {
+            if (input == null || input.Length == 0 || level < 1 || level > input.Length)
+                yield break;
+
+            int n = input.Length;
+
+            if (level == 1)
+            {
+                for (int i = 0; i < n; i++)
+                {
+                    yield return new T[] {input[i]};
+                }
+            }
+            else
+            {
+                for (int i = 0; i < n - level + 1; i++)
+                {
+                    var res = new T[level];
+                    for (int t = i, c = 0; t < i + level - 1; t++, c++)
+                        res[c] = input[t];
+                    for (int j = i + level - 1; j < n; j++)
+                    {
+                        res[level - 1] = input[j];
+                        yield return res;
+                    }
+                }
+            }
+
         }
     }
 }
