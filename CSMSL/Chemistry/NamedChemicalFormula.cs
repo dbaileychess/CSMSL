@@ -76,6 +76,11 @@ namespace CSMSL.Chemistry
             return mod;
         }
 
+        public static void ClearAllModifications()
+        {
+            _modifications.Clear();
+        }
+
         /// <summary>
         /// Gets a registered modification by its name
         /// </summary>
