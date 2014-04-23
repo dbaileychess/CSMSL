@@ -21,7 +21,7 @@ namespace CSMSL.Examples
      
             List<MSDataFile> exampleRawFiles = new List<MSDataFile>
                 {
-                    //new ThermoRawFile("Resources/ThermoRawFileMS1MS2.raw"),
+                    new ThermoRawFile("Resources/ThermoRawFileMS1MS2.raw"),
                     //new AgilentDDirectory(@"Resources\AgilentDDirectoryMS1MS2.d"),
                     //new WiffFile(@"Resources/Enolase_repeats_AQv1.4.2.wiff")
                     //new Mzml("Resources/ThermoRawFileMS1MS2_Profile.mzML"),
@@ -37,6 +37,8 @@ namespace CSMSL.Examples
                 foreach (MSDataScan scan in dataFile)
                 {
                     List<MZPeak> peaks;
+                    var readonlySpectrum = scan.GetReadOnlySpectrum();
+                    Console.WriteLine(readonlySpectrum.Count);
                     scan.MassSpectrum.TryGetPeaks(500, 510, out peaks);
                     //Console.WriteLine(peaks.Count);
                     Console.WriteLine("{0,-4} {1,3} {2,-6:F4} {3,-5} {4,7} {5,-10} {6}",

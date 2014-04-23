@@ -37,7 +37,7 @@ namespace CSMSL
         public Range(T minimum, T maximum)
         {
             if (maximum.CompareTo(minimum) < 0)
-                throw new ArgumentException(minimum + " > " + maximum + " unable to create negative ranges");
+                throw new ArgumentException(minimum + " > " + maximum + ", unable to create negative ranges.");
 
             Minimum = minimum;
             Maximum = maximum;
@@ -74,6 +74,9 @@ namespace CSMSL
         /// <returns>True if this range is fully encloses the other range, false otherwise</returns>
         public bool IsSuperRange(IRange<T> other)
         {
+            if (other == null)
+                return false;
+
             return (Maximum.CompareTo(other.Maximum) >= 0 && Minimum.CompareTo(other.Minimum) <= 0);
         }
 
@@ -84,6 +87,9 @@ namespace CSMSL
         /// <returns>True if this range is fully enclosed by the other range, false otherwise</returns>
         public bool IsSubRange(IRange<T> other)
         {
+            if (other == null)
+                return false;
+
             return (Maximum.CompareTo(other.Maximum) <= 0 && Minimum.CompareTo(other.Minimum) >= 0);
         }
 
@@ -126,6 +132,9 @@ namespace CSMSL
         /// <returns>True if both the minimum and maximum values are equivalent, false otherwise</returns>
         public bool Equals(IRange<T> other)
         {
+            if (other == null)
+                return false;
+
             return Maximum.Equals(other.Maximum) && Minimum.Equals(other.Minimum);
         }
 

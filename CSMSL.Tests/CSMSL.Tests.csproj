@@ -93,6 +93,7 @@
     <Compile Include="Chemistry\ChemicalFormulaTestFixture.cs" />
     <Compile Include="Chemistry\MassTestFixture.cs" />
     <Compile Include="MassToleranceTestFixture.cs" />
+    <Compile Include="Proteomics\AminoAcidTestFixture.cs" />
     <Compile Include="Proteomics\FragmentTestFixture.cs" />
     <Compile Include="Proteomics\PeptideTestFixture.cs" />
     <Compile Include="Proteomics\ProteaseTestFixture.cs" />

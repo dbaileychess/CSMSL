@@ -89,6 +89,7 @@
     <Compile Include="Examples.cs" />
     <Compile Include="FileOutputExamples.cs" />
     <Compile Include="MsDataFileExamples.cs" />
+    <Compile Include="MzIdentMLExamples.cs" />
     <Compile Include="OmssaReader.cs" />
     <Compile Include="PepXmlExamples.cs" />
     <Compile Include="ProteinGroupingExample.cs" />
@@ -105,6 +106,10 @@
     <ProjectReference Include="..\CSMSL\IO\Agilent\Agilent.csproj">
       <Project>{83c27418-e85c-4270-b9d1-066b9ead5211}</Project>
       <Name>Agilent</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\CSMSL\IO\MzIdentML\MzIdentML.csproj">
+      <Project>{88488504-ba7f-41dd-9965-ae951810c612}</Project>
+      <Name>MzIdentML</Name>
     </ProjectReference>
     <ProjectReference Include="..\CSMSL\IO\MzML\MzML.csproj">
       <Project>{012434fb-88a9-4dec-b887-5f64c0b481d4}</Project>
@@ -204,6 +209,9 @@
     </Content>
     <Content Include="Resources\Enolase_repeats_AQv1.4.2.wiff.scan">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\omssa_example.mzid">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

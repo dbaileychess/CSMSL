@@ -1,4 +1,5 @@
 ﻿using CSMSL.Analysis.Identification;
+using CSMSL;
 using CSMSL.IO;
 using CSMSL.IO.Thermo;
 using CSMSL.Proteomics;
@@ -33,8 +34,8 @@ namespace CSMSL.Examples
             }
 
             MSSearchEngine engine = new MorpheusSearchEngine();
-            engine.PrecursorMassTolerance = MassTolerance.FromPPM(100);
-            engine.ProductMassTolerance = MassTolerance.FromPPM(10);
+            engine.PrecursorMassTolerance = Tolerance.FromPPM(100);
+            engine.ProductMassTolerance = Tolerance.FromPPM(10);
          
             engine.LoadPeptides(peptides);
             using (MSDataFile msDataFile = new ThermoRawFile("Resources/ThermoRawFileMS1MS2.raw"))

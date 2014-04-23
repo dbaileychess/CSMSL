@@ -126,7 +126,7 @@ namespace CSMSL.Chemistry
                     if (currentMass >= lowMass && currentMass <= highMass)
                     {
                         ChemicalFormula formula = new ChemicalFormula(currentFormula);
-                        if (formula.AtomCount != 0)
+                        if (formula.MonoisotopicMass != 0.0)
                             formulas.Add(formula);
                     }
                     currentMass -= count*massAtIndex;

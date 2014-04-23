@@ -1,126 +1,16 @@
 ﻿namespace CSMSL
 {
-    public class MassRange : Range<double>, IRange<double>
+    public class MassRange : DoubleRange, IRange<double>
     {
-        private double _mean;
-
-        private double _width;
-
         public MassRange()
-            : this(0, 0) { }
+            : base() { }
 
-        public MassRange(double minimum, double maximum)
-            : base(minimum, maximum)
-        {
-            _width = base.Maximum - base.Minimum;
-            _mean = (base.Maximum + base.Minimum) / 2.0;
-        }
+        public MassRange(double minMass, double maxMass)
+            : base(minMass, maxMass) { }
 
-        public MassRange(IRange<double> range)
-            : this(range.Minimum, range.Maximum) { }
+        public MassRange(double meanMass, Tolerance tolerance)
+            : base(meanMass, tolerance) { }
 
-        public MassRange(double mean, MassTolerance tolerance)
-        {
-            _mean = mean;
-            SetTolerance(tolerance);
-        }
-
-        private void SetTolerance(MassTolerance tolerance)
-        {
-            if (tolerance == null)
-            {
-                base.Minimum = base.Maximum = _mean;
-                _width = 0.0;
-                return;
-            }
-
-            double value = System.Math.Abs(tolerance.Value);
-
-            switch (tolerance.Type)
-            {
-                default:
-                    base.Minimum = _mean - value / 2.0;
-                    base.Maximum = _mean + value / 2.0;
-                    break;
-
-                case MassToleranceType.MMU:
-                    base.Minimum = _mean - value / 2000.0;
-                    base.Maximum = _mean + value / 2000.0;
-                    break;
-
-                case MassToleranceType.PPM:
-                    base.Minimum = _mean * (1 - (value / 2e6));
-                    base.Maximum = _mean * (1 + (value / 2e6));
-                    break;
-            }
-            _width = base.Maximum - base.Minimum;
-        }
-
-        public new double Maximum
-        {
-            get
-            {
-                return base.Maximum;
-            }
-            set
-            {
-                base.Maximum = value;
-                _width = base.Maximum - base.Minimum;
-                _mean = (base.Maximum + base.Minimum) / 2.0;
-            }
-        }
-
-        public double Mean
-        {
-            get
-            {
-                return _mean;
-            }
-            set
-            {
-                _mean = value;
-                base.Minimum = _mean - (_width / 2.0);
-                base.Maximum = _mean + (_width / 2.0);
-            }
-        }
-
-        public new double Minimum
-        {
-            get
-            {
-                return base.Minimum;
-            }
-            set
-            {
-                base.Minimum = value;
-                _width = base.Maximum - base.Minimum;
-                _mean = (base.Maximum + base.Minimum) / 2.0;
-            }
-        }
-
-        public double Width
-        {
-            get
-            {
-                return _width;
-            }
-            set
-            {
-                _width = value;
-                base.Minimum = _mean - (_width / 2.0);
-                base.Maximum = _mean + (_width / 2.0);
-            }
-        }
-
-        public static MassRange FromPPM(double mean, double ppmTolerance)
-        {
-            return new MassRange(mean, new MassTolerance(MassToleranceType.PPM, ppmTolerance));
-        }
-
-        public static MassRange FromDa(double mean, double daTolerance)
-        {
-            return new MassRange(mean, new MassTolerance(MassToleranceType.DA, daTolerance));
-        }
-
+     
     }
 }

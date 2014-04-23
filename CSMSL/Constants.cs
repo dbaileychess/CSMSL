@@ -54,6 +54,9 @@ namespace CSMSL
 
         public const double Carbon13 = 13.0033548378;
 
+        public const double C13C12Difference = Carbon13 - Carbon;
+
+       
         /// <summary>
         /// The mass of the most common isotope of hydrogen in atomic units (u)
         /// </summary>

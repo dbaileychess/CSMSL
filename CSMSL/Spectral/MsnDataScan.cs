@@ -35,8 +35,8 @@ namespace CSMSL.Spectral
             }
         }
 
-        private MassRange _isolationRange = null;
-        public MassRange IsolationRange
+        private DoubleRange _isolationRange = null;
+        public DoubleRange IsolationRange
         {
             get
             {

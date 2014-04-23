@@ -26,24 +26,30 @@ using System.Text.RegularExpressions;
 namespace CSMSL.Proteomics
 {
     public class Protease: IProtease
-    {        
+    {
+
+        #region Common Proteases
+
         public static Protease Trypsin {get; private set;}
         public static Protease TrypsinNoProlineRule { get; private set; }
         public static Protease GluC { get; private set; }
         public static Protease LysN { get; private set; }
         public static Protease ArgC { get; private set; }
         public static Protease Chymotrypsin { get; private set; }
+        public static Protease ChymotrypsinNoProlineRule { get; private set; }
         public static Protease LysC { get; private set; }
         public static Protease CNBr { get; private set; }
         public static Protease AspN { get; private set; }
         public static Protease Thermolysin { get; private set; }
         public static Protease None { get; private set; }
 
+        #endregion
+
         private static readonly Dictionary<string, Protease> Proteases;
 
         static Protease()
         {
-            Proteases = new Dictionary<string, Protease>(12);
+            Proteases = new Dictionary<string, Protease>(14);
 
             Trypsin = AddProtease("Trypsin", Terminus.C,"KR","P");
             TrypsinNoProlineRule = AddProtease("Trypsin No Proline Rule", Terminus.C, "KR");
@@ -51,11 +57,12 @@ namespace CSMSL.Proteomics
             LysN = AddProtease("LysN", Terminus.N,"K");
             ArgC = AddProtease("ArgC", Terminus.C, "R");
             Chymotrypsin = AddProtease("Chymotrypsin", Terminus.C, "YWFL","P");
+            ChymotrypsinNoProlineRule = AddProtease("Chymotrypsin No Proline Rule", Terminus.C, "YWFL");
             LysC = AddProtease("LysC", Terminus.C, "K");
             CNBr = AddProtease("CNBr", Terminus.C, "M");
             AspN = AddProtease("AspN", Terminus.N, "BD");
             Thermolysin = AddProtease("Thermolysin", Terminus.N, "AFILMV","DE");
-            None = AddProtease("None", Terminus.C,"ACDEFGHIKLMNPQRSTVWY");
+            None = AddProtease("None", Terminus.C,"ACDEFGHIKLMNPQRSTVWY");            
         }            
 
         public static IEnumerable<Protease> GetAllProteases()
@@ -93,6 +100,7 @@ namespace CSMSL.Proteomics
 
         public int MissedCleavages(string sequence)
         {
+            sequence = sequence.ToUpper();
             MatchCollection matches = _cleavageRegex.Matches(sequence);
 
             int count = matches.Count;
@@ -106,13 +114,14 @@ namespace CSMSL.Proteomics
                     return count - 1;
                 return count;
             }
+
             if (matches[count-1].Index == sequence.Length - 1)
                 return count - 1;
 
             return count;
         }
 
-        public Protease(string name, Terminus terminus, string cut, string nocut = "", string cleavePattern = "")
+        public Protease(string name, Terminus terminus, string cut, string nocut = "",string cleavePattern = "")
         {
             Name = name;
             Terminal = terminus;
@@ -121,7 +130,6 @@ namespace CSMSL.Proteomics
 
             if (string.IsNullOrEmpty(cleavePattern))
             {
-
                 StringBuilder constructedRegex = new StringBuilder();
 
                 // Add grouping [ ] if more than one residue

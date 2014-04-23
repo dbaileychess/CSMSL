@@ -181,18 +181,27 @@ namespace CSMSL.IO.OMSSA
             }
             return sb.ToString();
         }
-
-
+        
         public static IEnumerable<OmssaModification> GetAllModifications()
         {
             return Modifications.Values;
         }
+                       
+    }
 
-        //public override string ToString()
-        //{
-        //    if (UserMod)
-        //        return "*" + base.ToString();
-        //    return base.ToString();
-        //}
+    public static class OmssaModExtension
+    {
+        public static AminoAcidPolymer SetModifications(this AminoAcidPolymer aap, string mods) {
+            if (string.IsNullOrEmpty(mods))
+                 return aap;
+           
+            foreach (Tuple<Modification, int> modPosition in OmssaModification.ParseModificationLine(mods))
+            {
+                aap.SetModification(modPosition.Item1, modPosition.Item2);
+            }
+            
+            return aap;
+        }
+
     }
 }

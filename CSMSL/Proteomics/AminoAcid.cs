@@ -57,19 +57,31 @@ namespace CSMSL.Proteomics
 
         private static readonly AminoAcid[] ResiduesByLetter;
 
+        /// <summary>
+        /// Get the residue based on the residues's symbol
+        /// </summary>
+        /// <param name="symbol"></param>
+        /// <returns></returns>
         public static AminoAcid GetResidue(string symbol)
         {
-            return Residues[symbol];
+            return symbol.Length == 1 ?  ResiduesByLetter[symbol[0]] : Residues[symbol];
         }
 
+        /// <summary>
+        /// Gets the resdiue based on the residue's one-character symbol
+        /// </summary>
+        /// <param name="letter"></param>
+        /// <returns></returns>
         public static AminoAcid GetResidue(char letter)
         {
-            return Residues[letter.ToString(CultureInfo.InvariantCulture)];
+            return ResiduesByLetter[letter];
         }
-
 
         public static bool TryGetResidue(char letter, out AminoAcid residue)
         {
+            residue = null;
+            if (letter > 'z' || letter < 0)
+                return false;
             residue = ResiduesByLetter[letter];
             return residue != null;
         }
@@ -86,10 +98,13 @@ namespace CSMSL.Proteomics
             return residue;
         }
 
+        /// <summary>
+        /// Contruct the actual amino acids
+        /// </summary>
         static AminoAcid()
         {
             Residues = new Dictionary<string, AminoAcid>(66);
-            ResiduesByLetter = new AminoAcid[Int16.MaxValue];           
+            ResiduesByLetter = new AminoAcid['z' + 1];  //Make it big enough for all the Upper and Lower characters          
             Alanine = AddResidue("Alanine",'A',"Ala","C3H5NO" ,ModificationSites.A);
             Arginine = AddResidue("Arginine", 'R', "Arg", "C6H12N4O", ModificationSites.R);
             Asparagine = AddResidue("Asparagine", 'N', "Asn", "C4H6N2O2", ModificationSites.N);
@@ -118,7 +133,8 @@ namespace CSMSL.Proteomics
             Residues.Add(residue.Letter.ToString(CultureInfo.InvariantCulture), residue);
             Residues.Add(residue.Name, residue);
             Residues.Add(residue.Symbol, residue);
-            ResiduesByLetter[residue.Letter] = residue;            
+            ResiduesByLetter[residue.Letter] = residue;
+            ResiduesByLetter[Char.ToLower(residue.Letter)] = residue;           
         }
 
         internal AminoAcid(string name, char oneLetterAbbreviation, string threeLetterAbbreviation, string chemicalFormula, ModificationSites site)

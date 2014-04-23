@@ -477,7 +477,7 @@ namespace CSMSL.Analysis.Quantitation
             // MS2-based quant.
             foreach (PeptideSpectralMatch psm in PSMs)
             {
-                MassSpectrum spectrum = psm.Spectrum.MassSpectrum;
+                MZSpectrum spectrum = psm.Spectrum.MassSpectrum;
                 int charge = psm.Charge;             
 
                 foreach (Peptide peptide in QuantitationChannelSet.GetUniquePeptides(psm.Peptide))
@@ -486,7 +486,7 @@ namespace CSMSL.Analysis.Quantitation
                              
                     double mass = GetReporterMass(peptide, condition);
                     double mz = Mass.MzFromMass(mass,1);
-                    if (spectrum.TryGetPeaks(MassRange.FromDa(mz, 0.05), out peaks))
+                    if (spectrum.TryGetPeaks(DoubleRange.FromDa(mz, 0.05), out peaks))
                     {
                         MZPeak peak = peaks.OrderBy(p => p.Intensity).ToArray()[0];
                         QuantifiedPeak qpeak = new QuantifiedPeak(psm.Spectrum, peak.MZ, 1, peak.Intensity);

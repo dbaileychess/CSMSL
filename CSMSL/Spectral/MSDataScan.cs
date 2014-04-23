@@ -7,12 +7,12 @@ namespace CSMSL.Spectral
     {
         public MSDataFile ParentFile { get; private set; }
 
-        private MassSpectrum _massSpectrum = null;
+        private MZSpectrum _massSpectrum = null;
 
         /// <summary>
         /// The mass spectrum associated with the scan
         /// </summary>
-        public MassSpectrum MassSpectrum
+        public MZSpectrum MassSpectrum
         {
             get
             {
@@ -183,8 +183,8 @@ namespace CSMSL.Spectral
             }
         }
 
-        private MassRange _mzRange = null;
-        public MassRange MzRange
+        private DoubleRange _mzRange = null;
+        public DoubleRange MzRange
         {
             get
             {
@@ -228,6 +228,23 @@ namespace CSMSL.Spectral
             }
         }
 
+        private Spectrum _readOnlySpectrum = null;
+        public Spectrum GetReadOnlySpectrum()
+        {
+            if (_readOnlySpectrum == null)
+            {
+                if (ParentFile.IsOpen)
+                {
+                    _readOnlySpectrum = ParentFile.GetReadOnlyMZSpectrum(_spectrumNumber, true);
+                }
+                else
+                {
+                    throw new ArgumentException("The parent data file is closed");
+                }
+            }
+            return _readOnlySpectrum;
+        }
+
         public MSDataScan()
         {
 
@@ -258,6 +275,8 @@ namespace CSMSL.Spectral
         {
             if (ReferenceEquals(this, other)) return true;
             return SpectrumNumber.Equals(other.SpectrumNumber) && ParentFile.Equals(other.ParentFile);
-        }      
+        }
+
+       
     }
 }

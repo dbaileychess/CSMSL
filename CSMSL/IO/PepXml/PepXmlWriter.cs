@@ -93,7 +93,7 @@ namespace CSMSL.IO.PepXML
             spectrumNeutralMass = precursorNeutralMass;
         }
 
-        public void WritePSM(PeptideSpectralMatch psm, Protein protein, int hitRank = 1)
+        public void WritePSM(PeptideSpectralMatch psm, int hitRank = 1)
         {
             _writer.WriteStartElement("search_hit");
             _writer.WriteAttributeString("hit_rank", hitRank.ToString());
@@ -106,7 +106,7 @@ namespace CSMSL.IO.PepXML
             _writer.WriteAttributeString("calc_neutral_pep_mass", pepMonoMass.ToString());
             _writer.WriteAttributeString("massdiff", massDifference.ToString());
 
-            protein = psm.Peptide.Parent as Protein;
+            Protein protein = psm.Peptide.Parent as Protein;
 
             if(protein != null) {
                 _writer.WriteAttributeString("protein", protein.Description);

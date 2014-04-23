@@ -28,10 +28,12 @@ namespace CSMSL.Examples
 
                 writer.WriteSearchProtease(Protease.Trypsin, 3);
 
-                writer.WriteModification(NamedChemicalFormula.Acetyl, ModificationSites.K);
+                writer.WriteModification(NamedChemicalFormula.Acetyl, ModificationSites.K | ModificationSites.NPep);
+                writer.WriteModification(NamedChemicalFormula.Carbamidomethyl, ModificationSites.C);
+
+                writer.WriteModification(NamedChemicalFormula.Phosphorylation, ModificationSites.S | ModificationSites.T | ModificationSites.Y, false);
 
                 writer.SetCurrentStage(PepXmlWriter.Stage.Spectra, true);
-
 
                 writer.StartSpectrum(15, 1.234, 523.4324, 3);
 
@@ -40,13 +42,39 @@ namespace CSMSL.Examples
                 Protein protein = new Protein("", "Test Protein");
                 psm.Peptide = new Peptide("DEREK",protein);
                 psm.Charge = 3;
-                writer.WritePSM(psm, null);
+                writer.WritePSM(psm);
 
                 writer.EndSpectrum();
             }
 
         }
 
+        public static void ReadPepXml()
+        {
+            WritePepXml();
+            //string filePath = Path.Combine(Examples.BASE_DIRECTORY, "example.pepXML");
+            string filePath = @"E:\Desktop\test\27Nov2013_CEM_WellsProtein_CAD_filter.pep.xml";
+            Console.WriteLine("Reading from " + filePath);
+            using (PepXmlReader reader = new PepXmlReader(filePath))
+            {
+                Protease protease = reader.GetSampleProtease();
+                Console.WriteLine("Protease: " + protease);
+                Console.WriteLine();
+                List<Modification> fixedMods = reader.GetFixedModifications();
+                Console.WriteLine("==Fixed Modifications==");
+                foreach (Modification mod in fixedMods)
+                {
+                    Console.WriteLine("\t" + mod);
+                }
+                Console.WriteLine();
+                List<Modification> varMods = reader.GetVariableModifications();
+                Console.WriteLine("==Variable Modifications==");
+                foreach (Modification mod in varMods)
+                {
+                    Console.WriteLine("\t" + mod);
+                }
+            }
 
+        }
     }
 }

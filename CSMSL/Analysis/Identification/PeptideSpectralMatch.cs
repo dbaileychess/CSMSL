@@ -41,9 +41,9 @@ namespace CSMSL.Analysis.Identification
 
         public virtual double AdjustedIsolationMass { get; set; }
 
-        public virtual MassTolerance PrecursorMassError { get; set; }
+        public virtual Tolerance PrecursorMassError { get; set; }
 
-        public virtual MassTolerance CorrectedPrecursorMassError { get; set; }
+        public virtual Tolerance CorrectedPrecursorMassError { get; set; }
 
         double IMass.MonoisotopicMass
         {
@@ -73,7 +73,7 @@ namespace CSMSL.Analysis.Identification
             get { return Score; }
         }
 
-        MassSpectrum IMassSpectrum.MassSpectrum
+        MZSpectrum IMassSpectrum.MassSpectrum
         {
             get
             {

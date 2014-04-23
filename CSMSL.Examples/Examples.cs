@@ -62,16 +62,16 @@ namespace CSMSL.Examples
         private static void StartExamples()
         {
             // Examples coding  
-
+            
             //ChemicalFormulaExamples();
             //PeptideExamples();
-            ChemicalFormulaGeneratorExample();
+            //ChemicalFormulaGeneratorExample();
                         
             // Example Objects
             //VennDiagramExamples();
 
             // Example programs
-            //TrypticDigestion.Start(minLength: 5, maxLength: 50, protease:Protease.Trypsin);
+            //TrypticDigestion.Start(minLength: 5, maxLength: 50, protease:Protease.Trypsin, storeSequenceString: false);
 
             // Example Protein Grouping
             //ProteinGroupingExample.Start(Protease.Trypsin);
@@ -94,7 +94,9 @@ namespace CSMSL.Examples
             //Purity Correction
             //TMT6plexExample.PurityCorrection();
 
-            PepXmlExamples.WritePepXml();
+            //PepXmlExamples.ReadPepXml();
+
+            MzIdentMLExamples.ReadMzIdentML();
         }
 
         private static void ChemicalFormulaGeneratorExample()

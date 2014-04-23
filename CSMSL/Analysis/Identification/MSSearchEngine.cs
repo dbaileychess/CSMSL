@@ -8,9 +8,9 @@ namespace CSMSL.Analysis.Identification
 {
     public abstract class MSSearchEngine
     {
-        public MassTolerance PrecursorMassTolerance { get; set; }
+        public Tolerance PrecursorMassTolerance { get; set; }
 
-        public MassTolerance ProductMassTolerance { get; set; }
+        public Tolerance ProductMassTolerance { get; set; }
 
         protected List<Peptide> Peptides; 
 
@@ -32,14 +32,14 @@ namespace CSMSL.Analysis.Identification
             return Search(massSpectrum, peptide, DefaultFragmentType, ProductMassTolerance);
         }
 
-        public abstract PeptideSpectralMatch Search(IMassSpectrum massSpectrum, Peptide peptide, FragmentTypes fragmentTypes, MassTolerance productMassTolerance);
+        public abstract PeptideSpectralMatch Search(IMassSpectrum massSpectrum, Peptide peptide, FragmentTypes fragmentTypes, Tolerance productMassTolerance);
 
         public virtual SortedMaxSizedContainer<PeptideSpectralMatch> Search(IMassSpectrum massSpectrum, IEnumerable<Peptide> peptides)
         {
             return Search(massSpectrum, peptides, DefaultFragmentType, ProductMassTolerance);
         }
 
-        public virtual SortedMaxSizedContainer<PeptideSpectralMatch> Search(IMassSpectrum massSpectrum, IEnumerable<Peptide> peptides, FragmentTypes fragmentTypes, MassTolerance productMassTolerance)
+        public virtual SortedMaxSizedContainer<PeptideSpectralMatch> Search(IMassSpectrum massSpectrum, IEnumerable<Peptide> peptides, FragmentTypes fragmentTypes, Tolerance productMassTolerance)
         {
             SortedMaxSizedContainer<PeptideSpectralMatch> results = new SortedMaxSizedContainer<PeptideSpectralMatch>(MaxMatchesPerSpectrum);
 

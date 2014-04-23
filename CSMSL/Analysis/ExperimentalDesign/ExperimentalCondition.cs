@@ -13,7 +13,7 @@ namespace CSMSL.Analysis.ExperimentalDesign
 
         private HashSet<IQuantitationChannel> QuantChannels { get; set; }
 
-        public MassTolerance MassTolerance { get; set; }
+        public Tolerance Tolerance { get; set; }
 
         internal ExperimentalCondition(Sample sample, string name, string description)
         {

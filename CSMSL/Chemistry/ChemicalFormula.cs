@@ -61,7 +61,7 @@ namespace CSMSL.Chemistry
         private bool _isFormulaDirty;
 
         /// <summary>
-        /// Main data store the isotopes. 
+        /// Main data store, the isotopes. 
         /// <remarks>Acts as a dictionary where each isotope's UniqueID
         /// is the key (index) of this array. The array is front loaded to provide the most
         /// common elements first (C H N O P) to reduce memory footprint and provide quick
@@ -659,21 +659,23 @@ namespace CSMSL.Chemistry
         }
 
         #endregion
+             
 
         public override int GetHashCode()
-        {
+        {   
             if (_isotopes == null)
                 return 0;
 
-            int hCode = 7;
-            unchecked
+            int hCode = 17;
+           
+            for (int i = 0; i <= _largestIsotopeId; i++)
             {
-                for (int i = 0; i < _largestIsotopeId; i++)
+                unchecked
                 {
-                    hCode *= _isotopes[i] << (i + 1);
+                    hCode *= 23 + _isotopes[i];            
                 }
-                return hCode;
             }
+            return hCode;            
         }
 
         public override bool Equals(object obj)
@@ -696,6 +698,11 @@ namespace CSMSL.Chemistry
                     return false;
             }
             return true;
+        }
+   
+        public string GetUniqueStringIdentifier()
+        {
+            return string.Join(".", GetIsotopes());  
         }
                
         public override string ToString()
@@ -727,27 +734,27 @@ namespace CSMSL.Chemistry
             double monoMass = 0.0;
             double avgMass = 0.0;
            
-            HashSet<int> elements = new HashSet<int>();         
-
+            HashSet<int> elements = new HashSet<int>();
+                       
             // Loop over every possible isotope in this formula
             for (int i = 0; i <= _largestIsotopeId; i++)
-            {  
+            {
                 int count = _isotopes[i];
 
                 // Skip zero isotopes
                 if (count == 0)
-                    continue;
-       
+                    continue;                 
+
                 Isotope isotope = Element.PeriodicTable[i];
                 Element element = isotope.Element;
                 elements.Add(element.AtomicNumber);
-                
+
                 isotopeCount++;
                 atomCount += count;
 
                 monoMass += count * isotope.AtomicMass;
-                avgMass += count * element.AverageMass; 
-            }
+                avgMass += count * element.AverageMass;
+            }            
 
             // Set the instance variables to their new values
             _elementCount = elements.Count;
