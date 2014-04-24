@@ -810,7 +810,37 @@ namespace CSMSL.Proteomics
         #endregion
 
         #region ChemicalFormula
-       
+
+        public ChemicalFormula GetChemicalFormula()
+        {
+            var formula = new ChemicalFormula();
+
+            // Handle Modifications
+            for (int i = 0; i < Length + 2; i++)
+            {
+                IChemicalFormula chemMod = _modifications[i] as IChemicalFormula;
+              
+                if (chemMod == null)
+                    continue;
+
+                formula.Add(chemMod.ChemicalFormula);
+            }
+
+            // Handle N-Terminus
+            formula.Add(NTerminus.ChemicalFormula);
+
+            // Handle C-Terminus
+            formula.Add(CTerminus.ChemicalFormula);
+
+            // Handle Amino Acid Residues
+            for (int i = 0; i < Length; i++)
+            {
+                formula.Add(_aminoAcids[i].ChemicalFormula);
+            }
+
+            return formula;
+        }
+
         /// <summary>
         /// Try and get the chemical formula for the whole amino acid polymer. Modifications
         /// may not always be of IChemicalFormula and this method will return false if any
