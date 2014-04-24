@@ -9,6 +9,7 @@ namespace CSMSL.Analysis.Quantitation
     public class IsobaricTagPurityCorrection
     {
         private readonly Matrix _purityMatrix;
+        //private readonly double[,] _purityMatrix;
         private int _rows;
 
         private IsobaricTagPurityCorrection(Matrix matrix)
@@ -20,14 +21,14 @@ namespace CSMSL.Analysis.Quantitation
         public double[,] GetMatrix()
         {
             return _purityMatrix.Storage.ToArray();
+            //return _purityMatrix;
         }
 
         public double Determinant()
         {
             return _purityMatrix.Determinant();
         }
-
-
+        
         public double[] ApplyPurityCorrection(IEnumerable<double> rawData)
         {
             return ApplyPurityCorrection(rawData.ToArray());

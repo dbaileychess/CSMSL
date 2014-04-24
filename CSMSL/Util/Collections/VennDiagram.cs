@@ -18,7 +18,7 @@
 //  along with CSMSL.  If not, see <http://www.gnu.org/licenses/>.        /
 ///////////////////////////////////////////////////////////////////////////
 
-using Combinatorics.Collections;
+using System.Linq;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -102,8 +102,10 @@ namespace CSMSL.Util.Collections
             //_subSets[Count] = new VennSet<T>("Total Unique");
             for (int depth = 1; depth <= count; depth++)
             {
-                Combinations<VennSet<T>> combinations = new Combinations<VennSet<T>>(diagram._inputSets, depth);
-                foreach (IList<VennSet<T>> combo_sets in combinations)
+                // Removed This as this was the only code i needed from the third party: Combinatorics.Collections;
+                //Combinations<VennSet<T>> combinations = new Combinations<VennSet<T>>(diagram._inputSets, depth);
+                //foreach (IList<VennSet<T>> combo_sets in combinations)
+                foreach(VennSet<T>[] combo_sets in Combinatorics.Combinations(diagram._inputSets, depth))
                 {
                     HashSet<T> baseSet = new HashSet<T>(combo_sets[0]);
                     StringBuilder sb = new StringBuilder();

@@ -25,7 +25,7 @@ using System.Linq;
 
 namespace CSMSL.Proteomics
 {
-    public class Peptide : AminoAcidPolymer, IAminoAcidSequence
+    public class Peptide : AminoAcidPolymer
     {
         public int StartResidue { get; set; }
 
@@ -94,17 +94,43 @@ namespace CSMSL.Proteomics
 
         public IEnumerable<Peptide> GenerateIsotopologues()
         {
-            var isotopologues = GetUniqueModifications<Isotopologue>();
+            // Get all the modifications that are isotopologues
+            var isotopologues = GetUniqueModifications<Isotopologue>().ToList();
 
-            foreach (Isotopologue isotopologue in isotopologues)
+            // Base condition, no more isotopologues to make, so just return this
+            if (isotopologues.Count < 1)
             {
-                foreach (Modification mod in isotopologue.GetModifications())
+                yield return this;
+                yield break;
+            } 
+          
+            // Grab the the first isotopologue
+            Isotopologue isotopologue = isotopologues[0];
+
+            // Loop over each modification in the isotopologue
+            foreach (Modification mod in isotopologue.GetModifications())
+            {
+                // Create a clone of the peptide, cloning modifications as well.
+                Peptide peptide = new Peptide(this, true);
+
+                // Replace the base isotopologue mod with the specific version
+                peptide.ReplaceModification(isotopologue, mod);
+
+                // There were more than one isotopologue, so we must go deeper
+                if (isotopologues.Count > 1)
                 {
-                    Peptide pep2 = new Peptide(this, true);
-                    pep2.ReplaceModification(isotopologue, mod);
-                    yield return pep2;
+                    foreach (var subpeptide in peptide.GenerateIsotopologues())
+                    {
+                        yield return subpeptide;
+                    }
+                }
+                else
+                {
+                    // Return this peptide
+                    yield return peptide;
                 }
             }
+            
         }        
 
         public IEnumerable<Peptide> GenerateIsoforms()
@@ -151,9 +177,9 @@ namespace CSMSL.Proteomics
 
                 // Get all the unique modified sites for all the mods
                 Dictionary<Modification, List<int>> allowedSites = new Dictionary<Modification, List<int>>();
-                List<int> sites = null;
                 foreach (Modification mod in modifications)
                 {
+                    List<int> sites;
                     if (!allowedSites.TryGetValue(mod, out sites))
                     {
                         allowedSites.Add(mod, mod.GetModifiableSites(peptide).ToList());
@@ -204,23 +230,23 @@ namespace CSMSL.Proteomics
             }
         }
 
-        private static Modification[] GenIsoHelper(HashSet<Modification[]> results, Modification[] modArray, Modification[] mods, Dictionary<Modification, List<int>> allowedSites, int mod_index, int site_index)
+        private static Modification[] GenIsoHelper(ISet<Modification[]> results, Modification[] modArray, Modification[] mods, Dictionary<Modification, List<int>> allowedSites, int modIndex, int siteIndex)
         {
-            if (mod_index >= mods.Count())
+            if (modIndex >= mods.Count())
             {
                 return modArray; // Out of mods
             }
 
             // Get the current mod under consideration
-            Modification currentMod = mods[mod_index];
+            Modification currentMod = mods[modIndex];
 
             // Retrieve the list of sites that it can modify
             List<int> sites = allowedSites[currentMod];
 
-            while (site_index < sites.Count())
+            while (siteIndex < sites.Count)
             {
                 // Get the index to the peptide where the mod would occur
-                int index = sites[site_index];
+                int index = sites[siteIndex];
 
                 // Check to see if this site is already modded
                 if (modArray[index] == null)
@@ -229,13 +255,13 @@ namespace CSMSL.Proteomics
                     modArray[index] = currentMod;
 
                     // Check to see if there are any more mods
-                    if (mod_index < mods.Count() - 1)
+                    if (modIndex < mods.Count() - 1)
                     {
                         // Still have more mods to add so start so the new mod at the beginning of it's sites
-                        Modification[] templist = GenIsoHelper(results, modArray, mods, allowedSites, ++mod_index, 0);
+                        Modification[] templist = GenIsoHelper(results, modArray, mods, allowedSites, ++modIndex, 0);
 
                         // All done for this master level, go up a level
-                        mod_index--;
+                        modIndex--;
 
                         // Create a deep-copy clone
                         Array.Copy(templist, modArray, templist.Length);
@@ -254,7 +280,7 @@ namespace CSMSL.Proteomics
                 }
 
                 // Go to the next site for this mod  
-                site_index++;
+                siteIndex++;
             }
 
             // All Done with this level

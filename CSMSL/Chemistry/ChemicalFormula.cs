@@ -704,6 +704,24 @@ namespace CSMSL.Chemistry
         {
             return string.Join(".", GetIsotopes());  
         }
+
+        public double[] GetIsotopicDistribution(int numberOfIsotopes = 3)
+        {
+            double[] distrubition = new double[numberOfIsotopes];
+
+            distrubition[0] = 1;
+            
+            // Number of C12 isotopes in this peptide
+            int numberOfCarbons = Count(PeriodicTable.Instance["C"][12]);
+            double coefficient = numberOfCarbons*PeriodicTable.Instance["C"][13].RelativeAbundance;
+
+            for (int i = 1; i < numberOfIsotopes; i++)
+            {
+                distrubition[i] = Math.Pow(coefficient, i) / Factorial(i);
+            }
+
+            return distrubition;
+        }
                
         public override string ToString()
         {
@@ -903,6 +921,21 @@ namespace CSMSL.Chemistry
         #endregion
 
         #region Statics
+        private static readonly int[] _factorials = { 1, 1, 2, 6, 24, 120, 720, 5040, 40320 };
+       
+        private static int Factorial(int n)
+        {
+            if (n < _factorials.Length)
+                return _factorials[n];
+
+            int start = _factorials.Length - 1;
+            int result = _factorials[start];
+            for (int i = start; i <= n; i++)
+            {
+                result = result * i;
+            }
+            return result;
+        }
 
         public static implicit operator ChemicalFormula(string sequence)
         {

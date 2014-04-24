@@ -7,15 +7,14 @@ namespace CSMSL.Proteomics
 {
     public class Isotopologue : Modification
     {
-        private SortedList<double, Modification> _modifications;
+        private readonly SortedList<double, Modification> _modifications;
 
         public Isotopologue(Modification modification)
             : this(modification, modification.Name) { }
 
         public Isotopologue(Modification modification, string name)
-            : base(modification)
+            : base(modification.MonoisotopicMass, name)
         {
-            Name = name;
             _modifications = new SortedList<double, Modification>();
             AddModification(modification);
         }
@@ -52,15 +51,15 @@ namespace CSMSL.Proteomics
             return _modifications.ContainsValue(modification);
         }
 
-        public IEnumerable<Peptide> GetUniquePeptides(Peptide peptide)
-        {
-            foreach (Modification mod in _modifications.Values)
-            {
-                Peptide pep2 = new Peptide(peptide, true);
-                pep2.SetModification(mod);
-                yield return pep2;
-            }
-        }
+        //public IEnumerable<Peptide> GetUniquePeptides(Peptide peptide)
+        //{
+        //    foreach (Modification mod in _modifications.Values)
+        //    {
+        //        Peptide pep2 = new Peptide(peptide, true);
+        //        pep2.SetModification(mod);
+        //        yield return pep2;
+        //    }
+        //}
 
         /// <summary>
         /// Calculate the expected spacings between a group of Peptides (channels) in Th
@@ -72,7 +71,7 @@ namespace CSMSL.Proteomics
         {
             if (peptides.Count <= 1)
             {
-                throw new ArgumentOutOfRangeException("Not enough peptides to calculate spacings");
+                throw new ArgumentOutOfRangeException("peptides", "Not enough peptides to calculate spacings");
             }
 
             // There is always 1 less spacings than peptides.
