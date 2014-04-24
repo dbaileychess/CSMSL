@@ -314,7 +314,7 @@ namespace CSMSL.Spectral
         {
             byte[] bytes = Convert.FromBase64String(base64string);
 
-            if (zlibCompressed)
+            if (bytes.IsCompressed())
             {
                 bytes = bytes.Decompress();    
             }

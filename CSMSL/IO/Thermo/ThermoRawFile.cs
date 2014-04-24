@@ -66,7 +66,7 @@ namespace CSMSL.IO.Thermo
             {               
                 _rawConnection.Close();
                 _rawConnection = null;
-            }
+            }            
             base.Dispose();
         }        
 
@@ -135,7 +135,7 @@ namespace CSMSL.IO.Thermo
             return value;
         }
 
-        private string GetScanFilter(int spectrumNumber)
+        public string GetScanFilter(int spectrumNumber)
         {
             string filter = null;
             _rawConnection.GetFilterForScanNum(spectrumNumber, ref filter);
@@ -434,5 +434,18 @@ namespace CSMSL.IO.Thermo
             return new Chromatogram(pvarArray);
         }
 
+
+        public IEnumerable<double> GetMsxValues(int spectrumNumber)
+        {
+            int numberMSX = -1;
+            _rawConnection.GetMSXMultiplexValueFromScanNum(spectrumNumber, ref numberMSX);
+            object data =null ;
+            _rawConnection.GetFullMSOrderPrecursorDataFromScanNum(spectrumNumber, 2, ref data);
+            for (int i = 0; i < numberMSX; i++)
+            {
+                //TODO
+            } 
+            yield break;
+        }
     }
 }
