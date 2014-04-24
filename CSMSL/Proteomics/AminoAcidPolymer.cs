@@ -676,10 +676,14 @@ namespace CSMSL.Proteomics
             if (oldMod == null)
                 throw new ArgumentException("Cannot replace a null modification");
 
+            // No need to replace identical mods
+            if (oldMod.Equals(newMod))
+                return 0;
+
             int count = 0;
             for (int i = 0; i < Length + 2; i++)
             {
-                if (!oldMod.Equals(_modifications[i]))
+                if (_modifications[i] != null && !oldMod.Equals(_modifications[i]))
                     continue;
 
                 ReplaceMod(i, newMod);

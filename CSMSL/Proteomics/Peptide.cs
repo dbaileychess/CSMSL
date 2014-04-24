@@ -130,11 +130,6 @@ namespace CSMSL.Proteomics
                     yield return peptide;
                 }
             }
-
-               
-            
-            
-        
             
         }        
 
