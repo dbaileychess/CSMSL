@@ -714,6 +714,7 @@ namespace CSMSL.Chemistry
             // Number of C12 isotopes in this peptide
             int numberOfCarbons = Count(PeriodicTable.Instance["C"][12]);
             double coefficient = numberOfCarbons*PeriodicTable.Instance["C"][13].RelativeAbundance;
+
             for (int i = 1; i < numberOfIsotopes; i++)
             {
                 distrubition[i] = Math.Pow(coefficient, i) / Factorial(i);

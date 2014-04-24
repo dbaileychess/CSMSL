@@ -683,7 +683,7 @@ namespace CSMSL.Proteomics
             int count = 0;
             for (int i = 0; i < Length + 2; i++)
             {
-                if (_modifications[i] != null && !oldMod.Equals(_modifications[i]))
+                if (_modifications[i] == null || !oldMod.Equals(_modifications[i]))
                     continue;
 
                 ReplaceMod(i, newMod);
