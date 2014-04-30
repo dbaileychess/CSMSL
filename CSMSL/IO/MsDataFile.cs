@@ -34,10 +34,10 @@ namespace CSMSL.IO
 
         protected MSDataFile(string filePath, MSDataFileType filetype = MSDataFileType.UnKnown)
         {
-            if (!File.Exists(filePath) && !Directory.Exists(filePath))
-            {
-                throw new IOException(string.Format("The MS data file {0} does not currently exist", filePath));
-            }
+            //if (!File.Exists(filePath) && !Directory.Exists(filePath))
+            //{
+            //    throw new IOException(string.Format("The MS data file {0} does not currently exist", filePath));
+            //}
             FilePath = filePath;
             FileType = filetype;
             _isOpen = false;

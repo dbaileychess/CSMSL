@@ -51,6 +51,17 @@ namespace CSMSL.Proteomics
             Sites = sites;
         }
 
+        //NWK Added 140428
+        public Modification(string chemicalFormula, string name, List<ModificationSites> sites)
+        {
+            MonoisotopicMass = new ChemicalFormula(chemicalFormula).MonoisotopicMass;
+            Name = name;
+            foreach (ModificationSites site in sites)
+            {
+                Sites.Set(char.Parse(site.ToString()));
+            }
+        }
+
         public override string ToString()
         {
             return Name;

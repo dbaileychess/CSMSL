@@ -60,19 +60,33 @@
             //}
         }
 
+        public double Maximum
+        {
+            get { return base.Maximum; }
+            set { base.Maximum = value; }
+           
+        }
+
+        public double Minimum
+        {
+            get { return base.Minimum; }
+            set { base.Minimum = value;  }
+        }
+
         public double Width
         {
             get
             {
                 return Maximum - Minimum;              
             }
-            //set
-            //{
-            //    double width = value;
-            //    double mean = Mean;
-            //    base.Minimum = mean - (width / 2.0);
-            //    base.Maximum = mean + (width / 2.0);
-            //}
+            set
+            {
+                // this.Width = value;
+                //    double width = value;
+                //    double mean = Mean;
+                //    base.Minimum = mean - (width / 2.0);
+                //    base.Maximum = mean + (width / 2.0);
+            }
         }
 
         public static DoubleRange FromPPM(double mean, double ppmTolerance)

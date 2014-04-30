@@ -4,7 +4,6 @@ using CSMSL.Chemistry;
 using CSMSL.Proteomics;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.IO.Compression;
 using CSMSL.Spectral;
 
@@ -50,6 +49,21 @@ namespace CSMSL
                 sites |= aa.Site;
             }
             return sites;
+        }
+
+        public static IEnumerable<ModificationSites> GetActiveSites(this ModificationSites sites)
+        {
+            foreach (ModificationSites site in Enum.GetValues(typeof(ModificationSites)))
+            {
+                if (site == ModificationSites.None)
+                {
+                    continue;
+                }
+                if ((sites & site) == site)
+                {
+                    yield return site; 
+                }
+            }
         }
     }
 

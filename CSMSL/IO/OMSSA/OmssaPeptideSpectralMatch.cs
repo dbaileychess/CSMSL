@@ -1,5 +1,4 @@
 ﻿using CsvHelper.Configuration;
-using CsvHelper.TypeConversion;
 
 namespace CSMSL.IO.OMSSA
 {

@@ -659,7 +659,13 @@ namespace CSMSL.Chemistry
         }
 
         #endregion
-             
+
+        public static ChemicalFormula GetUnlabeledFormula(string ChemicalFormula)
+        {
+            string unlabelledString = ParseLightString(ChemicalFormula);
+            ChemicalFormula formula = new ChemicalFormula(unlabelledString);
+            return formula;
+        }
 
         public override int GetHashCode()
         {   
@@ -901,6 +907,54 @@ namespace CSMSL.Chemistry
                 }
             }
           
+        }
+
+        private static string ParseLightString(string formula)
+        {
+            if (string.IsNullOrEmpty(formula))
+                return null;
+
+            if (!IsValidChemicalFormula(formula))
+            {
+                throw new FormatException("Input string for chemical formula was in an incorrect format");
+            }
+            string returnString = "";
+            foreach (Match match in FormulaRegex.Matches(formula))
+            {
+                string chemsym = match.Groups[1].Value;             // Group 1: Chemical Symbol
+
+                Element element;
+                if (Element.PeriodicTable.TryGetElement(chemsym, out element))
+                {
+                    Isotope isotope = element.PrincipalIsotope;     // Start with the most abundant (principal) isotope
+
+                    if (chemsym.Equals("D"))                        // Special case for Deuterium
+                    {
+                        isotope = element.Isotopes[2];
+                    }
+                    else if (match.Groups[2].Success)               // Group 2 (optional): Isotope Mass Number
+                    {
+                        isotope = element.PrincipalIsotope;
+                    }
+
+                    int sign = match.Groups[3].Success ?            // Group 3 (optional): Negative Sign
+                        -1 :
+                        1;
+
+                    int numofelem = match.Groups[4].Success ?       // Group 4 (optional): Number of Elements
+                        int.Parse(match.Groups[4].Value) :
+                        1;
+                    returnString += chemsym + numofelem.ToString();
+                    //Add(isotope, sign * numofelem);
+                }
+                   
+                else
+                {
+                    throw new ArgumentException(string.Format("The chemical Symbol '{0}' does not exist in the Periodic Table", chemsym));
+                }
+               
+            }
+            return returnString;
         }
 
         #endregion
