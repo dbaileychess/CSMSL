@@ -218,6 +218,8 @@ namespace CSMSL.Spectral
                     continue;
                 }
 
+               
+
                 maxTime = _times[i];
 
                 if (peakIntensity < localMin)
@@ -256,7 +258,6 @@ namespace CSMSL.Spectral
 
                 if (peakIntensity < threshold)
                     break;
-                
             }
             
             //minTime = Math.Max(minTime,_times[0]);

@@ -95,10 +95,10 @@ namespace CSMSL.Proteomics
         public IEnumerable<Peptide> GenerateIsotopologues()
         {
             // Get all the modifications that are isotopologues
-            var isotopologues = GetUniqueModifications<Isotopologue>().ToList();
+            var isotopologues = GetUniqueModifications<Isotopologue>().ToArray();
 
             // Base condition, no more isotopologues to make, so just return this
-            if (isotopologues.Count < 1)
+            if (isotopologues.Length < 1)
             {
                 yield return this;
                 yield break;
@@ -108,7 +108,7 @@ namespace CSMSL.Proteomics
             Isotopologue isotopologue = isotopologues[0];
 
             // Loop over each modification in the isotopologue
-            foreach (Modification mod in isotopologue.GetModifications())
+            foreach (Modification mod in isotopologue)
             {
                 // Create a clone of the peptide, cloning modifications as well.
                 Peptide peptide = new Peptide(this, true);
@@ -117,8 +117,9 @@ namespace CSMSL.Proteomics
                 peptide.ReplaceModification(isotopologue, mod);
 
                 // There were more than one isotopologue, so we must go deeper
-                if (isotopologues.Count > 1)
+                if (isotopologues.Length > 1)
                 {
+                    // Call the same rotuine on the newly generate peptide that has one less isotopologue
                     foreach (var subpeptide in peptide.GenerateIsotopologues())
                     {
                         yield return subpeptide;

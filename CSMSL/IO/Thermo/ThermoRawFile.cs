@@ -54,9 +54,15 @@ namespace CSMSL.IO.Thermo
             if (IsOpen && _rawConnection != null)
                 return;
 
+            if (!File.Exists(FilePath) && !Directory.Exists(FilePath))
+            {
+                throw new IOException(string.Format("The MS data file {0} does not currently exist", FilePath));
+            }
+
             _rawConnection = (IXRawfile5)new MSFileReader_XRawfile();
             _rawConnection.Open(FilePath);
             _rawConnection.SetCurrentController(0, 1); // first 0 is for mass spectrometer
+
             base.Open();
         }
 

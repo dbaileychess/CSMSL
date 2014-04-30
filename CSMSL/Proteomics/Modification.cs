@@ -8,7 +8,7 @@ namespace CSMSL.Proteomics
     /// <summary>
     /// Represents a modification with a mass and name
     /// </summary>
-    public class Modification : IMass
+    public class Modification : IMass, IEquatable<Modification>
     {
         /// <summary>
         /// The name of the modification
@@ -87,6 +87,17 @@ namespace CSMSL.Proteomics
                 yield return i;
         }
 
-        public static Modification EmptyModification = new Modification(0,ModificationSites.All);
+        public static Modification EmptyModification = new Modification(0, ModificationSites.All);
+        
+        public bool Equals(Modification other)
+        {
+            if (ReferenceEquals(this, other))
+                return true;
+
+            if (!Sites.Equals(other.Sites) || !Name.Equals(other.Name) || MonoisotopicMass != other.MonoisotopicMass)
+                return false;
+
+            return true;
+        }
     }
 }

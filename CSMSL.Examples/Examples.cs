@@ -80,7 +80,7 @@ namespace CSMSL.Examples
             //TMT6plexExample.Start();
 
             //Example Isotopologue
-            //IsotopologueExample();
+            IsotopologueExample();
 
             // Example IO
             //MsDataFileExamples.Start();

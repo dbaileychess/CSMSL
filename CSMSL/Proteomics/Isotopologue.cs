@@ -5,9 +5,14 @@ using CSMSL.Chemistry;
 
 namespace CSMSL.Proteomics
 {
-    public class Isotopologue : Modification
+    public class Isotopologue : Modification, IEnumerable<Modification>
     {
         private readonly SortedList<double, Modification> _modifications;
+
+        public Modification this[int index]
+        {
+            get { return _modifications.Values[index]; }
+        }
 
         public Isotopologue(Modification modification)
             : this(modification, modification.Name) { }
@@ -51,23 +56,13 @@ namespace CSMSL.Proteomics
             return _modifications.ContainsValue(modification);
         }
 
-        //public IEnumerable<Peptide> GetUniquePeptides(Peptide peptide)
-        //{
-        //    foreach (Modification mod in _modifications.Values)
-        //    {
-        //        Peptide pep2 = new Peptide(peptide, true);
-        //        pep2.SetModification(mod);
-        //        yield return pep2;
-        //    }
-        //}
-
         /// <summary>
         /// Calculate the expected spacings between a group of Peptides (channels) in Th
         /// </summary>
         /// <param name="peptides">The peptides to calculate the spacings between</param>
         /// <param name="charge">The charge state of those peptides</param>
         /// <returns>An array of Th spacings between each peptide in increasing m/z</returns>
-        public static double[] GetExpectedSpacings(IList<Peptide> peptides, int charge)
+        public static double[] GetExpectedSpacings<T>(IList<T> peptides, int charge) where T : AminoAcidPolymer
         {
             if (peptides.Count <= 1)
             {
@@ -78,7 +73,7 @@ namespace CSMSL.Proteomics
             double[] spacings = new double[peptides.Count - 1];
 
             // Ensure sorted order by mass
-            Peptide[] sortedPeptides = peptides.OrderBy(p => p.MonoisotopicMass).ToArray();
+            AminoAcidPolymer[] sortedPeptides = peptides.OrderBy(p => p.MonoisotopicMass).ToArray();
 
             // Convert the first peptide to m/z space
             double previousMz = Mass.MzFromMass(sortedPeptides[0].MonoisotopicMass, charge);
@@ -96,6 +91,16 @@ namespace CSMSL.Proteomics
                 previousMz = currentMZ;
             }
             return spacings;
+        }
+
+        public IEnumerator<Modification> GetEnumerator()
+        {
+            return _modifications.Values.GetEnumerator();
+        }
+
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        {
+            return _modifications.Values.GetEnumerator();
         }
     }
 }
