@@ -81,7 +81,6 @@
     <Reference Include="System.Numerics" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="SpectralMatch.cs" />
     <Compile Include="ThermoLabeledPeak.cs" />
     <Compile Include="ThermoRawFile.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
