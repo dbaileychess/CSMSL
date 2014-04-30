@@ -86,6 +86,12 @@ namespace CSMSL
             }
         }
 
+        public bool Within(double experimental, double theoretical)
+        {
+            double tolerance = GetTolerance(experimental, theoretical, Type);
+            return Math.Abs(tolerance) <= Value;
+        }
+
         public static double GetTolerance(double experimental, double theoretical, ToleranceType type)
         {
             switch (type)

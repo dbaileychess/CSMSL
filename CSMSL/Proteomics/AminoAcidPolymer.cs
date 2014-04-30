@@ -520,7 +520,7 @@ namespace CSMSL.Proteomics
         {
             if (modification == null)
                 return false;
-
+          
             return _modifications.Contains(modification);
         }
 

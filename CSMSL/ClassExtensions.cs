@@ -114,6 +114,13 @@ namespace CSMSL
 
     public static class UtilExtension
     {
+        /// <summary>
+        /// Checks if two collections are equivalent, regardless of order
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="list1"></param>
+        /// <param name="list2"></param>
+        /// <returns></returns>
         public static bool ScrambledEquals<T>(this IEnumerable<T> list1, IEnumerable<T> list2)
         {
             var cnt = new Dictionary<T, int>();
@@ -152,28 +159,70 @@ namespace CSMSL
 
     public static class ListExtension
     {
-        public static double Median(this IList<double> values)
+        public static double Median(this List<double> values)
         {
             int length = values.Count;
+
+            if (length == 0)
+                return 0;
+
+            values.Sort();
+
             int mid = length/2;
             if (length%2 != 0)
             {
                 return values[mid];
             }
-            else
-            {
-                return (values[mid] + values[mid - 1])/2.0;
-            }
+
+            return (values[mid] + values[mid - 1])/2.0;
+
         }
 
         public static double StdDev(this IList<double> values)
         {
+            int length = values.Count;
+
+            if (length == 0)
+                return 0;
+
             double mean = values.Average();
             double stdDev = values.Sum(value => (value - mean)*(value - mean));
-            stdDev = Math.Sqrt(stdDev / values.Count);
-            return stdDev;
+            return Math.Sqrt(stdDev / values.Count);
         }
 
+        public static int[] Histogram(this IList<double> values, int numberOfBins, out double min, out double max, out double binSize)
+        {
+            max = values.Max();
+            min = values.Min();
+            double range = max - min;
+            binSize = range/numberOfBins;
+            int[] bins = new int[numberOfBins];
+
+            foreach (double value in values)
+            {
+                int binnedValue = (int)((value - min)/binSize);
+                if (binnedValue == numberOfBins)
+                    binnedValue--;
+                bins[binnedValue]++;
+            }
+            return bins;
+        }
+
+        public static int[] Histogram(this IList<double> values, int numberOfBins, double min, double max, out double binSize)
+        {
+            double range = max - min;
+            binSize = range / numberOfBins;
+            int[] bins = new int[numberOfBins];
+
+            foreach (double value in values)
+            {
+                int binnedValue = (int)((value - min) / binSize);
+                if (binnedValue == numberOfBins)
+                    binnedValue--;
+                bins[binnedValue]++;
+            }
+            return bins;
+        } 
 
         public static int MaxIndex<T>(this IEnumerable<T> sequence) where T : IComparable<T>
         {
@@ -251,6 +300,11 @@ namespace CSMSL
             return bigStreamOut.ToArray();
         }
 
+        /// <summary>
+        /// Checks if the byte array is gzipped. 
+        /// </summary>
+        /// <param name="bytes"></param>
+        /// <returns></returns>
         public static bool IsCompressed(this byte[] bytes)
         {
             // From http://stackoverflow.com/questions/19364497/how-to-tell-if-a-byte-array-is-gzipped
