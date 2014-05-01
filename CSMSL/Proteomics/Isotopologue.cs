@@ -38,15 +38,15 @@ namespace CSMSL.Proteomics
 
         public Modification AddModification(Modification modification)
         {
-            if (_modifications.Count == 0 && Sites == ModificationSites.None)
-            {
-                Sites = modification.Sites;
-            }
+            //if (_modifications.Count == 0 && Sites == ModificationSites.None)
+            //{
+            //    Sites = modification.Sites;
+            //}
 
-            if (modification.Sites != Sites)
-            {
-                throw new ArgumentException("Unable to add a modification to an isotopologue with different modification sites.");
-            }
+            //if (modification.Sites != Sites)
+            //{
+            //    throw new ArgumentException("Unable to add a modification to an isotopologue with different modification sites.");
+            //}
             _modifications.Add(modification.MonoisotopicMass, modification); 
             MonoisotopicMass = _modifications.Keys.Average();
             return modification;

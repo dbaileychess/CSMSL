@@ -50,6 +50,15 @@ namespace CSMSL.Chemistry
                                                                        RegexOptions.Compiled);
 
         /// <summary>
+        /// Determines if the chemical formula hill notation string is stored or calculated each time it is called.
+        /// True means the notation is stored as a string in the chemical formula (quicker, but more memory)
+        /// False means the notation is not stored as a string in the chemical formula (slower, no used memory)
+        /// Changing this value will not automatically delete the interned notations of formulas.
+        /// The default value is true.
+        /// </summary>
+        public static bool InternChemicalFormulaStrings = true;
+
+        /// <summary>
         /// Indicates if the internal _isotope array has been modified, requiring necessary
         /// clean up code to be performed.
         /// </summary>
@@ -264,6 +273,10 @@ namespace CSMSL.Chemistry
         {
             get
             {
+                // Not storing, so always call the method
+                if (!InternChemicalFormulaStrings)
+                    return GetHillNotation();
+
                 if (_isFormulaDirty)
                 {
                     _chemicalFormulaString = GetHillNotation();
