@@ -19,11 +19,14 @@
 ///////////////////////////////////////////////////////////////////////////
 
 using System;
+using System.Text.RegularExpressions;
 
 namespace CSMSL
 {
     public class Tolerance
     {
+        private static Regex _fromString = new Regex(@"([\d.-]+)\s(PPM|DA|MMU)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+
         /// <summary>
         /// 
         /// </summary>
@@ -37,6 +40,17 @@ namespace CSMSL
 
         public Tolerance(ToleranceType type, double experimental, double theoretical)
             : this(type, GetTolerance(experimental, theoretical, type)) { }
+
+        public Tolerance(string s)
+        {
+            Match m = _fromString.Match(s);
+            if (!m.Success)
+                throw new ArgumentException("Input string is not in the correct format: " + s); 
+            Value = double.Parse(m.Groups[1].Value);
+            ToleranceType type;
+            Enum.TryParse(m.Groups[2].Value, true, out type);
+            Type = type;
+        }
 
         public ToleranceType Type { get; set; }
 
