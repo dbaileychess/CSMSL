@@ -97,10 +97,9 @@ namespace CSMSL.Proteomics
             // Get all the modifications that are isotopologues
             var isotopologues = GetUniqueModifications<Isotopologue>().ToArray();
 
-            // Base condition, no more isotopologues to make, so just return this
+            // Base condition, no more isotopologues to make, so just return
             if (isotopologues.Length < 1)
             {
-                yield return this;
                 yield break;
             } 
           
