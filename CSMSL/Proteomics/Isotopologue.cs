@@ -24,6 +24,12 @@ namespace CSMSL.Proteomics
             AddModification(modification);
         }
 
+        public Isotopologue(string name)
+            : base(0, name)
+        {
+            _modifications = new SortedList<double, Modification>();
+        }
+
         public Isotopologue(string name, ModificationSites sites)
             : base(0, name, sites)
         {
@@ -32,6 +38,11 @@ namespace CSMSL.Proteomics
 
         public Modification AddModification(Modification modification)
         {
+            if (_modifications.Count == 0 && Sites == ModificationSites.None)
+            {
+                Sites = modification.Sites;
+            }
+
             if (modification.Sites != Sites)
             {
                 throw new ArgumentException("Unable to add a modification to an isotopologue with different modification sites.");

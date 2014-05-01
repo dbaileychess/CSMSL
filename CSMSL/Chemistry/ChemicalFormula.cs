@@ -265,7 +265,12 @@ namespace CSMSL.Chemistry
             get
             {
                 if (_isFormulaDirty)
-                    CleanUpFormula();
+                {
+                    _chemicalFormulaString = GetHillNotation();
+
+                    // Mark formula as clean
+                    _isFormulaDirty = false;
+                }
                 return _chemicalFormulaString;
             }
         }
@@ -728,10 +733,15 @@ namespace CSMSL.Chemistry
 
             return distrubition;
         }
-               
+
         public override string ToString()
         {
             return Formula;
+        }
+               
+        public string ToString(string delimiter)
+        {
+            return GetHillNotation(delimiter);
         }
 
         #region Private Methods
@@ -794,13 +804,15 @@ namespace CSMSL.Chemistry
         /// <summary>
         /// Produces the Hill Notation of the chemical formula
         /// </summary>
-        private void CleanUpFormula()
+        public string GetHillNotation(string delimiter = "")
         {
-            string carbonPart = "";
-            string hydrogenPart = "";
+            string carbonPart = string.Empty;
+            string hydrogenPart = string.Empty;
             List<string> otherParts = new List<string>();
             StringBuilder sb = new StringBuilder(4);
-            
+
+            bool nonNullDelimiter = !string.IsNullOrEmpty(delimiter);
+
             for (int i = 0; i <= _largestIsotopeId; i++)
             {
                 int count = _isotopes[i];
@@ -827,10 +839,14 @@ namespace CSMSL.Chemistry
                 switch (isotope.AtomicSymbol)
                 {
                     case "C":
+                        if (nonNullDelimiter && !string.IsNullOrEmpty(carbonPart))
+                            carbonPart += delimiter;
                         carbonPart += sb.ToString();
                         break;
                     case "D":
                     case "H":
+                        if (nonNullDelimiter && !string.IsNullOrEmpty(hydrogenPart))
+                            hydrogenPart += delimiter;
                         hydrogenPart += sb.ToString();
                         break;
                     default:
@@ -842,20 +858,21 @@ namespace CSMSL.Chemistry
             if (string.IsNullOrEmpty(carbonPart))
             {
                 // No carbons, so just add the hydrogen to the list and sort alphabetically
-                otherParts.Add(hydrogenPart);
+                if (!string.IsNullOrEmpty(hydrogenPart))
+                    otherParts.Add(hydrogenPart);
                 otherParts.Sort();
             }
             else
             {
                 otherParts.Sort();
-                otherParts.Insert(0, hydrogenPart);
+
+                if (!string.IsNullOrEmpty(hydrogenPart))
+                    otherParts.Insert(0, hydrogenPart);
+                
                 otherParts.Insert(0, carbonPart);
             }
 
-            _chemicalFormulaString = string.Join("", otherParts);
-
-            // Mark formula as clean
-            _isFormulaDirty = false;
+            return string.Join(delimiter, otherParts);
         }
 
         /// <summary>
