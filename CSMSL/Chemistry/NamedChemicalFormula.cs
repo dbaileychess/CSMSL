@@ -27,6 +27,7 @@ namespace CSMSL.Chemistry
     /// A chemical formula that contains a common name.
     /// (e.g. H2O is often called Water)
     /// </summary>
+    [Obsolete]
     public class NamedChemicalFormula : ChemicalFormula, IEquatable<NamedChemicalFormula>
     {
         #region Common Reagents / Modifications

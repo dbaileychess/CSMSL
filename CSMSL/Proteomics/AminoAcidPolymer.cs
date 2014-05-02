@@ -1063,16 +1063,11 @@ namespace CSMSL.Proteomics
                         switch (modString)
                         {
                             case "#": // Make the modification unverisally heavy (all C12 and N14s are promoted to C13 and N15s)
-                                modification = NamedChemicalFormula.MakeHeavy(_aminoAcids[index - 1]);
+                                modification = _aminoAcids[index - 1].ToHeavyModification(true, true);
                                 break;
                             default:
-                                NamedChemicalFormula formula;
                                 double mass;
-                                if (NamedChemicalFormula.TryGetModification(modString, out formula))
-                                {
-                                    modification = formula;
-                                }
-                                else if (ChemicalFormula.IsValidChemicalFormula(modString))
+                                if (ChemicalFormula.IsValidChemicalFormula(modString))
                                 {
                                     modification = new ChemicalFormula(modString);
                                 }

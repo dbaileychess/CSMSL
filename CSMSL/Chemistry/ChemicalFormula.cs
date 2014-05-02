@@ -493,10 +493,10 @@ namespace CSMSL.Chemistry
         /// </summary>
         /// <param name="isotope">The isotope to remove</param>
         /// <returns>True if the isotope was in the chemical formula and removed, false otherwise</returns>
-        public bool Remove(Isotope isotope)
+        public int Remove(Isotope isotope)
         {
             if (isotope == null)
-                return false;
+                return 0;
 
             int id = isotope.UniqueId;
             int count;
@@ -504,7 +504,7 @@ namespace CSMSL.Chemistry
             if (id > _largestIsotopeId || (count = _isotopes[id]) == 0)
             {
                 // isotope not contained or is already zero, do nothing and just return false
-                return false;
+                return 0;
             }
 
             MonoisotopicMass -= isotope.AtomicMass*count;
@@ -516,8 +516,9 @@ namespace CSMSL.Chemistry
                 // id is the largest, find the new largest
                 FindLargestIsotope();
             }
+            _isFormulaDirty = _isDirty = true;
 
-            return _isFormulaDirty = _isDirty = true;
+            return count;
         }
 
         /// <summary>
@@ -526,10 +527,9 @@ namespace CSMSL.Chemistry
         /// </summary>
         /// <param name="symbol">The symbol of the chemical element to remove</param>
         /// <returns>True if the element was present and removed, false otherwise</returns>
-        public bool Remove(string symbol)
+        public int Remove(string symbol)
         {
-            Element element = Element.PeriodicTable[symbol];
-            return Remove(element);
+            return Remove(Element.PeriodicTable[symbol]);
         }
         
         /// <summary>
@@ -538,11 +538,12 @@ namespace CSMSL.Chemistry
         /// </summary>
         /// <param name="element">The chemical element to remove</param>
         /// <returns>True if the element was present and removed, false otherwise</returns>
-        public bool Remove(Element element)
+        public int Remove(Element element)
         {
             if (element == null)
-                return false;
-            return element.Isotopes.Values.Aggregate(false, (current, isotope) => current | Remove(isotope));
+                return 0;
+
+            return element.Isotopes.Values.Sum(isotope => Remove(isotope));
         }
 
         /// <summary>
@@ -843,7 +844,7 @@ namespace CSMSL.Chemistry
                     sb.Append(isotope.MassNumber);
                     sb.Append('}');
                 }
-
+                
                 if (count != 1)
                 {
                     sb.Append(count);
@@ -1136,6 +1137,18 @@ namespace CSMSL.Chemistry
         ChemicalFormula IChemicalFormula.ChemicalFormula
         {
             get { return this; }
+        }
+
+        /// <summary>
+        /// Replaces one isotope with another.
+        /// Replacement happens on a 1 to 1 basis, i.e., if you remove 5 you will add 5
+        /// </summary>
+        /// <param name="isotopeToRemove">The isotope to remove</param>
+        /// <param name="isotopToAdd">The isotope to add</param>
+        public void Replace(Isotope isotopeToRemove, Isotope isotopToAdd)
+        {
+            int numberRemoved = Remove(isotopeToRemove);
+            Add(isotopToAdd, numberRemoved);
         }
     }
 }

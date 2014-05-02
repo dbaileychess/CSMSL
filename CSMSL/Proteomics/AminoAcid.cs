@@ -167,6 +167,23 @@ namespace CSMSL.Proteomics
             return string.Format("{0} {1} ({2})", Letter, Symbol, Name);
         }
 
+        public ChemicalFormulaModification ToHeavyModification(bool c, bool n)
+        {
+            var formula = new ChemicalFormula();
+            if (c)
+            {
+                Element carbon = Element.PeriodicTable["C"];
+                formula.Replace(carbon[12], carbon[13]);               
+            }
+
+            if (n)
+            {
+                Element nitrogen = Element.PeriodicTable["N"];
+                formula.Replace(nitrogen[14], nitrogen[15]);
+            }
+     
+            return new ChemicalFormulaModification(formula, "#", Site);
+        }
 
       
     }

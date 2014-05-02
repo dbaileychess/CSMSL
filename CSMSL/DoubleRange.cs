@@ -60,18 +60,17 @@
             //}
         }
 
-        public double Maximum
-        {
-            get { return base.Maximum; }
-            set { base.Maximum = value; }
-           
-        }
+        //public double Maximum
+        //{
+        //    get { return base.Maximum; }
+        //    set { base.Maximum = value; }           
+        //}
 
-        public double Minimum
-        {
-            get { return base.Minimum; }
-            set { base.Minimum = value;  }
-        }
+        //public double Minimum
+        //{
+        //    get { return base.Minimum; }
+        //    set { base.Minimum = value;  }
+        //}
 
         public double Width
         {
@@ -99,7 +98,7 @@
             return new DoubleRange(mean, new Tolerance(ToleranceType.DA, daTolerance));
         }
 
-        public new string ToString(string format = "F4")
+        public string ToString(string format = "F4")
         {
             return string.Format("[{0} - {1}]", Minimum.ToString(format), Maximum.ToString(format));
         }

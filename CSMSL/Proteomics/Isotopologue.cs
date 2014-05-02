@@ -8,7 +8,7 @@ namespace CSMSL.Proteomics
     public class Isotopologue : Modification, IEnumerable<Modification>
     {
         private readonly SortedList<double, Modification> _modifications;
-
+        
         public Modification this[int index]
         {
             get { return _modifications.Values[index]; }
