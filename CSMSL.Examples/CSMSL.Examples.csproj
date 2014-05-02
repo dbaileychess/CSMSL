@@ -93,7 +93,6 @@
     <Compile Include="OmssaReader.cs" />
     <Compile Include="PepXmlExamples.cs" />
     <Compile Include="ProteinGroupingExample.cs" />
-    <Compile Include="TMT6plexExample.cs" />
     <Compile Include="TrypticDigestion.cs" />
     <Compile Include="MorpheusSearch.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

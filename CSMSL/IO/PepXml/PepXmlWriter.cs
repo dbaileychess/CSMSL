@@ -168,7 +168,7 @@ namespace CSMSL.IO.PepXML
             if (CurrentStage != Stage.SearchSummary)
                 throw new ArgumentException("You must be in the Search Summary stage to write modifications");
 
-            foreach (ModificationSites singleSite in Modification.GetSites(sites))
+            foreach (ModificationSites singleSite in sites.GetActiveSites())
             {
                 double basemass = 0;
                 if (singleSite >= ModificationSites.NPep)

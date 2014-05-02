@@ -32,6 +32,8 @@ namespace CSMSL.Chemistry
 
     public static class IMassExtensions
     {
+        public const double MassEqualityEpsilon = 1e-10;
+
         /// <summary>
         /// Converts the object that has a mass into a m/z value based on the charge state
         /// </summary>
@@ -44,19 +46,38 @@ namespace CSMSL.Chemistry
             return Mass.MzFromMass(mass.MonoisotopicMass + c13Isotope * Constants.C13C12Difference, charge);
         }
 
-        public static bool MassEquals(this IMass mass1, IMass mass2, double precision = 0.00000000001)
+        /// <summary>
+        /// Converts the object that has a m/z into a mass value based on the charge state
+        /// </summary>
+        /// <param name="mass"></param>
+        /// <param name="charge"></param>
+        /// <param name="c13Isotope"></param>
+        /// <returns></returns>
+        public static double ToMass(this IMass mz, int charge, int c13Isotope = 0)
         {
-            return Math.Abs(mass1.MonoisotopicMass - mass2.MonoisotopicMass) < precision;
+            return Mass.MzFromMass(mz.MonoisotopicMass + c13Isotope * Constants.C13C12Difference, charge);
         }
 
-        public static int Compare(this IMass mass1, IMass mass2, double precision = 0.00000000001)
+        public static bool MassEquals(this IMass mass1, double mass2, double epsilon = MassEqualityEpsilon)
+        {
+            if (mass1 == null)
+                return false;
+            return Math.Abs(mass1.MonoisotopicMass - mass2) < epsilon;
+        }
+
+        public static bool MassEquals(this IMass mass1, IMass mass2, double epsilon = MassEqualityEpsilon)
+        {
+            if (mass1 == null || mass2 == null)
+                return false;
+            return Math.Abs(mass1.MonoisotopicMass - mass2.MonoisotopicMass) < epsilon;
+        }
+
+        public static int Compare(this IMass mass1, IMass mass2, double epsilon = MassEqualityEpsilon)
         {
             double difference = mass1.MonoisotopicMass - mass2.MonoisotopicMass;
-            if (difference < -precision)
+            if (difference < -epsilon)
                 return -1;
-            if (difference > precision)
-                return 1;
-            return 0;
+            return difference > epsilon ? 1 : 0;
         }
     }
 }

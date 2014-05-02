@@ -997,7 +997,7 @@ namespace CSMSL.Proteomics
             IMass mod;    
 
             // Handle N-Terminus Modification
-            if ((mod = _modifications[0]) != null)
+            if ((mod = _modifications[0]) != null && !Modification.Empty.Equals(mod) && !mod.MassEquals(0))
             {
                 modSeqSb.Append('[');
                 modSeqSb.Append(mod);
@@ -1013,7 +1013,7 @@ namespace CSMSL.Proteomics
                     modSeqSb.Append(_aminoAcids[i].Letter);
 
                 // Handle Amino Acid Modification (1-based)
-                if ((mod = _modifications[i + 1]) != null)  
+                if ((mod = _modifications[i + 1]) != null && !Modification.Empty.Equals(mod) && !mod.MassEquals(0))  
                 {
                     modSeqSb.Append('[');
                     modSeqSb.Append(mod);
@@ -1022,7 +1022,7 @@ namespace CSMSL.Proteomics
             }
           
             // Handle C-Terminus Modification
-            if ((mod = _modifications[Length + 1]) != null)
+            if ((mod = _modifications[Length + 1]) != null && !Modification.Empty.Equals(mod) && !mod.MassEquals(0))
             {
                 modSeqSb.Append("-[");
                 modSeqSb.Append(mod);

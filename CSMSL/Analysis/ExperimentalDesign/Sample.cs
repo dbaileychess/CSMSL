@@ -8,7 +8,7 @@ namespace CSMSL.Analysis.ExperimentalDesign
 
         public string Description { get; set; }
 
-        private List<ExperimentalCondition> _conditions;
+        private readonly List<ExperimentalCondition> _conditions;
          
         public ExperimentalCondition AddCondition(string name, string description = "")
         {
@@ -30,7 +30,7 @@ namespace CSMSL.Analysis.ExperimentalDesign
         }
 
 
-        public System.Collections.Generic.IEnumerator<ExperimentalCondition> GetEnumerator()
+        public IEnumerator<ExperimentalCondition> GetEnumerator()
         {
             return _conditions.GetEnumerator();
         }

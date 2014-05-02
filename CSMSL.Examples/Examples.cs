@@ -75,10 +75,7 @@ namespace CSMSL.Examples
 
             // Example Protein Grouping
             //ProteinGroupingExample.Start(Protease.Trypsin);
-
-            // Example TMT 6-plex quantitation
-            //TMT6plexExample.Start();
-
+            
             //Example Isotopologue
             IsotopologueExample();
 
@@ -99,29 +96,22 @@ namespace CSMSL.Examples
 
             //PepXmlExamples.ReadPepXml();
 
-            MzIdentMLExamples.ReadMzIdentML();
+            //MzIdentMLExamples.ReadMzIdentML();
         }
 
         private static void IsotopologueExample()
         {
-            Isotopologue iso1 = new Isotopologue("One", ModificationSites.K);
-            Isotopologue iso2 = new Isotopologue("Two", ModificationSites.R);
-            Isotopologue iso3 = new Isotopologue("Three", ModificationSites.E);
-
-            iso1.AddModification("C2", "1C2");
-            iso1.AddModification("C3", "1C3");
-
-            iso2.AddModification("C4", "2C4");
-            iso2.AddModification("C5", "2C5");
-
-            iso3.AddModification("C6", "3C6");
-            iso3.AddModification("C7", "3C7");
-            iso3.AddModification("C8", "3C8");
-
+            var iso1 = new Isotopologue("One", ModificationSites.K);
+            iso1.AddModification(new ChemicalFormulaModification("C1", "Sample 1"));
+            iso1.AddModification(new ChemicalFormulaModification("C2", "Sample 2"));
+            
+            var iso2 = new Isotopologue("Two", ModificationSites.R);
+            iso2.AddModification(new ChemicalFormulaModification("C3", "Sample 3"));
+            iso2.AddModification(Modification.Empty);
+           
             Peptide peptide = new Peptide("DEREK");
             peptide.SetModification(iso1);
             peptide.SetModification(iso2);
-            peptide.SetModification(iso3);
 
             foreach (var iso in peptide.GenerateIsotopologues())
             {

@@ -10,7 +10,10 @@ namespace CSMSL.Proteomics
     /// </summary>
     public class Modification : IMass, IEquatable<Modification>
     {
-        public static readonly Modification EmptyModification = new Modification();
+        /// <summary>
+        /// The default empty modification
+        /// </summary>
+        public static readonly Modification Empty = new Modification();
 
         /// <summary>
         /// The name of the modification
@@ -39,7 +42,7 @@ namespace CSMSL.Proteomics
             : this(modification.MonoisotopicMass, modification.Name, modification.Sites) { }
       
 
-        public Modification(double monoMass = 0.0, string name = "", ModificationSites sites = ModificationSites.None)
+        public Modification(double monoMass = 0.0, string name = "", ModificationSites sites = ModificationSites.Any)
         {
             MonoisotopicMass = monoMass;
             Name = name;
@@ -70,13 +73,35 @@ namespace CSMSL.Proteomics
             if ((Sites & ModificationSites.PepC) == ModificationSites.PepC)
                 yield return i;
         }
-        
+
+        public override int GetHashCode()
+        {
+            return MonoisotopicMass.GetHashCode();
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (obj == null)
+                return false;
+            Modification modObj = obj as Modification;
+            return modObj != null && Equals(modObj);   
+        }
+
         public bool Equals(Modification other)
         {
+            if (other == null)
+                return false;
+
             if (ReferenceEquals(this, other))
                 return true;
 
-            if (!Sites.Equals(other.Sites) || !Name.Equals(other.Name) || MonoisotopicMass != other.MonoisotopicMass)
+            if (!this.MassEquals(other))
+                return false;
+
+            if (!Name.Equals(other.Name))
+                return false;
+
+            if (!Sites.Equals(other.Sites))
                 return false;
 
             return true;
