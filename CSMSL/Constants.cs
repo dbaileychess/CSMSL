@@ -54,6 +54,9 @@ namespace CSMSL
 
         public const double Carbon13 = 13.0033548378;
 
+        /// <summary>
+        /// The mass difference between carbon 13 and 12 isotopes, often used for isotopic distributions
+        /// </summary>
         public const double C13C12Difference = Carbon13 - Carbon;
 
        

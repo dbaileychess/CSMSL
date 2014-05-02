@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace CSMSL.Proteomics
 {
@@ -32,5 +33,33 @@ namespace CSMSL.Proteomics
         NProt = 8388608,
         ProtC = 16777216,
         All = Int32.MaxValue,
+    }
+
+    public static class IModificationSiteExtensions
+    {
+        public static ModificationSites Set(this ModificationSites sites, char aminoacid)
+        {
+            AminoAcid aa;
+            if (AminoAcid.TryGetResidue(aminoacid, out aa))
+            {
+                sites |= aa.Site;
+            }
+            return sites;
+        }
+
+        public static IEnumerable<ModificationSites> GetActiveSites(this ModificationSites sites)
+        {
+            foreach (ModificationSites site in Enum.GetValues(typeof(ModificationSites)))
+            {
+                if (site == ModificationSites.None)
+                {
+                    continue;
+                }
+                if ((sites & site) == site)
+                {
+                    yield return site;
+                }
+            }
+        }
     }
 }

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq;
 using CSMSL.Chemistry;
-using CSMSL.Proteomics;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
@@ -9,64 +8,6 @@ using CSMSL.Spectral;
 
 namespace CSMSL
 {
-    public static class MassExtension
-    {
-        /// <summary>
-        /// Converts the object that has a mass into a m/z value based on the charge state
-        /// </summary>
-        /// <param name="mass"></param>
-        /// <param name="charge"></param>
-        /// <param name="c13Isotope"></param>
-        /// <returns></returns>
-        public static double ToMz(this IMass mass, int charge, int c13Isotope = 0)
-        {
-            return Mass.MzFromMass(mass.MonoisotopicMass + c13Isotope*Constants.C13C12Difference, charge);
-        }
-
-        public static bool MassEquals(this IMass mass1, IMass mass2, double precision = 0.00000000001)
-        {
-            return Math.Abs(mass1.MonoisotopicMass - mass2.MonoisotopicMass) < precision;
-        }
-
-        public static int Compare(this IMass mass1, IMass mass2, double precision = 0.00000000001)
-        {
-            double difference = mass1.MonoisotopicMass - mass2.MonoisotopicMass;
-            if (difference < -precision)
-                return -1;
-            if (difference > precision)
-                return 1;
-            return 0;
-        }
-    }
-
-    public static class ModificationSiteExtensions
-    {
-        public static ModificationSites Set(this ModificationSites sites, char aminoacid)
-        {         
-            AminoAcid aa;
-            if(AminoAcid.TryGetResidue(aminoacid, out aa))
-            {
-                sites |= aa.Site;
-            }
-            return sites;
-        }
-
-        public static IEnumerable<ModificationSites> GetActiveSites(this ModificationSites sites)
-        {
-            foreach (ModificationSites site in Enum.GetValues(typeof(ModificationSites)))
-            {
-                if (site == ModificationSites.None)
-                {
-                    continue;
-                }
-                if ((sites & site) == site)
-                {
-                    yield return site; 
-                }
-            }
-        }
-    }
-
     public static class SpectrumExtension
     {
         public static Chromatogram GetExtractedIonChromatogram(this IEnumerable<ISpectrumTime> spectra, MzRange range)

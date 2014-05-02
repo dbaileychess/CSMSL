@@ -18,6 +18,8 @@
 //  along with CSMSL.  If not, see <http://www.gnu.org/licenses/>.        /
 ///////////////////////////////////////////////////////////////////////////
 
+using System;
+
 namespace CSMSL.Chemistry
 {
     public interface IMass
@@ -26,5 +28,35 @@ namespace CSMSL.Chemistry
         /// The monoisotopic mass of this object
         /// </summary>
         double MonoisotopicMass { get; }
+    }
+
+    public static class IMassExtensions
+    {
+        /// <summary>
+        /// Converts the object that has a mass into a m/z value based on the charge state
+        /// </summary>
+        /// <param name="mass"></param>
+        /// <param name="charge"></param>
+        /// <param name="c13Isotope"></param>
+        /// <returns></returns>
+        public static double ToMz(this IMass mass, int charge, int c13Isotope = 0)
+        {
+            return Mass.MzFromMass(mass.MonoisotopicMass + c13Isotope * Constants.C13C12Difference, charge);
+        }
+
+        public static bool MassEquals(this IMass mass1, IMass mass2, double precision = 0.00000000001)
+        {
+            return Math.Abs(mass1.MonoisotopicMass - mass2.MonoisotopicMass) < precision;
+        }
+
+        public static int Compare(this IMass mass1, IMass mass2, double precision = 0.00000000001)
+        {
+            double difference = mass1.MonoisotopicMass - mass2.MonoisotopicMass;
+            if (difference < -precision)
+                return -1;
+            if (difference > precision)
+                return 1;
+            return 0;
+        }
     }
 }

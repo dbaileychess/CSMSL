@@ -54,7 +54,7 @@ namespace CSMSL.Proteomics
 
         public Modification AddModification(string chemicalFormula, string name)
         {
-            return AddModification(new Modification(chemicalFormula, name, Sites));
+            return AddModification(new ChemicalFormulaModification(chemicalFormula, name, Sites));
         }
 
         public IEnumerable<Modification> GetModifications()
