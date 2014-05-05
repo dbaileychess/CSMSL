@@ -394,49 +394,47 @@ namespace CSMSL.IO.Thermo
             {
                 case MZAnalyzerType.FTICR:
                 case MZAnalyzerType.Orbitrap:
-                        object obj = GetExtraValue(spectrumNumber, "FT Resolution:");
+                    string name = GetInstrumentName();
+                    double mzDefined = 400;
+                    if (name == "Orbitrap Fusion")
+                    {
+                        object obj = GetExtraValue(spectrumNumber, "Orbitrap Resolution:");
                         resolution = Convert.ToDouble(obj);
                         if (resolution <= 0)
                         {
-                            string name = GetInstrumentName();
-                            double mzDefined = 400;
-                            if (name == "Orbitrap Fusion")
+                            double[,] data = GetLabeledData(spectrumNumber);
+                            double mz = data[0, 0];
+                            double peakRes = data[2, 0];
+                            double correctedResolution = peakRes * Math.Sqrt(mz / 200);
+
+                            if (correctedResolution < 25000)
                             {
-                                mzDefined = 200;
-                                double[,] data = GetLabeledData(spectrumNumber);
-                                double mz = data[0, 0];
-                                double peakRes = data[2, 0];
-                                double correctedResolution = peakRes*Math.Sqrt(mz/mzDefined);
-
-                                if (correctedResolution < 25000)
-                                {
-                                    return 15000;
-                                }
-                                if (correctedResolution < 50000)
-                                {
-                                    return 30000;
-                                }
-                                if (correctedResolution < 100000)
-                                {
-                                    return 60000;
-                                }
-                                if (correctedResolution < 200000)
-                                {
-                                    return 120000;
-                                }
-                                if (correctedResolution < 400000)
-                                {
-                                    return 240000;
-                                }
-
-                                return 450000;
-
+                                return 15000;
                             }
-                            else
+                            if (correctedResolution < 50000)
                             {
-                                throw new ArgumentException();
+                                return 30000;
                             }
+                            if (correctedResolution < 100000)
+                            {
+                                return 60000;
+                            }
+                            if (correctedResolution < 200000)
+                            {
+                                return 120000;
+                            }
+                            if (correctedResolution < 400000)
+                            {
+                                return 240000;
+                            }
+                            return 450000;
                         }
+                    }
+                    else
+                    {
+                        object obj = GetExtraValue(spectrumNumber, "FT Resolution:");
+                        resolution = Convert.ToDouble(obj);
+                    }
                     break;
                 default:
                     break;
