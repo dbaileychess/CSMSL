@@ -167,6 +167,7 @@ namespace CSMSL.Chemistry
             return mass / Math.Abs(charge) + Math.Sign(charge) * Constants.Proton;
         }
 
+       
         #endregion Static Methods
 
     }

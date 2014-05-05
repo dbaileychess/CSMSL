@@ -767,6 +767,34 @@ namespace CSMSL.Proteomics
                 CTerminusModification = null;
         }
 
+     
+        public void ClearModifications(ModificationSites sites)
+        {
+            //if(sites & ModificationSites.NPep )
+
+            for (int i = 0; i < _aminoAcids.Length; i++)
+            {
+                int modIndex = i + 1;
+                if (_modifications[modIndex] == null)
+                    continue;
+
+                ModificationSites curSite = _aminoAcids[i].Site;
+
+                if ((curSite & sites) == curSite)
+                {
+                    MonoisotopicMass -= _modifications[modIndex].MonoisotopicMass;
+                    _modifications[modIndex] = null;
+                    IsDirty = true;
+                }
+            }
+
+            //if ((terminus & Terminus.N) == Terminus.N)
+            //    NTerminusModification = null;
+
+            //if ((terminus & Terminus.C) == Terminus.C)
+            //    CTerminusModification = null;
+        }
+
         /// <summary>
         /// Clear all modifications from this amino acid polymer.
         /// Includes N and C terminus modifications.

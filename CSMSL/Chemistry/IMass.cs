@@ -58,6 +58,11 @@ namespace CSMSL.Chemistry
             return Mass.MzFromMass(mz.MonoisotopicMass + c13Isotope * Constants.C13C12Difference, charge);
         }
 
+        public static bool MassEquals(this double mass1, double mass2, double epsilon = MassEqualityEpsilon)
+        {
+            return Math.Abs(mass1 - mass2) < epsilon;
+        }
+
         public static bool MassEquals(this IMass mass1, double mass2, double epsilon = MassEqualityEpsilon)
         {
             if (mass1 == null)
