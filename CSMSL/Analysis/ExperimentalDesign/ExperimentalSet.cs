@@ -1,10 +1,13 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
+using System.Security.Cryptography;
+using CSMSL.Proteomics;
 
 namespace CSMSL.Analysis.ExperimentalDesign
 {
     public class ExperimentalSet : IEnumerable<ExperimentalCondition>
     {       
-        private HashSet<ExperimentalCondition> _conditions;
+        private readonly HashSet<ExperimentalCondition> _conditions;
 
         public string Name { get; private set; }
 
@@ -19,6 +22,20 @@ namespace CSMSL.Analysis.ExperimentalDesign
             _conditions.Add(condition);        
         }
 
+        public IEnumerable<Modification> GetAllModifications()
+        {
+            return _conditions.SelectMany(c => c.Modifications);
+        } 
+
+        public bool Contains(Modification mod)
+        {
+            return _conditions.Any(c => c.Modifications.Contains(mod));
+        }
+
+        public override string ToString()
+        {
+            return Name;
+        }
 
         public IEnumerator<ExperimentalCondition> GetEnumerator()
         {

@@ -1,51 +1,51 @@
-﻿using CSMSL.Analysis.Quantitation;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using CSMSL.Proteomics;
 
 namespace CSMSL.Analysis.ExperimentalDesign
 {
-    public class ExperimentalCondition : IEnumerable<IQuantitationChannel>
+    public class ExperimentalCondition : IEnumerable<Modification>
     {
         public string Name { get; private set; }
 
         public string Description { get; private set; }
 
-        public Sample Sample { get; private set; }
+        public int Count { get { return Modifications.Count; } }
 
-        private HashSet<IQuantitationChannel> QuantChannels { get; set; }
-
-        public Tolerance Tolerance { get; set; }
-
-        internal ExperimentalCondition(Sample sample, string name, string description)
+        public HashSet<Modification> Modifications { get; set; }
+        
+        public ExperimentalCondition(string name, string description = "")
         {
-            Sample = sample;
             Name = name;
             Description = description;
-            QuantChannels = new HashSet<IQuantitationChannel>();
+            Modifications = new HashSet<Modification>();
         }
 
-        public ExperimentalCondition AddQuantChannel(params IQuantitationChannel[] channels)
+        public void AddModification(Modification mod)
         {
-            foreach (IQuantitationChannel channel in channels)
+            Modifications.Add(mod);
+        }
+
+        public void AddModifications(params Modification[] mods)
+        {
+            foreach (Modification mod in mods)
             {
-                QuantChannels.Add(channel);
+                Modifications.Add(mod);
             }
-            return this;
         }
 
         public override string ToString()
         {
-            return string.Format("{0} ({1})", Sample, Name);
+            return Name;
         }
 
-
-        public IEnumerator<IQuantitationChannel> GetEnumerator()
+        public IEnumerator<Modification> GetEnumerator()
         {
-            return QuantChannels.GetEnumerator();
+            return Modifications.GetEnumerator();
         }
 
         System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
         {
-            return QuantChannels.GetEnumerator();
+            return Modifications.GetEnumerator();
         }
     }
 }

@@ -388,9 +388,74 @@ namespace CSMSL.IO.Thermo
 
         public override double GetResolution(int spectrumNumber)
         {
-            object obj = GetExtraValue(spectrumNumber, "FT Resolution:");
-            double resolution = Convert.ToDouble(obj);
+            MZAnalyzerType analyzer = GetMzAnalyzer(spectrumNumber);
+            double resolution = 0;
+            switch (analyzer)
+            {
+                case MZAnalyzerType.FTICR:
+                case MZAnalyzerType.Orbitrap:
+                        object obj = GetExtraValue(spectrumNumber, "FT Resolution:");
+                        resolution = Convert.ToDouble(obj);
+                        if (resolution <= 0)
+                        {
+                            string name = GetInstrumentName();
+                            double mzDefined = 400;
+                            if (name == "Orbitrap Fusion")
+                            {
+                                mzDefined = 200;
+                                double[,] data = GetLabeledData(spectrumNumber);
+                                double mz = data[0, 0];
+                                double peakRes = data[2, 0];
+                                double correctedResolution = peakRes*Math.Sqrt(mz/mzDefined);
+
+                                if (correctedResolution < 25000)
+                                {
+                                    return 15000;
+                                }
+                                if (correctedResolution < 50000)
+                                {
+                                    return 30000;
+                                }
+                                if (correctedResolution < 100000)
+                                {
+                                    return 60000;
+                                }
+                                if (correctedResolution < 200000)
+                                {
+                                    return 120000;
+                                }
+                                if (correctedResolution < 400000)
+                                {
+                                    return 240000;
+                                }
+
+                                return 450000;
+
+                            }
+                            else
+                            {
+                                throw new ArgumentException();
+                            }
+                        }
+                    break;
+                default:
+                    break;
+            }
             return resolution;
+        }
+
+        public string GetInstrumentName()
+        {
+            string name = null;
+            _rawConnection.GetInstName(ref name);
+            return name;
+        }
+
+        public string GetInstrumentModel()
+        {
+            string model = null;
+            _rawConnection.GetInstModel(ref model);
+            return model;
         }
         
         private static Regex _etdReactTimeRegex = new Regex(@"@etd(\d+).(\d+)(\d+)", RegexOptions.Compiled);

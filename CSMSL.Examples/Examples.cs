@@ -23,6 +23,7 @@ using System.IO;
 using System.Linq;
 using System.Xml.Serialization;
 using CSMSL.Chemistry;
+using CSMSL.IO.Thermo;
 using CSMSL.Proteomics;
 using CSMSL.Util.Collections;
 using System;
@@ -61,6 +62,16 @@ namespace CSMSL.Examples
 
         private static void StartExamples()
         {
+            ThermoRawFile rawFile = new ThermoRawFile(@"E:\Desktop\Fusion_Colonel_ResolutionRamp.raw");
+            rawFile.Open();
+
+          
+            for (int i = 0; i < rawFile.LastSpectrumNumber; i++)
+            {
+                double resolution = rawFile.GetResolution(i);
+                Console.WriteLine(resolution);
+            }
+          
             // Examples coding  
             
             //ChemicalFormulaExamples();

@@ -12,7 +12,7 @@ namespace CSMSL.Analysis.ExperimentalDesign
          
         public ExperimentalCondition AddCondition(string name, string description = "")
         {
-            ExperimentalCondition condition = new ExperimentalCondition(this, name, description);
+            ExperimentalCondition condition = new ExperimentalCondition( name, description);
             _conditions.Add(condition);
             return condition;
         }
