@@ -1,5 +1,4 @@
-﻿using MathNet.Numerics.LinearAlgebra.Double;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -8,26 +7,30 @@ namespace CSMSL.Analysis.Quantitation
 {
     public class IsobaricTagPurityCorrection
     {
-        private readonly Matrix _purityMatrix;
-        //private readonly double[,] _purityMatrix;
-        private int _rows;
+        //private readonly Matrix _purityMatrix;
 
-        private IsobaricTagPurityCorrection(Matrix matrix)
+        private readonly double[,] _purityMatrix;
+        private readonly double[,] _purityLUMatrix;
+        private readonly int[] _purityLUMatrixIndex;
+        
+        private IsobaricTagPurityCorrection(double[,] matrix)
         {
             _purityMatrix = matrix;
-            _rows = matrix.RowCount;
+            int[] index;
+            _purityLUMatrix = _purityMatrix.LUDecompose(out index);
+            _purityLUMatrixIndex = index;
         }
 
         public double[,] GetMatrix()
         {
-            return _purityMatrix.Storage.ToArray();
+            return _purityMatrix.Copy();
             //return _purityMatrix;
         }
 
-        public double Determinant()
-        {
-            return _purityMatrix.Determinant();
-        }
+        //public double Determinant()
+        //{
+        //    return _purityMatrix.Determinant();
+        //}
         
         public double[] ApplyPurityCorrection(IEnumerable<double> rawData)
         {
@@ -36,11 +39,12 @@ namespace CSMSL.Analysis.Quantitation
 
         public double[] ApplyPurityCorrection(double[] rawData)
         {
-            if (rawData.Length != _rows)
+            if (rawData.Length != _purityLUMatrix.GetLength(0))
             {
                 throw new ArgumentException("Not enough data points");
             }
-            return _purityMatrix.LU().Solve(new DenseVector(rawData)).ToArray();
+            double[] result = _purityLUMatrix.Solve(rawData, _purityLUMatrixIndex);
+            return result;
         }
 
         /// <summary>
@@ -53,7 +57,7 @@ namespace CSMSL.Analysis.Quantitation
             int rows = purityValues.GetLength(0);
             int inputCount = purityValues.GetLength(1);
 
-            Matrix purityMatrix = new DenseMatrix(rows);
+            double[,] purityMatrix = new double[rows, rows];
            
 
              //w x y z part of iTracker Paper

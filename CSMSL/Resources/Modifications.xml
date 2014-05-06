@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Modifications>
+  <Modification name="Acetyl">
+    <ChemicalFormula>C2H2O</ChemicalFormula>
+    <ModificationSite>K</ModificationSite>
+    <AlternativeName>Acetylation</AlternativeName>
+  </Modification>
+  <Modification name="Carbamidomethyl">
+    <ChemicalFormula>C2H3NO</ChemicalFormula>
+    <ModificationSite>C</ModificationSite>
+    <AlternativeName>CAM</AlternativeName>
+  </Modification>
+  <Modification name="Oxidation">
+    <ChemicalFormula>O</ChemicalFormula>
+    <ModificationSite>M</ModificationSite>
+  </Modification>
+  <Modification name="Phosphorylation">
+    <ChemicalFormula>HPO3</ChemicalFormula>
+    <ModificationSite>S</ModificationSite>
+    <ModificationSite>T</ModificationSite>
+    <ModificationSite>Y</ModificationSite>
+    <AlternativeName>Phospho</AlternativeName>
+  </Modification>
+</Modifications>
+

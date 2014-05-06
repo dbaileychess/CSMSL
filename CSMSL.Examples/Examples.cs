@@ -62,16 +62,6 @@ namespace CSMSL.Examples
 
         private static void StartExamples()
         {
-            ThermoRawFile rawFile = new ThermoRawFile(@"E:\Desktop\Fusion_Colonel_ResolutionRamp.raw");
-            rawFile.Open();
-
-          
-            for (int i = 0; i < rawFile.LastSpectrumNumber; i++)
-            {
-                double resolution = rawFile.GetResolution(i);
-                Console.WriteLine(resolution);
-            }
-          
             // Examples coding  
             
             //ChemicalFormulaExamples();
@@ -88,7 +78,7 @@ namespace CSMSL.Examples
             //ProteinGroupingExample.Start(Protease.Trypsin);
             
             //Example Isotopologue
-            IsotopologueExample();
+            //IsotopologueExample();
 
             // Example IO
             //MsDataFileExamples.Start();
@@ -101,10 +91,7 @@ namespace CSMSL.Examples
 
             // Writing data to files
             //FileOutputExamples.Start();
-
-            //Purity Correction
-            //TMT6plexExample.PurityCorrection();
-
+            
             //PepXmlExamples.ReadPepXml();
 
             //MzIdentMLExamples.ReadMzIdentML();
@@ -182,12 +169,12 @@ namespace CSMSL.Examples
            
             // Modifications can be applied to any residue or termini
             Console.WriteLine("Lets add some Iron to our peptide...");
-            peptide1.SetModification(new NamedChemicalFormula("Fe"), Terminus.C | Terminus.N);
+            peptide1.SetModification(new ChemicalFormula("Fe"), Terminus.C | Terminus.N);
             WritePeptideToConsole(peptide1);            
 
             // A chemicalmodification is a simple wrapper for a chemical formula. You can name your mods if you want
             Console.WriteLine("Add a modification of Oxygen with the name \"Oxidation\" to all Methionines");
-            NamedChemicalFormula oxMod = new NamedChemicalFormula("O", "Oxidation");
+            ChemicalFormulaModification oxMod = new ChemicalFormulaModification("O", "Oxidation");
             peptide1.SetModification(oxMod, 'M');
             WritePeptideToConsole(peptide1);
 

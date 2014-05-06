@@ -332,6 +332,100 @@ namespace CSMSL
             }
             return newMatrix;
         }
+
+        public static double[,] LUDecompose(this double[,] matrix, out int[] index)
+        {
+            double[,] m = matrix.Copy();
+            int n = m.GetLength(0);
+
+            index = new int[m.Length];
+
+            int i, imax = 0, j, k;
+            double big, temp;
+            double[] vv = new double[n];
+
+            //preChecks
+            if (m.GetLength(0) != m.GetLength(1))
+                throw new Exception("matrix dimension problem only use square matrices");
+
+            //for each row find the absolute value of the greatest cell and store in vv
+            for (i = 0; i < n; i++)
+            {
+                big = 0.0;
+                for (j = 0; j < n; j++)
+                    if ((temp = Math.Abs(m[i, j])) > big) big = temp;
+                if (big == 0.0)
+                    throw new Exception("singular matrix");
+
+                vv[i] = 1.0 / big; //calculate scaling and save
+            }
+            //k is for colums start with the left look for the columns under the diagonal for the biggest value want to move the largest over diagonal
+            for (k = 0; k < n; k++)//find the largest pivot element 
+            {
+                big = 0.0;
+                for (i = k; i < n; i++)
+                {
+                    temp = vv[i] * Math.Abs(m[i, k]);
+                    if (temp > big)
+                    {
+                        big = temp;
+                        imax = i;
+                    }
+                }
+
+                if (k != imax)//do we need a row change 
+                {
+                    for (j = 0; j < n; j++)// counter for the colums
+                    {
+                        temp = m[imax, j];// change the rows
+                        m[imax, j] = m[k, j];
+                        m[k, j] = temp;
+                    }
+                    vv[imax] = vv[k];
+                }
+                index[k] = imax;
+
+                for (i = k + 1; i < n; i++)
+                {
+                    temp = m[i, k] /= m[k, k];//divide pilot element
+                    for (j = k + 1; j < n; j++)
+                        m[i, j] -= temp * m[k, j];
+                }
+            }
+            return m;
+        }
+
+        public static double[] Solve(this double[,] luMatrix, double[] b, int[] index)
+        {
+            if (b.Length != luMatrix.GetLength(0) || b.Length != luMatrix.GetLength(0))
+                throw new Exception("vector dimension problem");
+
+            double[] result = new double[b.Length];
+
+            int n = luMatrix.GetLength(0);
+            int i, ii = 0, ip, j;
+            double sum = 0;
+            for (i = 0; i < n; i++) result[i] = b[i];
+            for (i = 0; i < n; i++)
+            {
+                ip = index[i];
+                sum = result[ip];
+                result[ip] = result[i];
+                if (ii != 0)
+                    for (j = ii - 1; j < i; j++) sum -= luMatrix[i, j] * result[j];
+                else if (sum != 0.0)
+                    ii = i + 1;
+                result[i] = sum;
+            }
+            for (i = n - 1; i >= 0; i--)
+            {
+                sum = result[i];
+                for (j = i + 1; j < n; j++) sum -= luMatrix[i, j] * result[j];
+                result[i] = sum / luMatrix[i, i];
+            }
+
+            return result;
+        }
     }
 }
 

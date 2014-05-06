@@ -44,17 +44,7 @@ namespace CSMSL.Tests.Proteomics
             Assert.AreEqual(formula, formula2);
         }
 
-        [Test]
-        public void PeptideMassTrypticNTerminalLabeledFormula()
-        {
-            _mockTrypticPeptide.SetModification(NamedChemicalFormula.TMT6plex, Terminus.N);
-            ChemicalFormula formulaA = new ChemicalFormula("C45C{13}4H86N13N{15}1O23");
-            ChemicalFormula formulaB;
-            _mockTrypticPeptide.TryGetChemicalFormula(out formulaB);
-
-            Assert.AreEqual(formulaA, formulaB);
-        }
-
+    
         [Test]      
         public void PeptideAminoAcidCount()
         {
@@ -173,34 +163,34 @@ namespace CSMSL.Tests.Proteomics
         [Test]
         public void ParseNamedChemicalNamedChemicalModification()
         { 
-            Peptide peptide = new Peptide("T[TMT 6-plex]HGEAK[Acetyl]K[TMT 6-plex]");
+            Peptide peptide = new Peptide("THGEAK[Acetyl]K");
 
-            Assert.AreEqual(1269.74468058495, peptide.MonoisotopicMass);
+            Assert.AreEqual(811.41881631550984, peptide.MonoisotopicMass);
         }
 
         [Test]
         public void ParseDoubleModificationToString()
         {
-            Peptide peptide = new Peptide("T[TMT 6-plex]HGEAK[25.132]K[TMT 6-plex]");
+            Peptide peptide = new Peptide("THGEAK[25.132]K");
 
-            Assert.AreEqual("T[TMT 6-plex]HGEAK[25.132]K[TMT 6-plex]", peptide.ToString());
+            Assert.AreEqual("THGEAK[25.132]K", peptide.ToString());
         }
 
         [Test]
         public void ParseNamedChemicalModificationToString()
         {
-            Peptide peptide = new Peptide("T[TMT 6-plex]HGEAK[Acetyl]K[TMT 6-plex]");
+            Peptide peptide = new Peptide("THGEAK[Acetyl]K");
 
-            Assert.AreEqual("T[TMT 6-plex]HGEAK[Acetyl]K[TMT 6-plex]", peptide.ToString());
+            Assert.AreEqual("THGEAK[Acetyl]K", peptide.ToString());
         }
 
         [Test]
         public void ParseNamedChemicalModificationRegisterNew()
         {
-            NamedChemicalFormula.AddModification("C2H3NO", "Test");
-            Peptide peptide = new Peptide("T[TMT 6-plex]HGEAK[Test]K[TMT 6-plex]");
+            ModificationDictionary.AddModification(new ChemicalFormulaModification("C2H3NO", "Test", ModificationSites.C));
+            Peptide peptide = new Peptide("THGEAK[Test]K");
 
-            Assert.AreEqual(1284.7555796218201, peptide.MonoisotopicMass);
+            Assert.AreEqual(826.42971535237984, peptide.MonoisotopicMass);
         }
 
         [Test]
@@ -216,7 +206,7 @@ namespace CSMSL.Tests.Proteomics
         [ExpectedException(typeof(ArgumentException), ExpectedMessage = "Unable to correctly parse the following modification: TMT 7-plex")]
         public void ParseNamedChemicalModificationInvalidName()
         {
-            Peptide peptide = new Peptide("T[TMT 7-plex]HGEAK[Acetyl]K[TMT 6-plex]");           
+            Peptide peptide = new Peptide("T[TMT 7-plex]HGEAK[Acetyl]K");           
         }
 
         [Test]
@@ -302,7 +292,7 @@ namespace CSMSL.Tests.Proteomics
         [Test]
         public void SetCTerminusModStringRepresentationofChemicalModification()
         {
-            IChemicalFormula formula = new NamedChemicalFormula("Fe", "Test");
+            IChemicalFormula formula = new ChemicalFormulaModification("Fe", "Test");
             _mockPeptideEveryAminoAcid.SetModification(formula, Terminus.C);
 
             Assert.AreEqual("ACDEFGHIKLMNPQRSTVWY-[Test]", _mockPeptideEveryAminoAcid.ToString());
@@ -311,8 +301,8 @@ namespace CSMSL.Tests.Proteomics
         [Test]
         public void SetNAndCTerminusMod()
         {
-            _mockPeptideEveryAminoAcid.SetModification(new NamedChemicalFormula("Fe"), Terminus.C);
-            _mockPeptideEveryAminoAcid.SetModification(new NamedChemicalFormula("H2NO"), Terminus.N);
+            _mockPeptideEveryAminoAcid.SetModification(new ChemicalFormula("Fe"), Terminus.C);
+            _mockPeptideEveryAminoAcid.SetModification(new ChemicalFormula("H2NO"), Terminus.N);
 
             Assert.AreEqual("[H2NO]-ACDEFGHIKLMNPQRSTVWY-[Fe]", _mockPeptideEveryAminoAcid.ToString());
         }
@@ -321,7 +311,7 @@ namespace CSMSL.Tests.Proteomics
         [Test]
         public void SetSameNAndCTerminusMod()
         {
-            _mockPeptideEveryAminoAcid.SetModification(new NamedChemicalFormula("Fe"), Terminus.C | Terminus.N);
+            _mockPeptideEveryAminoAcid.SetModification(new ChemicalFormula("Fe"), Terminus.C | Terminus.N);
 
             Assert.AreEqual("[Fe]-ACDEFGHIKLMNPQRSTVWY-[Fe]", _mockPeptideEveryAminoAcid.ToString());
         }
@@ -346,18 +336,6 @@ namespace CSMSL.Tests.Proteomics
             _mockPeptideEveryAminoAcid.ClearModifications(Terminus.C);
 
             Assert.IsNull(_mockPeptideEveryAminoAcid.CTerminusModification);
-        }
-
-        [Test]
-        public void ClearAllModifications()
-        {
-            _mockPeptideEveryAminoAcid.SetModification(NamedChemicalFormula.Oxidation, 'M');
-            _mockPeptideEveryAminoAcid.SetModification(NamedChemicalFormula.Carbamidomethyl, 'C');
-            _mockPeptideEveryAminoAcid.SetModification(NamedChemicalFormula.TMT6plex, Terminus.N);
-
-            _mockPeptideEveryAminoAcid.ClearModifications();
-
-            Assert.AreEqual("ACDEFGHIKLMNPQRSTVWY",_mockPeptideEveryAminoAcid.ToString());
         }
 
         [Test]

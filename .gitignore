@@ -52,3 +52,4 @@ TestResults/
 #########
 !NuGet.exe
 packages/
+*.nupkg

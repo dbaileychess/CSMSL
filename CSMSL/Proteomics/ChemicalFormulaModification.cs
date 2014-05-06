@@ -9,13 +9,19 @@ namespace CSMSL.Proteomics
         /// </summary>
         public ChemicalFormula ChemicalFormula { get; private set; }
 
-        public ChemicalFormulaModification(string chemicalFormula, string name = "", ModificationSites sites = ModificationSites.Any)
+        public ChemicalFormulaModification(string chemicalFormula, ModificationSites sites = ModificationSites.Any)
+           : this(new ChemicalFormula(chemicalFormula), "", sites)
+        {
+            Name = ChemicalFormula.ToString();
+        }
+
+        public ChemicalFormulaModification(string chemicalFormula, string name, ModificationSites sites = ModificationSites.Any)
             : this(new ChemicalFormula(chemicalFormula), name, sites)
         {
 
         }
 
-        public ChemicalFormulaModification(ChemicalFormula chemicalFormula, string name = "", ModificationSites sites = ModificationSites.Any)
+        public ChemicalFormulaModification(ChemicalFormula chemicalFormula, string name, ModificationSites sites = ModificationSites.Any)
             : base(chemicalFormula.MonoisotopicMass, name, sites)
         {
             ChemicalFormula = chemicalFormula;

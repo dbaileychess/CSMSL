@@ -28,10 +28,10 @@ namespace CSMSL.Examples
 
                 writer.WriteSearchProtease(Protease.Trypsin, 3);
 
-                writer.WriteModification(NamedChemicalFormula.Acetyl, ModificationSites.K | ModificationSites.NPep);
-                writer.WriteModification(NamedChemicalFormula.Carbamidomethyl, ModificationSites.C);
+                writer.WriteModification(ModificationDictionary.GetModification("Acetyl"), ModificationSites.K | ModificationSites.NPep);
+                writer.WriteModification(ModificationDictionary.GetModification("CAM"), ModificationSites.C);
 
-                writer.WriteModification(NamedChemicalFormula.Phosphorylation, ModificationSites.S | ModificationSites.T | ModificationSites.Y, false);
+                writer.WriteModification(ModificationDictionary.GetModification("Phospho"), ModificationSites.S | ModificationSites.T | ModificationSites.Y, false);
 
                 writer.SetCurrentStage(PepXmlWriter.Stage.Spectra, true);
 

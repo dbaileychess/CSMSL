@@ -48,25 +48,7 @@ namespace CSMSL.Tests.Proteomics
             Assert.AreEqual(19,fragments.Count);
         }
 
-        [Test]
-        public void FragmentNTerminalMod()
-        {
-            _mockPeptideEveryAminoAcid.SetModification(NamedChemicalFormula.TMT6plex, Terminus.N);
-            Fragment fragment = _mockPeptideEveryAminoAcid.Fragment(FragmentTypes.a, 1);
-            ChemicalFormula formula = new ChemicalFormula("C{13}4C10N{15}N2O2H25");
-            
-            Assert.AreEqual(fragment.MonoisotopicMass, formula.MonoisotopicMass);
-        }
-
-        [Test]
-        public void FragmentCTerminalMod()
-        {
-            _mockPeptideEveryAminoAcid.SetModification(NamedChemicalFormula.TMT6plex, Terminus.C);
-            Fragment fragment = _mockPeptideEveryAminoAcid.Fragment(FragmentTypes.x, 1);
-
-            Assert.AreEqual(436.21608990639004, fragment.MonoisotopicMass);
-        }
-
+   
         [Test]
         public void FragmentChemicalFormulaAIon()
         {

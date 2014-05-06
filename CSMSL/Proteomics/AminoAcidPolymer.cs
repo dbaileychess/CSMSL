@@ -1095,7 +1095,12 @@ namespace CSMSL.Proteomics
                                 break;
                             default:
                                 double mass;
-                                if (ChemicalFormula.IsValidChemicalFormula(modString))
+                                Modification mod;
+                                if (ModificationDictionary.TryGetModification(modString, out mod))
+                                {
+                                    modification = mod;
+                                } 
+                                else if (ChemicalFormula.IsValidChemicalFormula(modString))
                                 {
                                     modification = new ChemicalFormula(modString);
                                 }

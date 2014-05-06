@@ -395,7 +395,6 @@ namespace CSMSL.IO.Thermo
                 case MZAnalyzerType.FTICR:
                 case MZAnalyzerType.Orbitrap:
                     string name = GetInstrumentName();
-                    double mzDefined = 400;
                     if (name == "Orbitrap Fusion")
                     {
                         object obj = GetExtraValue(spectrumNumber, "Orbitrap Resolution:");

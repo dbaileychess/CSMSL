@@ -139,19 +139,7 @@ namespace CSMSL.Tests.Proteomics
             Assert.Contains(new Peptide("MRGFK"), peptides);
             Assert.Contains(new Peptide("MMRGFK"), peptides);
         }
-        
-        [Test]
-        public void DigestionPerservesCTerminalModification()
-        {
-            Protein prot = new Protein("MMRGFKQRLIKKTTGSSSSSSSKKKDKEKEKEKSSTTSSTSKKPASASSSSHGTTHSSASSTGSKSTTEKGKQSGSVPSQ");
-            prot.SetModification(NamedChemicalFormula.iTRAQ4Plex, Terminus.C);
-
-            Peptide peptide = new Peptide("QSGSVPSQ");
-            peptide.SetModification(NamedChemicalFormula.iTRAQ4Plex, Terminus.C);
-            var peptides = prot.Digest(Protease.Trypsin, 0, 5, 10, includeModifications: true).ToList();
-
-            Assert.Contains(peptide, peptides);
-        }
+  
 
         [Test]
         public void SemiTrypiticDigestion()

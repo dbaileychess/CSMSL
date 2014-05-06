@@ -23,10 +23,8 @@ namespace CSMSL.Examples
             {               
                 reader.LoadProteins("Resources/yeast_uniprot_120226.fasta");
 
-                reader.AddFixedModification(new Modification(NamedChemicalFormula.Carbamidomethyl.MonoisotopicMass,
-                    NamedChemicalFormula.Carbamidomethyl.Name, ModificationSites.C));
-                reader.AddFixedModification(new Modification(NamedChemicalFormula.TMT6plex.MonoisotopicMass,NamedChemicalFormula.TMT6plex.Name, ModificationSites.NPep | ModificationSites.K));                
-                reader.AddVariableModification(NamedChemicalFormula.Oxidation, "oxdiation of M");
+                reader.AddFixedModification(ModificationDictionary.GetModification("CAM"));
+                reader.AddVariableModification(ModificationDictionary.GetModification("Oxidation"),"oxdiation of M");
                 psms = reader.ReadNextPsm().OrderBy(psm => psm.Score).ToList();
             }
 

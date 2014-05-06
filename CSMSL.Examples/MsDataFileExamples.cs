@@ -1,13 +1,10 @@
 ﻿using CSMSL.IO;
-
-using CSMSL.IO.MzML;
 using CSMSL.IO.Thermo;
-using CSMSL.IO.Agilent;
 using CSMSL.Spectral;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using ChromatogramType = CSMSL.Spectral.ChromatogramType;
+
 
 namespace CSMSL.Examples
 {
