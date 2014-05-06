@@ -21,7 +21,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Xml.Serialization;
 using CSMSL.Chemistry;
 using CSMSL.IO.Thermo;
 using CSMSL.Proteomics;
@@ -81,7 +80,7 @@ namespace CSMSL.Examples
             //IsotopologueExample();
 
             // Example IO
-            //MsDataFileExamples.Start();
+            MsDataFileExamples.Start();
 
             // Omssa Reader
             //OmssaReader.Start();

@@ -59,6 +59,11 @@ namespace CSMSL.Chemistry
         public static bool InternChemicalFormulaStrings = true;
 
         /// <summary>
+        /// The default empty chemicalFormula
+        /// </summary>
+        public static readonly ChemicalFormula Empty = new ChemicalFormula();
+
+        /// <summary>
         /// Indicates if the internal _isotope array has been modified, requiring necessary
         /// clean up code to be performed.
         /// </summary>

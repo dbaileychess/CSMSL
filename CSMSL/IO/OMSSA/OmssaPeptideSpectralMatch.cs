@@ -1,10 +1,12 @@
-﻿using CsvHelper.Configuration;
+﻿using System;
+using CsvHelper.Configuration;
 
 namespace CSMSL.IO.OMSSA
 {
 
     public class OmssaPeptideSpectralMatch : CsvClassMap<OmssaPeptideSpectralMatch>
     {
+        [Obsolete("This method is deprecated and will be removed in the next major release. Specify your mappings in the constructor instead.", false)]
         public override void CreateMap()
         {
             Map(m => m.SpectrumNumber).Name("Spectrum number");
@@ -23,7 +25,7 @@ namespace CSMSL.IO.OMSSA
             Map(m => m.GI).Name(" gi");
             Map(m => m.NistScore).Name(" NIST score");
         }     
-
+        
         public int SpectrumNumber { get; set; }
 
         public double EValue { get; set; }

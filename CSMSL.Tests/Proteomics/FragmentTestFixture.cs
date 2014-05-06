@@ -10,10 +10,8 @@ namespace CSMSL.Tests.Proteomics
     [TestFixture, Category("Peptide Fragmentation")]
     public sealed class FragmentTestFixture
     {
-
         private Peptide _mockPeptideEveryAminoAcid;
        
-
         [SetUp]
         public void SetUp()
         {

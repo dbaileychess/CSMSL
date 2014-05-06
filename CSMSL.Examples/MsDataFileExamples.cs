@@ -1,4 +1,5 @@
 ﻿using CSMSL.IO;
+using CSMSL.IO.Agilent;
 using CSMSL.IO.Thermo;
 using CSMSL.Spectral;
 using System;
@@ -19,7 +20,7 @@ namespace CSMSL.Examples
             List<MSDataFile> exampleRawFiles = new List<MSDataFile>
                 {
                     new ThermoRawFile("Resources/ThermoRawFileMS1MS2.raw"),
-                    //new AgilentDDirectory(@"Resources\AgilentDDirectoryMS1MS2.d"),
+                    new AgilentDDirectory(@"Resources\AgilentDDirectoryMS1MS2.d"),
                     //new WiffFile(@"Resources/Enolase_repeats_AQv1.4.2.wiff")
                     //new Mzml("Resources/ThermoRawFileMS1MS2_Profile.mzML"),
                     //new Mzml("Resources/ThermoRawFileMS1MS2_Centroided.mzML")

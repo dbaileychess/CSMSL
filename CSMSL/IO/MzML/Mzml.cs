@@ -1,6 +1,5 @@
 ﻿using CSMSL.Proteomics;
 using CSMSL.Spectral;
-using Ionic.Zlib;
 using System;
 using System.IO;
 using System.Xml.Serialization;

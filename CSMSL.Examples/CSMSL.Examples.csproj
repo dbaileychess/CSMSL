@@ -78,13 +78,11 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Examples.cs" />
     <Compile Include="FileOutputExamples.cs" />
     <Compile Include="MsDataFileExamples.cs" />
-    <Compile Include="MzIdentMLExamples.cs" />
     <Compile Include="OmssaReader.cs" />
     <Compile Include="PepXmlExamples.cs" />
     <Compile Include="ProteinGroupingExample.cs" />
@@ -97,13 +95,9 @@
       <Project>{3c8c9f05-9c19-4251-95fa-05d7edc8cae6}</Project>
       <Name>CSMSL</Name>
     </ProjectReference>
-    <ProjectReference Include="..\CSMSL\IO\MzIdentML\MzIdentML.csproj">
-      <Project>{88488504-ba7f-41dd-9965-ae951810c612}</Project>
-      <Name>MzIdentML</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\CSMSL\IO\MzML\MzML.csproj">
-      <Project>{012434fb-88a9-4dec-b887-5f64c0b481d4}</Project>
-      <Name>MzML</Name>
+    <ProjectReference Include="..\CSMSL\IO\Agilent\Agilent.csproj">
+      <Project>{83C27418-E85C-4270-B9D1-066B9EAD5211}</Project>
+      <Name>Agilent</Name>
     </ProjectReference>
     <ProjectReference Include="..\CSMSL\IO\OMSSA\OMSSA.csproj">
       <Project>{45a71e18-42e8-41a4-9479-2852c4186993}</Project>
