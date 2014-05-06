@@ -249,8 +249,7 @@ namespace CSMSL.Tests.Chemistry
 
             Assert.AreEqual(formulaA, ChemicalFormula.Empty);          
         }
-
-
+        
         [Test]
         public void ConstructorDefaultEqualsEmptyFormula()
         {
@@ -391,6 +390,14 @@ namespace CSMSL.Tests.Chemistry
         }
 
         [Test]
+        public void HillNotationAndFormulaEquality()
+        {
+            ChemicalFormula formulaA = new ChemicalFormula("H3NC2C{13}-2O");
+
+            Assert.AreEqual(formulaA.GetHillNotation(), formulaA.Formula);
+        }
+
+        [Test]
         public void HillNotationNoCarbon()
         {
             ChemicalFormula formulaA = new ChemicalFormula("HBr");
@@ -436,6 +443,22 @@ namespace CSMSL.Tests.Chemistry
             ChemicalFormula formulaA = new ChemicalFormula("H3NC2C{13}-2O");
             
             Assert.AreEqual("C2C{13}-2H3NO", formulaA.Formula);
+        }
+        
+        [Test]
+        public void HillNotationDelimiter()
+        {
+            ChemicalFormula formulaA = new ChemicalFormula("H3NC2O");
+
+            Assert.AreEqual("C2 H3 N O", formulaA.GetHillNotation(" "));
+        }
+
+        [Test]
+        public void HillNotationDelimiterWithHeavyIsotopes()
+        {
+            ChemicalFormula formulaA = new ChemicalFormula("H3NC2C{13}O");
+
+            Assert.AreEqual("C2 C{13} H3 N O", formulaA.GetHillNotation(" "));
         }
 
         [Test]

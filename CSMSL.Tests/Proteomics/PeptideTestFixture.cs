@@ -48,7 +48,7 @@ namespace CSMSL.Tests.Proteomics
         [Test]      
         public void PeptideAminoAcidCount()
         {
-            Assert.AreEqual(20,_mockPeptideEveryAminoAcid.Length);
+            Assert.AreEqual(20, _mockPeptideEveryAminoAcid.Length);
         }
         
         [Test]
@@ -203,6 +203,33 @@ namespace CSMSL.Tests.Proteomics
         }
 
         [Test]
+        public void ParseSequenceWithTrailingSpaces()
+        {
+            Peptide peptide1 = new Peptide("TTGSSSSSSSK   ");
+            Peptide peptide2 = new Peptide("TTGSSSSSSSK");
+
+            Assert.AreEqual(peptide1, peptide2);
+        }
+
+        [Test]
+        public void ParseSequenceWithPreceedingSpaces()
+        {
+            Peptide peptide1 = new Peptide("   TTGSSSSSSSK");
+            Peptide peptide2 = new Peptide("TTGSSSSSSSK");
+
+            Assert.AreEqual(peptide1, peptide2);
+        }
+
+        [Test]
+        public void ParseSequenceWithSpacesEverywhere()
+        {
+            Peptide peptide1 = new Peptide("   TTGS  SSSS  SSK   ");
+            Peptide peptide2 = new Peptide("TTGSSSSSSSK");
+
+            Assert.AreEqual(peptide1, peptide2);
+        }
+
+        [Test]
         [ExpectedException(typeof(ArgumentException), ExpectedMessage = "Unable to correctly parse the following modification: TMT 7-plex")]
         public void ParseNamedChemicalModificationInvalidName()
         {
@@ -235,6 +262,34 @@ namespace CSMSL.Tests.Proteomics
 
             Assert.AreEqual("ACDEF[Fe]GHIKLMN[Fe]PQRSTV[Fe]WY", _mockPeptideEveryAminoAcid.ToString());
         }
+
+        [Test]
+        public void SetAminoAcidModificationStronglyTypedAny()
+        {
+            ChemicalFormula formula = new ChemicalFormula("Fe");
+            _mockPeptideEveryAminoAcid.SetModification(formula, ModificationSites.Any);
+
+            Assert.AreEqual("ACDEFGHIKLMNPQRSTVWY", _mockPeptideEveryAminoAcid.ToString());
+        }
+
+        [Test]
+        public void SetAminoAcidModificationStronglyTypedAll()
+        {
+            ChemicalFormula formula = new ChemicalFormula("Fe");
+            _mockPeptideEveryAminoAcid.SetModification(formula, ModificationSites.All);
+
+            Assert.AreEqual("[Fe]-A[Fe]C[Fe]D[Fe]E[Fe]F[Fe]G[Fe]H[Fe]I[Fe]K[Fe]L[Fe]M[Fe]N[Fe]P[Fe]Q[Fe]R[Fe]S[Fe]T[Fe]V[Fe]W[Fe]Y[Fe]-[Fe]", _mockPeptideEveryAminoAcid.ToString());
+        }
+
+        [Test]
+        public void SetAminoAcidModificationStronglyTypedNone()
+        {
+            ChemicalFormula formula = new ChemicalFormula("Fe");
+            _mockPeptideEveryAminoAcid.SetModification(formula, ModificationSites.None);
+
+            Assert.AreEqual("ACDEFGHIKLMNPQRSTVWY", _mockPeptideEveryAminoAcid.ToString());
+        }
+
 
         [Test]
         public void SetAminoAcidModificationStronglyTypedTermini()
@@ -336,6 +391,27 @@ namespace CSMSL.Tests.Proteomics
             _mockPeptideEveryAminoAcid.ClearModifications(Terminus.C);
 
             Assert.IsNull(_mockPeptideEveryAminoAcid.CTerminusModification);
+        }
+
+        [Test]
+        public void ClearAllMods()
+        {
+            ChemicalFormula formula = new ChemicalFormula("Fe");
+            _mockPeptideEveryAminoAcid.SetModification(formula, ModificationSites.All);
+
+            _mockPeptideEveryAminoAcid.ClearModifications();
+
+            Assert.AreEqual("ACDEFGHIKLMNPQRSTVWY", _mockPeptideEveryAminoAcid.ToString());
+        }
+
+        [Test]
+        public void ClearModificationsBySites()
+        {
+            var peptide = new Peptide("AC[Fe]DEFGHIKLMNP[Fe]QRSTV[Fe]WY");
+
+            peptide.ClearModifications(ModificationSites.C | ModificationSites.V);
+
+            Assert.AreEqual("ACDEFGHIKLMNP[Fe]QRSTVWY", peptide.ToString());
         }
 
         [Test]

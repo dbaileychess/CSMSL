@@ -33,7 +33,9 @@ namespace CSMSL.Proteomics
         NProt = 1 << 23,
         ProtC = 1 << 24,
         All = (1 << 25) - 1,    // Handy way of setting all below the 24th bit
-        Any = 1 << 31           
+        NTerminus = NPep | NProt,
+        TerminusC = PepC | ProtC,
+        Any = 1 << 31           // Acts like none, but is equal to all
     }
 
     public static class IModificationSiteExtensions

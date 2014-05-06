@@ -766,15 +766,22 @@ namespace CSMSL.Proteomics
             if ((terminus & Terminus.C) == Terminus.C)
                 CTerminusModification = null;
         }
-
-     
+        
+        /// <summary>
+        /// Clear the modifications from the specified sites(s)
+        /// </summary>
+        /// <param name="sites">The sites to remove modifications from</param>
         public void ClearModifications(ModificationSites sites)
         {
-            //if(sites & ModificationSites.NPep )
+            if ((sites & ModificationSites.NPep) == ModificationSites.NPep || (sites & ModificationSites.NProt) == ModificationSites.NProt)
+            {
+                ReplaceMod(0, null);
+            }
 
-            for (int i = 0; i < _aminoAcids.Length; i++)
+            for (int i = 0; i < Length; i++)
             {
                 int modIndex = i + 1;
+
                 if (_modifications[modIndex] == null)
                     continue;
 
@@ -782,17 +789,14 @@ namespace CSMSL.Proteomics
 
                 if ((curSite & sites) == curSite)
                 {
-                    MonoisotopicMass -= _modifications[modIndex].MonoisotopicMass;
-                    _modifications[modIndex] = null;
-                    IsDirty = true;
+                    ReplaceMod(modIndex, null);
                 }
             }
 
-            //if ((terminus & Terminus.N) == Terminus.N)
-            //    NTerminusModification = null;
-
-            //if ((terminus & Terminus.C) == Terminus.C)
-            //    CTerminusModification = null;
+            if ((sites & ModificationSites.PepC) == ModificationSites.PepC || (sites & ModificationSites.ProtC) == ModificationSites.ProtC)
+            {
+                ReplaceMod(Length + 1, null);
+            }
         }
 
         /// <summary>

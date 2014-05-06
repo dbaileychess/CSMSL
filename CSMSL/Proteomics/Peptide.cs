@@ -27,6 +27,8 @@ namespace CSMSL.Proteomics
 {
     public class Peptide : AminoAcidPolymer
     {
+        public static Peptide Empty = new Peptide();
+
         public int StartResidue { get; set; }
 
         public int EndResidue { get; set; }
