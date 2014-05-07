@@ -17,24 +17,19 @@ namespace CSMSL.Chemistry
         /// Create a empty generator, which will produce no formulas unless a constraint is added
         /// </summary>
         public ChemicalFormulaGenerator()
-        {
-            _minFormula = new ChemicalFormula();
-            _maxFormula = new ChemicalFormula();
-        }
-
+            : this (new ChemicalFormula(), new ChemicalFormula()) { }
+        
         /// <summary>
         /// Creates a generator with a maximum chemical formula allowed
         /// </summary>
         /// <param name="maximumChemicalFormula">The maximum chemical formula to generate</param>
         public ChemicalFormulaGenerator(ChemicalFormula maximumChemicalFormula)
-        {
-            _minFormula = new ChemicalFormula();
-            _maxFormula = new ChemicalFormula(maximumChemicalFormula);
-        }
+            : this (new ChemicalFormula(), maximumChemicalFormula) { }
 
         /// <summary>
         /// Creates a generator with a maximum chemical formula allowed
         /// </summary>
+        /// <param name="minimumChemicalFormula"></param>
         /// <param name="maximumChemicalFormula">The maximum chemical formula to generate</param>
         public ChemicalFormulaGenerator(ChemicalFormula minimumChemicalFormula, ChemicalFormula maximumChemicalFormula)
         {
@@ -75,12 +70,7 @@ namespace CSMSL.Chemistry
         {
             return FromMass(0, int.MaxValue - 1);
         }
-
-        public IEnumerable<ChemicalFormula> FromMass(IRange<double> range, int maxNumberOfResults = int.MaxValue)
-        {
-            return FromMass(range.Minimum, range.Maximum, maxNumberOfResults);
-        }
-
+        
         private static double GetMass(int[] isotopes, double[] masses)
         {
             double mass = 0;
@@ -95,7 +85,7 @@ namespace CSMSL.Chemistry
             return mass;
         }
 
-        private static void GenerateFormulaHelper(double lowMass, double highMass, int length, double[] masses, int[] max, int index, int[] currentFormula, List<ChemicalFormula> formulas)
+        private static void GenerateFormulaHelper(double lowMass, double highMass, double[] masses, int[] max, int index, int[] currentFormula, List<ChemicalFormula> formulas)
         {
             while (index > 0 && max[index] == 0)
             {
@@ -107,7 +97,7 @@ namespace CSMSL.Chemistry
                 for (int count = 0; count <= maxCount; count++)
                 {
                     currentFormula[index] = count;
-                    GenerateFormulaHelper(lowMass, highMass, length, masses, max, index - 1, currentFormula, formulas);
+                    GenerateFormulaHelper(lowMass, highMass, masses, max, index - 1, currentFormula, formulas);
                 }
             }
             else
@@ -126,7 +116,7 @@ namespace CSMSL.Chemistry
                     if (currentMass >= lowMass && currentMass <= highMass)
                     {
                         ChemicalFormula formula = new ChemicalFormula(currentFormula);
-                        if (formula.MonoisotopicMass != 0.0)
+                        if (!formula.MassEquals(0.0))
                             formulas.Add(formula);
                     }
                     currentMass -= count*massAtIndex;
@@ -190,7 +180,7 @@ namespace CSMSL.Chemistry
             }
             masses[0] = PeriodicTable.Instance[0].AtomicMass;
             
-            GenerateFormulaHelper(correctedLowMass, correctedHighMass, length, masses, maxValues, length - 1, currentFormula, returnFormulas);
+            GenerateFormulaHelper(correctedLowMass, correctedHighMass, masses, maxValues, length - 1, currentFormula, returnFormulas);
 
             if (minFormulaExists)
             {
@@ -208,6 +198,11 @@ namespace CSMSL.Chemistry
                 return returnFormulas;
             double meanValue = (highMass + lowMass) / 2.0;
             return returnFormulas.OrderBy(formula => Math.Abs(formula.MonoisotopicMass - meanValue)).Take(maxNumberOfResults);
+        }
+
+        public IEnumerable<ChemicalFormula> FromMass(IRange<double> massRange, int maxNumberOfResults = int.MaxValue, bool sort = true)
+        {
+            return FromMass(massRange.Minimum, massRange.Maximum, maxNumberOfResults, sort);
         }
 
     }

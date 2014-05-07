@@ -1,7 +1,7 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using CSMSL;
 
 namespace CSMSL.Spectral
 {
@@ -15,9 +15,6 @@ namespace CSMSL.Spectral
         public double FirstMz { get { return _masses[0]; } }
         public double LastMZ { get { return _masses[Count - 1]; } }
 
-        public Spectrum(double[] mz, double[] intensities)
-            : this(mz, intensities, true) { }    
-
         public Spectrum(double[] mz, double[] intensities, bool shouldCopy = true)
         {
             Count = mz.Length;
@@ -26,8 +23,8 @@ namespace CSMSL.Spectral
             {
                 _masses = new double[Count];
                 _intensities = new double[Count];
-                System.Buffer.BlockCopy(mz, 0, _masses, 0, 8 * Count);
-                System.Buffer.BlockCopy(intensities, 0, _intensities, 0, 8 * Count);
+                Buffer.BlockCopy(mz, 0, _masses, 0, 8 * Count);
+                Buffer.BlockCopy(intensities, 0, _intensities, 0, 8 * Count);
             }
             else
             {
@@ -137,7 +134,7 @@ namespace CSMSL.Spectral
 
                 return null;
             }
-            else if (index == 0)
+            if (index == 0)
             {
                 // only the index can be closer
                 if (_masses[index] <= maxMZ)
@@ -272,9 +269,9 @@ namespace CSMSL.Spectral
             }
         }
 
-        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        IEnumerator IEnumerable.GetEnumerator()
         {
-            return this.GetEnumerator();
+            return GetEnumerator();
         }
 
         public byte[] ToBytes(bool zlibCompressed = false)

@@ -171,9 +171,6 @@
     <Compile Include="Spectral\MZPeak.cs" />
     <Compile Include="Spectral\Polarity.cs" />
     <Compile Include="Spectral\Spectrum`1.cs" />
-    <Compile Include="Util\Collections\BinaryTree.cs" />
-    <Compile Include="Util\Collections\BinaryTreeNode.cs" />
-    <Compile Include="Util\Collections\SortableBindingList.cs" />
     <Compile Include="Util\Collections\SortedMaxSizedContainer.cs" />
     <Compile Include="Util\Combinatorics.cs" />
     <Compile Include="Util\LinearRegression.cs" />

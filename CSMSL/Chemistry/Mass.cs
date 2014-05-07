@@ -73,29 +73,34 @@ namespace CSMSL.Chemistry
             MonoisotopicMass -= item.MonoisotopicMass;
         }
 
-        /// <summary>
-        /// Calculates the m/z for the monoisotopic mass
-        /// </summary>
-        /// <param name="charge">The charge state</param>
-        /// <returns>The m/z for the moniosotopic mass at a given charge state</returns>
-        public double ToMz(int charge)
-        {
-            return MzFromMass(MonoisotopicMass, charge);
-        }
+        ///// <summary>
+        ///// Calculates the m/z for the monoisotopic mass
+        ///// </summary>
+        ///// <param name="charge">The charge state</param>
+        ///// <returns>The m/z for the moniosotopic mass at a given charge state</returns>
+        //public double ToMz(int charge)
+        //{
+        //    return MzFromMass(MonoisotopicMass, charge);
+        //}
 
         public override string ToString()
         {
-            return MonoisotopicMass.ToString("G5");            
+            return ToString("G5");
+        }
+
+        public string ToString(string format)
+        {
+            return MonoisotopicMass.ToString(format);            
         }
 
         public int CompareTo(Mass other)
         {
-            return MonoisotopicMass.CompareTo(other.MonoisotopicMass);
+            return this.Compare(other);
         }
                 
         public bool Equals(Mass other)
         {
-            return MonoisotopicMass.Equals(other.MonoisotopicMass);
+            return MonoisotopicMass.MassEquals(other);
         }
 
         public override bool Equals(object obj)

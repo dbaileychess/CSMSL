@@ -56,6 +56,7 @@ namespace CSMSL.Proteomics
         /// <param name="maxLength">The maximum length (in amino acids) of the peptide</param>
         /// <param name="initiatorMethonine"></param>
         /// <param name="includeModifications"></param>
+        /// <param name="semiDigestion"></param>
         /// <returns>A list of digested peptides</returns>
         public virtual IEnumerable<Peptide> Digest(IProtease protease, int maxMissedCleavages = 3, int minLength = 1, int maxLength = int.MaxValue, bool initiatorMethonine = true, bool includeModifications = false, bool semiDigestion = false)
         {
@@ -71,6 +72,7 @@ namespace CSMSL.Proteomics
         /// <param name="maxLength">The maximum length (in amino acids) of the peptide</param>
         /// <param name="initiatorMethonine"></param>
         /// <param name="includeModifications"></param>
+        /// <param name="semiDigestion"></param>
         /// <returns>A list of digested peptides</returns>
         public virtual IEnumerable<Peptide> Digest(IEnumerable<IProtease> proteases, int maxMissedCleavages = 3, int minLength = 1, int maxLength = int.MaxValue, bool initiatorMethonine = true, bool includeModifications = false, bool semiDigestion = false)
         {

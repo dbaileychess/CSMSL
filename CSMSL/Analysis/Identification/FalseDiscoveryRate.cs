@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 
 namespace CSMSL.Analysis.Identification
@@ -219,12 +218,12 @@ namespace CSMSL.Analysis.Identification
             }
         }
 
-        public static int Count(IEnumerable<TSource> items, double maxFdr = 0.01, bool removeDecoys = false, bool uniqueItems = false)
+        public static int Count(IList<TSource> items, double maxFdr = 0.01, bool removeDecoys = false, bool uniqueItems = false)
         {
             return Count(items, Comparer<TSource>.Default, maxFdr, removeDecoys, uniqueItems);
         }
 
-        public static int Count(IEnumerable<TSource> items, Comparer<TSource> comparer, double maxFdr = 0.01, bool removeDecoys = false, bool uniqueItems = false)
+        public static int Count(IList<TSource> items, Comparer<TSource> comparer, double maxFdr = 0.01, bool removeDecoys = false, bool uniqueItems = false)
         {
             TMetric threshold = CalculateThreshold(items, comparer, maxFdr, uniqueItems);
 

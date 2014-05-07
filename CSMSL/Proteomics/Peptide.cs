@@ -22,6 +22,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using CSMSL.Util;
 
 namespace CSMSL.Proteomics
 {
@@ -299,7 +300,7 @@ namespace CSMSL.Proteomics
             int ptmsites = sites.Count;
 
             // Exact number of possible isoforms
-            long isoforms = Util.Combinatorics.BinomCoefficient(ptmsites, ptms);
+            long isoforms = Combinatorics.BinomCoefficient(ptmsites, ptms);
 
             // For each possible isoform
             for (long isoform = 0; isoform < isoforms; isoform++)
@@ -314,7 +315,7 @@ namespace CSMSL.Proteomics
                 // For each ptm
                 for (int i = 0; i < ptms; i++)
                 {
-                    long ans = Util.Combinatorics.LargestV(a, b, x);
+                    long ans = Combinatorics.LargestV(a, b, x);
                     int index = sites[(int)(ptmsites - ans - 1)];
                     if (index == 0)
                     {
@@ -328,7 +329,7 @@ namespace CSMSL.Proteomics
                     {
                         pep.AddModification(modification, index);
                     }
-                    x -= Util.Combinatorics.BinomCoefficient(ans, b);
+                    x -= Combinatorics.BinomCoefficient(ans, b);
                     a = ans;
                     b--;
                 }
@@ -347,7 +348,10 @@ namespace CSMSL.Proteomics
             if (length != y.Length)
                 return false;
             for (int i = 0; i < length; i++)
-                if (x[i] != y[i]) return false;
+            {
+                if (!x[i].Equals(y[i]))
+                    return false;
+            }
             return true;
         }
 

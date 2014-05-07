@@ -27,17 +27,10 @@ namespace CSMSL.Spectral
             }            
         }
 
-        private ChromatographicPeak _basePeak = null;
+        private ChromatographicPeak _basePeak;
         public ChromatographicPeak BasePeak
         {
-            get
-            {
-                if (_basePeak == null)
-                {                   
-                    _basePeak = GetPeak(_intensities.MaxIndex());
-                }
-                return _basePeak;
-            }
+            get { return _basePeak ?? (_basePeak = GetPeak(_intensities.MaxIndex())); }
         }
 
         public Chromatogram(double[] times, double[] intensities, bool shouldCopy = true)
@@ -48,8 +41,8 @@ namespace CSMSL.Spectral
             {
                 _times = new double[Count];
                 _intensities = new double[Count];
-                System.Buffer.BlockCopy(times, 0, _times, 0, 8*Count);
-                System.Buffer.BlockCopy(intensities, 0, _intensities, 0, 8*Count);
+                Buffer.BlockCopy(times, 0, _times, 0, 8*Count);
+                Buffer.BlockCopy(intensities, 0, _intensities, 0, 8*Count);
             }
             else
             {
@@ -63,8 +56,8 @@ namespace CSMSL.Spectral
             Count = timeintensities.GetLength(1);
             _times = new double[Count];
             _intensities = new double[Count];
-            System.Buffer.BlockCopy(timeintensities, 0, _times, 0, 8 * Count);
-            System.Buffer.BlockCopy(timeintensities, 8 * Count, _intensities, 0, 8 * Count);         
+            Buffer.BlockCopy(timeintensities, 0, _times, 0, 8 * Count);
+            Buffer.BlockCopy(timeintensities, 8 * Count, _intensities, 0, 8 * Count);         
         }
 
         private Chromatogram(byte[] timeintensities)
@@ -267,7 +260,7 @@ namespace CSMSL.Spectral
 
         public override string ToString()
         {
-            return string.Format("Count = {0:N0} TIC = {1:G4} ({2})", Count, TotalIonCurrent);
+            return string.Format("Count = {0:N0} TIC = {1:G4}", Count, TotalIonCurrent);
         }        
 
         public Chromatogram Smooth(SmoothingType smoothing, int points)
@@ -277,13 +270,13 @@ namespace CSMSL.Spectral
                 case SmoothingType.BoxCar:
                     return BoxCar(points);
                 case SmoothingType.SavitzkyGolay:
-                    return SavitzkyGolay(points);
+                    return SavitzkyGolay();
                 default:
                     return new Chromatogram(this);
             }
         }
 
-        private Chromatogram SavitzkyGolay(int points)
+        private Chromatogram SavitzkyGolay()
         {
             throw new NotImplementedException();
         }
@@ -329,7 +322,7 @@ namespace CSMSL.Spectral
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-            return this.GetEnumerator();
+            return GetEnumerator();
         }
 
         public string ToBase64String(bool zlibCompressed = false)

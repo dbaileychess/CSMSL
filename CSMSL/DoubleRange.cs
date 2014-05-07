@@ -1,4 +1,6 @@
-﻿namespace CSMSL
+﻿using System;
+
+namespace CSMSL
 {
     public class DoubleRange : Range<double>
     {
@@ -24,7 +26,7 @@
                 return;
             }
 
-            double value = System.Math.Abs(tolerance.Value);
+            double value = Math.Abs(tolerance.Value);
 
             switch (tolerance.Type)
             {
@@ -51,40 +53,13 @@
             {
                 return (Maximum + Minimum) / 2.0;
             }
-            //set
-            //{
-            //    double width = Width;
-            //    double mean = value;         
-            //    base.Minimum = mean - (width / 2.0);
-            //    base.Maximum = mean + (width / 2.0);
-            //}
         }
-
-        //public double Maximum
-        //{
-        //    get { return base.Maximum; }
-        //    set { base.Maximum = value; }           
-        //}
-
-        //public double Minimum
-        //{
-        //    get { return base.Minimum; }
-        //    set { base.Minimum = value;  }
-        //}
 
         public double Width
         {
             get
             {
                 return Maximum - Minimum;              
-            }
-            set
-            {
-                // this.Width = value;
-                //    double width = value;
-                //    double mean = Mean;
-                //    base.Minimum = mean - (width / 2.0);
-                //    base.Maximum = mean + (width / 2.0);
             }
         }
 

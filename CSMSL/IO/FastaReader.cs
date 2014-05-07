@@ -30,38 +30,41 @@ namespace CSMSL.IO
 {
     public class FastaReader : IDisposable
     {
-        public char[] Delimiters = { '>' };
         private readonly StreamReader _reader;
-
-        public int LineNumber { get; private set; }
-
-        public Stream BaseStream
-        {
-            get { return _reader.BaseStream; }
-        }
-
-        public FastaReader(string fileName)
+     
+        public char Delimiter { get; private set; }
+        
+        public FastaReader(string fileName, char delimiter = '>')
         {
             FileName = fileName;
-            LineNumber = 0;
+            Delimiter = delimiter;
             _reader = new StreamReader(fileName);
         }
 
         public string FileName { get; set; }
-        
-        public void Dispose()
+
+        public void Close()
         {
             _reader.Close();
-            LineNumber = 0;
+        }
+
+        void IDisposable.Dispose()
+        {
+            Close();
         }
 
         public IEnumerable<Fasta> ReadNextFasta()
         {
-            StringBuilder sequenceSb = new StringBuilder(50);
+            StringBuilder sequenceSb = new StringBuilder(500);
             StringBuilder headerSb = new StringBuilder(80);
-            foreach (string line in ReadNextLine().Where(line => !string.IsNullOrEmpty(line)))
+            
+            while (!_reader.EndOfStream)
             {
-                if (Array.IndexOf(Delimiters, line[0]) >= 0)
+                string line = _reader.ReadLine();
+                if (string.IsNullOrEmpty(line))
+                    continue;
+
+                if (line[0] == Delimiter)
                 {
                     if (sequenceSb.Length > 0)
                     {
@@ -69,17 +72,17 @@ namespace CSMSL.IO
                         sequenceSb.Clear();
                         headerSb.Clear();
                     }
-                    headerSb.Append(line.TrimStart(Delimiters));
+                    headerSb.Append(line.TrimStart(Delimiter));
                 }
                 else
                 {
                     sequenceSb.Append(line);
                 }
             }
-            yield return new Fasta(sequenceSb.ToString(), headerSb.ToString());
+            if (sequenceSb.Length > 0)
+                yield return new Fasta(sequenceSb.ToString(), headerSb.ToString());
         }
-
-
+      
         public IEnumerable<Protein> ReadNextProtein()
         {
             return ReadNextFasta().Select(f => new Protein(f.Sequence, f.Description));
@@ -90,7 +93,7 @@ namespace CSMSL.IO
             return FileName;
         }
 
-        public static int NumberOfEntries(string filePath)
+        public static int NumberOfEntries(string filePath, char delimiter = '>')
         {
             int entries = 0;
             using (StreamReader reader = new StreamReader(filePath))
@@ -98,20 +101,11 @@ namespace CSMSL.IO
                 string line;
                 while ((line = reader.ReadLine()) != null)
                 {
-                    if (line.StartsWith(">"))
+                    if (line[0] == delimiter)
                         entries++;
                 }
             }
             return entries;
-        }
-
-        private IEnumerable<string> ReadNextLine()
-        {
-            while (!_reader.EndOfStream)
-            {
-                LineNumber++;
-                yield return _reader.ReadLine();
-            }
         }
     }
 }

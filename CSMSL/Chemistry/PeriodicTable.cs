@@ -21,6 +21,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Reflection;
 using System.Xml;
 
 namespace CSMSL.Chemistry
@@ -55,7 +56,7 @@ namespace CSMSL.Chemistry
             _elements = new Dictionary<string, Element>();
            
             // from: http://stackoverflow.com/questions/3314140/how-to-read-embedded-resource-text-file
-            var assembly = System.Reflection.Assembly.GetExecutingAssembly();
+            var assembly = Assembly.GetExecutingAssembly();
             LoadElements(assembly.GetManifestResourceStream("CSMSL.Resources.Elements.xml"));
 
             // For reading from an content file
@@ -112,8 +113,14 @@ namespace CSMSL.Chemistry
             using (XmlReader reader = XmlReader.Create(elementsListXml))
             {
                 reader.ReadToFollowing("PeriodicTable");
-                _uniqueId = int.Parse(reader.GetAttribute("defaultID"));
-                int isotopes = int.Parse(reader.GetAttribute("isotopesCount"));
+                var idstr = reader.GetAttribute("defaultID");
+                if (idstr == null)
+                    throw new Exception();
+                _uniqueId = int.Parse(idstr);
+                var isoStr = reader.GetAttribute("isotopesCount");
+                if(isoStr == null)
+                    throw new Exception();
+                int isotopes = int.Parse(isoStr);
                 _isotopes = new Isotope[isotopes];
                 while (reader.ReadToFollowing("Element"))
                 {                  
@@ -156,6 +163,8 @@ namespace CSMSL.Chemistry
                         if (!reader.IsStartElement("Isotope"))
                             isStartNode = reader.ReadToNextSibling("Isotope");
                     } 
+
+
                     AddElement(element);                 
                 }
             }

@@ -22,7 +22,7 @@ namespace CSMSL
 
             foreach (ISpectrumTime spectrum in spectra)
             {
-                double intensity = 0;            
+                double intensity;          
             
                 spectrum.TryGetIntensities(range, out intensity);
                 times.Add(spectrum.Time);
@@ -187,10 +187,10 @@ namespace CSMSL
         public static int BinarySearch<T>(this IList<T> list, int index, int length, T value, IComparer<T> comparer)
         {
             if (list == null)
-                throw new ArgumentNullException("List");
-            else if (index < 0 || length < 0)
+                throw new ArgumentNullException("list");
+            if (index < 0 || length < 0)
                 throw new ArgumentOutOfRangeException( (index < 0) ? "index" : "length" );
-            else if (list.Count - index < length)
+            if (list.Count - index < length)
                 throw new ArgumentException();
 
             int lower = index;
@@ -200,7 +200,7 @@ namespace CSMSL
                 int comparison = comparer.Compare(list[adjustedIndex], value);
                 if(comparison == 0)
                     return adjustedIndex;
-                else if (comparison < 0)
+                if (comparison < 0)
                     lower = adjustedIndex + 1;
                 else 
                     upper = adjustedIndex - 1;
@@ -211,7 +211,7 @@ namespace CSMSL
         public static int BinarySearch<T>(this IList<T> list, T value, IComparer<T> comparer)
         {
             if (list == null)
-                throw new ArgumentNullException("List");
+                throw new ArgumentNullException("list");
             return list.BinarySearch(0, list.Count, value, comparer);
         }
 
@@ -354,7 +354,7 @@ namespace CSMSL
                 big = 0.0;
                 for (j = 0; j < n; j++)
                     if ((temp = Math.Abs(m[i, j])) > big) big = temp;
-                if (big == 0.0)
+                if (big.MassEquals(0.0))
                     throw new Exception("singular matrix");
 
                 vv[i] = 1.0 / big; //calculate scaling and save
@@ -403,17 +403,18 @@ namespace CSMSL
             double[] result = new double[b.Length];
 
             int n = luMatrix.GetLength(0);
-            int i, ii = 0, ip, j;
-            double sum = 0;
+            int i, ii = 0;
+            int j;
+            double sum;
             for (i = 0; i < n; i++) result[i] = b[i];
             for (i = 0; i < n; i++)
             {
-                ip = index[i];
+                int ip = index[i];
                 sum = result[ip];
                 result[ip] = result[i];
                 if (ii != 0)
                     for (j = ii - 1; j < i; j++) sum -= luMatrix[i, j] * result[j];
-                else if (sum != 0.0)
+                else if (sum.Equals(0.0))
                     ii = i + 1;
                 result[i] = sum;
             }

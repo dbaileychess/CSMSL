@@ -49,13 +49,20 @@ namespace CSMSL.Chemistry
         /// <summary>
         /// Converts the object that has a m/z into a mass value based on the charge state
         /// </summary>
-        /// <param name="mass"></param>
+        /// <param name="mz"></param>
         /// <param name="charge"></param>
         /// <param name="c13Isotope"></param>
         /// <returns></returns>
         public static double ToMass(this IMass mz, int charge, int c13Isotope = 0)
         {
             return Mass.MzFromMass(mz.MonoisotopicMass + c13Isotope * Constants.C13C12Difference, charge);
+        }
+
+        public static bool MassEquals(this double mass1, IMass mass2, double epsilon = MassEqualityEpsilon)
+        {
+            if (mass2 == null)
+                return false;
+            return Math.Abs(mass1 - mass2.MonoisotopicMass) < epsilon;
         }
 
         public static bool MassEquals(this double mass1, double mass2, double epsilon = MassEqualityEpsilon)

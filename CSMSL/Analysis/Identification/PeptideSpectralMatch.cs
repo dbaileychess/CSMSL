@@ -50,7 +50,7 @@ namespace CSMSL.Analysis.Identification
             get { return MonoisotopicMass; }
         }
 
-        public double QValue { get; private set; }
+        public double QValue { get; set; }
 
         private Dictionary<string, string> _extraData;
 

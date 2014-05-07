@@ -1,11 +1,12 @@
-﻿using CSMSL.Spectral;
+﻿using System.Runtime.InteropServices;
+using CSMSL.Spectral;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 
 namespace CSMSL.Tests.Spectral
 {
-    [TestFixture, Category("Spectral"), System.Runtime.InteropServices.GuidAttribute("FEB664ED-51B1-4DD9-A224-E81E0E120AFE")]
+    [TestFixture, Category("Spectral"), Guid("FEB664ED-51B1-4DD9-A224-E81E0E120AFE")]
     public sealed class SpectrumTestFixture
     {
         private MZSpectrum mzSpectrum1000;

@@ -377,6 +377,7 @@ namespace CSMSL.Proteomics
         /// Calculates all the fragments of the types you specify
         /// </summary>
         /// <param name="types"></param>
+        /// <param name="calculateChemicalFormula"></param>
         /// <returns></returns>
         public IEnumerable<Fragment> Fragment(FragmentTypes types, bool calculateChemicalFormula = false)
         {
@@ -404,18 +405,23 @@ namespace CSMSL.Proteomics
 
                 double monoMass = capFormula.MonoisotopicMass;
                 ChemicalFormula formula = new ChemicalFormula(capFormula);
-                
-                if(isChemicalFormula)
-                    formula += isCTerminal ? CTerminus : NTerminus;
+
+                IChemicalFormula terminus = isCTerminal ? CTerminus : NTerminus;
+                monoMass += terminus.MonoisotopicMass;
+
+                if (isChemicalFormula)
+                {
+                    formula += terminus;
+                }
 
                 bool first = true;
-                IMass mod;
 
                 for (int i = 0; i <= max; i++)
                 {
                     int aaIndex = isCTerminal ? Length - i : i - 1;
 
                     // Handle the terminus mods first in a special case
+                    IMass mod;
                     if (first)
                     {
                         first = false;

@@ -149,7 +149,7 @@ namespace CSMSL.Spectral
 
                 return default(T);
             } 
-            else if (index == 0)
+            if (index == 0)
             {
                 // only the index can be closer
                 if (Peaks[index].X <= maxMZ)

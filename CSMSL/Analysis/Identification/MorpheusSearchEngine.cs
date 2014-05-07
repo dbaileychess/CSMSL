@@ -86,51 +86,51 @@ namespace CSMSL.Analysis.Identification
         }
 
 
-        private double Search(ref double[] eMasses, ref double[] eIntenisties, double[] tMasses, double productTolerance, double tic, ref Dictionary<double, double> scores)
-        {
-            double score = 0.0;
+        //private double Search(ref double[] eMasses, ref double[] eIntenisties, double[] tMasses, double productTolerance, double tic, ref Dictionary<double, double> scores)
+        //{
+        //    double score = 0.0;
           
-            int eLength = eMasses.Length;
-            int tLength = tMasses.Length;
-            int e = 0;
+        //    int eLength = eMasses.Length;
+        //    int tLength = tMasses.Length;
+        //    int e = 0;
 
-            foreach (double t in tMasses)
-            {
-                double storedScore;
-                if (scores.TryGetValue(t, out storedScore))
-                {
-                    score += storedScore;
-                    continue;
-                }
+        //    foreach (double t in tMasses)
+        //    {
+        //        double storedScore;
+        //        if (scores.TryGetValue(t, out storedScore))
+        //        {
+        //            score += storedScore;
+        //            continue;
+        //        }
 
-                double minMZ = t - productTolerance;
-                double maxMZ = t + productTolerance;
+        //        double minMZ = t - productTolerance;
+        //        double maxMZ = t + productTolerance;
 
-                while (e < eLength && eMasses[e] < minMZ)
-                    e++;
+        //        while (e < eLength && eMasses[e] < minMZ)
+        //            e++;
 
-                if (e >= eLength)
-                    break;
+        //        if (e >= eLength)
+        //            break;
 
-                if (eMasses[e] > maxMZ)
-                    continue;
+        //        if (eMasses[e] > maxMZ)
+        //            continue;
                 
-                double intensities = 0;
-                int index = e; // switch variables to keep e the same for the next loop around
-                do
-                {
-                    intensities += eIntenisties[index];
-                    index++;
-                } while (index < eLength && eMasses[index] < maxMZ);
+        //        double intensities = 0;
+        //        int index = e; // switch variables to keep e the same for the next loop around
+        //        do
+        //        {
+        //            intensities += eIntenisties[index];
+        //            index++;
+        //        } while (index < eLength && eMasses[index] < maxMZ);
 
-                storedScore = 1 + intensities/tic;
+        //        storedScore = 1 + intensities/tic;
 
-                score += storedScore;
-                scores[t] = storedScore;
-            }
+        //        score += storedScore;
+        //        scores[t] = storedScore;
+        //    }
           
-            return score;
-        }
+        //    return score;
+        //}
 
         /// <summary>
         /// The main searching algorithm of Morpheus

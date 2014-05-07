@@ -1,6 +1,4 @@
 ﻿using NUnit.Framework;
-using System;
-using CSMSL.Chemistry;
 using CSMSL.Proteomics;
 
 namespace CSMSL.Tests.Proteomics

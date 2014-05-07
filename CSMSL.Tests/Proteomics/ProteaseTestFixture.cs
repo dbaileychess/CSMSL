@@ -1,5 +1,4 @@
-﻿using CSMSL.Chemistry;
-using CSMSL.Proteomics;
+﻿using CSMSL.Proteomics;
 using NUnit.Framework;
 using System.Collections.Generic;
 using System.Linq;

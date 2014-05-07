@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 
 namespace CSMSL.Util
@@ -66,7 +65,7 @@ namespace CSMSL.Util
      
 
         /// <summary>
-        /// Returns the larget value v where v < a and Choose(v,b) <= x
+        /// Returns the largest value v where v is less than a and Choose(v,b) is less than or equal to x
         /// </summary>
         /// <param name="a"></param>
         /// <param name="b"></param>
@@ -104,7 +103,7 @@ namespace CSMSL.Util
             {
                 for (int i = 0; i < n; i++)
                 {
-                    yield return new T[] {input[i]};
+                    yield return new[] {input[i]};
                 }
             }
             else

@@ -19,8 +19,6 @@
 ///////////////////////////////////////////////////////////////////////////
 
 using System;
-using System.Linq;
-using System.Runtime.Remoting.Messaging;
 using CSMSL.Chemistry;
 using System.Collections.Generic;
 

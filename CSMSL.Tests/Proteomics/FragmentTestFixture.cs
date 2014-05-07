@@ -50,8 +50,8 @@ namespace CSMSL.Tests.Proteomics
         public void FragmentChemicalFormulaAIon()
         {
             Fragment fragment = _mockPeptideEveryAminoAcid.Fragment(FragmentTypes.a, 1).ToArray()[0];
-
-            Assert.AreEqual(43.042199165149988, fragment.MonoisotopicMass);
+            
+            Assert.IsTrue(fragment.MassEquals(43.04219916514));
         }
 
         [Test]

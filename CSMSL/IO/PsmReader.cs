@@ -10,7 +10,7 @@ namespace CSMSL.IO
     {
         public string FilePath { get; private set; }
 
-        public PsmReader(string filePath)
+        protected PsmReader(string filePath)
         {
             FilePath = filePath;
             _proteins = new Dictionary<string, Protein>();

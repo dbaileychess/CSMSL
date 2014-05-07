@@ -7,7 +7,7 @@ namespace CSMSL.Spectral
     {
         public MSDataFile ParentFile { get; private set; }
 
-        private MZSpectrum _massSpectrum = null;
+        private MZSpectrum _massSpectrum;
 
         /// <summary>
         /// The mass spectrum associated with the scan
@@ -20,7 +20,7 @@ namespace CSMSL.Spectral
                 {
                     if (ParentFile.IsOpen)
                     {
-                        _massSpectrum = ParentFile.GetMzSpectrum(_spectrumNumber);
+                        _massSpectrum = ParentFile.GetMzSpectrum(SpectrumNumber);
                     }
                     else
                     {
@@ -33,21 +33,9 @@ namespace CSMSL.Spectral
             {
                 _massSpectrum = value;
             }
-        }       
-
-        private int _spectrumNumber;
-
-        public virtual int SpectrumNumber
-        {
-            get
-            {
-                return _spectrumNumber;
-            }
-            internal set
-            {
-                _spectrumNumber = value;
-            }
         }
+
+        public int SpectrumNumber { get; protected set; }
 
         private double _resolution = double.NaN;
         public double Resolution
@@ -58,7 +46,7 @@ namespace CSMSL.Spectral
                 {
                     if (ParentFile.IsOpen)
                     {
-                        _resolution = ParentFile.GetResolution(_spectrumNumber);
+                        _resolution = ParentFile.GetResolution(SpectrumNumber);
                     }
                     else
                     {
@@ -74,13 +62,13 @@ namespace CSMSL.Spectral
         }
 
         private int _msnOrder = -1;
-        public virtual int MsnOrder
+        public int MsnOrder
         {
             get
             {              
                 return _msnOrder;
             }
-            internal set
+            protected set
             {
                 _msnOrder = value;
             }
@@ -95,7 +83,7 @@ namespace CSMSL.Spectral
                 {
                     if (ParentFile.IsOpen)
                     {
-                        _injectionTime = ParentFile.GetInjectionTime(_spectrumNumber);
+                        _injectionTime = ParentFile.GetInjectionTime(SpectrumNumber);
                     }
                     else
                     {
@@ -119,7 +107,7 @@ namespace CSMSL.Spectral
                 {
                     if (ParentFile.IsOpen)
                     {
-                        _retentionTime = ParentFile.GetRetentionTime(_spectrumNumber);
+                        _retentionTime = ParentFile.GetRetentionTime(SpectrumNumber);
                     }
                     else
                     {
@@ -143,7 +131,7 @@ namespace CSMSL.Spectral
                 {
                     if (ParentFile.IsOpen)
                     {
-                        _polarity = ParentFile.GetPolarity(_spectrumNumber);
+                        _polarity = ParentFile.GetPolarity(SpectrumNumber);
                     }
                     else
                     {
@@ -168,7 +156,7 @@ namespace CSMSL.Spectral
                 {
                     if (ParentFile.IsOpen)
                     {
-                        _mzAnalyzer = ParentFile.GetMzAnalyzer(_spectrumNumber);
+                        _mzAnalyzer = ParentFile.GetMzAnalyzer(SpectrumNumber);
                     }
                     else
                     {
@@ -183,7 +171,7 @@ namespace CSMSL.Spectral
             }
         }
 
-        private DoubleRange _mzRange = null;
+        private DoubleRange _mzRange;
         public DoubleRange MzRange
         {
             get
@@ -192,7 +180,7 @@ namespace CSMSL.Spectral
                 {
                     if (ParentFile.IsOpen)
                     {
-                        _mzRange = ParentFile.GetMzRange(_spectrumNumber);
+                        _mzRange = ParentFile.GetMzRange(SpectrumNumber);
                     }
                     else
                     {
@@ -214,7 +202,7 @@ namespace CSMSL.Spectral
             {
                 if(_parentScanNumber < 0)
                 {
-                    _parentScanNumber = ParentFile.GetParentSpectrumNumber(_spectrumNumber);
+                    _parentScanNumber = ParentFile.GetParentSpectrumNumber(SpectrumNumber);
                 }
                 else
                 {
@@ -228,14 +216,14 @@ namespace CSMSL.Spectral
             }
         }
 
-        private Spectrum _readOnlySpectrum = null;
+        private Spectrum _readOnlySpectrum;
         public Spectrum GetReadOnlySpectrum()
         {
             if (_readOnlySpectrum == null)
             {
                 if (ParentFile.IsOpen)
                 {
-                    _readOnlySpectrum = ParentFile.GetReadOnlyMZSpectrum(_spectrumNumber, true);
+                    _readOnlySpectrum = ParentFile.GetReadOnlyMZSpectrum(SpectrumNumber, true);
                 }
                 else
                 {
@@ -261,7 +249,7 @@ namespace CSMSL.Spectral
         {
             if (ParentFile == null)
             {
-                return string.Format("Scan #{0}");
+                return string.Format("Scan #{0}", SpectrumNumber);
             }
             return string.Format("Scan #{0} from {1}", SpectrumNumber, ParentFile);
         }

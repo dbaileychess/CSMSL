@@ -1,9 +1,6 @@
 ﻿using Agilent.MassSpectrometry.DataAnalysis;
-using Agilent.MassSpectrometry.DataAnalysis.Utilities;
-using CSMSL.IO;
 using CSMSL.Proteomics;
 using CSMSL.Spectral;
-using CSMSL;
 using System;
 using System.IO;
 using System.Text.RegularExpressions;

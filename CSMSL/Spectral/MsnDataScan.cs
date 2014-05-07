@@ -4,7 +4,7 @@ using System;
 
 namespace CSMSL.Spectral
 {
-    public class MsnDataScan : MSDataScan, IMassSpectrum
+    public class MsnDataScan : MSDataScan
     {
         public MsnDataScan(int spectrumNumber, int msnOrder, MSDataFile parentFile = null)
             : base(spectrumNumber, msnOrder, parentFile) { }
@@ -35,7 +35,7 @@ namespace CSMSL.Spectral
             }
         }
 
-        private DoubleRange _isolationRange = null;
+        private DoubleRange _isolationRange;
         public DoubleRange IsolationRange
         {
             get
@@ -59,7 +59,7 @@ namespace CSMSL.Spectral
             }
         }
 
-        private short _precursorCharge = 0;
+        private short _precursorCharge;
         public virtual short PrecursorCharge
         {
             get

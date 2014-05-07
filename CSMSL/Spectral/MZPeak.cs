@@ -19,6 +19,7 @@
 ///////////////////////////////////////////////////////////////////////////
 
 using System;
+using CSMSL.Chemistry;
 
 namespace CSMSL.Spectral
 {
@@ -63,8 +64,9 @@ namespace CSMSL.Spectral
         {
             if (other is double)
                 return MZ.CompareTo((double)other);
-            if (other is IPeak)
-                return CompareTo((IPeak)other);
+            var peak = other as IPeak;
+            if (peak != null)
+                return CompareTo(peak);
             throw new InvalidOperationException("Unable to compare types");
         }
 
@@ -90,7 +92,8 @@ namespace CSMSL.Spectral
 
         public bool Equals(MZPeak other)
         {
-            return MZ == other.MZ && Intensity == other.Intensity;
+            // Odd to use mass equals on intensity, might have to make that more generic sometime
+            return MZ.MassEquals(other.MZ) && Intensity.MassEquals(other.Intensity);
         }
     }
 }

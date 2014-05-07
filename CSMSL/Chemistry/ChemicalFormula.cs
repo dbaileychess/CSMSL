@@ -695,7 +695,7 @@ namespace CSMSL.Chemistry
             {
                 unchecked
                 {
-                    hCode *= 23 + _isotopes[i];            
+                    hCode = hCode*23 + _isotopes[i];
                 }
             }
             return hCode;            
@@ -703,11 +703,12 @@ namespace CSMSL.Chemistry
 
         public override bool Equals(object obj)
         {
-            if (obj == null || !(obj is ChemicalFormula))
+            ChemicalFormula formula = obj as ChemicalFormula;
+            if (formula == null)
             {
                 return false;
             }
-            return Equals((ChemicalFormula)obj);
+            return Equals(formula);
         }
 
         public virtual bool Equals(ChemicalFormula other)

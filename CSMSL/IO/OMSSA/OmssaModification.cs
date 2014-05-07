@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Reflection;
 using System.Text;
 using System.Xml;
 using CSMSL.Chemistry;
@@ -20,7 +21,7 @@ namespace CSMSL.IO.OMSSA
             Modifications = new Dictionary<string, OmssaModification>();
 
             // Load in the default omssa mods
-            var assembly = System.Reflection.Assembly.GetExecutingAssembly();
+            var assembly = Assembly.GetExecutingAssembly();
       
             LoadOmssaModifications(assembly.GetManifestResourceStream("CSMSL.IO.OMSSA.Resources.mods.xml"),false);
         }

@@ -202,7 +202,7 @@ namespace CSMSL.IO.MzML
             return high - low;            
         }
 
-        public override Spectral.MZAnalyzerType GetMzAnalyzer(int spectrumNumber)
+        public override MZAnalyzerType GetMzAnalyzer(int spectrumNumber)
         {
             // TODO need to do this on a spectrum-by-spectrum basis.
             //currently gets the first analyzer used.          
@@ -228,7 +228,7 @@ namespace CSMSL.IO.MzML
             }
         }
 
-        public override Spectral.MZSpectrum GetMzSpectrum(int spectrumNumber)
+        public override MZSpectrum GetMzSpectrum(int spectrumNumber)
         {
             spectrumNumber--; // 0-based indexing
         
@@ -276,7 +276,7 @@ namespace CSMSL.IO.MzML
             return new MZSpectrum(masses, intensities);
         }
 
-        public override Spectral.Polarity GetPolarity(int spectrumNumber)
+        public override Polarity GetPolarity(int spectrumNumber)
         {
             //TODO add polarity checking
             return Polarity.Neutral;

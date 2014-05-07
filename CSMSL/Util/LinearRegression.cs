@@ -4,49 +4,31 @@ namespace CSMSL.Util
 {
     public class LinearRegression
     {
-        private double _intercept;
-
-        private double _rsquared;
-
-        private double _slope;
-
         private LinearRegression(double slope, double intercept)
         {
             Slope = slope;
             Intercept = intercept;
         }
 
-        public double Intercept
-        {
-            get { return _intercept; }
-            private set { _intercept = value; }
-        }
+        public double Intercept { get; private set; }
 
-        public double RSquared
-        {
-            get { return _rsquared; }
-            private set { _rsquared = value; }
-        }
+        public double RSquared { get; private set; }
 
-        public double Slope
-        {
-            get { return _slope; }
-            private set { _slope = value; }
-        }
+        public double Slope { get; private set; }
 
         public static LinearRegression Calculate(double[,] xy)
         {
             int length = xy.GetLength(0);
-            double x_avg, y_avg, sxy, sxx, syy, sserr;
-            x_avg = y_avg = sxy = sxx = syy = sserr = 0;
+            double y_avg, sxy, sxx, syy, sserr;
+            double x_avg = y_avg = sxy = sxx = syy = sserr = 0;
 
             for (int i = 0; i < length; i++)
             {
                 x_avg += xy[i, 0];
                 y_avg += xy[i, 1];
             }
-            x_avg /= (double)length;
-            y_avg /= (double)length;
+            x_avg /= length;
+            y_avg /= length;
 
             for (int i = 0; i < length; i++)
             {
@@ -74,16 +56,16 @@ namespace CSMSL.Util
             {
                 throw new ArgumentException("X and Y Dimensions do not match");
             }
-            double x_avg, y_avg, sxy, sxx, syy, sserr;
-            x_avg = y_avg = sxy = sxx = syy = sserr = 0;
+            double y_avg, sxy, sxx, syy, sserr;
+            double x_avg = y_avg = sxy = sxx = syy = sserr = 0;
 
             for (int i = 0; i < length; i++)
             {
                 x_avg += x[i];
                 y_avg += y[i];
             }
-            x_avg /= (double)length;
-            y_avg /= (double)length;
+            x_avg /= length;
+            y_avg /= length;
 
             for (int i = 0; i < length; i++)
             {

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -228,7 +229,7 @@ namespace CSMSL.Spectral
         {
             _curve.Add(point.X, point);
 
-            if (BasePeak == null)
+            if (BasePeak.Equals(null))
             {                
                 BasePeak = point;
             }
@@ -253,7 +254,7 @@ namespace CSMSL.Spectral
             return _curve.Values.GetEnumerator();
         }
 
-        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        IEnumerator IEnumerable.GetEnumerator()
         {
             return _curve.Values.GetEnumerator();
         }
@@ -299,7 +300,7 @@ namespace CSMSL.Spectral
             int i =0;
             foreach (Tuple<ISpectrum, double> data in spectra)
             {
-                double intensity = 0;              
+                double intensity;              
                 ISpectrum spectrum = data.Item1;               
                 spectrum.TryGetIntensities(range, out intensity);
                 times[i] = data.Item2;

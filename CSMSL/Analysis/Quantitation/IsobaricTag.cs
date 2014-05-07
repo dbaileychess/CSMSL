@@ -5,9 +5,9 @@ namespace CSMSL.Analysis.Quantitation
 {
     public class IsobaricTag : ChemicalFormulaModification, IQuantitationChannel 
     {   
-        private ChemicalFormula _reporterFormula;
+        private readonly ChemicalFormula _reporterFormula;
 
-        private ChemicalFormula _balanceFormula;
+        private readonly ChemicalFormula _balanceFormula;
 
         public ChemicalFormula totalFormula
         {

@@ -1,13 +1,10 @@
 ﻿using CSMSL.Analysis.Identification;
-using CSMSL;
 using CSMSL.IO;
 using CSMSL.IO.Thermo;
 using CSMSL.Proteomics;
-using CSMSL.Util.Collections;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 
 namespace CSMSL.Examples
 {
@@ -50,7 +47,7 @@ namespace CSMSL.Examples
             }
             watch.Stop();           
             Console.WriteLine("Time elapsed: {0}", watch.Elapsed);
-            Console.WriteLine("Memory used: {0:N0} MB", System.Environment.WorkingSet / (1024 * 1024));
+            Console.WriteLine("Memory used: {0:N0} MB", Environment.WorkingSet / (1024 * 1024));
             Console.WriteLine("**End Morpheus Search**");
         }
     }

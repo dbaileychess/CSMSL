@@ -1,4 +1,5 @@
-﻿using CSMSL.IO;
+﻿using System.Collections;   
+using CSMSL.IO;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -32,9 +33,10 @@ namespace CSMSL.Proteomics
 
         public override bool Equals(object obj)
         {
-            if (obj is ProteinGroup)
-                return this.Equals((ProteinGroup)obj);
-            return false;
+            var proteinGroup = obj as ProteinGroup;
+            if (proteinGroup == null)
+                return false;
+            return Equals(proteinGroup);
         }
 
         public bool Equals(ProteinGroup other)
@@ -74,7 +76,7 @@ namespace CSMSL.Proteomics
             return Proteins.GetEnumerator();
         }
 
-        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        IEnumerator IEnumerable.GetEnumerator()
         {
             return Proteins.GetEnumerator();
         }
@@ -84,10 +86,10 @@ namespace CSMSL.Proteomics
 
         public static IEnumerable<ProteinGroup> GroupProteins(string fastaFile, Protease protease, IEnumerable<IAminoAcidSequence> observeredSequences, int MaxMissedCleavages = 3)
         {
-            return GroupProteins(fastaFile, new Protease[] { protease }, observeredSequences, MaxMissedCleavages);
+            return GroupProteins(fastaFile, new [] { protease }, observeredSequences, MaxMissedCleavages);
         }
 
-        public static IEnumerable<ProteinGroup> GroupProteins(string fastaFile, IEnumerable<Protease> proteases, IEnumerable<IAminoAcidSequence> observeredSequences, int MaxMissedCleavages = 3, int minPepPerProtein = 1)
+        public static IEnumerable<ProteinGroup> GroupProteins(string fastaFile, IList<Protease> proteases, IEnumerable<IAminoAcidSequence> observeredSequences, int MaxMissedCleavages = 3, int minPepPerProtein = 1)
         {
             HashSet<ProteinGroup> mappedProteins = new HashSet<ProteinGroup>();
 

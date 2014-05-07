@@ -1,9 +1,8 @@
 ﻿namespace CSMSL
 {
-    public class MassRange : DoubleRange, IRange<double>
+    public class MassRange : DoubleRange
     {
-        public MassRange()
-            : base() { }
+        public MassRange() { }
 
         public MassRange(double minMass, double maxMass)
             : base(minMass, maxMass) { }

@@ -1,4 +1,5 @@
-﻿using CSMSL.Proteomics;
+﻿using System.Collections;
+using CSMSL.Proteomics;
 using CSMSL.Spectral;
 using System;
 using System.Collections.Generic;
@@ -98,7 +99,7 @@ namespace CSMSL.IO
             }
         }
 
-        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        IEnumerator IEnumerable.GetEnumerator()
         {
             return GetEnumerator();
         }
@@ -171,7 +172,7 @@ namespace CSMSL.IO
         {
             if (!CacheScans)
             {
-                throw new ArgumentException("Cache scans needs to be enabled for this to work properly", "CacheScans");
+                throw new ArgumentException("Cache scans needs to be enabled for this to work properly");
             }
 
             if (Scans == null)
@@ -196,11 +197,10 @@ namespace CSMSL.IO
         }
 
         protected virtual MSDataScan GetMSDataScan(int spectrumNumber)
-        {           
-            MSDataScan scan;
+        {
             int msn = GetMsnOrder(spectrumNumber);
             
-            scan = msn > 1 ? new MsnDataScan(spectrumNumber, msn, this) : new MSDataScan(spectrumNumber, msn, this);
+            MSDataScan scan = msn > 1 ? new MsnDataScan(spectrumNumber, msn, this) : new MSDataScan(spectrumNumber, msn, this);
 
             return scan;            
         }
@@ -242,7 +242,7 @@ namespace CSMSL.IO
                 double rt = scan.RetentionTime;
                 if (rt < firstRT)
                     continue;
-                else if (rt > lastRT)
+                if (rt > lastRT)
                     yield break;
                 yield return scan;
             }

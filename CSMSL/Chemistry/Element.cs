@@ -85,7 +85,7 @@ namespace CSMSL.Chemistry
 
         /// <summary>
         /// The total abundance of all this isotopes (should be nearly one, any deviation
-        /// is due to the lack of percision in the raw NIST data)
+        /// is due to the lack of precision in the raw NIST data)
         /// </summary>
         public double TotalAbundance { get; private set; }
 

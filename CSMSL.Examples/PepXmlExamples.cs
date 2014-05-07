@@ -1,11 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.IO;
 using CSMSL.IO.PepXML;
-using CSMSL.Chemistry;
 using CSMSL.Proteomics;
 using CSMSL.Analysis.Identification;
 

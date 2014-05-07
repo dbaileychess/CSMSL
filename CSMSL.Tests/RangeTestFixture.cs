@@ -1,4 +1,5 @@
-﻿using NUnit.Framework;
+﻿using System;
+using NUnit.Framework;
 
 namespace CSMSL.Tests
 {
@@ -190,7 +191,7 @@ namespace CSMSL.Tests
         [Test]
         public void RangeMinBiggerThanMax()
         {
-            Assert.Throws<System.ArgumentException>(() => { _ignore = new Range<int>(10, 5); });
+            Assert.Throws<ArgumentException>(() => { _ignore = new Range<int>(10, 5); });
         }
 
         [Test]

@@ -27,25 +27,16 @@ namespace CSMSL.IO
 {
     public class FastaWriter : IDisposable
     {
-        private readonly int _charperline;
-        private readonly char _delimiter;
-        private string _filename;
+        public int CharactersPerLine { get; private set; }
+        public char Delimiter { get; private set; }
+        public string FilePath { get; private set; }
         private readonly StreamWriter _writer;
 
-        public FastaWriter(string filename)
-            : this(filename, '>', 80) { }
-
-        public FastaWriter(string filename, char delimiter)
-            : this(filename, delimiter, 80) { }
-
-        public FastaWriter(string filename, int charperline)
-            : this(filename, '>', charperline) { }
-
-        public FastaWriter(string filename, char delimiter, int charperline)
+        public FastaWriter(string filename, char delimiter = '>', int charperline = 80)
         {
-            _filename = filename;
-            _delimiter = delimiter;
-            _charperline = charperline;
+            FilePath = filename;
+            Delimiter = delimiter;
+            CharactersPerLine = charperline;
             _writer = new StreamWriter(filename);
         }
 
@@ -55,11 +46,11 @@ namespace CSMSL.IO
             _writer.Close();
         }
 
-        public void Dispose()
+        void IDisposable.Dispose()
         {
             Close();
         }
-
+        
         public void Write(IEnumerable<Protein> proteins)
         {
             foreach (Protein protein in proteins)
@@ -88,11 +79,11 @@ namespace CSMSL.IO
 
         public void Write(string sequence, string description)
         {
-            _writer.WriteLine("{0}{1}", _delimiter, description);
-            for (int i = 0; i < sequence.Length; i += _charperline)
+            _writer.WriteLine("{0}{1}", Delimiter, description);
+            for (int i = 0; i < sequence.Length; i += CharactersPerLine)
             {
-                _writer.WriteLine(sequence.Substring(i, (i + _charperline < sequence.Length) ?
-                    _charperline :
+                _writer.WriteLine(sequence.Substring(i, (i + CharactersPerLine < sequence.Length) ?
+                    CharactersPerLine :
                     sequence.Length - i));
             }
         }
@@ -101,5 +92,7 @@ namespace CSMSL.IO
         {
             _writer.WriteLine(line);
         }
+
+      
     }
 }

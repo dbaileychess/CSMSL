@@ -77,7 +77,7 @@ namespace CSMSL.Util.Collections
         public void Add(params VennSet<T>[] sets)
         {
             int newSize = Count + sets.Length;
-            Array.Resize<VennSet<T>>(ref _inputSets, newSize);
+            Array.Resize(ref _inputSets, newSize);
             for (int i = 0; i < sets.Length; i++)
             {
                 _inputSets[newSize - (i + 1)] = sets[i];
@@ -86,8 +86,7 @@ namespace CSMSL.Util.Collections
 
         public static VennDiagram<T> CreateDiagram(params VennSet<T>[] sets)
         {
-            VennDiagram<T> diagram = new VennDiagram<T>(sets);
-            diagram._regions = new Dictionary<string, VennSet<T>>();
+            VennDiagram<T> diagram = new VennDiagram<T>(sets) {_regions = new Dictionary<string, VennSet<T>>()};
 
             int count = diagram.Count;
             // Initialize subsets

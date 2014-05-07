@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Xml;
 using CSMSL.Chemistry;
 
@@ -10,7 +11,7 @@ namespace CSMSL.Proteomics
     public static class ModificationDictionary
     {
         private static readonly Dictionary<string, Modification> Modifications;
-
+        
         private static readonly string UserModificationPath;
 
         static ModificationDictionary()
@@ -37,7 +38,7 @@ namespace CSMSL.Proteomics
             Load(UserModificationPath);
         }
 
-        // <summary>
+        /// <summary>
         /// Load a modification file
         /// </summary>
         /// <param name="filePath">The path to the modification file</param>
@@ -47,7 +48,7 @@ namespace CSMSL.Proteomics
             {
                 var modsXml = new XmlDocument();
                 modsXml.Load(filePath);
-                //new XmlNamespaceManager(modsXml.NameTable);
+             
                 foreach (XmlNode modNode in modsXml.SelectNodes("//Modifications/Modification"))
                 {
                     string modName = modNode.Attributes["name"].Value;
@@ -126,7 +127,7 @@ namespace CSMSL.Proteomics
                     }
                     else
                     {
-                        writer.WriteElementString("DeltaMass", mod.MonoisotopicMass.ToString());
+                        writer.WriteElementString("DeltaMass", mod.MonoisotopicMass.ToString("F10"));
                     }
 
                     foreach (ModificationSites site in mod.Sites.GetActiveSites())
@@ -155,13 +156,13 @@ namespace CSMSL.Proteomics
         {
             Modifications.Clear();
 
-            var assembly = System.Reflection.Assembly.GetExecutingAssembly();
+            var assembly = Assembly.GetExecutingAssembly();
             Stream defaultModsStream = assembly.GetManifestResourceStream("CSMSL.Resources.Modifications.xml");
-          
+            
             Directory.CreateDirectory(Path.GetDirectoryName(UserModificationPath));
             using (var fileStream = File.Create(UserModificationPath))
             {
-                defaultModsStream.CopyTo(fileStream);
+                if (defaultModsStream != null) defaultModsStream.CopyTo(fileStream);
             }
    
             Load();
@@ -194,7 +195,7 @@ namespace CSMSL.Proteomics
 
         public static T GetModification<T>(string name) where T : Modification
         {
-            Modification mod = null;
+            Modification mod;
             Modifications.TryGetValue(name, out mod);
             return mod as T;
         }

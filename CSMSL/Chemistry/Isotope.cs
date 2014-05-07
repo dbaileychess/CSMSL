@@ -119,7 +119,7 @@ namespace CSMSL.Chemistry
         /// <returns>The atomic symbol and mass number combined</returns>
         public override string ToString()
         {
-            return string.Format("{0}{1:G0}", AtomicSymbol, MassNumber);
+            return string.Format("{0}{1:N0}", AtomicSymbol, MassNumber);
         }
     }
 }

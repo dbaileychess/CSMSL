@@ -18,23 +18,20 @@
 //  along with CSMSL.  If not, see <http://www.gnu.org/licenses/>.        /
 ///////////////////////////////////////////////////////////////////////////
 
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 using CSMSL.Chemistry;
-using CSMSL.IO.Thermo;
 using CSMSL.Proteomics;
 using CSMSL.Util.Collections;
 using System;
 using System.Diagnostics;
-using CSMSL.IO;
 
 namespace CSMSL.Examples
 {
     internal class Examples
     {
-        public static string BASE_DIRECTORY = Path.Combine(System.Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "CSMSL Examples");
+        public static string BASE_DIRECTORY = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "CSMSL Examples");
 
       
         private static void Main()
@@ -50,11 +47,13 @@ namespace CSMSL.Examples
                 Console.WriteLine("==CSMSL Examples==");
 
                 Console.WriteLine("Outputting Files to " + BASE_DIRECTORY);
+                Console.WriteLine();
                 Stopwatch watch = new Stopwatch();
                 watch.Start();
                 StartExamples();
                 GuiExamples();
                 watch.Stop();
+                Console.WriteLine();
                 Console.WriteLine("==================");
                 Console.WriteLine(watch.Elapsed);
             }
@@ -66,14 +65,14 @@ namespace CSMSL.Examples
             // Examples coding  
             
             //ChemicalFormulaExamples();
-            PeptideExamples();
+            //PeptideExamples();
             //ChemicalFormulaGeneratorExample();
                         
             // Example Objects
             //VennDiagramExamples();
 
             // Example programs
-            //TrypticDigestion.Start(minLength: 5, maxLength: 50, protease:Protease.Trypsin, storeSequenceString: false);
+            TrypticDigestion.Start(minLength: 5, maxLength: 35, maxMissed:3, protease:Protease.Trypsin, storeSequenceString: false);
 
             // Example Protein Grouping
             //ProteinGroupingExample.Start(Protease.Trypsin);
@@ -130,10 +129,30 @@ namespace CSMSL.Examples
 
         private static void ChemicalFormulaGeneratorExample()
         {
+            // Create a generator with formula bounds. In this case, every formula needs to have at least H2 but no more than C4H2
             ChemicalFormulaGenerator generator = new ChemicalFormulaGenerator(new ChemicalFormula("H2"), new ChemicalFormula("C4H2"));
 
             var formulas = generator.FromMass(0, 100).ToList();
+            foreach (var formula in formulas)
+            {
+                WriteFormulaToConsole(formula);
+            }
+
             Console.WriteLine("Unique Formulas: " + formulas.Count);
+
+            // Create a generator with formula bounds. In this case, every formula needs to have at least H2 but no more than C4H2
+            generator = new ChemicalFormulaGenerator(new ChemicalFormula("C1000N1000H1000O1000"));
+
+            DoubleRange range = MassRange.FromPPM(new ChemicalFormula("C62H54N42O24").MonoisotopicMass, 0.1);
+            double mass = range.Mean;
+            int count = 0;
+            foreach (var formula in generator.FromMass(range))
+            {
+                Console.WriteLine("{0,-15} {1:F10} {2,-5:G5} ppm", formula, formula.MonoisotopicMass,
+                    Tolerance.GetTolerance(formula.MonoisotopicMass, mass, ToleranceType.PPM));
+                count++;
+            }
+            Console.WriteLine("Unique Formulas: " + count);
         }
 
         private static void VennDiagramExamples()
@@ -260,7 +279,7 @@ namespace CSMSL.Examples
         /// <param name="formula"></param>
         private static void WriteFormulaToConsole(ChemicalFormula formula)
         {
-            Console.WriteLine("Formula {0} mass is {1} or {2}", formula, formula.MonoisotopicMass, formula.MonoisotopicMass);
+            Console.WriteLine("Formula {0} mass is {1}", formula, formula.MonoisotopicMass);
         }
 
         private static void WritePeptideToConsole(Peptide peptide)

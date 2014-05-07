@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Text;
 using CSMSL.Chemistry;
 using System.Collections.Generic;
@@ -77,7 +78,7 @@ namespace CSMSL.Proteomics
             return _modifications.GetEnumerator();
         }
 
-        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        IEnumerator IEnumerable.GetEnumerator()
         {
             return _modifications.GetEnumerator();
         }

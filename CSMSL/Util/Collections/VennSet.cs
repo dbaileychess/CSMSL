@@ -19,6 +19,7 @@
 ///////////////////////////////////////////////////////////////////////////
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -72,7 +73,7 @@ namespace CSMSL.Util.Collections
             return _data.Values.GetEnumerator();
         }
 
-        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        IEnumerator IEnumerable.GetEnumerator()
         {
             return _data.Values.GetEnumerator();
         }

@@ -25,7 +25,7 @@ namespace CSMSL
 {
     public class Tolerance
     {
-        private static Regex _fromString = new Regex(@"([\d.-]+)\s(PPM|DA|MMU)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        private static readonly Regex _fromString = new Regex(@"([\d.-]+)\s(PPM|DA|MMU)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
         /// <summary>
         /// 
