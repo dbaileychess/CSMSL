@@ -1,11 +1,12 @@
 # Overview
-C\# Mass Spectrometry Library (CSMSL) is a .NET-based framework for working with proteomic data. There are many tools available for MS analysis on the internet, but most are geared to end users and are challenging to adapt to a specific need. CSMSL is designed to provide an easy-to-use, powerful, feature-rich library of .NET C\# objects and methods to enable even novice programmers the ability to analyze proteomic data quickly. Simplicity is key, calculating the mass of the peptide sequence "CSMSL" only requires the following two lines:
+C\# Mass Spectrometry Library (CSMSL) is a .NET-based framework for working with proteomic and mass spectrometry data. There are many tools available for MS analysis on the internet, but most are geared to end users and are challenging to adapt to a specific need. CSMSL is designed to provide an easy-to-use, powerful, feature-rich library of .NET C\# objects and methods to enable even novice programmers the ability to analyze data quickly. Simplicity is key, calculating the mass of the peptide sequence "CSMSL" only requires the following two lines:
+
 ```csharp
-Peptide peptide = new Peptide("CSMSL");
-Console.WriteLine(peptide.Mass.Monoisotopic);
-//produces : 539.20835516707
+Peptide peptide = new Peptide("CSMSL");       // Creates a new peptide object in memory
+Console.WriteLine(peptide.MonoisotopicMass);  // Writes to the console: 539.20835516707
 ```
-In addition to simply syntax, CSMSL is designed with performance in mind, allowing even computationally intensive calculations to be completed quickly. For [example](https://github.com/dbaileychess/CSMSL/blob/master/CSMSL.Examples/TrypticDigestion.cs), a complete yeast database (6,627 proteins) can be loaded from a .fasta file, digested with trypsin (up to 3 missed cleavages, 5 to 35 amino acids in length) in under 2 seconds. If we include the calculation for the +1 m/z of each of the 913,740 resulting peptides, the total time only goes up to 4 seconds (this includes full chemical formula determination). While CSMSL is not expected to meet the performance of advanced compiled languages (e.g. C/C++, Fortran, etc...), its adequate performance plus simplicity of use are sure to be helpful in analyzing data in new and creative ways without significant overhead.
+
+In addition to simply syntax, CSMSL is designed with performance in mind, allowing even computationally intensive calculations to be completed quickly. For [example](https://github.com/dbaileychess/CSMSL/blob/master/CSMSL.Examples/TrypticDigestion.cs), a complete yeast database (6,627 proteins) can be loaded from a .fasta file, digested with trypsin (up to 3 missed cleavages, 5 to 35 amino acids in length) in under 2 seconds. If we include the calculation for the +2 m/z of each of the 913,740 resulting peptides, the total time only goes up to 4 seconds (this includes full chemical formula determination). While CSMSL is not expected to meet the performance of advanced compiled languages (e.g. C/C++, Fortran, etc...), its adequate performance plus simplicity of use are sure to be helpful in analyzing data in new and creative ways without significant overhead.
 
 Future goals include providing native support for reading and writing common m/z formats (mzXML, .sqlite, etc...) as well as cross-vendor support. We have initial support for Thermo .Raw files and Agilent .d directories. 
 
