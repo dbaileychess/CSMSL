@@ -981,7 +981,7 @@ namespace CSMSL.Chemistry
             return ValidateFormulaRegex.IsMatch(chemicalFormula);
         }
 
-        public static ChemicalFormula operator -(ChemicalFormula left, ChemicalFormula right)
+        public static ChemicalFormula operator -(ChemicalFormula left, IChemicalFormula right)
         {
             if (left == null)
             {
@@ -1020,7 +1020,7 @@ namespace CSMSL.Chemistry
             return formula * count;
         }
 
-        public static ChemicalFormula operator +(ChemicalFormula left, ChemicalFormula right)
+        public static ChemicalFormula operator +(ChemicalFormula left, IChemicalFormula right)
         {
             if (left == null)
             {

@@ -378,17 +378,17 @@ namespace CSMSL.Proteomics
         /// </summary>
         /// <param name="types"></param>
         /// <returns></returns>
-        public IEnumerable<Fragment> Fragment(FragmentTypes types)
+        public IEnumerable<Fragment> Fragment(FragmentTypes types, bool calculateChemicalFormula = false)
         {
-            return Fragment(types, 1, Length - 1);
+            return Fragment(types, 1, Length - 1, calculateChemicalFormula);
         }
 
-        public IEnumerable<Fragment> Fragment(FragmentTypes types, int number)
+        public IEnumerable<Fragment> Fragment(FragmentTypes types, int number, bool calculateChemicalFormula = false)
         {
-            return Fragment(types, number, number);
+            return Fragment(types, number, number, calculateChemicalFormula);
         }
 
-        public IEnumerable<Fragment> Fragment(FragmentTypes types, int min, int max)
+        public IEnumerable<Fragment> Fragment(FragmentTypes types, int min, int max, bool calculateChemicalFormula = false)
         {
             if (min > max)
                 throw new ArgumentOutOfRangeException();
@@ -396,18 +396,17 @@ namespace CSMSL.Proteomics
             if (min < 1 || max > Length - 1)
                 throw new IndexOutOfRangeException();
             
-            if (types == FragmentTypes.None)
-                yield break;
-            
-            foreach (FragmentTypes type in types.GetActiveTypes())
+            foreach (FragmentTypes type in types.GetIndividualFragmentTypes())
             {
-                List<IMass> mods = new List<IMass>();
-                double monoMass = 0;
-                bool isChemicalFormula = true;
-
+                bool isChemicalFormula = calculateChemicalFormula;
+                ChemicalFormula capFormula = type.GetIonCap();
                 bool isCTerminal = type.GetTerminus() == Terminus.C;
 
-                ChemicalFormula formula = isCTerminal ? new ChemicalFormula(CTerminus) : new ChemicalFormula(NTerminus);
+                double monoMass = capFormula.MonoisotopicMass;
+                ChemicalFormula formula = new ChemicalFormula(capFormula);
+                
+                if(isChemicalFormula)
+                    formula += isCTerminal ? CTerminus : NTerminus;
 
                 bool first = true;
                 IMass mod;
@@ -424,16 +423,18 @@ namespace CSMSL.Proteomics
                         if (mod != null)
                         {
                             monoMass += mod.MonoisotopicMass;
-                            mods.Add(mod);
 
-                            IChemicalFormula modFormula = mod as IChemicalFormula;
-                            if (modFormula != null)
+                            if (isChemicalFormula)
                             {
-                                formula.Add(modFormula);
-                            }
-                            else
-                            {
-                                isChemicalFormula = false;
+                                IChemicalFormula modFormula = mod as IChemicalFormula;
+                                if (modFormula != null)
+                                {
+                                    formula.Add(modFormula);
+                                }
+                                else
+                                {
+                                    isChemicalFormula = false;
+                                }
                             }
                         }
                         continue;
@@ -447,7 +448,6 @@ namespace CSMSL.Proteomics
                     if (mod != null)
                     {
                         monoMass += mod.MonoisotopicMass;
-                        mods.Add(mod);
 
                         if (isChemicalFormula)
                         {
@@ -468,11 +468,11 @@ namespace CSMSL.Proteomics
 
                     if (isChemicalFormula)
                     {
-                        yield return new ChemicalFormulaFragment(type, i, formula, this, mods);
+                        yield return new ChemicalFormulaFragment(type, i, formula, this);
                     }
                     else
                     {
-                        yield return new Fragment(type, i, monoMass, this, mods);
+                        yield return new Fragment(type, i, monoMass, this);
                     }
                 }
 

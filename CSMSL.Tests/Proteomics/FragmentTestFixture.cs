@@ -45,8 +45,7 @@ namespace CSMSL.Tests.Proteomics
 
             Assert.AreEqual(19,fragments.Count);
         }
-
-   
+        
         [Test]
         public void FragmentChemicalFormulaAIon()
         {

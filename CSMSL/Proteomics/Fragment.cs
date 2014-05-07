@@ -19,6 +19,8 @@
 ///////////////////////////////////////////////////////////////////////////
 
 using System;
+using System.Linq;
+using System.Runtime.Remoting.Messaging;
 using CSMSL.Chemistry;
 using System.Collections.Generic;
 
@@ -26,37 +28,15 @@ namespace CSMSL.Proteomics
 {
     public class Fragment : IMass, IEquatable<Fragment>
     {
-        private static readonly Dictionary<FragmentTypes, IMass> FragmentIonCaps = new Dictionary<FragmentTypes, IMass>
-        {
-          {FragmentTypes.a, new ChemicalFormula("C-1H-1O-1")},
-          {FragmentTypes.adot, new ChemicalFormula("C-1O-1")},
-          {FragmentTypes.b, new ChemicalFormula("H-1")},
-          {FragmentTypes.bdot, new ChemicalFormula()},
-          {FragmentTypes.c, new ChemicalFormula("NH2")},
-          {FragmentTypes.cdot, new ChemicalFormula("NH3")},
-          {FragmentTypes.x, new ChemicalFormula("COH-1")},
-          {FragmentTypes.xdot, new ChemicalFormula("CO")},
-          {FragmentTypes.y, new ChemicalFormula("H")},
-          {FragmentTypes.ydot, new ChemicalFormula("H2")},
-          {FragmentTypes.z, new ChemicalFormula("N-1H-2")},
-          {FragmentTypes.zdot, new ChemicalFormula("N-1H-1")},
-        };
 
-        public Fragment(FragmentTypes type, int number, double monoisotopicMass, AminoAcidPolymer parent, IEnumerable<IMass> mods = null, string descrip = null)
+        internal Fragment(FragmentTypes type, int number, double monoisotopicMass, AminoAcidPolymer parent)
         {
             Type = type;
             Number = number;
             Parent = parent;
-            MonoisotopicMass = monoisotopicMass + FragmentIonCaps[type].MonoisotopicMass;
-            if(mods != null) 
-                Modifications = new List<IMass>(mods);
-            Description = descrip;
+            MonoisotopicMass = monoisotopicMass;
         }
-
-        public string Description { get; private set; }
-
-        public List<IMass> Modifications;
-     
+        
         public double MonoisotopicMass { get; private set; }
 
         public int Number { get; private set; }
@@ -65,36 +45,71 @@ namespace CSMSL.Proteomics
 
         public FragmentTypes Type { get; private set; }
 
+        // TODO figure if this is the best way to do chemical formula fragments
+        //public bool TryGetFormula(out ChemicalFormula formula)
+        //{
+                // Might add this
+        //}
+
+        public IEnumerable<IMass> GetModifications()
+        {
+            if (Parent == null)
+                yield break;
+
+            var mods = Parent.Modifications;
+            if (Type.GetTerminus() == Terminus.N)
+            {
+                for (int i = 0; i <= Number; i++)
+                {
+                    if (mods[i] != null)
+                        yield return mods[i];
+                }
+            }
+            else
+            {
+                int length = Parent.Length + 1;
+                for (int i = length - Number; i <= length; i++)
+                {
+                    if (mods[i] != null)
+                        yield return mods[i];
+                }
+            }
+        } 
+
         public string GetSequence()
         {
             if (Parent == null)
                 return "";
+
             string parentSeq = Parent.Sequence;
-            if (Type < FragmentTypes.x)
+            if (Type.GetTerminus() == Terminus.N)
             {
                 return parentSeq.Substring(0, Number);
             }
-            else
-            {
-                return parentSeq.Substring(parentSeq.Length - Number, Number);
-            }
+            
+            return parentSeq.Substring(parentSeq.Length - Number, Number);
         }
 
         public override string ToString()
         {
-            if(string.IsNullOrEmpty(Description))
-                return string.Format("{0}{1}", Enum.GetName(typeof(FragmentTypes), Type), Number);
-            return string.Format("{0}{1}{2}", Enum.GetName(typeof(FragmentTypes), Type), Number, Description);
+           return string.Format("{0}{1}", Enum.GetName(typeof(FragmentTypes), Type), Number);
         }
 
         public override int GetHashCode()
         {
-            return Number + Type.GetHashCode() + Math.Round(MonoisotopicMass).GetHashCode();
+            unchecked
+            {
+                int hCode = 23;
+                hCode = hCode*31 + Number;
+                hCode = hCode*31 + (int) Type;
+                hCode = hCode*31 + Math.Round(MonoisotopicMass).GetHashCode();
+                return hCode;
+            }
         }
 
         public bool Equals(Fragment other)
         {
-            return Type.Equals(other.Type) && Number == other.Number && MonoisotopicMass.MassEquals(other.MonoisotopicMass);
+            return Type.Equals(other.Type) && Number.Equals(other.Number) && MonoisotopicMass.MassEquals(other.MonoisotopicMass);
         }
     }
 }

@@ -20,6 +20,7 @@
 
 using System;
 using System.Collections.Generic;
+using CSMSL.Chemistry;
 
 namespace CSMSL.Proteomics
 {
@@ -45,11 +46,13 @@ namespace CSMSL.Proteomics
 
     public static class FragmentTypesExtension
     {
-        public static IEnumerable<FragmentTypes> GetActiveTypes(this FragmentTypes fragmentTypes)
+        public static IEnumerable<FragmentTypes> GetIndividualFragmentTypes(this FragmentTypes fragmentTypes)
         {
+            if(fragmentTypes == FragmentTypes.None)
+                yield break;
             foreach (FragmentTypes site in Enum.GetValues(typeof(FragmentTypes)))
             {
-                if (site == FragmentTypes.None)
+                if (site == FragmentTypes.None || site == FragmentTypes.All || site == FragmentTypes.Internal)
                 {
                     continue;
                 }
@@ -62,7 +65,37 @@ namespace CSMSL.Proteomics
 
         public static Terminus GetTerminus(this FragmentTypes fragmentType)
         {
+            // Super handy: http://stackoverflow.com/questions/4624248/c-logical-riddle-with-bit-operations-only-one-bit-is-set
+            if (fragmentType == FragmentTypes.None || (fragmentType & (fragmentType - 1)) != FragmentTypes.None)
+            {
+                throw new ArgumentException("Fragment Type must be a single value to determine the terminus","fragmentType");
+            }
             return fragmentType >= FragmentTypes.x ? Terminus.C : Terminus.N;
         }
+
+        public static ChemicalFormula GetIonCap(this FragmentTypes fragmentType)
+        {
+            if (fragmentType == FragmentTypes.None || (fragmentType & (fragmentType - 1)) != FragmentTypes.None)
+            {
+                throw new ArgumentException("Fragment Type must be a single value to determine the ion cap", "fragmentType");
+            }
+            return FragmentIonCaps[fragmentType];
+        }
+
+        private static readonly Dictionary<FragmentTypes, ChemicalFormula> FragmentIonCaps = new Dictionary<FragmentTypes, ChemicalFormula>
+        {
+          {FragmentTypes.a, new ChemicalFormula("C-1H-1O-1")},
+          {FragmentTypes.adot, new ChemicalFormula("C-1O-1")},
+          {FragmentTypes.b, new ChemicalFormula("H-1")},
+          {FragmentTypes.bdot, new ChemicalFormula()},
+          {FragmentTypes.c, new ChemicalFormula("NH2")},
+          {FragmentTypes.cdot, new ChemicalFormula("NH3")},
+          {FragmentTypes.x, new ChemicalFormula("COH-1")},
+          {FragmentTypes.xdot, new ChemicalFormula("CO")},
+          {FragmentTypes.y, new ChemicalFormula("H")},
+          {FragmentTypes.ydot, new ChemicalFormula("H2")},
+          {FragmentTypes.z, new ChemicalFormula("N-1H-2")},
+          {FragmentTypes.zdot, new ChemicalFormula("N-1H-1")},
+        };
     }
 }
