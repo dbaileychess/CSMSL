@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>CSMSL.Tests</RootNamespace>
     <AssemblyName>CSMSL.Tests</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
     <RestorePackages>true</RestorePackages>
@@ -95,6 +95,7 @@
     <Compile Include="RangeTestFixture.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Spectral\SpectrumTestFixture.cs" />
+    <Compile Include="Util\Collections\SortedMaxSizedContainerTestFixture.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\CSMSL\CSMSL.csproj">

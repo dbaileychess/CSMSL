@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using CSMSL.IO;
 
 namespace CSMSL.Util.Collections
 {
@@ -12,17 +13,19 @@ namespace CSMSL.Util.Collections
     /// </example>
     /// </summary>
     /// <typeparam name="T">The type of the object to store in this container</typeparam>
-    public class SortedMaxSizedContainer<T> : IEnumerable<T>
+    public class SortedMaxSizedContainer<T> : ICollection<T>
     {
         /// <summary>
         /// The breaking point between using a linear search or a binary search.
         /// </summary>
-        private const int SizeForLinearOrBinaryInsert = 20;
+        private const int SizeForLinearOrBinarySearch = 20;
+
+        private const int DefaultSizeOfArray = 4;
 
         /// <summary>
         /// The collection of items, in sorted order, 0 being the loweset value
         /// </summary>
-        private readonly T[] _items;
+        private T[] _items;
 
         /// <summary>
         /// The comparer to compare two items in this collection
@@ -51,9 +54,8 @@ namespace CSMSL.Util.Collections
                 throw new ArgumentOutOfRangeException("maxSize", "Max size must be a positive, non-zero value");
             }
             MaxSize = maxSize;
-            Count = 0;
-            _items = new T[maxSize];
             _comparer = comparer;
+            Clear();
         }
 
         /// <summary>
@@ -67,6 +69,11 @@ namespace CSMSL.Util.Collections
         public override string ToString()
         {
             return string.Format("Count = {0:N0} (Max = {1:N0})", Count, MaxSize);
+        }
+
+        void ICollection<T>.Add(T item)
+        {
+            Add(item);
         }
 
         /// <summary>
@@ -116,6 +123,11 @@ namespace CSMSL.Util.Collections
             {
                 if (_comparer.Compare(_items[Count - 1], item) <= 0)
                 {
+                    int arraySize = _items.Length;
+                    if (Count == arraySize)
+                    {
+                        ExtendArray(arraySize*2);
+                    }
                     _items[Count] = item;
                 }
                 else
@@ -132,8 +144,22 @@ namespace CSMSL.Util.Collections
         /// </summary>
         public void Clear()
         {
-            Array.Clear(_items, 0, Count);
+            int size = Math.Min(MaxSize, DefaultSizeOfArray);
+            _items = new T[size];
             Count = 0;
+        }
+
+        private void ExtendArray(int size)
+        {
+            int newSize = Math.Min(MaxSize, size);
+            Array.Resize(ref _items, newSize);
+        }
+
+        private void ShrinkArray(int size)
+        {
+            int newSize = Math.Max(Math.Max(Count, size), DefaultSizeOfArray);
+            if(_items.Length != newSize)
+                Array.Resize(ref _items, newSize);
         }
 
         /// <summary>
@@ -142,8 +168,13 @@ namespace CSMSL.Util.Collections
         /// <param name="item">The item to insert</param>
         private void Insert(T item)
         {
+            int arraySize = _items.Length;
+            if (Count == arraySize)
+            {
+                ExtendArray(arraySize*2);
+            }
             int start = 0;
-            if (Count >= SizeForLinearOrBinaryInsert)
+            if (Count >= SizeForLinearOrBinarySearch)
             {
                 start = Array.BinarySearch(_items, 0, Count, item, _comparer);
                 if (start < 0)
@@ -182,6 +213,69 @@ namespace CSMSL.Util.Collections
             _items[index] = item;
         }
 
+        private bool RemoveAndShift(int index)
+        {
+            if (Count == 0 || index < 0 || index > Count)
+            {
+                return false;
+            }
+
+            for (int i = index; i + 1 < Count; i++)
+            {
+                _items[i] = _items[i + 1];
+            }
+            
+            Count--;
+            int arraySize = _items.Length;
+            if (Count < (arraySize/2))
+            {
+                ShrinkArray(arraySize/2);
+            }
+            _items[Count] = default(T);
+            return true;
+        }
+
+        public bool Remove(T item)
+        {
+            if (Count >= SizeForLinearOrBinarySearch)
+            {
+                int start = Array.BinarySearch(_items, 0, Count, item, _comparer);
+                return start >= 0 && RemoveAndShift(start);
+            }
+
+            // Go backwards, to reduce number of shifts
+            for (int i = Count - 1; i >= 0; i--)
+            {
+                if (_items[i].Equals(item))
+                {
+                    return RemoveAndShift(i);
+                }
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Checks if the item exists in this container
+        /// </summary>
+        /// <param name="item">The item to check for</param>
+        /// <returns>True if it exists, false otherwise</returns>
+        public bool Contains(T item)
+        {
+            if (Count < SizeForLinearOrBinarySearch) 
+                return _items.Contains(item);
+            return Array.BinarySearch(_items, 0, Count, item, _comparer) >= 0;
+        }
+
+        /// <summary>
+        /// Copies the contents of this collection to an array
+        /// </summary>
+        /// <param name="array">The array to copy to</param>
+        /// <param name="arrayIndex">The start index of the array</param>
+        public void CopyTo(T[] array, int arrayIndex)
+        {
+            Array.Copy(_items, 0, array, arrayIndex, Count);
+        }
+
         /// <summary>
         /// Get the enumerator of all non-null items in this container
         /// </summary>
@@ -210,5 +304,14 @@ namespace CSMSL.Util.Collections
         {
             return _items.Take(Count).GetEnumerator();
         }
+        
+        /// <summary>
+        /// This Collection is not readonly by design
+        /// </summary>
+        public bool IsReadOnly
+        {
+            get { return false; }
+        }
+        
     }
 }
