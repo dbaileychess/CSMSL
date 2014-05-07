@@ -40,7 +40,7 @@ namespace CSMSL.Spectral
         public bool Equals(IPeak other)
         {
             if (ReferenceEquals(this, other)) return true;
-            return MZ.Equals(other.X) && Intensity.Equals(other.Y);
+            return MZ.FussyEquals(other.X) && Intensity.FussyEquals(other.Y);
         }
 
         public override string ToString()
@@ -93,7 +93,7 @@ namespace CSMSL.Spectral
         public bool Equals(MZPeak other)
         {
             // Odd to use mass equals on intensity, might have to make that more generic sometime
-            return MZ.MassEquals(other.MZ) && Intensity.MassEquals(other.Intensity);
+            return MZ.FussyEquals(other.MZ) && Intensity.FussyEquals(other.Intensity);
         }
     }
 }

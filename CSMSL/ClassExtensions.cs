@@ -96,6 +96,19 @@ namespace CSMSL
             Array.Copy(data, index, result, 0, length);
             return result;
         }
+
+        /// <summary>
+        /// Compares to doubles for equality based on their absolute difference being less
+        /// than some specified tolerace.
+        /// </summary>
+        /// <param name="item1"></param>
+        /// <param name="item2"></param>
+        /// <param name="tolerance"></param>
+        /// <returns></returns>
+        public static bool FussyEquals(this double item1, double item2, double tolerance = 1e-10)
+        {
+            return Math.Abs(item1 - item2) < tolerance;
+        }
     }
 
     public static class ListExtension
