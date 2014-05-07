@@ -71,12 +71,12 @@ namespace CSMSL.Examples
             // Example Objects
             //VennDiagramExamples();
 
-            // Example programs
+            // Example Digestion
             //TrypticDigestion.Start(minLength: 5, maxLength: 35, maxMissed:3, protease:Protease.Trypsin, storeSequenceString: false);
 
             // Example Protein Grouping
-            ProteinGroupingExample.Start(Protease.Trypsin);
-            //ProteinGroupingExample.StartRamp(Protease.Trypsin);
+            //ProteinGroupingExample.Start(Protease.Trypsin);
+            ProteinGroupingExample.StartRamp(Protease.Trypsin);
 
             //Example Isotopologue
             //IsotopologueExample();
@@ -165,7 +165,7 @@ namespace CSMSL.Examples
             int numberofsets = 5;
             int maxvalue = 100;
             int maxitems = 50;
-            Random ran = new Random();
+            Random ran = new Random(135121321);
             VennSet<int>[] sets = new VennSet<int>[numberofsets];
             for (int i = 0; i < numberofsets; i++)
             {

@@ -5,6 +5,13 @@ using System.Linq;
 
 namespace CSMSL.Util.Collections
 {
+    /// <summary>
+    /// A container that stores items in sorted order with a specified maximum capacity.
+    /// <example>
+    /// Storing the top 5 peptide spectral matches for a given spectrum, sorted on match score
+    /// </example>
+    /// </summary>
+    /// <typeparam name="T">The type of the object to store in this container</typeparam>
     public class SortedMaxSizedContainer<T> : IEnumerable<T>
     {
         /// <summary>
@@ -12,7 +19,14 @@ namespace CSMSL.Util.Collections
         /// </summary>
         private const int SizeForLinearOrBinaryInsert = 20;
 
+        /// <summary>
+        /// The collection of items, in sorted order, 0 being the loweset value
+        /// </summary>
         private readonly T[] _items;
+
+        /// <summary>
+        /// The comparer to compare two items in this collection
+        /// </summary>
         private readonly IComparer<T> _comparer;
 
         /// <summary>
@@ -21,10 +35,15 @@ namespace CSMSL.Util.Collections
         public int Count { get; private set; }
 
         /// <summary>
-        /// Gets the max number of items to store in this container
+        /// Gets the max number of items that can be stored in this container
         /// </summary>
         public int MaxSize { get; private set; }
 
+        /// <summary>
+        /// Creates a new container with a specified maximum size and comparer
+        /// </summary>
+        /// <param name="maxSize">The maximum number of items to store in this container</param>
+        /// <param name="comparer">The comparer to compare two items in this collection</param>
         public SortedMaxSizedContainer(int maxSize, IComparer<T> comparer)
         {
             if (maxSize <= 0)
@@ -37,8 +56,13 @@ namespace CSMSL.Util.Collections
             _comparer = comparer;
         }
 
+        /// <summary>
+        /// Creates a new container with a specified maximum size and the default comparer
+        /// </summary>
+        /// <param name="maxSize">The maximum number of items to store in this container</param>
         public SortedMaxSizedContainer(int maxSize)
             : this(maxSize, Comparer<T>.Default) { }
+
 
         public override string ToString()
         {
@@ -46,7 +70,7 @@ namespace CSMSL.Util.Collections
         }
 
         /// <summary>
-        /// Adds an item to this container
+        /// Attempts to add an item to this container
         /// </summary>
         /// <param name="item">The item to add</param>
         /// <returns>True if the item was added, false otherwise</returns>
@@ -54,14 +78,18 @@ namespace CSMSL.Util.Collections
         {
             if (Count == 0)
             {
+                // Nothing is stored yet, just store the item as the lowest value
                 _items[0] = item;
             }
             else if (Count == MaxSize)
             {
+                // The conatiner is full, check if the item is lower than the last item in this conatiner
                 if (_comparer.Compare(_items[Count - 1], item) <= 0)
                 {
                     return false;
                 }
+
+                // Special case for a maxsize of one, just replace the only item in the conatiner
                 if (MaxSize == 1)
                 {
                     _items[0] = item;
@@ -122,14 +150,14 @@ namespace CSMSL.Util.Collections
                 {
                     start = ~start;
                 }
-                ShiftAndInsert(item, start, Count);
+                ShiftAndInsert(item, start);
                 return;
             }
             for (int i = start; i < Count; i++)
             {
                 if (_comparer.Compare(_items[i], item) > 0)
                 {
-                    ShiftAndInsert(item, i, Count);
+                    ShiftAndInsert(item, i);
                     return;
                 }
             }
@@ -137,29 +165,37 @@ namespace CSMSL.Util.Collections
         }
 
         /// <summary>
-        /// 
+        /// Shift items down to make room for the new insert
         /// </summary>
-        /// <param name="item"></param>
-        /// <param name="index"></param>
-        /// <param name="maxIndex"></param>
-        private void ShiftAndInsert(T item, int index, int maxIndex)
+        /// <param name="item">The item to insert</param>
+        /// <param name="index">The index to insert the item at</param>
+        private void ShiftAndInsert(T item, int index)
         {
-            if (maxIndex >= MaxSize)
+            if (Count >= MaxSize)
             {
-                maxIndex = MaxSize - 1;
+                Count = MaxSize - 1;
             }
-            for (int i = maxIndex; i > index; i--)
+            for (int i = Count; i > index; i--)
             {
                 _items[i] = _items[i - 1];
             }
             _items[index] = item;
         }
 
+        /// <summary>
+        /// Get the enumerator of all non-null items in this container
+        /// </summary>
+        /// <returns>The enumerator of all non-null items in this container</returns>
         public IEnumerator<T> GetEnumerator()
         {
             return _items.Take(Count).GetEnumerator();
         }
 
+        /// <summary>
+        /// Get the item stored at this index
+        /// </summary>
+        /// <param name="index">The index of the item to get</param>
+        /// <returns>The item stored at this index</returns>
         public T this[int index]
         {
             get

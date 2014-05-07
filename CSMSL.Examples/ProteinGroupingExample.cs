@@ -67,11 +67,12 @@ namespace CSMSL.Examples
 
             // Fixed seed to make it reproducible
             Random random = new Random(480912341);
+            peps = peps.OrderBy(x => random.Next()).ToList();
             
             for (double percentIdentified = 0; percentIdentified <= 1; percentIdentified += percentIdentifiedSteps)
             {
                 // Take the first x % to act as our identified peptides
-                List<Peptide> identifiedPeptides = peps.OrderBy(x => random.Next()).Take((int) (peps.Count*percentIdentified)).ToList();
+                List<Peptide> identifiedPeptides = peps.Take((int) (peps.Count*percentIdentified)).ToList();
 
                 List<ProteinGroup> proteinGroups = ProteinGroup.GroupProteins(proteins, protease, identifiedPeptides, new AminoAcidLeucineSequenceComparer(), maxMissed).ToList();
                 Console.WriteLine("{0} peptides {1} protein groups", identifiedPeptides.Count, proteinGroups.Count);
