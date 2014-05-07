@@ -26,8 +26,7 @@ namespace CSMSL.Proteomics
 {
     public class Fragment : IMass, IEquatable<Fragment>
     {
-
-        internal Fragment(FragmentTypes type, int number, double monoisotopicMass, AminoAcidPolymer parent)
+        public Fragment(FragmentTypes type, int number, double monoisotopicMass, AminoAcidPolymer parent)
         {
             Type = type;
             Number = number;

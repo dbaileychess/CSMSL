@@ -9,12 +9,15 @@ namespace CSMSL.Proteomics
     public class ProteinGroup : IEnumerable<Protein>, IEquatable<ProteinGroup>
     {
         public HashSet<Protein> Proteins { get; set; }
-        public HashSet<string> Peptides { get; set; }
+        public HashSet<IAminoAcidSequence> Peptides { get; set; }
 
         public ProteinGroup()
+            : this(new AminoAcidLeucineSequenceComparer()) { }
+
+        public ProteinGroup(IEqualityComparer<IAminoAcidSequence> peptideComparer)
         {
             Proteins = new HashSet<Protein>();
-            Peptides = new HashSet<string>();        
+            Peptides = new HashSet<IAminoAcidSequence>(peptideComparer);        
         }
 
         public override int GetHashCode()
@@ -59,7 +62,7 @@ namespace CSMSL.Proteomics
             Proteins.Add(protein);
         }
 
-        public void Add(string peptide)
+        public void AddPeptide(IAminoAcidSequence peptide)
         {
             if (peptide == null)
                 return;
@@ -83,38 +86,43 @@ namespace CSMSL.Proteomics
 
         #region Statics
    
-
         public static IEnumerable<ProteinGroup> GroupProteins(string fastaFile, Protease protease, IEnumerable<IAminoAcidSequence> observeredSequences, int MaxMissedCleavages = 3)
         {
-            return GroupProteins(fastaFile, new [] { protease }, observeredSequences, MaxMissedCleavages);
+            using (FastaReader fasta = new FastaReader(fastaFile))
+            {
+                return GroupProteins(fasta.ReadNextProtein(), new[] { protease }, observeredSequences, MaxMissedCleavages);
+            }
         }
 
-        public static IEnumerable<ProteinGroup> GroupProteins(string fastaFile, IList<Protease> proteases, IEnumerable<IAminoAcidSequence> observeredSequences, int MaxMissedCleavages = 3, int minPepPerProtein = 1)
+        public static IEnumerable<ProteinGroup> GroupProteins(IEnumerable<Protein> proteins, IList<Protease> proteases, IEnumerable<IAminoAcidSequence> observeredSequences, int MaxMissedCleavages = 3, int minPepPerProtein = 1)
         {
             HashSet<ProteinGroup> mappedProteins = new HashSet<ProteinGroup>();
 
-            HashSet<string> peptideSequences = new HashSet<string>(observeredSequences.Select(p => p.GetLeucineSequence()));
+            HashSet<IAminoAcidSequence> peptideSequences = new HashSet<IAminoAcidSequence>(observeredSequences);
             int smallestPeptide = peptideSequences.Min(seq => seq.Length) - 1;
             int largestPeptide = peptideSequences.Max(seq => seq.Length) + 1;
 
-            using (FastaReader reader = new FastaReader(fastaFile))
+            foreach (Protein protein in proteins)
             {
-                // Read in each protein one-by-one
-                foreach (Protein protein in reader.ReadNextProtein())
-                {                   
-                    foreach (string peptide in AminoAcidPolymer.Digest(protein.GetLeucineSequence() ,proteases, MaxMissedCleavages, smallestPeptide, largestPeptide))
+                foreach (Protease protease in proteases)
+                {
+                    foreach (
+                        string seq in
+                            AminoAcidPolymer.Digest(protein, protease, MaxMissedCleavages, smallestPeptide, largestPeptide))
                     {
+                        Peptide peptide = new Peptide(seq);
                         if (peptideSequences.Contains(peptide))
                         {
                             ProteinGroup pg = new ProteinGroup(protein);
 
                             mappedProteins.Add(pg);
 
-                            pg.Add(peptide);
+                            pg.AddPeptide(peptide);
                         }
                     }
                 }
             }
+
 
             return CombinedProteins(new List<ProteinGroup>(mappedProteins), minPepPerProtein);
         }
@@ -140,7 +148,7 @@ namespace CSMSL.Proteomics
             {
                 // Grab the next protein and its associated peptides from the list of all proteins
                 ProteinGroup proteinGroup = proteins[p1];
-                HashSet<string> peptides = proteinGroup.Peptides;
+                HashSet<IAminoAcidSequence> peptides = proteinGroup.Peptides;
      
                 // Start looking at the next protein in the list
                 int p2 = p1 + 1;
@@ -202,7 +210,7 @@ namespace CSMSL.Proteomics
             {
                 // Get the peptides in the protein group
                 ProteinGroup proteinGroup = proteinGroups[p1];
-                HashSet<string> reference_peptides = new HashSet<string>(proteinGroup.Peptides);
+                HashSet<IAminoAcidSequence> reference_peptides = new HashSet<IAminoAcidSequence>(proteinGroup.Peptides);
 
                 bool subsumable_protein_group = false;
 
@@ -273,7 +281,7 @@ namespace CSMSL.Proteomics
         
     }
 
-    class AminoAcidSequenceComparer : IEqualityComparer<IAminoAcidSequence>
+    public class AminoAcidSequenceComparer : IEqualityComparer<IAminoAcidSequence>
     {
         public bool Equals(IAminoAcidSequence x, IAminoAcidSequence y)
         {
@@ -286,7 +294,7 @@ namespace CSMSL.Proteomics
         }
     }
 
-    class AminoAcidLeucineSequenceComparer : IEqualityComparer<IAminoAcidSequence>
+    public class AminoAcidLeucineSequenceComparer : IEqualityComparer<IAminoAcidSequence>
     {    
 
         public int GetHashCode(IAminoAcidSequence obj)

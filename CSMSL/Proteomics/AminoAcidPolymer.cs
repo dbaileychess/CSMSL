@@ -1469,6 +1469,11 @@ namespace CSMSL.Proteomics
             return GetDigestionPoints(sequence, proteases, maxMissedCleavages, minLength, maxLength, methionineInitiator, semiDigestion).Select(points => sequence.Substring(points.Item1, points.Item2));
         }
 
+        public static IEnumerable<string> Digest(IAminoAcidSequence sequence, IProtease protease, int maxMissedCleavages = 3, int minLength = 1, int maxLength = int.MaxValue, bool methionineInitiator = true, bool semiDigestion = false)
+        {
+            return Digest(sequence.Sequence, new[] { protease }, maxMissedCleavages, minLength, maxLength, methionineInitiator, semiDigestion);
+        }
+
         public static double GetMass(string sequence)
         {
             double mass = Constants.Water;

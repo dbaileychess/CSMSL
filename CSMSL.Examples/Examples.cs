@@ -66,13 +66,13 @@ namespace CSMSL.Examples
             
             //ChemicalFormulaExamples();
             //PeptideExamples();
-            //ChemicalFormulaGeneratorExample();
+            ChemicalFormulaGeneratorExample();
                         
             // Example Objects
             //VennDiagramExamples();
 
             // Example programs
-            TrypticDigestion.Start(minLength: 5, maxLength: 35, maxMissed:3, protease:Protease.Trypsin, storeSequenceString: false);
+            //TrypticDigestion.Start(minLength: 5, maxLength: 35, maxMissed:3, protease:Protease.Trypsin, storeSequenceString: false);
 
             // Example Protein Grouping
             //ProteinGroupingExample.Start(Protease.Trypsin);
@@ -146,7 +146,7 @@ namespace CSMSL.Examples
             DoubleRange range = MassRange.FromPPM(new ChemicalFormula("C62H54N42O24").MonoisotopicMass, 0.1);
             double mass = range.Mean;
             int count = 0;
-            foreach (var formula in generator.FromMass(range))
+            foreach (var formula in generator.FromMass(range).Validate())
             {
                 Console.WriteLine("{0,-15} {1:F10} {2,-5:G5} ppm", formula, formula.MonoisotopicMass,
                     Tolerance.GetTolerance(formula.MonoisotopicMass, mass, ToleranceType.PPM));

@@ -731,9 +731,9 @@ namespace CSMSL.Chemistry
 
         public double[] GetIsotopicDistribution(int numberOfIsotopes = 3)
         {
-            double[] distrubition = new double[numberOfIsotopes];
+            double[] distribution = new double[numberOfIsotopes];
 
-            distrubition[0] = 1;
+            distribution[0] = 1;
             
             // Number of C12 isotopes in this peptide
             int numberOfCarbons = Count(PeriodicTable.Instance["C"][12]);
@@ -741,10 +741,10 @@ namespace CSMSL.Chemistry
 
             for (int i = 1; i < numberOfIsotopes; i++)
             {
-                distrubition[i] = Math.Pow(coefficient, i) / Factorial(i);
+                distribution[i] = Math.Pow(coefficient, i) / Factorial(i);
             }
 
-            return distrubition;
+            return distribution;
         }
 
         public override string ToString()
@@ -1038,7 +1038,7 @@ namespace CSMSL.Chemistry
         public static ChemicalFormula Combine(IEnumerable<IChemicalFormula> formulas)
         {
             int largestId = 0;
-            int[] isotopes = new int[300];
+            int[] isotopes = new int[Element.PeriodicTable.BiggestIsotopeNumber];
             double mass = 0;
             foreach (IChemicalFormula iformula in formulas)
             {             

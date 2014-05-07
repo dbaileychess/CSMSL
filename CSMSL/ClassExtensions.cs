@@ -261,7 +261,7 @@ namespace CSMSL
             None = 0,
             Valence = 1,
             HydrogenCarbonRatio = 2,
-            All = int.MaxValue,
+            All = 3,
         }
 
         public static IEnumerable<ChemicalFormula> Validate(this IEnumerable<ChemicalFormula> formulas, FilterTypes filters = FilterTypes.All)

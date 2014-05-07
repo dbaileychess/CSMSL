@@ -79,6 +79,8 @@ namespace CSMSL.Chemistry
         /// </summary>
         private int _uniqueId;
 
+        public int BiggestIsotopeNumber { get { return _uniqueId; }}
+
         /// <summary>
         /// The main data store for all the isotopes in this periodic table. The isotope unique ID serves as the index in the array, these IDs are unique for each isotope.
         /// </summary>
