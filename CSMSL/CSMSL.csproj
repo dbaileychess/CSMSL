@@ -125,6 +125,7 @@
     <Compile Include="DoubleRange.cs" />
     <Compile Include="MassRange.cs" />
     <Compile Include="MzRange.cs" />
+    <Compile Include="Proteomics\ChemicalFormulaFragment.cs" />
     <Compile Include="Proteomics\ChemicalFormulaModification.cs" />
     <Compile Include="Proteomics\IIsotopologue.cs" />
     <Compile Include="Proteomics\Isotopologue.cs" />

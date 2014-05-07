@@ -32,6 +32,9 @@ namespace CSMSL.Proteomics
     /// </summary>
     public abstract class AminoAcidPolymer : IEquatable<AminoAcidPolymer>, IMass, IAminoAcidSequence
     {
+
+        #region Static
+
         /// <summary>
         /// The default chemical formula of the C terminus (hydroxyl group)
         /// </summary>
@@ -49,16 +52,39 @@ namespace CSMSL.Proteomics
         /// </summary>
         public static bool StoreSequenceString;
 
-        /// <summary>
-        /// The regex for peptide sequences with the possibilities of modifications (either chemical formulas or masses)        
-        /// </summary>
-        //private static readonly Regex SequenceRegex = new Regex(@"([A-Z])(?:\[([\w\{\}]+)\])?", RegexOptions.Compiled);
+        #endregion
 
+        #region Instance Variables
+        
+        /// <summary>
+        /// The C-terminus chemical formula cap. This is different from the C-Terminus modification.
+        /// </summary>
         private IChemicalFormula _cTerminus;
+
+        /// <summary>
+        /// The N-terminus chemical formula cap. This is different from the N-Terminus modification.
+        /// </summary>
         private IChemicalFormula _nTerminus;
+
+        /// <summary>
+        /// All of the modifications indexed by position from N to C. This array is 2 bigger than the amino acid array
+        /// as index 0 and Count - 1 represent the N and C terminus, respectively
+        /// </summary>
         private IMass[] _modifications;
+
+        /// <summary>
+        /// All of the amino acid residues indexed by position from N to C.
+        /// </summary>
         private AminoAcid[] _aminoAcids;
+
+        /// <summary>
+        /// The amino acid sequence with modification names interspersed. Is ignored if 'StoreSequenceString' is false
+        /// </summary>
         private string _sequenceWithMods;
+
+        /// <summary>
+        /// The amino acid sequence. Is ignored if 'StoreSequenceString' is false
+        /// </summary>
         private string _sequence;
         
         /// <summary>
@@ -66,29 +92,18 @@ namespace CSMSL.Proteomics
         /// </summary>
         internal bool IsDirty { get; set; }
 
-        /// <summary>
-        /// The internal data store for the modifications (2 larger than the length to handle the N and C termini)
-        /// </summary>
-        internal IMass[] Modifications
-        {
-            get { return _modifications; }
-        }
-
-        /// <summary>
-        /// The internal data store for the amino acids
-        /// </summary>
-        internal AminoAcid[] AminoAcids
-        {
-            get { return _aminoAcids; }
-        }
-
+        #endregion
+    
         #region Constructors
 
+        /// <summary>
+        /// Static constructor, sets the default parameters for all amino acid polymers
+        /// </summary>
         static AminoAcidPolymer()
         {
             StoreSequenceString = true;
         }
-
+        
         protected AminoAcidPolymer()
             : this(string.Empty, DefaultNTerminus, DefaultCTerminus) { }
 
@@ -171,6 +186,8 @@ namespace CSMSL.Proteomics
 
         #endregion
 
+        #region Public Properties
+
         /// <summary>
         /// Gets or sets the C terminus of this amino acid polymer
         /// </summary>        
@@ -199,8 +216,30 @@ namespace CSMSL.Proteomics
         /// </summary>
         public double MonoisotopicMass { get; private set; }
 
+        #endregion
+
+        #region Internal Properties
+
+        /// <summary>
+        /// The internal data store for the modifications (2 larger than the length to handle the N and C termini)
+        /// </summary>
+        internal IMass[] Modifications
+        {
+            get { return _modifications; }
+        }
+
+        /// <summary>
+        /// The internal data store for the amino acids
+        /// </summary>
+        internal AminoAcid[] AminoAcids
+        {
+            get { return _aminoAcids; }
+        }
+
+        #endregion
+
         #region Amino Acid Sequence
-       
+
         /// <summary>
         /// Returns the amino acid sequence with all isoleucines (I) replaced with leucines (L);
         /// </summary>
@@ -220,6 +259,11 @@ namespace CSMSL.Proteomics
             return _aminoAcids.Any(aa => aa.Letter.Equals(residue));
         }
 
+        /// <summary>
+        /// Checks if the amino acid residue is contained in this polymer
+        /// </summary>
+        /// <param name="residue">The residue to check for</param>
+        /// <returns>True if the polymer contains the specified residue, False otherwise</returns>
         public bool Contains(IAminoAcid residue)
         {
             return _aminoAcids.Contains(residue);
@@ -235,10 +279,13 @@ namespace CSMSL.Proteomics
                 // Don't store the string if we don't have too, just recreate it on the fly
                 if (!StoreSequenceString) 
                     return new string(_aminoAcids.Select(aa => aa.Letter).ToArray());
+
+                // Generate the sequence if the stored version is null or empty
                 if (string.IsNullOrEmpty(_sequence))
                 {
                     _sequence = new string(_aminoAcids.Select(aa => aa.Letter).ToArray());
                 }
+
                 return _sequence;
             }
         }
@@ -253,6 +300,7 @@ namespace CSMSL.Proteomics
                 // Don't store the string if we don't have too, just recreate it on the fly
                 if (!StoreSequenceString) 
                     return GetSequenceWithModifications();
+
                 if (!IsDirty && !string.IsNullOrEmpty(_sequenceWithMods)) 
                     return _sequenceWithMods;
 
@@ -271,6 +319,7 @@ namespace CSMSL.Proteomics
             return Length;
         }
 
+        
         public int ResidueCount(IAminoAcid aminoAcid)
         {
             return aminoAcid == null ? 0 : _aminoAcids.Count(aar => aar.Equals(aminoAcid));
@@ -324,54 +373,6 @@ namespace CSMSL.Proteomics
             return GetSiteDeterminingFragments(this, other, type);
         }
 
-        public Fragment Fragment(FragmentTypes type, int number)
-        {
-            if (type == FragmentTypes.None)
-                return null;
-
-            if (number < 1 || number > Length)
-                throw new IndexOutOfRangeException();
-          
-            double monoMass = 0.0;
-            List<IMass> mods = new List<IMass>();
-            int start = 0;
-            int end = number;
-
-            if (type >= FragmentTypes.x)
-            {
-                start = Length - number;
-                end = Length;
-               
-                monoMass += CTerminus.MonoisotopicMass;
-                if (CTerminusModification != null)
-                {
-                    monoMass += CTerminusModification.MonoisotopicMass;
-                    mods.Add(CTerminusModification);
-                }
-            }
-            else
-            {
-                monoMass += NTerminus.MonoisotopicMass;
-                if (NTerminusModification != null)
-                {
-                    monoMass += NTerminusModification.MonoisotopicMass;
-                    mods.Add(NTerminusModification);
-                }
-            }
-
-            for (int i = start; i < end; i++)
-            {
-                monoMass += _aminoAcids[i].MonoisotopicMass;
-                if (_modifications[i + 1] != null)
-                {
-                    monoMass += _modifications[i + 1].MonoisotopicMass;
-                    mods.Add(_modifications[i + 1]);
-                }
-            }
-
-            return new Fragment(type, number, monoMass, this, mods);
-        }
-        
         /// <summary>
         /// Calculates all the fragments of the types you specify
         /// </summary>
@@ -381,71 +382,212 @@ namespace CSMSL.Proteomics
         {
             return Fragment(types, 1, Length - 1);
         }
-   
+
+        public IEnumerable<Fragment> Fragment(FragmentTypes types, int number)
+        {
+            return Fragment(types, number, number);
+        }
+
         public IEnumerable<Fragment> Fragment(FragmentTypes types, int min, int max)
         {
-            if (types == FragmentTypes.None)
-                yield break;
-            
+            if (min > max)
+                throw new ArgumentOutOfRangeException();
 
             if (min < 1 || max > Length - 1)
                 throw new IndexOutOfRangeException();
             
-
-            foreach (FragmentTypes type in Enum.GetValues(typeof(FragmentTypes)))
+            if (types == FragmentTypes.None)
+                yield break;
+            
+            foreach (FragmentTypes type in types.GetActiveTypes())
             {
-                if (type == FragmentTypes.None || type == FragmentTypes.Internal) continue;
-                if ((types & type) == type)
+                List<IMass> mods = new List<IMass>();
+                double monoMass = 0;
+                bool isChemicalFormula = true;
+
+                bool isCTerminal = type.GetTerminus() == Terminus.C;
+
+                ChemicalFormula formula = isCTerminal ? new ChemicalFormula(CTerminus) : new ChemicalFormula(NTerminus);
+
+                bool first = true;
+                IMass mod;
+
+                for (int i = 0; i <= max; i++)
                 {
-                    List<IMass> mods = new List<IMass>();
-                    double monoMass = 0;
-                    int start = min;
-                    int end = max;
+                    int aaIndex = isCTerminal ? Length - i : i - 1;
 
-                    if (type >= FragmentTypes.x)
+                    // Handle the terminus mods first in a special case
+                    if (first)
                     {
-                        monoMass += CTerminus.MonoisotopicMass;
+                        first = false;
+                        mod = _modifications[aaIndex + 1];
+                        if (mod != null)
+                        {
+                            monoMass += mod.MonoisotopicMass;
+                            mods.Add(mod);
 
-                        if (CTerminusModification != null)
-                        {
-                            monoMass += CTerminusModification.MonoisotopicMass;
-                            mods.Add(CTerminusModification);
-                        }                           
-                        for (int i = end; i >= start; i--)
-                        {
-                            monoMass += _aminoAcids[i].MonoisotopicMass;
-                         
-                            if (_modifications[i + 1] != null)
+                            IChemicalFormula modFormula = mod as IChemicalFormula;
+                            if (modFormula != null)
                             {
-                                monoMass += _modifications[i + 1].MonoisotopicMass;
-                                mods.Add(_modifications[i + 1]);
+                                formula.Add(modFormula);
                             }
-                            yield return new Fragment(type, Length - i, monoMass, this, mods);
+                            else
+                            {
+                                isChemicalFormula = false;
+                            }
                         }
+                        continue;
+                    }
+                    
+                    monoMass += _aminoAcids[aaIndex].MonoisotopicMass;
+                    formula.Add(_aminoAcids[aaIndex]);
+
+                    mod = _modifications[aaIndex + 1];
+
+                    if (mod != null)
+                    {
+                        monoMass += mod.MonoisotopicMass;
+                        mods.Add(mod);
+
+                        if (isChemicalFormula)
+                        {
+                            IChemicalFormula modFormula = mod as IChemicalFormula;
+                            if (modFormula != null)
+                            {
+                                formula.Add(modFormula);
+                            }
+                            else
+                            {
+                                isChemicalFormula = false;
+                            }
+                        }
+                    }
+                    
+                    if (i < min)
+                        continue;
+
+                    if (isChemicalFormula)
+                    {
+                        yield return new ChemicalFormulaFragment(type, i, formula, this, mods);
                     }
                     else
                     {
-                        monoMass += NTerminus.MonoisotopicMass;
-
-                        if (NTerminusModification != null)
-                        {
-                            monoMass += NTerminusModification.MonoisotopicMass;
-                            mods.Add(NTerminusModification);
-                        }                            
-
-                        for (int i = start; i <= end; i++)
-                        {
-                            monoMass += _aminoAcids[i - 1].MonoisotopicMass;
-
-                            if (_modifications[i] != null)
-                            {
-                                monoMass += _modifications[i].MonoisotopicMass;
-                                mods.Add(_modifications[i]);
-                            }
-                            yield return new Fragment(type, i, monoMass, this, mods);
-                        }
+                        yield return new Fragment(type, i, monoMass, this, mods);
                     }
                 }
+
+
+                //if (type.GetTerminus() == Terminus.C)
+                //{
+                //    monoMass += CTerminus.MonoisotopicMass;
+                //    formula.Add(CTerminus);
+                //    if (CTerminusModification != null)
+                //    {
+                //        monoMass += CTerminusModification.MonoisotopicMass;
+                //        mods.Add(CTerminusModification);
+
+                //        IChemicalFormula modFormula = CTerminusModification as IChemicalFormula;
+                //        if (modFormula != null)
+                //        {
+                //            formula.Add(modFormula);
+                //        }
+                //        else
+                //        {
+                //            isChemicalFormula = false;
+                //        }
+                //    }   
+    
+                   
+                //    for (int i = 1; i <= max; i++)
+                //    {
+                //        // Work backwards down the array
+                //        int aaIndex = Length - i;
+
+                //        monoMass += _aminoAcids[aaIndex].MonoisotopicMass;
+                //        formula.Add(_aminoAcids[aaIndex]);
+
+                //        if (_modifications[aaIndex + 1] != null)
+                //        {
+                //            mod = _modifications[aaIndex + 1];
+                //            monoMass += mod.MonoisotopicMass;
+                //            mods.Add(mod);
+
+                //            IChemicalFormula modFormula = mod as IChemicalFormula;
+                //            if (modFormula != null)
+                //            {
+                //                formula.Add(modFormula);
+                //            }
+                //            else
+                //            {
+                //                isChemicalFormula = false;
+                //            }
+                //        }
+                        
+                //        if (i < min)
+                //            continue;
+
+                //        if (isChemicalFormula)
+                //        {
+                //            yield return new ChemicalFormulaFragment(type, i, formula, this, mods);
+                //        }
+                //        else
+                //        {
+                //            yield return new Fragment(type, i, monoMass, this, mods);
+                //        }
+                //    }
+                //}
+                //else
+                //{
+                //    monoMass += NTerminus.MonoisotopicMass;
+                //    formula.Add(NTerminus);
+                //    if (NTerminusModification != null)
+                //    {
+                //        monoMass += NTerminusModification.MonoisotopicMass;
+                //        mods.Add(NTerminusModification);
+                //        IChemicalFormula modFormula = NTerminusModification as IChemicalFormula;
+                //        if (modFormula != null)
+                //        {
+                //            formula.Add(modFormula);
+                //        }
+                //        else
+                //        {
+                //            isChemicalFormula = false;
+                //        }
+                //    }                            
+
+                //    for (int i = 1; i <= max; i++)
+                //    {
+                //        monoMass += _aminoAcids[i - 1].MonoisotopicMass;
+                //        formula.Add(_aminoAcids[i - 1]);
+                //        if (_modifications[i] != null)
+                //        {
+                //            var mod = _modifications[i];
+                //            monoMass += _modifications[i].MonoisotopicMass;
+                //            mods.Add(_modifications[i]);
+                //            IChemicalFormula modFormula = mod as IChemicalFormula;
+                //            if (modFormula != null)
+                //            {
+                //                formula.Add(modFormula);
+                //            }
+                //            else
+                //            {
+                //                isChemicalFormula = false;
+                //            }
+                //        }
+                //        if(i < min)
+                //            continue;
+                        
+                //        if (isChemicalFormula)
+                //        {
+                //            yield return new ChemicalFormulaFragment(type, i, formula, this, mods);
+                //        }
+                //        else
+                //        {
+                //            yield return new Fragment(type, i, monoMass, this, mods);
+                //        }
+                //    }
+                //}
+                
             }
         }
 
@@ -666,10 +808,10 @@ namespace CSMSL.Proteomics
         }
 
         /// <summary>
-        /// Replaces the modification at specific sites on this amino acid polymer
+        /// Replaces all instances of the old modification with the new modification in this polymer
         /// </summary>
-        /// <param name="mod">The modification to set</param>
-        /// <param name="residue">The residue to set the modification at</param>
+        /// <param name="oldMod">The modification to remove</param>
+        /// <param name="newMod">The modification to replace it with</param>
         /// <returns>The number of modifications added to this amino acid polymer</returns>
         public virtual int ReplaceModification(IMass oldMod, IMass newMod)
         {
@@ -699,7 +841,7 @@ namespace CSMSL.Proteomics
         /// <param name="terminus">The termini to set the mod at</param>
         public virtual void AddModification(IMass mod, Terminus terminus)
         {
-            IMass currentMod = null;
+            IMass currentMod;
             
             if ((terminus & Terminus.N) == Terminus.N)
             {

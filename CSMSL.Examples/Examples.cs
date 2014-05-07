@@ -21,6 +21,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Windows.Forms;
 using CSMSL.Chemistry;
 using CSMSL.IO.Thermo;
 using CSMSL.Proteomics;
@@ -52,6 +53,7 @@ namespace CSMSL.Examples
                 Stopwatch watch = new Stopwatch();
                 watch.Start();
                 StartExamples();
+                GuiExamples();
                 watch.Stop();
                 Console.WriteLine("==================");
                 Console.WriteLine(watch.Elapsed);
@@ -64,7 +66,7 @@ namespace CSMSL.Examples
             // Examples coding  
             
             //ChemicalFormulaExamples();
-            //PeptideExamples();
+            PeptideExamples();
             //ChemicalFormulaGeneratorExample();
                         
             // Example Objects
@@ -80,7 +82,7 @@ namespace CSMSL.Examples
             //IsotopologueExample();
 
             // Example IO
-            MsDataFileExamples.Start();
+            //MsDataFileExamples.Start();
 
             // Omssa Reader
             //OmssaReader.Start();
@@ -94,6 +96,16 @@ namespace CSMSL.Examples
             //PepXmlExamples.ReadPepXml();
 
             //MzIdentMLExamples.ReadMzIdentML();
+        }
+
+        [STAThread]
+        private static void GuiExamples()
+        {
+            Application.EnableVisualStyles();
+            Application.SetCompatibleTextRenderingDefault(false);
+
+            // Peptide Calculator GUI Example
+            //Application.Run(new PeptideCalculatorForm());
         }
 
         private static void IsotopologueExample()
@@ -156,12 +168,12 @@ namespace CSMSL.Examples
             Console.WriteLine("**Peptide Examples**");
 
             // Simple Peptide creation
-            Peptide peptide1 = new Peptide("ACDE");
+            Peptide peptide1 = new Peptide("ACDEFGHIKLMNPQRSTVWY");
             WritePeptideToConsole(peptide1);
             
             // Fragmenting a peptide is simple, you can include as many fragment types as you want
-            Console.WriteLine("{0,-4} {1,-20} {2,-5}", "Type", "Formula", "Mass");
-            foreach (Fragment fragment in peptide1.Fragment(FragmentTypes.b | FragmentTypes.y))
+            Console.WriteLine("{0,-4} {1,-20} {2,-20} {3,-5}", "Type", "Formula", "Mass", "m/z +1");
+            foreach (Fragment fragment in peptide1.Fragment(FragmentTypes.b | FragmentTypes.y, 5))
             {
                 WriteFragmentToConsole(fragment);
             }
@@ -178,14 +190,11 @@ namespace CSMSL.Examples
             WritePeptideToConsole(peptide1);
 
             // If you fragment a modified peptide, the modifications stay part of the fragments
-            Console.WriteLine("{0,-4} {1,-20} {2,-5}", "Type", "Formula", "Mass");
-            foreach (Fragment fragment in peptide1.Fragment(FragmentTypes.b, 3, 5))
+            Console.WriteLine("{0,-4} {1,-20} {2,-20} {3,-5}", "Type", "Formula", "Mass", "m/z +1");
+            foreach (Fragment fragment in peptide1.Fragment(FragmentTypes.b | FragmentTypes.y, 2))
             {
                 WriteFragmentToConsole(fragment);
             }
-
-            Peptide peptide2 = new Peptide("ACDEFGH[25.34234]IKLMNPQRSTVWY");
-            WritePeptideToConsole(peptide2);
         }
 
         /// <summary>
@@ -263,7 +272,12 @@ namespace CSMSL.Examples
 
         private static void WriteFragmentToConsole(Fragment frag)
         {
-            Console.WriteLine("{0,-4} {1,-20}", frag, frag.MonoisotopicMass);
+            IChemicalFormula formula = frag as IChemicalFormula;
+            string f = "";
+            if (formula != null)
+                f = formula.ChemicalFormula.ToString();
+            Console.WriteLine("{0,-4} {1,-20} {2,-20} {3,-5}", frag, f, frag.MonoisotopicMass, frag.ToMz(1));
+            
         }
     }
 }

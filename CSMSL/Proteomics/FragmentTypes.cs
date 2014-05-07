@@ -19,6 +19,7 @@
 ///////////////////////////////////////////////////////////////////////////
 
 using System;
+using System.Collections.Generic;
 
 namespace CSMSL.Proteomics
 {
@@ -38,7 +39,30 @@ namespace CSMSL.Proteomics
         ydot =      1 << 9,
         z =         1 << 10,
         zdot =      1 << 11,
-        Internal =  1 << 12,    
-        All = Int32.MaxValue
+        Internal =  1 << 12,
+        All = (1 << 12) - 1,    // Handy way of setting all below the 24th bit
+    }
+
+    public static class FragmentTypesExtension
+    {
+        public static IEnumerable<FragmentTypes> GetActiveTypes(this FragmentTypes fragmentTypes)
+        {
+            foreach (FragmentTypes site in Enum.GetValues(typeof(FragmentTypes)))
+            {
+                if (site == FragmentTypes.None)
+                {
+                    continue;
+                }
+                if ((fragmentTypes & site) == site)
+                {
+                    yield return site;
+                }
+            }
+        }
+
+        public static Terminus GetTerminus(this FragmentTypes fragmentType)
+        {
+            return fragmentType >= FragmentTypes.x ? Terminus.C : Terminus.N;
+        }
     }
 }

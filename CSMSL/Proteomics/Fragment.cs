@@ -21,7 +21,6 @@
 using System;
 using CSMSL.Chemistry;
 using System.Collections.Generic;
-using CSMSL.Spectral;
 
 namespace CSMSL.Proteomics
 {
@@ -95,8 +94,7 @@ namespace CSMSL.Proteomics
 
         public bool Equals(Fragment other)
         {
-            return Type.Equals(other.Type) && Number == other.Number &&
-                   Math.Abs(MonoisotopicMass - other.MonoisotopicMass) < 0.00001;
+            return Type.Equals(other.Type) && Number == other.Number && MonoisotopicMass.MassEquals(other.MonoisotopicMass);
         }
     }
 }
