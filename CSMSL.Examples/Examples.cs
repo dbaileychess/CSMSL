@@ -75,8 +75,8 @@ namespace CSMSL.Examples
             //TrypticDigestion.Start(minLength: 5, maxLength: 35, maxMissed:3, protease:Protease.Trypsin, storeSequenceString: false);
 
             // Example Protein Grouping
-            ProteinGroupingExample.Start(Protease.Trypsin);
-            //ProteinGroupingExample.StartRamp(Protease.Trypsin);
+            //ProteinGroupingExample.Start(Protease.Trypsin);
+            ProteinGroupingExample.StartRamp(Protease.Trypsin);
 
             //Example Isotopologue
             //IsotopologueExample();

@@ -113,6 +113,9 @@
     <Compile Include="ClassExtensions.cs" />
     <Compile Include="Constants.cs" />
     <Compile Include="Chemistry\IMass.cs" />
+    <Compile Include="IO\Dta.cs" />
+    <Compile Include="IO\DtaReader.cs" />
+    <Compile Include="IO\DtaWriter.cs" />
     <Compile Include="IO\Fasta.cs" />
     <Compile Include="IO\FastaReader.cs" />
     <Compile Include="IO\FastaWriter.cs" />
