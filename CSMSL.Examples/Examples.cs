@@ -62,6 +62,10 @@ namespace CSMSL.Examples
 
         private static void StartExamples()
         {
+            Peptide peptide = new Peptide("DEREK");
+            double pI = peptide.CalculateIsoelectricProint();
+            Console.WriteLine(pI);
+
             // Examples coding  
             
             //ChemicalFormulaExamples();
@@ -76,7 +80,7 @@ namespace CSMSL.Examples
 
             // Example Protein Grouping
             //ProteinGroupingExample.Start(Protease.Trypsin);
-            ProteinGroupingExample.StartRamp(Protease.Trypsin);
+            //ProteinGroupingExample.StartRamp(Protease.Trypsin);
 
             //Example Isotopologue
             //IsotopologueExample();
