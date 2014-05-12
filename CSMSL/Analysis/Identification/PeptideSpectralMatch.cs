@@ -73,7 +73,7 @@ namespace CSMSL.Analysis.Identification
             get { return Score; }
         }
 
-        MZSpectrum IMassSpectrum.MassSpectrum
+        Spectrum IMassSpectrum.MassSpectrum
         {
             get
             {

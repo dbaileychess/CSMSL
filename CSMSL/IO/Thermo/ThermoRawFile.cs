@@ -155,12 +155,13 @@ namespace CSMSL.IO.Thermo
             return PolarityRegex.IsMatch(filter) ? Polarity.Positive : Polarity.Negative;
         }
 
-        public override MZSpectrum GetMzSpectrum(int spectrumNumber)
+        public override Spectrum GetMzSpectrum(int spectrumNumber)
         {
             return GetMzSpectrum(spectrumNumber, false);
         }
- 
-        public MZSpectrum GetMzSpectrum(int spectrumNumber, bool profileIfAvailable = false)
+
+        [Obsolete]
+        public Spectrum GetMzSpectrum(int spectrumNumber, bool profileIfAvailable = false)
         {
             MZAnalyzerType mzAnalyzer = GetMzAnalyzer(spectrumNumber);
             double[,] peakData;
@@ -178,23 +179,24 @@ namespace CSMSL.IO.Thermo
             if (useProfile || mzAnalyzer == MZAnalyzerType.IonTrap2D || AlwaysGetUnlabeledData)
             {
                 peakData = GetUnlabeledData(spectrumNumber, !useProfile);
-                count = peakData.GetLength(1);
-                List<MZPeak> lowResPeaks = new List<MZPeak>();
-                for (int i = 0; i < count; i++)
-                {
-                    lowResPeaks.Add(new MZPeak(peakData[0, i], (float)peakData[1, i]));
-                }
-                return new MZSpectrum(lowResPeaks);     
+                //count = peakData.GetLength(1);
+                //List<MZPeak> lowResPeaks = new List<MZPeak>();
+                //List<double>
+                //for (int i = 0; i < count; i++)
+                //{
+                //    lowResPeaks.Add(new MZPeak(peakData[0, i], (float)peakData[1, i]));
+                //}
+                return new Spectrum(peakData);     
             }
             
             peakData = GetLabeledData(spectrumNumber);
-            count = peakData.GetLength(1);
-            List<ThermoLabeledPeak> peaks = new List<ThermoLabeledPeak>();
-            for (int i = 0; i < count; i++)
-            {
-                peaks.Add(new ThermoLabeledPeak(peakData[0, i], (float)peakData[1, i], (short)peakData[5, i], (float)peakData[4, i]));
-            }
-            return new MZSpectrum(peaks);    
+            //count = peakData.GetLength(1);
+            //List<ThermoLabeledPeak> peaks = new List<ThermoLabeledPeak>();
+            //for (int i = 0; i < count; i++)
+            //{
+            //    peaks.Add(new ThermoLabeledPeak(peakData[0, i], (float)peakData[1, i], (short)peakData[5, i], (float)peakData[4, i]));
+            //}
+            return new Spectrum(peakData);    
         }
 
         public Spectrum GetSNSpectrum(int spectrumNumber, double minSN = 3)
@@ -294,8 +296,8 @@ namespace CSMSL.IO.Thermo
         public double GetPrecusorMz(int spectrumNumber, double searchMZ, int msnOrder = 2)
         {
             int parentScanNumber = GetParentSpectrumNumber(spectrumNumber);
-            MZSpectrum ms1Scan = GetMzSpectrum(parentScanNumber);
-            MZPeak peak = ms1Scan.GetClosestPeak(searchMZ, Tolerance.FromDA(50));
+            var ms1Scan = GetMzSpectrum(parentScanNumber);
+            MZPeak peak = ms1Scan.GetClosestPeak(MassRange.FromDa(searchMZ, 50));
             if (peak != null)
                 return peak.MZ;
             return double.NaN;

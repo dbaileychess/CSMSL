@@ -7,12 +7,12 @@ namespace CSMSL.Spectral
     {
         public MSDataFile ParentFile { get; private set; }
 
-        private MZSpectrum _massSpectrum;
+        private Spectrum _massSpectrum;
 
         /// <summary>
         /// The mass spectrum associated with the scan
         /// </summary>
-        public MZSpectrum MassSpectrum
+        public Spectrum MassSpectrum
         {
             get
             {

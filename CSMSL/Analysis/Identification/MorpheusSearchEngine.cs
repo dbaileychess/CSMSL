@@ -50,7 +50,7 @@ namespace CSMSL.Analysis.Identification
         {
             double[] eMasses = massSpectrum.MassSpectrum.GetMasses();
             double[] eIntenisties = massSpectrum.MassSpectrum.GetIntensities();
-            double tic = massSpectrum.MassSpectrum.TotalIonCurrent;
+            double tic = massSpectrum.MassSpectrum.GetTotalIonCurrent();
            
             PeptideSpectralMatch psm = new PeptideSpectralMatch(DefaultPsmScoreType) { Peptide = peptide };
             double[] tMasses = peptide.Fragment(fragmentTypes).Select(frag => Mass.MzFromMass(frag.MonoisotopicMass, 1)).OrderBy(val => val).ToArray();
@@ -66,7 +66,7 @@ namespace CSMSL.Analysis.Identification
 
             double[] eMasses = spectrum.MassSpectrum.GetMasses();
             double[] eIntenisties = spectrum.MassSpectrum.GetIntensities();
-            double tic = spectrum.MassSpectrum.TotalIonCurrent;
+            double tic = spectrum.MassSpectrum.GetTotalIonCurrent();;
             
             foreach (var peptide in peptides)
             {

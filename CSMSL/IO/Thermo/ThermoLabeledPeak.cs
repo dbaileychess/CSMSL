@@ -30,6 +30,8 @@ namespace CSMSL.IO.Thermo
             return string.Format("{0} {1} SN = {2:F2}",base.ToString(), charge, SN);
         }
 
+        public ThermoLabeledPeak() { }
+
         public ThermoLabeledPeak(double mz, double intensity, int charge, double noise)
             : base(mz, intensity)
         {

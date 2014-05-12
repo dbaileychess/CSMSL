@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace CSMSL.Spectral
 {
-    public class Spectrum : ISpectrum
+   public class Spectrum : ISpectrum
     {
         private readonly double[] _masses;
         private readonly double[] _intensities;
@@ -64,7 +64,7 @@ namespace CSMSL.Spectral
             return _intensities.Max();
         }
 
-        public MZPeak GetBasePeak()
+        public virtual MZPeak GetBasePeak()
         {
             int index = _intensities.MaxIndex();
             return GetPeak(index);
@@ -95,7 +95,7 @@ namespace CSMSL.Spectral
             return _intensities[index];
         }
 
-        public MZPeak GetPeak(int index)
+        public virtual MZPeak GetPeak(int index)
         {
             return new MZPeak(_masses[index], _intensities[index]);
         }

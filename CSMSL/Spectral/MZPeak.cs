@@ -30,8 +30,8 @@ namespace CSMSL.Spectral
     {
         public double Intensity { get; private set; }
         public double MZ { get; private set; }
-
-        public MZPeak(double mz, double intensity)
+        
+        public MZPeak(double mz = 0.0, double intensity = 0.0)
         {
             MZ = mz;
             Intensity = intensity;
