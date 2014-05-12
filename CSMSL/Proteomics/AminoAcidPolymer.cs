@@ -1065,10 +1065,10 @@ namespace CSMSL.Proteomics
 
         #region Isoelectric point
 
-        public double CalculateIsoelectricProint(double percision = 0.01)
+        public double CalculateIsoelectricPoint(double precision = 0.01)
         {
-            int e, c, y, h, k, r;
-            int d = e = c = y = h = k = r = 0;
+            int d, e, c, y, h, k, r;
+            d = e = c = y = h = k = r = 0;
             foreach (AminoAcid aa in _aminoAcids) 
             {
                 switch (aa.Letter)
@@ -1084,8 +1084,8 @@ namespace CSMSL.Proteomics
             }
             
             double pH = 6.5;
-            double pHprev = 0.0;         //of finding the solution
-            double pHnext = 14.0;        //0-14 is possible pH range
+            double minpH = 0.0;     
+            double maxpH = 14.0;
   
             while (true)
             {
@@ -1100,23 +1100,19 @@ namespace CSMSL.Proteomics
                 double QP4 = r / (1 + Math.Pow(10, (pH - 12.48)));
 
                 double NQ = QN1 + QN2 + QN3 + QN4 + QN5 + QP1 + QP2 + QP3 + QP4;
-
-                double temp = 0.0;
-                if (NQ < 0)              //we are out of range, thus the new pH value must be smaller    
+                
+                if (NQ < 0)          
                 {
-                    temp = pH;
-                    pH = pH - ((pH - pHprev) / 2);
-                    pHnext = temp;
-                   
+                    maxpH = pH;
+                    pH = pH - ((pH - minpH) / 2);
                 }
-                else                  //we used to small pH value, so we have to increase it
+                else
                 {
-                    temp = pH;
-                    pH = pH + ((pHnext - pH) / 2);
-                    pHprev = temp;
+                    minpH = pH;
+                    pH = pH + ((maxpH - pH) / 2);
                 }
 
-                if ((pH - pHprev < percision) && (pHnext - pH < percision)) //terminal condition, finding isoelectric point with given precision
+                if ((pH - minpH < precision) && (maxpH - pH < precision))
                     break;
             }
 

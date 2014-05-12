@@ -63,7 +63,7 @@ namespace CSMSL.Examples
         private static void StartExamples()
         {
             Peptide peptide = new Peptide("DEREK");
-            double pI = peptide.CalculateIsoelectricProint();
+            double pI = peptide.CalculateIsoelectricPoint();
             Console.WriteLine(pI);
 
             // Examples coding  
