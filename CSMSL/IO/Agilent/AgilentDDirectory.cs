@@ -1,4 +1,5 @@
-﻿using Agilent.MassSpectrometry.DataAnalysis;
+﻿using System.Linq;
+using Agilent.MassSpectrometry.DataAnalysis;
 using CSMSL.Proteomics;
 using CSMSL.Spectral;
 using System;
@@ -82,10 +83,17 @@ namespace CSMSL.IO.Agilent
             }
         }
 
-        public override MZSpectrum GetMzSpectrum(int spectrumNumber)
+        public override Spectrum GetMzSpectrum(int spectrumNumber)
         {
             IBDASpecData spectrum = _msdr.GetSpectrum(spectrumNumber - 1);
-            return new MZSpectrum(spectrum.XArray, spectrum.YArray);
+
+            double[] doubleArray = new double[spectrum.YArray.Length];
+            for (int i = 0; i < doubleArray.Length; i++)
+            {
+                doubleArray[i] = spectrum.YArray[i];
+            }
+
+            return new Spectrum(spectrum.XArray, doubleArray);
         }
 
         public override MZAnalyzerType GetMzAnalyzer(int spectrumNumber)

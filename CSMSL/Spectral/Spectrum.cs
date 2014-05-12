@@ -5,10 +5,10 @@ using System.Linq;
 
 namespace CSMSL.Spectral
 {
-   public class Spectrum : ISpectrum
+    public class Spectrum : ISpectrum
     {
-        private readonly double[] _masses;
-        private readonly double[] _intensities;
+        protected readonly double[] _masses;
+        protected readonly double[] _intensities;
 
         public int Count { get; private set; }
 

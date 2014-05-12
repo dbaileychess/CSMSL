@@ -967,7 +967,7 @@ namespace CSMSL.Chemistry
             int result = _factorials[start];
             for (int i = start; i <= n; i++)
             {
-                result = result * i;
+                result *= i;
             }
             return result;
         }

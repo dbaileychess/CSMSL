@@ -37,7 +37,7 @@ namespace CSMSL.Examples
                     List<MZPeak> peaks;
                     var readonlySpectrum = scan.GetReadOnlySpectrum();
                     Console.WriteLine(readonlySpectrum.Count);
-                    scan.MassSpectrum.TryGetPeaks(500, 510, out peaks);
+              
                     //Console.WriteLine(peaks.Count);
                     Console.WriteLine("{0,-4} {1,3} {2,-6:F4} {3,-5} {4,7} {5,-10} {6}",
                         scan.SpectrumNumber,

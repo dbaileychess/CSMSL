@@ -49,5 +49,16 @@ namespace CSMSL.IO.Thermo
         {
             return (int[])_charges.Clone();
         }
+
+        public new ThermoLabeledPeak GetBasePeak()
+        {
+            int index = _intensities.MaxIndex();
+            return GetPeak(index);
+        }
+
+        public new ThermoLabeledPeak GetPeak(int index)
+        {
+            return new ThermoLabeledPeak(_masses[index], _intensities[index], _charges[index], _noises[index]);
+        }
     }
 }

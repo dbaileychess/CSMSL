@@ -228,7 +228,7 @@ namespace CSMSL.IO.MzML
             }
         }
 
-        public override MZSpectrum GetMzSpectrum(int spectrumNumber)
+        public override Spectrum GetMzSpectrum(int spectrumNumber)
         {
             spectrumNumber--; // 0-based indexing
         
@@ -273,7 +273,7 @@ namespace CSMSL.IO.MzML
                 throw new InvalidDataException("Unable to find spectral data for spectrum number " + spectrumNumber + 1);
             }
 
-            return new MZSpectrum(masses, intensities);
+            return new Spectrum(masses, intensities);
         }
 
         public override Polarity GetPolarity(int spectrumNumber)

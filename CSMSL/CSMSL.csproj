@@ -168,7 +168,6 @@
     <Compile Include="Spectral\ILabeledPeak.cs" />
     <Compile Include="Spectral\IMassSpectrum.cs" />
     <Compile Include="Spectral\IPeak.cs" />
-    <Compile Include="Spectral\MZSpectrum.cs" />
     <Compile Include="Spectral\MSDataScan.cs" />
     <Compile Include="Spectral\MsnDataScan.cs" />
     <Compile Include="Spectral\MZAnalyzerType.cs" />
