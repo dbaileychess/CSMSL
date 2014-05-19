@@ -396,50 +396,110 @@ namespace CSMSL.IO.Thermo
                 case MZAnalyzerType.FTICR:
                 case MZAnalyzerType.Orbitrap:
                     string name = GetInstrumentName();
-                    if (name == "Orbitrap Fusion")
+                    if (name == "Orbitrap Fusion" | name == "Q Exactive")
                     {
                         object obj = GetExtraValue(spectrumNumber, "Orbitrap Resolution:");
                         resolution = Convert.ToDouble(obj);
                         if (resolution <= 0)
                         {
+                            // Find first peak with S/N greater than 3 to use for resolution calculation
                             double[,] data = GetLabeledData(spectrumNumber);
-                            double mz = data[0, 0];
-                            double peakRes = data[2, 0];
-                            double correctedResolution = peakRes * Math.Sqrt(mz / 200);
+                            int totalPeaks = data.GetLength(0);
+                            for (int i = 0; i < totalPeaks; i++)
+                            {
+                                double signalToNoise = data[1, i] / data[4, i];
+                                if (signalToNoise >= 5)
+                                {
+                                    double mz = data[0, i];
+                                    double peakRes = data[2, i];
+                                    double correctedResolution = peakRes * Math.Sqrt(mz / 200);
 
-                            if (correctedResolution < 25000)
+                                    if (correctedResolution <= 15000)
+                                    {
+                                        return 15000;
+                                    }
+                                    if (correctedResolution <= 30000)
+                                    {
+                                        return 30000;
+                                    }
+                                    if (correctedResolution <= 60000)
+                                    {
+                                        return 60000;
+                                    }
+                                    if (correctedResolution <= 120000)
+                                    {
+                                        return 120000;
+                                    }
+                                    if (correctedResolution <= 240000)
+                                    {
+                                        return 240000;
+                                    }
+                                    return 450000;
+                                }
+                            }
+
+                            double firstMZ = data[0, 0];
+                            double firstPeakRes = data[2, 0];
+                            double firstCorrectedResolution = firstPeakRes * Math.Sqrt(firstMZ / 200);
+
+                            if (firstCorrectedResolution <= 15000)
                             {
                                 return 15000;
                             }
-                            if (correctedResolution < 50000)
+                            if (firstCorrectedResolution <= 30000)
                             {
                                 return 30000;
                             }
-                            if (correctedResolution < 100000)
+                            if (firstCorrectedResolution <= 60000)
                             {
                                 return 60000;
                             }
-                            if (correctedResolution < 200000)
+                            if (firstCorrectedResolution <= 120000)
                             {
                                 return 120000;
                             }
-                            if (correctedResolution < 400000)
+                            if (firstCorrectedResolution <= 240000)
                             {
                                 return 240000;
                             }
-                            return 450000;
+                            return 450000;                       
                         }
+                        return resolution;
                     }
                     else
                     {
                         object obj = GetExtraValue(spectrumNumber, "FT Resolution:");
                         resolution = Convert.ToDouble(obj);
+                        if (resolution > 300000) return 480000;
+                        return resolution;                      
                     }
                     break;
                 default:
                     break;
             }
             return resolution;
+        }
+
+        public double ResolutionDefinedAtMZ()
+        {
+            MZAnalyzerType analyzer = GetMzAnalyzer(1); // Get analyzer name from first spectrum
+            switch (analyzer)
+            {
+                case MZAnalyzerType.FTICR:
+                case MZAnalyzerType.Orbitrap:
+                    string name = GetInstrumentName();
+                    if (name == "Orbitrap Fusion" | name == "Q Exactive")
+                    {
+                        return 200;
+                    }
+                    else
+                    {
+                        return 400;
+                    }
+                default:
+                    break;
+            }
+            return double.NaN;
         }
 
         public string GetInstrumentName()
