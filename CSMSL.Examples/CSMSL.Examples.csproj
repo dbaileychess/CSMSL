@@ -108,6 +108,10 @@
       <Project>{83C27418-E85C-4270-B9D1-066B9EAD5211}</Project>
       <Name>Agilent</Name>
     </ProjectReference>
+    <ProjectReference Include="..\CSMSL\IO\MzML\MzML.csproj">
+      <Project>{012434fb-88a9-4dec-b887-5f64c0b481d4}</Project>
+      <Name>MzML</Name>
+    </ProjectReference>
     <ProjectReference Include="..\CSMSL\IO\OMSSA\OMSSA.csproj">
       <Project>{45a71e18-42e8-41a4-9479-2852c4186993}</Project>
       <Name>OMSSA</Name>

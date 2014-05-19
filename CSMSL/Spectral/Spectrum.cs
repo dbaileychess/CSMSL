@@ -105,17 +105,17 @@ namespace CSMSL.Spectral
             double mean = (massRange.Maximum + massRange.Minimum) / 2.0;
             double width = massRange.Maximum - massRange.Minimum;
             return GetClosestPeak(mean, width);
-        } 
+        }
 
-        public MZPeak GetClosestPeak(double mean, double tolerance)
+        protected int GetClosestPeakIndex(double mean, double tolerance)
         {
             if (Count == 0)
-                return null;
+                return -1;
 
             int index = Array.BinarySearch(_masses, mean);
 
             if (index >= 0)
-                return GetPeak(index);
+                return index;
 
             index = ~index;
 
@@ -129,20 +129,20 @@ namespace CSMSL.Spectral
 
                 if (indexm1 >= 0 && _masses[indexm1] >= minMZ)
                 {
-                    return GetPeak(indexm1);
+                    return indexm1;
                 }
 
-                return null;
+                return -1;
             }
             if (index == 0)
             {
                 // only the index can be closer
                 if (_masses[index] <= maxMZ)
                 {
-                    return GetPeak(index);
+                    return index;
                 }
 
-                return null;
+                return -1;
             }
 
             double p1 = _masses[indexm1];
@@ -151,16 +151,23 @@ namespace CSMSL.Spectral
             if (p2 > maxMZ)
             {
                 if (p1 >= minMZ)
-                    return GetPeak(indexm1);
-                return null;
+                    return indexm1;
+                return -1;
             }
             if (p1 >= minMZ)
             {
                 if (mean - p1 > p2 - mean)
-                    return GetPeak(index);
-                return GetPeak(indexm1);
+                    return index;
+                return indexm1;
             }
-            return GetPeak(index);
+            return index;
+        }
+
+        public MZPeak GetClosestPeak(double mean, double tolerance)
+        {
+            int index = GetClosestPeakIndex(mean, tolerance);
+
+            return index >= 0 ? GetPeak(index) : null;
         }
 
         public bool ContainsPeak(IRange<double> range)

@@ -18,8 +18,10 @@
 //  along with CSMSL.  If not, see <http://www.gnu.org/licenses/>.        /
 ///////////////////////////////////////////////////////////////////////////
 
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using CSMSL.Chemistry;
 using CSMSL.Proteomics;
@@ -46,7 +48,7 @@ namespace CSMSL.Examples
             {
                 Console.WriteLine("==CSMSL Examples==");
 
-                Console.WriteLine("Outputting Files to " + BASE_DIRECTORY);
+               // Console.WriteLine("Outputting Files to " + BASE_DIRECTORY);
                 Console.WriteLine();
                 Stopwatch watch = new Stopwatch();
                 watch.Start();
@@ -63,12 +65,24 @@ namespace CSMSL.Examples
         private static void StartExamples()
         {
             Peptide peptide = new Peptide("DEREK");
-            double pI = peptide.CalculateIsoelectricPoint();
-            Console.WriteLine(pI);
+       
 
+            Console.WriteLine(peptide.MonoisotopicMass);
+
+            List<Fragment> fragments = peptide.Fragment(FragmentTypes.b | FragmentTypes.y).ToList();
+            Console.WriteLine(fragments.Count);
+
+
+           // double pI = peptide.CalculateIsoelectricPoint();
+
+            //Console.WriteLine(pI);
+
+            //ChemicalFormula formula = new ChemicalFormula("C2H3NO");
+            //WriteFormulaToConsole(formula);
+      
             // Examples coding  
             
-            //ChemicalFormulaExamples();
+            ChemicalFormulaExamples();
             //PeptideExamples();
             //ChemicalFormulaGeneratorExample();
                         
@@ -76,17 +90,19 @@ namespace CSMSL.Examples
             //VennDiagramExamples();
 
             // Example Digestion
-            //TrypticDigestion.Start(minLength: 5, maxLength: 35, maxMissed:3, protease:Protease.Trypsin, storeSequenceString: false);
+            //TrypticDigestion.Start(minLength: 5, maxLength: 50, maxMissed:3, protease:Protease.Trypsin, storeSequenceString: false);
+            //TrypticDigestion.ExampleDigestion();
 
             // Example Protein Grouping
             //ProteinGroupingExample.Start(Protease.Trypsin);
+            //ProteinGroupingExample.ExampleProteinGrouping(Protease.Trypsin);
             //ProteinGroupingExample.StartRamp(Protease.Trypsin);
 
             //Example Isotopologue
             //IsotopologueExample();
 
             // Example IO
-            //MsDataFileExamples.Start();
+            //MsDataFileExamples.VendorNeutralDataAccess();
 
             // Omssa Reader
             //OmssaReader.Start();
@@ -134,21 +150,21 @@ namespace CSMSL.Examples
 
         private static void ChemicalFormulaGeneratorExample()
         {
+            //// Create a generator with formula bounds. In this case, every formula needs to have at least H2 but no more than C4H2
+            //ChemicalFormulaGenerator generator = new ChemicalFormulaGenerator(new ChemicalFormula("H2"), new ChemicalFormula("C4H2"));
+
+            //var formulas = generator.FromMass(0, 100).ToList();
+            //foreach (var formula in formulas)
+            //{
+            //    WriteFormulaToConsole(formula);
+            //}
+
+            //Console.WriteLine("Unique Formulas: " + formulas.Count);
+
             // Create a generator with formula bounds. In this case, every formula needs to have at least H2 but no more than C4H2
-            ChemicalFormulaGenerator generator = new ChemicalFormulaGenerator(new ChemicalFormula("H2"), new ChemicalFormula("C4H2"));
+            ChemicalFormulaGenerator generator = new ChemicalFormulaGenerator(new ChemicalFormula("C10000N1000H1000O1000"));
 
-            var formulas = generator.FromMass(0, 100).ToList();
-            foreach (var formula in formulas)
-            {
-                WriteFormulaToConsole(formula);
-            }
-
-            Console.WriteLine("Unique Formulas: " + formulas.Count);
-
-            // Create a generator with formula bounds. In this case, every formula needs to have at least H2 but no more than C4H2
-            generator = new ChemicalFormulaGenerator(new ChemicalFormula("C1000N1000H1000O1000"));
-
-            DoubleRange range = MassRange.FromPPM(new ChemicalFormula("C62H54N42O24").MonoisotopicMass, 0.1);
+            DoubleRange range = DoubleRange.FromPPM(new ChemicalFormula("C62H54N42O24").MonoisotopicMass, 0.1);
             double mass = range.Mean;
             int count = 0;
             foreach (var formula in generator.FromMass(range).Validate())
@@ -264,10 +280,14 @@ namespace CSMSL.Examples
             // Formulas consist of a dictionary of isotopes and count, and by default, the most common (abundant) isotope of an element
             // is included (i.e. Carbon 12 instead of Carbon 13). You can explicitly state that you want another isotope in a chemical formula
             // by this notation: <Element Symbol>{<Mass Number>} (e.g. C{13}, N{15}, etc..)
+
             formula1 = new ChemicalFormula("C2C{13}2H3NO");
             formula2 = new ChemicalFormula("C4H3NO");
+
+
             WriteFormulaToConsole(formula1);
             WriteFormulaToConsole(formula2);
+
             Console.WriteLine("Are {0} and {1} equivalent? {2}", formula1, formula2, formula1.Equals(formula2));
 
             // No need to specify the mass number of the most abundant isotope for an element

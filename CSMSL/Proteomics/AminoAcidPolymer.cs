@@ -142,12 +142,14 @@ namespace CSMSL.Proteomics
             _cTerminus = isCterm ? aminoAcidPolymer.CTerminus : DefaultCTerminus;
 
             double monoMass =_nTerminus.MonoisotopicMass + _cTerminus.MonoisotopicMass;
-            
+
+            AminoAcid[] otherAminoAcids = aminoAcidPolymer._aminoAcids;
+         
             if (includeModifications)
             {
                 for (int i = 0; i < length; i++)
                 {
-                    var aa = aminoAcidPolymer._aminoAcids[i + firstResidue];
+                    var aa = otherAminoAcids[i + firstResidue];
                     _aminoAcids[i] = aa;
                     monoMass += aa.MonoisotopicMass;
                    
@@ -161,11 +163,10 @@ namespace CSMSL.Proteomics
             }
             else
             {
-                for (int i = 0; i < length; i++)
+                for (int i = 0, j = firstResidue; i < length; i++, j++)
                 {
-                    var aa = aminoAcidPolymer._aminoAcids[i + firstResidue];
-                    _aminoAcids[i] = aa;
-                    monoMass += _aminoAcids[i].MonoisotopicMass;
+                    var aa = _aminoAcids[i] = otherAminoAcids[j]; 
+                    monoMass += aa.MonoisotopicMass;
                 }
             }
 
@@ -845,21 +846,62 @@ namespace CSMSL.Proteomics
         /// </summary>
         /// <param name="mod">The modification to set</param>
         /// <param name="terminus">The termini to set the mod at</param>
-        public virtual void AddModification(IMass mod, Terminus terminus)
+        public virtual int AddModification(IMass mod, Terminus terminus)
         {
             IMass currentMod;
-            
+            int count = 0;
+
             if ((terminus & Terminus.N) == Terminus.N)
             {
                 currentMod = NTerminusModification;
                 NTerminusModification = currentMod == null ? mod : new ModificationCollection(currentMod, mod);
+                count++;
             }
 
             if ((terminus & Terminus.C) == Terminus.C)
             {
                 currentMod = CTerminusModification;
                 CTerminusModification = currentMod == null ? mod : new ModificationCollection(currentMod, mod);
+                count++;
             }
+            return count;
+        }
+        
+        public virtual int AddModification(Modification modification)
+        {
+            return AddModification(modification, modification.Sites);
+        }
+
+        public virtual int AddModification(IMass mod, ModificationSites sites)
+        {
+            int count = 0;
+            IMass currentMod;
+            if ((sites & ModificationSites.NPep) == ModificationSites.NPep)
+            {
+                currentMod = NTerminusModification;
+                NTerminusModification = currentMod == null ? mod : new ModificationCollection(currentMod, mod);
+                count++;
+            }
+
+            for (int i = 0; i < Length; i++)
+            {
+                ModificationSites site = _aminoAcids[i].Site;
+                if ((sites & site) == site)
+                {
+                    currentMod = _modifications[i + 1];
+                    ReplaceMod(i + 1, currentMod == null ? mod : new ModificationCollection(currentMod, mod));
+                    count++;
+                }
+            }
+
+            if ((sites & ModificationSites.PepC) == ModificationSites.PepC)
+            {
+                currentMod = CTerminusModification;
+                CTerminusModification = currentMod == null ? mod : new ModificationCollection(currentMod, mod);
+                count++;
+            }
+
+            return count;
         }
 
         /// <summary>

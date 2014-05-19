@@ -277,7 +277,7 @@ namespace CSMSL
             All = 3,
         }
 
-        public static IEnumerable<ChemicalFormula> Validate(this IEnumerable<ChemicalFormula> formulas, FilterTypes filters = FilterTypes.All)
+        public static IEnumerable<IChemicalFormula> Validate(this IEnumerable<IChemicalFormula> formulas, FilterTypes filters = FilterTypes.All)
         {
             bool useValence = filters.HasFlag(FilterTypes.Valence);
             bool useHydrogenCarbonRatio = filters.HasFlag(FilterTypes.HydrogenCarbonRatio);

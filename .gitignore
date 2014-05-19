@@ -53,3 +53,8 @@ TestResults/
 !NuGet.exe
 packages/
 *.nupkg
+
+# MonoDevelop #
+###############
+*.userprefs
+

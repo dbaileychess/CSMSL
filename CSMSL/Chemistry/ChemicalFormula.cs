@@ -40,14 +40,12 @@ namespace CSMSL.Chemistry
         /// The fourth group is optional and represents the number of isotopes to add, if not present it assumes 1: H2O means 2 Hydrogen and 1 Oxygen        
         /// Modified from: http://stackoverflow.com/questions/4116786/parsing-a-chemical-formula-from-a-string-in-c
         /// </summary>
-        private static readonly Regex FormulaRegex = new Regex(@"\s*([A-Z][a-z]*)(?:\{([0-9]+)\})?(-)?([0-9]+)?\s*",
-                                                               RegexOptions.Compiled);
+        private static readonly Regex FormulaRegex = new Regex(@"\s*([A-Z][a-z]*)(?:\{([0-9]+)\})?(-)?([0-9]+)?\s*", RegexOptions.Compiled);
 
         /// <summary>
         /// A wrapper for the formula regex that validates if a string is in the correct chemical formula format or not
         /// </summary>
-        private static readonly Regex ValidateFormulaRegex = new Regex("^(" + FormulaRegex + ")+$",
-                                                                       RegexOptions.Compiled);
+        private static readonly Regex ValidateFormulaRegex = new Regex("^(" + FormulaRegex + ")+$", RegexOptions.Compiled);
 
         /// <summary>
         /// Determines if the chemical formula hill notation string is stored or calculated each time it is called.
@@ -207,7 +205,7 @@ namespace CSMSL.Chemistry
         #region Properties
 
         /// <summary>
-        /// Gets the averagte mass of this chemical formula
+        /// Gets the average mass of this chemical formula
         /// </summary>
         public double AverageMass
         {
@@ -296,6 +294,18 @@ namespace CSMSL.Chemistry
         #endregion
 
         #region Add/Remove
+
+        /// <summary>
+        /// Replaces one isotope with another.
+        /// Replacement happens on a 1 to 1 basis, i.e., if you remove 5 you will add 5
+        /// </summary>
+        /// <param name="isotopeToRemove">The isotope to remove</param>
+        /// <param name="isotopToAdd">The isotope to add</param>
+        public void Replace(Isotope isotopeToRemove, Isotope isotopToAdd)
+        {
+            int numberRemoved = Remove(isotopeToRemove);
+            Add(isotopToAdd, numberRemoved);
+        }
 
         /// <summary>
         /// Add a chemical formula containing object to this chemical formula
@@ -704,11 +714,7 @@ namespace CSMSL.Chemistry
         public override bool Equals(object obj)
         {
             ChemicalFormula formula = obj as ChemicalFormula;
-            if (formula == null)
-            {
-                return false;
-            }
-            return Equals(formula);
+            return formula != null && Equals(formula);
         }
 
         public virtual bool Equals(ChemicalFormula other)
@@ -896,7 +902,7 @@ namespace CSMSL.Chemistry
         private void ParseString(string formula)
         {
             if (string.IsNullOrEmpty(formula))         
-                return;            
+                return;
 
             if (!IsValidChemicalFormula(formula))
             {
@@ -906,7 +912,7 @@ namespace CSMSL.Chemistry
             foreach (Match match in FormulaRegex.Matches(formula))
             {
                 string chemsym = match.Groups[1].Value;             // Group 1: Chemical Symbol
-                
+
                 Element element;
                 if (Element.PeriodicTable.TryGetElement(chemsym, out element))
                 {
@@ -935,7 +941,126 @@ namespace CSMSL.Chemistry
                 {
                     throw new ArgumentException(string.Format("The chemical Symbol '{0}' does not exist in the Periodic Table", chemsym));
                 }
-            }          
+            }
+
+            //StringBuilder isotopeSB = new StringBuilder(2);
+            //StringBuilder elementSB = new StringBuilder(2);
+            //StringBuilder countSB = new StringBuilder(3);
+            //bool inIsotope = false;
+            //int isotopeValue = 0;
+            //int sign = 1;
+            //int numofelem = 1;
+            //foreach(char c in formula)
+            //{
+            //    // Skip white spaces
+            //    if (char.IsWhiteSpace(c))
+            //        continue;
+
+            //    // Start of a isotope
+            //    if (c == '{')
+            //    {
+            //        inIsotope = true;
+            //        continue;
+            //    }
+
+            //    // inside an isotope
+            //    if (inIsotope)
+            //    {
+            //        // End of a isotope
+            //        if (c == '}')
+            //        {
+            //            isotopeValue = int.Parse(isotopeSB.ToString());
+            //            inIsotope = false;
+            //            isotopeSB.Clear();
+            //            continue;
+            //        }
+            //        isotopeSB.Append(c);
+            //        continue;
+            //    }
+
+            //    if (c == '-')
+            //    {
+            //        sign = -1;
+            //        continue;
+            //    }
+
+            //    if (char.IsLetter(c))
+            //    {
+            //        if (char.IsUpper(c))
+            //        {
+            //            if (elementSB.Length > 0)
+            //            {
+            //                if (countSB.Length > 0)
+            //                {
+            //                    numofelem = int.Parse(countSB.ToString());
+            //                    countSB.Clear();
+            //                }
+
+            //                string chemsym = elementSB.ToString();
+            //                elementSB.Clear();
+            //                Element element;
+            //                if (Element.PeriodicTable.TryGetElement(chemsym, out element))
+            //                {
+            //                    Isotope isotope = element.PrincipalIsotope;     // Start with the most abundant (principal) isotope
+
+            //                    if (chemsym.Equals("D"))                        // Special case for Deuterium
+            //                    {
+            //                        isotope = element.Isotopes[2];
+            //                    }
+            //                    else if (isotopeValue != 0)               // Group 2 (optional): Isotope Mass Number
+            //                    {
+            //                        isotope = element[isotopeValue];
+            //                    }
+
+            //                    Add(isotope, sign * numofelem);
+            //                    numofelem = 1;
+            //                    sign = 1;
+            //                    isotopeValue = 0;
+            //                }
+            //            }
+            //        }
+            //        elementSB.Append(c);
+            //        continue;
+            //    }
+
+            //    if (char.IsDigit(c))
+            //    {
+            //        countSB.Append(c);
+            //        continue;
+            //    }
+
+               
+            //}
+
+            //if (elementSB.Length > 0)
+            //{
+            //    if (countSB.Length > 0)
+            //    {
+            //        numofelem = int.Parse(countSB.ToString());
+            //        countSB.Clear();
+            //    }
+
+            //    string chemsym = elementSB.ToString();
+            //    elementSB.Clear();
+            //    Element element;
+            //    if (Element.PeriodicTable.TryGetElement(chemsym, out element))
+            //    {
+            //        Isotope isotope = element.PrincipalIsotope;     // Start with the most abundant (principal) isotope
+
+            //        if (chemsym.Equals("D"))                        // Special case for Deuterium
+            //        {
+            //            isotope = element.Isotopes[2];
+            //        }
+            //        else if (isotopeValue != 0)               // Group 2 (optional): Isotope Mass Number
+            //        {
+            //            isotope = element[isotopeValue];
+            //        }
+
+            //        Add(isotope, sign * numofelem);
+            //        numofelem = 1;
+            //        sign = 1;
+            //    }
+            //}
         }
        
         #endregion
@@ -1089,16 +1214,6 @@ namespace CSMSL.Chemistry
             get { return this; }
         }
 
-        /// <summary>
-        /// Replaces one isotope with another.
-        /// Replacement happens on a 1 to 1 basis, i.e., if you remove 5 you will add 5
-        /// </summary>
-        /// <param name="isotopeToRemove">The isotope to remove</param>
-        /// <param name="isotopToAdd">The isotope to add</param>
-        public void Replace(Isotope isotopeToRemove, Isotope isotopToAdd)
-        {
-            int numberRemoved = Remove(isotopeToRemove);
-            Add(isotopToAdd, numberRemoved);
-        }
+    
     }
 }

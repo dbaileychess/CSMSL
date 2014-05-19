@@ -41,7 +41,7 @@ namespace CSMSL.Proteomics
         z =         1 << 10,
         zdot =      1 << 11,
         Internal =  1 << 12,
-        All = (1 << 12) - 1,    // Handy way of setting all below the 24th bit
+        All = (1 << 12) - 1,    // Handy way of setting all below the 12th bit
     }
 
     public static class FragmentTypesExtension

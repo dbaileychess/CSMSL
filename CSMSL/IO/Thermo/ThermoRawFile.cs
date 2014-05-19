@@ -196,7 +196,7 @@ namespace CSMSL.IO.Thermo
             //{
             //    peaks.Add(new ThermoLabeledPeak(peakData[0, i], (float)peakData[1, i], (short)peakData[5, i], (float)peakData[4, i]));
             //}
-            return new Spectrum(peakData);    
+            return new ThermoSpectrum(peakData);    
         }
 
         public Spectrum GetSNSpectrum(int spectrumNumber, double minSN = 3)

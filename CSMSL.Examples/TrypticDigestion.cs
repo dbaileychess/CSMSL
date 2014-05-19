@@ -18,6 +18,7 @@
 //  along with CSMSL.  If not, see <http://www.gnu.org/licenses/>.        /
 ///////////////////////////////////////////////////////////////////////////
 
+using System.Linq;
 using CSMSL.Chemistry;
 using CSMSL.IO;
 using CSMSL.Proteomics;
@@ -56,5 +57,31 @@ namespace CSMSL.Examples
             Console.WriteLine("Memory used: {0:N0} MB", Environment.WorkingSet / (1024 * 1024));
             Console.WriteLine("**End Digestion**");
         }
+
+        public static void ExampleDigestion()
+        {
+            const string fastaFilePath = "Resources/yeast_uniprot_120226.fasta";
+            IProtease trypsin = Protease.Trypsin;
+            const int maxMissedCleavages = 3;
+            const int minPeptideLength = 5;
+            const int maxPeptideLength = 50;
+            List<double> masses = new List<double>();
+            Stopwatch watch = new Stopwatch();
+            watch.Start();    
+            using (FastaReader reader = new FastaReader(fastaFilePath))
+            {
+                foreach (Protein protein in reader.ReadNextProtein())
+                {
+                    foreach (Peptide peptide in protein.Digest(trypsin, maxMissedCleavages, minPeptideLength, maxPeptideLength))
+                    {
+                        masses.Add(peptide.MonoisotopicMass);
+                    }
+                }
+            }
+            //Console.WriteLine("Average Peptide Mass = {0:F4}", masses.Average());
+            watch.Stop();
+            Console.WriteLine("Time elapsed: {0}", watch.Elapsed);
+        }
+
     }
 }

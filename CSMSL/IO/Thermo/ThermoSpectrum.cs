@@ -12,6 +12,21 @@ namespace CSMSL.IO.Thermo
         private readonly double[] _noises;
         private readonly int[] _charges;
 
+        public ThermoSpectrum(double[,] peakData)
+            : base(peakData)
+        {
+            _noises = new double[Count];
+            var charges = new double[Count];
+
+            Buffer.BlockCopy(peakData, 8 * Count * 2, _noises, 0, 8 * Count);
+            Buffer.BlockCopy(peakData, 8 * Count * 3, charges, 0, 8 * Count);
+            _charges = new int[Count];
+            for (int i = 0; i < Count; i++)
+            {
+                _charges[i] = (int)charges[i];
+            }
+        }
+
         public ThermoSpectrum(double[] mz, double[] intensity, double[] noise, int[] charge, bool shouldCopy = true)
             : base(mz, intensity, shouldCopy)
         {
@@ -59,6 +74,20 @@ namespace CSMSL.IO.Thermo
         public new ThermoLabeledPeak GetPeak(int index)
         {
             return new ThermoLabeledPeak(_masses[index], _intensities[index], _charges[index], _noises[index]);
+        }
+
+        public new ThermoLabeledPeak GetClosestPeak(IRange<double> massRange)
+        {
+            double mean = (massRange.Maximum + massRange.Minimum) / 2.0;
+            double width = massRange.Maximum - massRange.Minimum;
+            return GetClosestPeak(mean, width);
+        }
+
+        public new ThermoLabeledPeak GetClosestPeak(double mean, double tolerance)
+        {
+            int index = GetClosestPeakIndex(mean, tolerance);
+
+            return index >= 0 ? GetPeak(index) : null;
         }
     }
 }

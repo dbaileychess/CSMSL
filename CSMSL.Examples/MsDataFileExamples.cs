@@ -1,5 +1,7 @@
-﻿using CSMSL.IO;
+﻿using System.Linq;
+using CSMSL.IO;
 using CSMSL.IO.Agilent;
+using CSMSL.IO.MzML;
 using CSMSL.IO.Thermo;
 using CSMSL.Spectral;
 using System;
@@ -21,9 +23,7 @@ namespace CSMSL.Examples
                 {
                     new ThermoRawFile("Resources/ThermoRawFileMS1MS2.raw"),
                     new AgilentDDirectory(@"Resources\AgilentDDirectoryMS1MS2.d"),
-                    //new WiffFile(@"Resources/Enolase_repeats_AQv1.4.2.wiff")
-                    //new Mzml("Resources/ThermoRawFileMS1MS2_Profile.mzML"),
-                    //new Mzml("Resources/ThermoRawFileMS1MS2_Centroided.mzML")
+                    new Mzml("Resources/ThermoRawFileMS1MS2_Profile.mzML")
                 };
 
             foreach (MSDataFile dataFile in exampleRawFiles)
@@ -32,13 +32,8 @@ namespace CSMSL.Examples
                 Stopwatch watch = new Stopwatch();
                 watch.Start();
                 
-                foreach (MSDataScan scan in dataFile)
+                foreach (MSDataScan scan in dataFile.Take(4))
                 {
-                    List<MZPeak> peaks;
-                    var readonlySpectrum = scan.GetReadOnlySpectrum();
-                    Console.WriteLine(readonlySpectrum.Count);
-              
-                    //Console.WriteLine(peaks.Count);
                     Console.WriteLine("{0,-4} {1,3} {2,-6:F4} {3,-5} {4,7} {5,-10} {6}",
                         scan.SpectrumNumber,
                         scan.MsnOrder,
@@ -46,13 +41,44 @@ namespace CSMSL.Examples
                         scan.Polarity,
                         scan.MassSpectrum.Count,
                         scan.MzAnalyzer,
-                        scan.MzRange);
+                        scan.MzRange.ToString());
                 }
                 watch.Stop();
                 Console.WriteLine("File: {0}", dataFile.Name);
                 Console.WriteLine("Time: {0}", watch.Elapsed);
                 Console.WriteLine("Memory used: {0:N0} MB", Environment.WorkingSet / (1024 * 1024));
             }    
+        }
+
+        public static void VendorNeutralDataAccess()
+        {
+            Console.WriteLine("**MS I/O Examples**");
+            Console.WriteLine("{0,-4} {1,3} {2,-6} {3,-5} {4,7} {5,-10} {6}", "SN", "Msn", "RT", "Polarity", "# Peaks", "Analyzer", "M/Z Range");
+
+            // Generic MS data file reader
+            List<MSDataFile> exampleRawFiles = new List<MSDataFile>
+                {
+                    new ThermoRawFile("Resources/ThermoRawFileMS1MS2.raw"),
+                    new AgilentDDirectory(@"Resources\AgilentDDirectoryMS1MS2.d"),
+                    new Mzml("Resources/ThermoRawFileMS1MS2_Profile.mzML")
+                };
+
+            foreach (MSDataFile dataFile in exampleRawFiles)
+            {
+                dataFile.Open();
+                Stopwatch watch = new Stopwatch();
+                watch.Start();
+
+                foreach (MSDataScan scan in dataFile.Where(s => s.MassSpectrum.Count > 1).Take(4))
+                {
+                    Console.WriteLine("{0,-4} {1,3} {2,-6:F4} {3,-5} {4,7} {5,-10} {6}", scan.SpectrumNumber, scan.MsnOrder, scan.RetentionTime,
+                        scan.Polarity, scan.MassSpectrum.Count, scan.MzAnalyzer, scan.MzRange.ToString());
+                }
+                watch.Stop();
+                Console.WriteLine("File: {0}", dataFile);
+                Console.WriteLine("Time: {0}", watch.Elapsed);
+                Console.WriteLine("Memory used: {0:N0} MB", Environment.WorkingSet / (1024 * 1024));
+            }
         }
 
         //public static void WiffExample()
