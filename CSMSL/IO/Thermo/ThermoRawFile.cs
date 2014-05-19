@@ -389,6 +389,11 @@ namespace CSMSL.IO.Thermo
 
         public override double GetResolution(int spectrumNumber)
         {
+            int arraySize = 0;
+            object keys = null;
+            object values = null;
+            _rawConnection.GetTrailerExtraForScanNum(spectrumNumber, ref keys, ref values, ref arraySize);
+
             MZAnalyzerType analyzer = GetMzAnalyzer(spectrumNumber);
             double resolution = 0;
             switch (analyzer)
@@ -396,7 +401,7 @@ namespace CSMSL.IO.Thermo
                 case MZAnalyzerType.FTICR:
                 case MZAnalyzerType.Orbitrap:
                     string name = GetInstrumentName();
-                    if (name == "Orbitrap Fusion" | name == "Q Exactive")
+                    if (name == "Orbitrap Fusion" || name == "Q Exactive")
                     {
                         object obj = GetExtraValue(spectrumNumber, "Orbitrap Resolution:");
                         resolution = Convert.ToDouble(obj);
@@ -404,7 +409,9 @@ namespace CSMSL.IO.Thermo
                         {
                             // Find first peak with S/N greater than 3 to use for resolution calculation
                             double[,] data = GetLabeledData(spectrumNumber);
-                            int totalPeaks = data.GetLength(0);
+                            int totalPeaks = data.GetLength(1);
+                            List<double> avgResolution = new List<double>();
+
                             for (int i = 0; i < totalPeaks; i++)
                             {
                                 double signalToNoise = data[1, i] / data[4, i];
@@ -413,56 +420,32 @@ namespace CSMSL.IO.Thermo
                                     double mz = data[0, i];
                                     double peakRes = data[2, i];
                                     double correctedResolution = peakRes * Math.Sqrt(mz / 200);
-
-                                    if (correctedResolution <= 15000)
-                                    {
-                                        return 15000;
-                                    }
-                                    if (correctedResolution <= 30000)
-                                    {
-                                        return 30000;
-                                    }
-                                    if (correctedResolution <= 60000)
-                                    {
-                                        return 60000;
-                                    }
-                                    if (correctedResolution <= 120000)
-                                    {
-                                        return 120000;
-                                    }
-                                    if (correctedResolution <= 240000)
-                                    {
-                                        return 240000;
-                                    }
-                                    return 450000;
+                                    avgResolution.Add(correctedResolution);
                                 }
                             }
 
-                            double firstMZ = data[0, 0];
-                            double firstPeakRes = data[2, 0];
-                            double firstCorrectedResolution = firstPeakRes * Math.Sqrt(firstMZ / 200);
-
-                            if (firstCorrectedResolution <= 15000)
+                            double meanResolution = avgResolution.Median();
+                            if (meanResolution <= 25000)
                             {
                                 return 15000;
                             }
-                            if (firstCorrectedResolution <= 30000)
+                            if (meanResolution <= 45000)
                             {
                                 return 30000;
                             }
-                            if (firstCorrectedResolution <= 60000)
+                            if (meanResolution <= 100000)
                             {
                                 return 60000;
                             }
-                            if (firstCorrectedResolution <= 120000)
+                            if (meanResolution <= 200000)
                             {
                                 return 120000;
                             }
-                            if (firstCorrectedResolution <= 240000)
+                            if (meanResolution <= 400000)
                             {
                                 return 240000;
                             }
-                            return 450000;                       
+                            return 450000;
                         }
                         return resolution;
                     }
@@ -482,24 +465,19 @@ namespace CSMSL.IO.Thermo
 
         public double ResolutionDefinedAtMZ()
         {
-            MZAnalyzerType analyzer = GetMzAnalyzer(1); // Get analyzer name from first spectrum
-            switch (analyzer)
+            string name = GetInstrumentName();
+            switch (name)
             {
-                case MZAnalyzerType.FTICR:
-                case MZAnalyzerType.Orbitrap:
-                    string name = GetInstrumentName();
-                    if (name == "Orbitrap Fusion" | name == "Q Exactive")
-                    {
-                        return 200;
-                    }
-                    else
-                    {
-                        return 400;
-                    }
+                case "Orbitrap Fusion":
+                case "Q Exactive":
+                    return 200;
+                case "LTQ Orbitrap XL":
+                case "LTQ Orbitrap Velos":
+                case "Orbitrap Elite":
+                    return 400;
                 default:
-                    break;
+                    return double.NaN;
             }
-            return double.NaN;
         }
 
         public string GetInstrumentName()

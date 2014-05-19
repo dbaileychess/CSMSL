@@ -24,6 +24,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using CSMSL.Chemistry;
+using CSMSL.IO.Thermo;
 using CSMSL.Proteomics;
 using CSMSL.Util.Collections;
 using System;
@@ -64,16 +65,23 @@ namespace CSMSL.Examples
 
         private static void StartExamples()
         {
-            Peptide peptide = new Peptide("DEREK");
-       
 
-            Console.WriteLine(peptide.MonoisotopicMass);
+            //using (ThermoRawFile rawFile = new ThermoRawFile(@"E:\Desktop\Lotor\17Sept2013_ASH_Deberardinis_CancerCell_AcetylPullDown_F1_2.raw"))
+            //{
+            //    rawFile.Open();
+            //    double value = rawFile.GetResolution(10214);
+            //}
 
-            List<Fragment> fragments = peptide.Fragment(FragmentTypes.b | FragmentTypes.y).ToList();
-            Console.WriteLine(fragments.Count);
-
-
-           // double pI = peptide.CalculateIsoelectricPoint();
+            using (ThermoRawFile rawFile = new ThermoRawFile(@"E:\Desktop\Fusion_Colonel_ResolutionRamp.raw"))
+            {
+                rawFile.Open();
+                for (int i = 4813; i < 4820; i++)
+                {
+                    double value = rawFile.GetResolution(i);
+                    Console.WriteLine("Scan {0} Resolution {1}", i, value);
+                }
+            }
+           
 
             //Console.WriteLine(pI);
 
@@ -82,7 +90,7 @@ namespace CSMSL.Examples
       
             // Examples coding  
             
-            ChemicalFormulaExamples();
+            //ChemicalFormulaExamples();
             //PeptideExamples();
             //ChemicalFormulaGeneratorExample();
                         
