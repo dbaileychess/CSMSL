@@ -2,7 +2,7 @@
 
 namespace CSMSL.IO.Thermo
 {
-    public class ThermoLabeledPeak : MZPeak, ILabeledPeak
+    public class ThermoLabeledPeak : MZPeak
     {
         public int Charge { get; private set; }
 
