@@ -121,6 +121,11 @@ namespace CSMSL.Proteomics
             return count;
         }
 
+        public int MissedCleavages(IAminoAcidSequence aminoAcidSequence)
+        {
+            return MissedCleavages(aminoAcidSequence.Sequence);
+        }
+
         public Protease(string name, Terminus terminus, string cut, string nocut = "",string cleavePattern = "")
         {
             Name = name;

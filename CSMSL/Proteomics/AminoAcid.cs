@@ -173,13 +173,17 @@ namespace CSMSL.Proteomics
             if (c)
             {
                 Element carbon = Element.PeriodicTable["C"];
-                formula.Replace(carbon[12], carbon[13]);               
+                int carbon12 = ChemicalFormula.Count(carbon[12]);
+                formula.Add(carbon[12], -carbon12);               
+                formula.Add(carbon[13], carbon12);               
             }
 
             if (n)
             {
                 Element nitrogen = Element.PeriodicTable["N"];
-                formula.Replace(nitrogen[14], nitrogen[15]);
+                int nitrogen14 = ChemicalFormula.Count(nitrogen[14]);
+                formula.Add(nitrogen[14], -nitrogen14);  
+                formula.Add(nitrogen[15], nitrogen14);  
             }
      
             return new ChemicalFormulaModification(formula, "#", Site);

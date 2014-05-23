@@ -35,11 +35,9 @@ namespace CSMSL.Examples
     internal class Examples
     {
         public static string BASE_DIRECTORY = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "CSMSL Examples");
-
-      
+        
         private static void Main()
         {
-
             DirectoryInfo info = Directory.CreateDirectory(BASE_DIRECTORY);
             if (!info.Exists)
             {
@@ -65,29 +63,6 @@ namespace CSMSL.Examples
 
         private static void StartExamples()
         {
-
-            //using (ThermoRawFile rawFile = new ThermoRawFile(@"E:\Desktop\Lotor\17Sept2013_ASH_Deberardinis_CancerCell_AcetylPullDown_F1_2.raw"))
-            //{
-            //    rawFile.Open();
-            //    double value = rawFile.GetResolution(10214);
-            //}
-
-            using (ThermoRawFile rawFile = new ThermoRawFile(@"E:\Desktop\Fusion_Colonel_ResolutionRamp.raw"))
-            {
-                rawFile.Open();
-                for (int i = 4813; i < 4820; i++)
-                {
-                    double value = rawFile.GetResolution(i);
-                    Console.WriteLine("Scan {0} Resolution {1}", i, value);
-                }
-            }
-           
-
-            //Console.WriteLine(pI);
-
-            //ChemicalFormula formula = new ChemicalFormula("C2H3NO");
-            //WriteFormulaToConsole(formula);
-      
             // Examples coding  
             
             //ChemicalFormulaExamples();
@@ -110,7 +85,7 @@ namespace CSMSL.Examples
             //IsotopologueExample();
 
             // Example IO
-            //MsDataFileExamples.VendorNeutralDataAccess();
+            MsDataFileExamples.VendorNeutralDataAccess();
 
             // Omssa Reader
             //OmssaReader.Start();

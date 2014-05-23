@@ -68,7 +68,7 @@ namespace CSMSL.IO
                 {
                     if (sequenceSb.Length > 0)
                     {
-                        yield return new Fasta(sequenceSb.ToString(), headerSb.ToString());
+                        yield return new Fasta(sequenceSb.ToString().TrimEnd('*'), headerSb.ToString());
                         sequenceSb.Clear();
                         headerSb.Clear();
                     }
@@ -80,7 +80,7 @@ namespace CSMSL.IO
                 }
             }
             if (sequenceSb.Length > 0)
-                yield return new Fasta(sequenceSb.ToString(), headerSb.ToString());
+                yield return new Fasta(sequenceSb.ToString().TrimEnd('*'), headerSb.ToString());
         }
       
         public IEnumerable<Protein> ReadNextProtein()

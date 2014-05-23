@@ -122,12 +122,12 @@ namespace CSMSL.Spectral
             }
         }
 
-        private Polarity _polarity = Polarity.Unknown;
+        private Polarity _polarity = Polarity.Neutral;
         public Polarity Polarity
         {
             get
             {
-                if (_polarity == Polarity.Unknown)
+                if (_polarity == Polarity.Neutral)
                 {
                     if (ParentFile.IsOpen)
                     {

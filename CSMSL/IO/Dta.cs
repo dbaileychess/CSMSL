@@ -17,7 +17,7 @@ namespace CSMSL.IO
         public Dta(string name, int id, double precursorMass, int precursorCharge, Spectrum spectrum)
         {
             Name = name;
-            ID = ID;
+            ID = id;
             PrecursorMass = precursorMass;
             PrecursorCharge = precursorCharge;
             Spectrum = spectrum;

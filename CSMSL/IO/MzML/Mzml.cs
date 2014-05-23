@@ -128,7 +128,7 @@ namespace CSMSL.IO.MzML
             throw new ArgumentNullException("Could not find MSn level for spectrum number " + spectrumNumber + 1);
         }
 
-        public override short GetPrecusorCharge(int spectrumNumber, int msnOrder = 2)
+        public override int GetPrecusorCharge(int spectrumNumber, int msnOrder = 2)
         {
             spectrumNumber--;
             foreach (CVParamType cv in _mzMLConnection.run.spectrumList.spectrum[spectrumNumber].precursorList.precursor[0].selectedIonList.selectedIon[0].cvParam)

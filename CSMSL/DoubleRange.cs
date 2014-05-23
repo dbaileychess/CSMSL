@@ -73,7 +73,7 @@ namespace CSMSL
             return new DoubleRange(mean, new Tolerance(ToleranceType.DA, daTolerance));
         }
 
-        public string ToString(string format = "F4")
+        public virtual string ToString(string format)
         {
             return string.Format("[{0} - {1}]", Minimum.ToString(format), Maximum.ToString(format));
         }

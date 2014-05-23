@@ -205,7 +205,7 @@ namespace CSMSL.IO
             return scan;            
         }
 
-        public abstract short GetPrecusorCharge(int spectrumNumber, int msnOrder = 2);
+        public abstract int GetPrecusorCharge(int spectrumNumber, int msnOrder = 2);
 
         public abstract MzRange GetMzRange(int spectrumNumber);
 

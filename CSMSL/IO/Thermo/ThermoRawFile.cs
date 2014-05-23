@@ -369,9 +369,10 @@ namespace CSMSL.IO.Thermo
             return new MzRange(lowMass, highMass);
         }
 
-        public override short GetPrecusorCharge(int spectrumNumber, int msnOrder = 2)
+        public override int GetPrecusorCharge(int spectrumNumber, int msnOrder = 2)
         {
-            return Convert.ToInt16(GetExtraValue(spectrumNumber, "Charge State:"));
+            short charge = Convert.ToInt16(GetExtraValue(spectrumNumber, "Charge State:"));
+            return charge * (int)GetPolarity(spectrumNumber);
         }
 
         public override int GetSpectrumNumber(double retentionTime)

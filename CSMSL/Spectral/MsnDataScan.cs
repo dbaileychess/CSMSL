@@ -59,8 +59,8 @@ namespace CSMSL.Spectral
             }
         }
 
-        private short _precursorCharge;
-        public virtual short PrecursorCharge
+        private int _precursorCharge;
+        public virtual int PrecursorCharge
         {
             get
             {

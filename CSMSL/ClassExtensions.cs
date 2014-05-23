@@ -170,6 +170,8 @@ namespace CSMSL
 
             foreach (double value in values)
             {
+                if(value < min || value > max)
+                    continue;
                 int binnedValue = (int)((value - min) / binSize);
                 if (binnedValue == numberOfBins)
                     binnedValue--;
