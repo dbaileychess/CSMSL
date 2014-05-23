@@ -91,14 +91,18 @@ namespace CSMSL.Spectral
         /// Initializes a new spectrum
         /// </summary>
         /// <param name="mzintensities"></param>
-        public Spectrum(double[,] mzintensities)
+        public Spectrum(double[,] mzintensities, int size = -1)
         {
-            Count = mzintensities.GetLength(1);
-            const int length = sizeof(double);
-            _masses = new double[Count];
-            _intensities = new double[Count];
-            Buffer.BlockCopy(mzintensities, 0, _masses, 0, length * Count);
-            Buffer.BlockCopy(mzintensities, length * Count, _intensities, 0, length * Count);         
+            int length = mzintensities.GetLength(1);
+
+            if (size <= 0)
+                size = mzintensities.GetLength(1);
+            
+            _masses = new double[size];
+            _intensities = new double[size];
+            Buffer.BlockCopy(mzintensities, 0, _masses, 0, sizeof(double) * size);
+            Buffer.BlockCopy(mzintensities, sizeof(double) * length, _intensities, 0, sizeof(double) * size);
+            Count = size;
         }
 
         private Spectrum(byte[] mzintensities)
@@ -154,11 +158,21 @@ namespace CSMSL.Spectral
             return Count == 0 ? 0 : _intensities.Sum();
         }
 
+        /// <summary>
+        /// Gets the m/z value at the specified index
+        /// </summary>
+        /// <param name="index"></param>
+        /// <returns></returns>
         public double GetMass(int index)
         {
             return _masses[index];
         }
 
+        /// <summary>
+        /// Gets the intensity value at the specified index
+        /// </summary>
+        /// <param name="index"></param>
+        /// <returns></returns>
         public double GetIntensity(int index)
         {
             return _intensities[index];

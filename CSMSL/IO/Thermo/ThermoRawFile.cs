@@ -1,4 +1,5 @@
-﻿using CSMSL.Proteomics;
+﻿using System.Linq;
+using CSMSL.Proteomics;
 using CSMSL.Spectral;
 using MSFileReaderLib;
 using System;
@@ -197,6 +198,24 @@ namespace CSMSL.IO.Thermo
             //    peaks.Add(new ThermoLabeledPeak(peakData[0, i], (float)peakData[1, i], (short)peakData[5, i], (float)peakData[4, i]));
             //}
             return new ThermoSpectrum(peakData);    
+        }
+
+        public enum IntensityCutoffType { None = 0, Absolute = 1, Relative = 2};
+
+
+        public Spectrum GetAveragedSpectrum(int firstSpectrumNumber, int lastSpectrumNumber, string scanFilter = "", IntensityCutoffType type = IntensityCutoffType.None, int intensityCutoff = 0)
+        {
+            object labels = null;
+            object flags = null; 
+            double peakWidth = 0;
+            int arraySize= 0;
+            int  c, d, e, f;
+            c = d = e = f = 0;
+            _rawConnection.GetAverageMassList(ref firstSpectrumNumber, ref lastSpectrumNumber, ref c, ref d, ref e, ref f, scanFilter, (int)type, intensityCutoff, 0, 0, ref peakWidth, ref labels, ref flags, ref arraySize);
+
+            double[,] spectrum = (double[,])labels;
+
+            return new Spectrum(spectrum, arraySize);
         }
 
         public Spectrum GetSNSpectrum(int spectrumNumber, double minSN = 3)

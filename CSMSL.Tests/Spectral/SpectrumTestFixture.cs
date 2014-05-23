@@ -1,4 +1,5 @@
-﻿using CSMSL.Spectral;
+﻿using System;
+using CSMSL.Spectral;
 using NUnit.Framework;
 
 namespace CSMSL.Tests.Spectral
@@ -59,6 +60,38 @@ namespace CSMSL.Tests.Spectral
             double tic = SpectrumA.GetTotalIonCurrent();
 
             Assert.AreEqual(843998894.0, tic);
+        }
+
+        [Test]
+        public void SpectrumGetIntensityFirst()
+        {
+            double intensity = SpectrumA.GetIntensity(0);
+
+            Assert.AreEqual(81007096.0, intensity);
+        }
+
+        [Test]
+        public void SpectrumGetIntensityRandom()
+        {
+            double intensity = SpectrumA.GetIntensity(6);
+
+            Assert.AreEqual(44238040.0, intensity);
+        }
+
+        [Test]
+        public void SpectrumGetMassFirst()
+        {
+            double intensity = SpectrumA.GetMass(0);
+          
+            Assert.AreEqual(328.73795, intensity);
+        }
+
+        [Test]
+        public void SpectrumGetMassRandom()
+        {
+            double intensity = SpectrumA.GetMass(6);
+
+            Assert.AreEqual(482.90393, intensity);
         }
 
         #region Contains Peak

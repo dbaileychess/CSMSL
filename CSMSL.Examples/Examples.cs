@@ -26,6 +26,7 @@ using System.Windows.Forms;
 using CSMSL.Chemistry;
 using CSMSL.IO.Thermo;
 using CSMSL.Proteomics;
+using CSMSL.Spectral;
 using CSMSL.Util.Collections;
 using System;
 using System.Diagnostics;
@@ -63,6 +64,14 @@ namespace CSMSL.Examples
 
         private static void StartExamples()
         {
+            using (ThermoRawFile rawfile = new ThermoRawFile(@"E:\Software\Compass Tests\FDR\10sep2013_yeast_control_2.raw"))
+            {
+                rawfile.Open();
+
+                Spectrum spectrum = rawfile.GetAveragedSpectrum(39191, 39211, "FTMS + c NSI Full ms", ThermoRawFile.IntensityCutoffType.Absolute, 10);
+            }
+
+
             // Examples coding  
             
             //ChemicalFormulaExamples();
@@ -85,7 +94,7 @@ namespace CSMSL.Examples
             //IsotopologueExample();
 
             // Example IO
-            MsDataFileExamples.VendorNeutralDataAccess();
+            //MsDataFileExamples.VendorNeutralDataAccess();
 
             // Omssa Reader
             //OmssaReader.Start();

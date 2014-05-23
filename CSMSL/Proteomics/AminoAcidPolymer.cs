@@ -1109,61 +1109,11 @@ namespace CSMSL.Proteomics
 
         public double CalculateIsoelectricPoint(double precision = 0.01)
         {
-            int d, e, c, y, h, k, r;
-            d = e = c = y = h = k = r = 0;
-            foreach (AminoAcid aa in _aminoAcids) 
-            {
-                switch (aa.Letter)
-                {
-                    case 'D': d++; break;
-                    case 'E': e++; break;
-                    case 'C': c++; break;
-                    case 'Y': y++; break;
-                    case 'H': h++; break;
-                    case 'K': k++; break;
-                    case 'R': r++; break;
-                }
-            }
-            
-            double pH = 6.5;
-            double minpH = 0.0;     
-            double maxpH = 14.0;
-  
-            while (true)
-            {
-                double QN1 = -1 / (1 + Math.Pow(10, (3.65 - pH)));  
-                double QN2 = -d / (1 + Math.Pow(10, (3.90 - pH)));
-                double QN3 = -e / (1 + Math.Pow(10, (4.07 - pH)));
-                double QN4 = -c / (1 + Math.Pow(10, (8.37 - pH)));
-                double QN5 = -y / (1 + Math.Pow(10, (10.46 - pH)));
-                double QP1 = h / (1 + Math.Pow(10, (pH - 6.04)));
-                double QP2 = 1 / (1 + Math.Pow(10, (pH - 8.2)));
-                double QP3 = k / (1 + Math.Pow(10, (pH - 10.54)));
-                double QP4 = r / (1 + Math.Pow(10, (pH - 12.48)));
-
-                double NQ = QN1 + QN2 + QN3 + QN4 + QN5 + QP1 + QP2 + QP3 + QP4;
-                
-                if (NQ < 0)          
-                {
-                    maxpH = pH;
-                    pH = pH - ((pH - minpH) / 2);
-                }
-                else
-                {
-                    minpH = pH;
-                    pH = pH + ((maxpH - pH) / 2);
-                }
-
-                if ((pH - minpH < precision) && (maxpH - pH < precision))
-                    break;
-            }
-
-            return pH;
+            return CalculateIsoelectricPoint(Sequence, precision);
         }
 
         #endregion
-
-
+        
         public bool Contains(IAminoAcidSequence item)
         {
             return Contains(item.Sequence);
@@ -1433,6 +1383,70 @@ namespace CSMSL.Proteomics
         #endregion
 
         #region Statics
+
+        #region Isoelectric Point
+
+        public static double CalculateIsoelectricPoint(string sequence, double precision = 0.01)
+        {
+            int d, e, c, y, h, k, r;
+            d = e = c = y = h = k = r = 0;
+            foreach (char aa in sequence)
+            {
+                switch (aa)
+                {
+                    case 'D': d++; break;
+                    case 'E': e++; break;
+                    case 'C': c++; break;
+                    case 'Y': y++; break;
+                    case 'H': h++; break;
+                    case 'K': k++; break;
+                    case 'R': r++; break;
+                }
+            }
+
+            double pH = 6.5;
+            double minpH = 0.0;
+            double maxpH = 14.0;
+
+            while (true)
+            {
+                double QN1 = -1 / (1 + Math.Pow(10, (3.65 - pH)));
+                double QN2 = -d / (1 + Math.Pow(10, (3.90 - pH)));
+                double QN3 = -e / (1 + Math.Pow(10, (4.07 - pH)));
+                double QN4 = -c / (1 + Math.Pow(10, (8.37 - pH)));
+                double QN5 = -y / (1 + Math.Pow(10, (10.46 - pH)));
+                double QP1 = h / (1 + Math.Pow(10, (pH - 6.04)));
+                double QP2 = 1 / (1 + Math.Pow(10, (pH - 8.2)));
+                double QP3 = k / (1 + Math.Pow(10, (pH - 10.54)));
+                double QP4 = r / (1 + Math.Pow(10, (pH - 12.48)));
+
+                double NQ = QN1 + QN2 + QN3 + QN4 + QN5 + QP1 + QP2 + QP3 + QP4;
+
+                if (NQ < 0)
+                {
+                    maxpH = pH;
+                    pH = pH - ((pH - minpH) / 2);
+                }
+                else
+                {
+                    minpH = pH;
+                    pH = pH + ((maxpH - pH) / 2);
+                }
+
+                if ((pH - minpH < precision) && (maxpH - pH < precision))
+                    break;
+            }
+
+            return pH;
+        }
+
+        public static double CalculateIsoelectricPoint(IAminoAcidSequence sequence, double precision = 0.01)
+        {
+            return CalculateIsoelectricPoint(sequence.Sequence, precision);
+        }
+
+        #endregion
+
 
         public static IEnumerable<Fragment> GetSiteDeterminingFragments(AminoAcidPolymer peptideA, AminoAcidPolymer peptideB, FragmentTypes types)
         {
