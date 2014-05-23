@@ -228,7 +228,7 @@ namespace CSMSL.IO.MzML
             }
         }
 
-        public override Spectrum GetMzSpectrum(int spectrumNumber)
+        public override Spectrum GetSpectrum(int spectrumNumber)
         {
             spectrumNumber--; // 0-based indexing
         

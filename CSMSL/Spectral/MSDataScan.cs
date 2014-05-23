@@ -20,7 +20,7 @@ namespace CSMSL.Spectral
                 {
                     if (ParentFile.IsOpen)
                     {
-                        _massSpectrum = ParentFile.GetMzSpectrum(SpectrumNumber);
+                        _massSpectrum = ParentFile.GetSpectrum(SpectrumNumber);
                     }
                     else
                     {
@@ -215,24 +215,7 @@ namespace CSMSL.Spectral
                 _parentScanNumber = value;
             }
         }
-
-        private Spectrum _readOnlySpectrum;
-        public Spectrum GetReadOnlySpectrum()
-        {
-            if (_readOnlySpectrum == null)
-            {
-                if (ParentFile.IsOpen)
-                {
-                    _readOnlySpectrum = ParentFile.GetReadOnlyMZSpectrum(SpectrumNumber, true);
-                }
-                else
-                {
-                    throw new ArgumentException("The parent data file is closed");
-                }
-            }
-            return _readOnlySpectrum;
-        }
-
+        
         public MSDataScan()
         {
 

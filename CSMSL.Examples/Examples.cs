@@ -68,7 +68,10 @@ namespace CSMSL.Examples
             {
                 rawfile.Open();
 
-                Spectrum spectrum = rawfile.GetAveragedSpectrum(39191, 39211, "FTMS + c NSI Full ms", ThermoRawFile.IntensityCutoffType.Absolute, 10);
+                Spectrum spectrum1 = rawfile.GetSpectrum(39191);
+                ThermoSpectrum spectrum2 = rawfile.GetLabeledSpectrum(39191);
+              
+                //Spectrum spectrum = rawfile.GetAveragedSpectrum(39191, 39211, "FTMS + c NSI Full ms", ThermoRawFile.IntensityCutoffType.Absolute, 10);
             }
 
 

@@ -255,13 +255,8 @@ namespace CSMSL.IO
 
         public abstract MZAnalyzerType GetMzAnalyzer(int spectrumNumber);
 
-        public abstract Spectrum GetMzSpectrum(int spectrumNumber);
-
-        public virtual Spectrum GetReadOnlyMZSpectrum(int spectrumNumber, bool centroid)
-        {
-            return GetMzSpectrum(spectrumNumber);
-        }
-
+        public abstract Spectrum GetSpectrum(int spectrumNumber);
+        
         public abstract Polarity GetPolarity(int spectrumNumber);
 
         public abstract double GetRetentionTime(int spectrumNumber);
@@ -269,12 +264,7 @@ namespace CSMSL.IO
         public abstract double GetInjectionTime(int spectrumNumber);
 
         public abstract double GetResolution(int spectrumNumber);
-
-        public virtual string GetBase64Spectrum(int spectrumNumber, bool zlibCompressed = false)
-        {
-            return GetMzSpectrum(spectrumNumber).ToBase64String(zlibCompressed);
-        }
-
+        
         public abstract int GetSpectrumNumber(double retentionTime);     
 
         /// <summary>

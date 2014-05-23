@@ -11,7 +11,7 @@ namespace CSMSL.IO.Thermo
 {   
     public class ThermoRawFile : MSDataFile
     {
-        private enum RawLabelDataColumn
+        internal enum RawLabelDataColumn
         {
             MZ = 0,
             Intensity = 1,
@@ -38,6 +38,13 @@ namespace CSMSL.IO.Thermo
             Boxcar = 1,
             Gauusian = 2
         }
+
+        public enum IntensityCutoffType 
+        { 
+            None = 0, 
+            Absolute = 1, 
+            Relative = 2
+        };
                 
         private IXRawfile5 _rawConnection;
 
@@ -156,17 +163,13 @@ namespace CSMSL.IO.Thermo
             return PolarityRegex.IsMatch(filter) ? Polarity.Positive : Polarity.Negative;
         }
 
-        public override Spectrum GetMzSpectrum(int spectrumNumber)
+        public override Spectrum GetSpectrum(int spectrumNumber)
         {
-            return GetMzSpectrum(spectrumNumber, false);
+            return GetSpectrum(spectrumNumber);
         }
 
-        [Obsolete]
-        public Spectrum GetMzSpectrum(int spectrumNumber, bool profileIfAvailable = false)
+        public Spectrum GetSpectrum(int spectrumNumber, bool profileIfAvailable = false)
         {
-            MZAnalyzerType mzAnalyzer = GetMzAnalyzer(spectrumNumber);
-            double[,] peakData;
-            int count;
             bool useProfile = false;
 
             if (profileIfAvailable)
@@ -176,33 +179,10 @@ namespace CSMSL.IO.Thermo
                 useProfile = isProfile == 1;
             }
 
-
-            if (useProfile || mzAnalyzer == MZAnalyzerType.IonTrap2D || AlwaysGetUnlabeledData)
-            {
-                peakData = GetUnlabeledData(spectrumNumber, !useProfile);
-                //count = peakData.GetLength(1);
-                //List<MZPeak> lowResPeaks = new List<MZPeak>();
-                //List<double>
-                //for (int i = 0; i < count; i++)
-                //{
-                //    lowResPeaks.Add(new MZPeak(peakData[0, i], (float)peakData[1, i]));
-                //}
-                return new Spectrum(peakData);     
-            }
-            
-            peakData = GetLabeledData(spectrumNumber);
-            //count = peakData.GetLength(1);
-            //List<ThermoLabeledPeak> peaks = new List<ThermoLabeledPeak>();
-            //for (int i = 0; i < count; i++)
-            //{
-            //    peaks.Add(new ThermoLabeledPeak(peakData[0, i], (float)peakData[1, i], (short)peakData[5, i], (float)peakData[4, i]));
-            //}
-            return new ThermoSpectrum(peakData);    
+            var peakData = GetUnlabeledData(spectrumNumber, !useProfile);
+            return new Spectrum(peakData);  
         }
-
-        public enum IntensityCutoffType { None = 0, Absolute = 1, Relative = 2};
-
-
+     
         public Spectrum GetAveragedSpectrum(int firstSpectrumNumber, int lastSpectrumNumber, string scanFilter = "", IntensityCutoffType type = IntensityCutoffType.None, int intensityCutoff = 0)
         {
             object labels = null;
@@ -212,10 +192,15 @@ namespace CSMSL.IO.Thermo
             int  c, d, e, f;
             c = d = e = f = 0;
             _rawConnection.GetAverageMassList(ref firstSpectrumNumber, ref lastSpectrumNumber, ref c, ref d, ref e, ref f, scanFilter, (int)type, intensityCutoff, 0, 0, ref peakWidth, ref labels, ref flags, ref arraySize);
-
             double[,] spectrum = (double[,])labels;
 
             return new Spectrum(spectrum, arraySize);
+        }
+
+        public ThermoSpectrum GetLabeledSpectrum(int spectrumNumber)
+        {
+            var labelData = GetLabeledData(spectrumNumber);
+            return new ThermoSpectrum(labelData);
         }
 
         public Spectrum GetSNSpectrum(int spectrumNumber, double minSN = 3)
@@ -239,34 +224,7 @@ namespace CSMSL.IO.Thermo
             Array.Resize(ref sns, j);
             return new Spectrum(mz, sns, false);
         }
-
-        public Spectrum GetReadOnlyMZSpectrum(int spectrumNumber, bool centorid = true, bool labeled = false)
-        {           
-            if (labeled)
-            {
-                var labelData = GetLabeledData(spectrumNumber);
-                return new Spectrum(labelData);     
-            }
-
-            var peakData = GetUnlabeledData(spectrumNumber, centorid);
-            return new Spectrum(peakData);     
-        }
-
-        public override string GetBase64Spectrum(int spectrumNumber, bool zlibCompressed = false)
-        {     
-            var peakData = GetUnlabeledData(spectrumNumber, false);
-            int count = peakData.GetLength(1);
-            int length = count * sizeof(double);
-            byte[] bytes = new byte[length * 2];
-            Buffer.BlockCopy(peakData, 0, bytes, 0, length);
-            Buffer.BlockCopy(peakData, length, bytes, length, length);
-            if (zlibCompressed)
-            {
-                bytes = bytes.Decompress();              
-            }         
-            return Convert.ToBase64String(bytes);  
-        }
-                        
+        
         private double[,] GetUnlabeledData(int spectrumNumber, bool useCentroid)
         {
             object massList = null;
@@ -315,7 +273,7 @@ namespace CSMSL.IO.Thermo
         public double GetPrecusorMz(int spectrumNumber, double searchMZ, int msnOrder = 2)
         {
             int parentScanNumber = GetParentSpectrumNumber(spectrumNumber);
-            var ms1Scan = GetMzSpectrum(parentScanNumber);
+            var ms1Scan = GetSpectrum(parentScanNumber);
             MZPeak peak = ms1Scan.GetClosestPeak(MassRange.FromDa(searchMZ, 50));
             if (peak != null)
                 return peak.MZ;
@@ -327,13 +285,7 @@ namespace CSMSL.IO.Thermo
             object width = GetExtraValue(spectrumNumber, string.Format("MS{0} Isolation Width:", msnOrder));
             return Convert.ToDouble(width);
         }
-
-        //public double GetElapsedScanTime(int spectrumNumber)
-        //{
-        //    double elapsedScanTime = Convert.ToDouble(GetExtraValue(spectrumNumber, "Elapsed Scan Time (sec):")) * 1000;
-        //    return elapsedScanTime;
-        //}
-
+        
         public double GetElapsedScanTime(int spectrumNumber)
         {
             object elapsedScanTime = GetExtraValue(spectrumNumber, "Elapsed Scan Time (sec):");
@@ -532,8 +484,7 @@ namespace CSMSL.IO.Thermo
                 return double.NaN;
             }
         }
-
-
+        
         public Chromatogram GetTICChroma()
         {
           
@@ -560,7 +511,6 @@ namespace CSMSL.IO.Thermo
 
             return new Chromatogram(pvarArray);
         }
-
 
         public IEnumerable<double> GetMsxValues(int spectrumNumber)
         {

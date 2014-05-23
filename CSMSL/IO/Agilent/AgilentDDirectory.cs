@@ -83,7 +83,7 @@ namespace CSMSL.IO.Agilent
             }
         }
 
-        public override Spectrum GetMzSpectrum(int spectrumNumber)
+        public override Spectrum GetSpectrum(int spectrumNumber)
         {
             IBDASpecData spectrum = _msdr.GetSpectrum(spectrumNumber - 1);
 

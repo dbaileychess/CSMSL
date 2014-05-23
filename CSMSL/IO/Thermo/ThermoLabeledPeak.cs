@@ -8,6 +8,8 @@ namespace CSMSL.IO.Thermo
 
         public double Noise { get; private set; }
 
+        public double Resolution { get; private set; }
+
         public double SN
         {
             get
@@ -32,11 +34,12 @@ namespace CSMSL.IO.Thermo
 
         public ThermoLabeledPeak() { }
 
-        public ThermoLabeledPeak(double mz, double intensity, int charge, double noise)
+        public ThermoLabeledPeak(double mz, double intensity, int charge, double noise, double resolution)
             : base(mz, intensity)
         {
             Charge = charge;
             Noise = noise;
+            Resolution = resolution;
         }
 
         public double GetSignalToNoise()
