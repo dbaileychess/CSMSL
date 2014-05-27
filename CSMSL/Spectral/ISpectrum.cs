@@ -2,7 +2,7 @@
 
 namespace CSMSL.Spectral
 {
-    public interface ISpectrum : IEnumerable<MZPeak>
+    public interface ISpectrum
     {
         int Count { get; }
         double[] GetMasses();
@@ -11,8 +11,8 @@ namespace CSMSL.Spectral
         double GetTotalIonCurrent();
         bool TryGetIntensities(double minMZ, double maxMZ, out double intensity);
         bool TryGetIntensities(IRange<double> rangeMZ, out double intensity);
-        MZPeak GetClosestPeak(double minMZ, double maxMZ);
-        MZPeak GetClosestPeak(IRange<double> rangeMZ);
+        IPeak GetClosestPeak(double minMZ, double maxMZ);
+        IPeak GetClosestPeak(IRange<double> rangeMZ);
         byte[] ToBytes(bool zlibCompressed);  
     }
 }

@@ -31,7 +31,7 @@ namespace CSMSL.Spectral
             : this(mzintensities, mzintensities.GetLength(1)) {}
 
         public Spectrum(double[,] mzintensities, int count)
-            :base(mzintensities,count) {}
+            : base(mzintensities,count) {}
 
         public Spectrum(byte[] mzintensities)
             : base (mzintensities) {}
@@ -62,7 +62,7 @@ namespace CSMSL.Spectral
 
             return bytes;
         }
-
+ 
         public Spectrum Extract(double minMZ, double maxMZ)
         {
             if (Count == 0)
@@ -200,7 +200,7 @@ namespace CSMSL.Spectral
         /// The intensity of this spectrum, linked to their m/z by index in the array
         /// </summary>
         protected readonly double[] _intensities;
-
+        
         /// <summary>
         /// The number of peaks in this spectrum
         /// </summary>
@@ -290,6 +290,11 @@ namespace CSMSL.Spectral
             _intensities = new double[Count];
             Buffer.BlockCopy(mzintensities, 0, _masses, 0, size);
             Buffer.BlockCopy(mzintensities, size, _intensities, 0, size);
+        }
+        
+        public T this[int index]
+        {
+            get { return GetPeak(index); }
         }
 
         /// <summary>
@@ -451,7 +456,7 @@ namespace CSMSL.Spectral
         public abstract T GetPeak(int index);
    
         public abstract byte[] ToBytes(bool zlibCompressed = false);
-        
+     
         #endregion
 
         protected int GetClosestPeakIndex(double mean, double tolerance)
@@ -510,8 +515,6 @@ namespace CSMSL.Spectral
             return index;
         }
         
-    
-
         public override string ToString()
         {
             return string.Format("{0} (Peaks {1})", GetMzRange(), Count);

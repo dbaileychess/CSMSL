@@ -5,10 +5,22 @@ namespace CSMSL.IO.Thermo
 {
     public class ThermoSpectrum : Spectrum<ThermoLabeledPeak>
     {
+        /// <summary>
+        /// An empty spectrum
+        /// </summary>
+        public static readonly ThermoSpectrum Empty = new ThermoSpectrum();
+
         private readonly double[] _noises;
         private readonly double[] _resolutions;
         private readonly int[] _charges;
-        
+
+        private ThermoSpectrum()
+        {
+            _noises = new double[0];
+            _resolutions = new double[0];
+            _charges = new int[0];
+        }
+
         internal ThermoSpectrum(double[,] peakData, int count)
             : base(peakData, count)
         {
@@ -31,21 +43,24 @@ namespace CSMSL.IO.Thermo
         internal ThermoSpectrum(double[,] peakData)
             : this(peakData, peakData.GetLength(1)) { }
  
-        public ThermoSpectrum(double[] mz, double[] intensity, double[] noise, int[] charge, bool shouldCopy = true)
+        public ThermoSpectrum(double[] mz, double[] intensity, double[] noise, int[] charge, double[] resolutions, bool shouldCopy = true)
             : base(mz, intensity, shouldCopy)
         {
             if (shouldCopy)
             {
                 _noises = new double[Count];
                 _charges = new int[Count];
+                _resolutions = new double[Count];
 
                 Buffer.BlockCopy(noise, 0, _noises, 0, sizeof(double) * Count);
                 Buffer.BlockCopy(charge, 0, _charges, 0, sizeof(int) * Count);
+                Buffer.BlockCopy(resolutions, 0, _resolutions, 0, sizeof(double) * Count);
             }
             else
             {
                 _noises = noise;
                 _charges = charge;
+                _resolutions = resolutions;
             }
         }
         
@@ -102,7 +117,44 @@ namespace CSMSL.IO.Thermo
         {
             throw new NotImplementedException();
         }
+        
+        public ThermoSpectrum Extract(double minMZ, double maxMZ)
+        {
+            if (Count == 0)
+                return Empty;
 
- 
+            int index = Array.BinarySearch(_masses, minMZ);
+            if (index < 0)
+                index = ~index;
+
+            int count = Count;
+            double[] mz = new double[count];
+            double[] intensity = new double[count];
+            int[] charges = new int[count];
+            double[] noises = new double[count];
+            double[] resolutions = new double[count];
+            int j = 0;
+
+            while (index < Count && _masses[index] <= maxMZ)
+            {
+                mz[j] = _masses[index];
+                intensity[j] = _intensities[index];
+                charges[j] = _charges[index];
+                noises[j] = _noises[index];
+                resolutions[j] = _resolutions[index];
+                index++;
+                j++;
+            }
+
+            if (j == 0)
+                return Empty;
+
+            Array.Resize(ref mz, j);
+            Array.Resize(ref intensity, j);
+            Array.Resize(ref charges, j);
+            Array.Resize(ref noises, j);
+            Array.Resize(ref resolutions, j);
+            return new ThermoSpectrum(mz, intensity, noises, charges, resolutions, false);
+        }
     }
 }
