@@ -202,7 +202,6 @@
     <Compile Include="Spectral\ISpectrum.cs" />
     <Compile Include="Spectral\MassRangeChromatogram.cs" />
     <Compile Include="Spectral\Spectrum.cs" />
-    <Compile Include="Spectral\ILabeledPeak.cs" />
     <Compile Include="Spectral\IMassSpectrum.cs" />
     <Compile Include="Spectral\IPeak.cs" />
     <Compile Include="Spectral\MSDataScan.cs" />
@@ -210,7 +209,6 @@
     <Compile Include="Spectral\MZAnalyzerType.cs" />
     <Compile Include="Spectral\MZPeak.cs" />
     <Compile Include="Spectral\Polarity.cs" />
-    <Compile Include="Spectral\Spectrum`1.cs" />
     <Compile Include="Util\Collections\SortedMaxSizedContainer.cs" />
     <Compile Include="Util\Combinatorics.cs" />
     <Compile Include="Util\LinearRegression.cs" />

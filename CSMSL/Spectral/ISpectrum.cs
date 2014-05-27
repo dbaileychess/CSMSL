@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-
+﻿
 namespace CSMSL.Spectral
 {
     public interface ISpectrum

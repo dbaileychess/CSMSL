@@ -150,5 +150,31 @@ namespace CSMSL.Tests.Proteomics
             Assert.AreEqual(17, peptides.Count);
         }
 
+        [Test]
+        public void DuplicatePeptidesReturn()
+        {
+            Protein prot = new Protein("DEREKDEREK");
+
+            var peptides = prot.Digest(Protease.LysC, 0).ToList();
+            Assert.AreEqual(peptides.Count, 2);
+        }
+
+        [Test]
+        public void DuplicatePeptidesAreDistinct()
+        {
+            Protein prot = new Protein("DEREKDEREK");
+
+            var peptides = prot.Digest(Protease.LysC, 0).ToList();
+            Assert.AreNotSame(peptides[0], peptides[1]);
+        }
+
+        [Test]
+        public void DuplicatePeptidesAreEqualivant()
+        {
+            Protein prot = new Protein("DEREKDEREK");
+
+            var peptides = prot.Digest(Protease.LysC, 0).ToList();
+            Assert.AreEqual(peptides[0], peptides[1]);
+        }
     }
 }

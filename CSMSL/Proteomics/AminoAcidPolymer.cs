@@ -1523,7 +1523,7 @@ namespace CSMSL.Proteomics
                                 {
                                     if (len - j >= minLength && len - j <= maxLength)
                                         yield return new Tuple<int, int>(start + j, len - j);
-                                    if(j >= minLength && j <= maxLength)
+                                    if (j >= minLength && j <= maxLength)
                                         yield return new Tuple<int, int>(start, j);
                                 }
                             }

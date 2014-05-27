@@ -1,10 +1,12 @@
-﻿using System;
-
-namespace CSMSL.Spectral
+﻿namespace CSMSL.Spectral
 {
-    public enum Polarity { 
-        Positive = 1, 
-        Negative = -1, 
+    /// <summary>
+    /// The polarity of a charge particle
+    /// </summary>
+    public enum Polarity
+    {
+        Positive = 1,
+        Negative = -1,
         Neutral = 0
     }
 }

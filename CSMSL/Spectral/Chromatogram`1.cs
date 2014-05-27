@@ -19,7 +19,6 @@ namespace CSMSL.Spectral
         SavitzkyGolay = 2
     }
      
-
     //public class MzRangeChromatogram : Chromatogram
     //{
     //    public MassRange MzRange { get; private set; }
@@ -142,148 +141,147 @@ namespace CSMSL.Spectral
     //    //}
     //}
 
-    public class Chromatogram<T> : IEnumerable<T> where T: IPeak
-    {    
-        public T this[int index]
-        {
-            get
-            {
-                return _curve.Values[index];
-            }
-        }
+    //public class Chromatogram<T> : IEnumerable<T> where T: IPeak
+    //{    
+    //    public T this[int index]
+    //    {
+    //        get
+    //        {
+    //            return _curve.Values[index];
+    //        }
+    //    }
 
-        protected readonly SortedList<double, T> _curve;
+    //    protected readonly SortedList<double, T> _curve;
         
-        public double TotalIonCurrent { get; private set; }
+    //    public double TotalIonCurrent { get; private set; }
 
-        public int Count
-        {
-            get { return _curve.Count; }
-        }
+    //    public int Count
+    //    {
+    //        get { return _curve.Count; }
+    //    }
               
-        public ChromatogramType Type { get; private set; }
+    //    public ChromatogramType Type { get; private set; }
 
-        public T BasePeak { get; private set; }
+    //    public T BasePeak { get; private set; }
 
-        public Chromatogram(ChromatogramType type = ChromatogramType.BasePeak)
-        {
-            Type = type;
-            _curve = new SortedList<double, T>();
-            TotalIonCurrent = 0.0;
-        }
+    //    public Chromatogram(ChromatogramType type = ChromatogramType.BasePeak)
+    //    {
+    //        Type = type;
+    //        _curve = new SortedList<double, T>();
+    //        TotalIonCurrent = 0.0;
+    //    }
 
-        public Chromatogram(IEnumerable<T> points, ChromatogramType type = ChromatogramType.BasePeak)
-        {
-            Type = type;
-            _curve = new SortedList<double, T>(points.ToDictionary(p => p.X));
-            TotalIonCurrent = _curve.Values.Sum(p => p.Y);
-        }
+    //    public Chromatogram(IEnumerable<T> points, ChromatogramType type = ChromatogramType.BasePeak)
+    //    {
+    //        Type = type;
+    //        _curve = new SortedList<double, T>(points.ToDictionary(p => p.X));
+    //        TotalIonCurrent = _curve.Values.Sum(p => p.Y);
+    //    }
         
-        public T GetMinPeak(T peak, double percentOfApex = 0.1)
-        {
-            int index = _curve.IndexOfValue(peak);           
+    //    public T GetMinPeak(T peak, double percentOfApex = 0.1)
+    //    {
+    //        int index = _curve.IndexOfValue(peak);           
 
-            double threshold = _curve.Values[index].Y * percentOfApex;
+    //        double threshold = _curve.Values[index].Y * percentOfApex;
 
-            while (index >= 0)
-            {                
-                T tempPeak = _curve.Values[index];
-                if (tempPeak.Y < threshold)
-                {
-                    return tempPeak;
-                }
-                index--;
-            }
-            return _curve.Values[0];
-        }
+    //        while (index >= 0)
+    //        {                
+    //            T tempPeak = _curve.Values[index];
+    //            if (tempPeak.Y < threshold)
+    //            {
+    //                return tempPeak;
+    //            }
+    //            index--;
+    //        }
+    //        return _curve.Values[0];
+    //    }
 
-        public double[] GetRetentionTimes()
-        {           
-            return _curve.Keys.ToArray();
-        }
+    //    public double[] GetRetentionTimes()
+    //    {           
+    //        return _curve.Keys.ToArray();
+    //    }
 
-        public double[] GetIntensities()
-        {
-            return _curve.Values.Select(p => p.Y).ToArray();
-        }
+    //    public double[] GetIntensities()
+    //    {
+    //        return _curve.Values.Select(p => p.Y).ToArray();
+    //    }
 
-        public T GetMaxPeak(T peak, double percentOfApex = 0.1)
-        {
-            int index = _curve.IndexOfValue(peak);          
+    //    public T GetMaxPeak(T peak, double percentOfApex = 0.1)
+    //    {
+    //        int index = _curve.IndexOfValue(peak);          
 
-            double threshold = _curve.Values[index].Y * percentOfApex;
+    //        double threshold = _curve.Values[index].Y * percentOfApex;
 
-            while (index < _curve.Count)
-            {
-                T tempPeak = _curve.Values[index];
-                if (tempPeak.Y < threshold)
-                {
-                    return tempPeak;
-                }
-                index++;
-            }
-            return _curve.Values[_curve.Count-1];
-        }
+    //        while (index < _curve.Count)
+    //        {
+    //            T tempPeak = _curve.Values[index];
+    //            if (tempPeak.Y < threshold)
+    //            {
+    //                return tempPeak;
+    //            }
+    //            index++;
+    //        }
+    //        return _curve.Values[_curve.Count-1];
+    //    }
 
-        public void AddPoint(T point)
-        {
-            _curve.Add(point.X, point);
+    //    public void AddPoint(T point)
+    //    {
+    //        _curve.Add(point.X, point);
 
-            if (BasePeak.Equals(null))
-            {                
-                BasePeak = point;
-            }
-            else
-            {
-                if (point.Y > BasePeak.Y)
-                {
-                    BasePeak = point;
-                }
-            }
+    //        if (BasePeak.Equals(null))
+    //        {                
+    //            BasePeak = point;
+    //        }
+    //        else
+    //        {
+    //            if (point.Y > BasePeak.Y)
+    //            {
+    //                BasePeak = point;
+    //            }
+    //        }
 
-            TotalIonCurrent += point.Y;
-        }
+    //        TotalIonCurrent += point.Y;
+    //    }
 
-        public override string ToString()
-        {
-            return string.Format("Count = {0:N0} TIC = {1:G4} ({2})", Count, TotalIonCurrent, Enum.GetName(typeof(ChromatogramType), Type));
-        }
+    //    public override string ToString()
+    //    {
+    //        return string.Format("Count = {0:N0} TIC = {1:G4} ({2})", Count, TotalIonCurrent, Enum.GetName(typeof(ChromatogramType), Type));
+    //    }
         
-        public IEnumerator<T> GetEnumerator()
-        {
-            return _curve.Values.GetEnumerator();
-        }
+    //    public IEnumerator<T> GetEnumerator()
+    //    {
+    //        return _curve.Values.GetEnumerator();
+    //    }
 
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return _curve.Values.GetEnumerator();
-        }
+    //    IEnumerator IEnumerable.GetEnumerator()
+    //    {
+    //        return _curve.Values.GetEnumerator();
+    //    }
 
-        public T GetApex(double rt, double timeSpread)
-        {
-            double minrt = rt - timeSpread;
-            double maxrt = rt + timeSpread;
+    //    public T GetApex(double rt, double timeSpread)
+    //    {
+    //        double minrt = rt - timeSpread;
+    //        double maxrt = rt + timeSpread;
 
-            T apex = default(T);
-            double maxvalue = 0;
-            foreach (T peak in _curve.Values)
-            {
-                if (peak.X < minrt)
-                    continue;
-                if (peak.X > maxrt)
-                    break;
+    //        T apex = default(T);
+    //        double maxvalue = 0;
+    //        foreach (T peak in _curve.Values)
+    //        {
+    //            if (peak.X < minrt)
+    //                continue;
+    //            if (peak.X > maxrt)
+    //                break;
 
-                if (peak.Y > maxvalue)
-                {
-                    maxvalue = peak.Y;
-                    apex = peak;
-                }
-            }
-            return apex;
-        }      
-    }
-
-
+    //            if (peak.Y > maxvalue)
+    //            {
+    //                maxvalue = peak.Y;
+    //                apex = peak;
+    //            }
+    //        }
+    //        return apex;
+    //    }      
+    //}
+    
     public static class Extension
     {
         public static MassRangeChromatogram GetExtractedIonChromatogram(this IList<Tuple<ISpectrum, double>> spectra, DoubleRange range)

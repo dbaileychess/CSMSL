@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using System.Runtime.InteropServices;
 using CSMSL.Proteomics;
 using CSMSL.Spectral;
 using MSFileReaderLib;
@@ -193,7 +194,6 @@ namespace CSMSL.IO.Thermo
             c = d = e = f = 0;
             _rawConnection.GetAverageMassList(ref firstSpectrumNumber, ref lastSpectrumNumber, ref c, ref d, ref e, ref f, scanFilter, (int)type, intensityCutoff, 0, 0, ref peakWidth, ref labels, ref flags, ref arraySize);
             double[,] spectrum = (double[,])labels;
-
             return new Spectrum(spectrum, arraySize);
         }
 
@@ -428,9 +428,6 @@ namespace CSMSL.IO.Thermo
                         if (resolution > 300000) return 480000;
                         return resolution;                      
                     }
-                    break;
-                default:
-                    break;
             }
             return resolution;
         }

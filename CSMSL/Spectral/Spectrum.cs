@@ -68,9 +68,7 @@ namespace CSMSL.Spectral
             if (Count == 0)
                 return Empty;
 
-            int index = Array.BinarySearch(_masses, minMZ);
-            if (index < 0)
-                index = ~index;
+            int index = GetPeakIndex(minMZ);
 
             int count = Count;
             double[] mz = new double[count];
@@ -189,6 +187,7 @@ namespace CSMSL.Spectral
     /// <summary>
     /// Represents the standard m/z spectrum, with intensity on the y-axis and m/z on the x-axis.
     /// </summary>
+    [Serializable]
     public abstract class Spectrum<T> : IEnumerable<T> where T : IPeak 
     {
         /// <summary>
@@ -292,6 +291,11 @@ namespace CSMSL.Spectral
             Buffer.BlockCopy(mzintensities, size, _intensities, 0, size);
         }
         
+        /// <summary>
+        /// Gets the peak at the specified index
+        /// </summary>
+        /// <param name="index"></param>
+        /// <returns></returns>
         public T this[int index]
         {
             get { return GetPeak(index); }
@@ -306,11 +310,19 @@ namespace CSMSL.Spectral
             return Count == 0 ? 0 : _intensities.Max();
         }
 
+        /// <summary>
+        /// Gets the full m/z range of this spectrum
+        /// </summary>
+        /// <returns></returns>
         public virtual MzRange GetMzRange() 
         { 
             return new MzRange(FirstMz, LastMZ); 
-        } 
-      
+        }
+
+        /// <summary>
+        /// Gets a copy of the underlying m/z array
+        /// </summary>
+        /// <returns></returns>
         public virtual double[] GetMasses()
         {
             double[] masses = new double[Count];
@@ -318,6 +330,10 @@ namespace CSMSL.Spectral
             return masses;
         }
 
+        /// <summary>
+        /// Gets a copy of the underlying intensity array
+        /// </summary>
+        /// <returns></returns>
         public virtual double[] GetIntensities()
         {
             double[] intensities = new double[Count];
@@ -354,16 +370,31 @@ namespace CSMSL.Spectral
             return _intensities[index];
         }
 
+        /// <summary>
+        /// Checks if this spectrum contains any peaks
+        /// </summary>
+        /// <returns></returns>
+        public virtual bool ContainsPeak()
+        {
+            return Count > 0;
+        }
+        
+        /// <summary>
+        /// Checks if this spectrum contains any peaks within the range
+        /// </summary>
+        /// <param name="range"></param>
+        /// <returns></returns>
         public virtual bool ContainsPeak(IRange<double> range)
         {
             return ContainsPeak(range.Minimum, range.Maximum);
         }
 
-        public virtual bool ContainsPeak()
-        {
-            return Count > 0;
-        }
-
+        /// <summary>
+        /// Checks if this spectrum contains any peaks within the range
+        /// </summary>
+        /// <param name="minMZ">The minimum m/z (inclusive)</param>
+        /// <param name="maxMZ">The maximum m/z (inclusive)</param>
+        /// <returns></returns>
         public virtual bool ContainsPeak(double minMZ, double maxMZ)
         {
             if (Count == 0)
@@ -390,9 +421,7 @@ namespace CSMSL.Spectral
             if (Count == 0)
                 return false;
 
-            int index = Array.BinarySearch(_masses, minMZ);
-            if (index < 0)
-                index = ~index;
+            int index = GetPeakIndex(minMZ);
 
             while (index < Count && _masses[index] <= maxMZ)
             {
@@ -434,9 +463,7 @@ namespace CSMSL.Spectral
             if (Count == 0)
                 return false;
 
-            int index = Array.BinarySearch(_masses, minMZ);
-            if (index < 0)
-                index = ~index;
+            int index = GetPeakIndex(minMZ);
 
             while (index < Count && _masses[index] <= maxMZ)
             {
@@ -458,6 +485,8 @@ namespace CSMSL.Spectral
         public abstract byte[] ToBytes(bool zlibCompressed = false);
      
         #endregion
+
+        #region Protected Methods
 
         protected int GetClosestPeakIndex(double mean, double tolerance)
         {
@@ -514,7 +543,19 @@ namespace CSMSL.Spectral
             }
             return index;
         }
+
+        protected int GetPeakIndex(double mz)
+        {
+            int index = Array.BinarySearch(_masses, mz);
+
+            if (index >= 0)
+                return index;
+
+            return ~index;
+        }
         
+        #endregion
+
         public override string ToString()
         {
             return string.Format("{0} (Peaks {1})", GetMzRange(), Count);

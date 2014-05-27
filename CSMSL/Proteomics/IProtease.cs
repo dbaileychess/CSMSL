@@ -16,5 +16,8 @@ namespace CSMSL.Proteomics
         IEnumerable<int> GetDigestionSites(string aminoAcidSequence);
 
         IEnumerable<int> GetDigestionSites(IAminoAcidSequence aminoAcidSequence);
+
+        int MissedCleavages(string sequence);
+        int MissedCleavages(IAminoAcidSequence aminoAcidSequence);
     }
 }
