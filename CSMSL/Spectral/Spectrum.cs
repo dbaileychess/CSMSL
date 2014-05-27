@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace CSMSL.Spectral
 {
-    public class Spectrum : Spectrum<MZPeak>
+    public class Spectrum : Spectrum<MZPeak, Spectrum>
     {
         /// <summary>
         /// Initializes a new spectrum
@@ -63,7 +63,7 @@ namespace CSMSL.Spectral
             return bytes;
         }
  
-        public Spectrum Extract(double minMZ, double maxMZ)
+        public override Spectrum Extract(double minMZ, double maxMZ)
         {
             if (Count == 0)
                 return Empty;
@@ -188,7 +188,9 @@ namespace CSMSL.Spectral
     /// Represents the standard m/z spectrum, with intensity on the y-axis and m/z on the x-axis.
     /// </summary>
     [Serializable]
-    public abstract class Spectrum<T> : IEnumerable<T> where T : IPeak 
+    public abstract class Spectrum<T, T2> : IEnumerable<T>
+        where T : IPeak
+        where T2 : Spectrum<T, T2>
     {
         /// <summary>
         /// The m/z of this spectrum in ascending order
@@ -483,6 +485,8 @@ namespace CSMSL.Spectral
         public abstract T GetPeak(int index);
    
         public abstract byte[] ToBytes(bool zlibCompressed = false);
+
+        public abstract T2 Extract(double minMZ, double maxMZ);
      
         #endregion
 

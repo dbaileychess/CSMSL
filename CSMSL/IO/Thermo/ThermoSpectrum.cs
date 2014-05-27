@@ -7,7 +7,7 @@ using CSMSL.Spectral;
 namespace CSMSL.IO.Thermo
 {
     [Serializable]
-    public class ThermoSpectrum : Spectrum<ThermoLabeledPeak>
+    public class ThermoSpectrum : Spectrum<ThermoLabeledPeak, ThermoSpectrum>
     {
         /// <summary>
         /// An empty spectrum
@@ -122,7 +122,7 @@ namespace CSMSL.IO.Thermo
             throw new NotImplementedException();
         }
         
-        public ThermoSpectrum Extract(double minMZ, double maxMZ)
+        public override ThermoSpectrum Extract(double minMZ, double maxMZ)
         {
             if (Count == 0)
                 return Empty;
