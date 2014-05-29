@@ -18,7 +18,6 @@
 //  along with CSMSL.  If not, see <http://www.gnu.org/licenses/>.        /
 ///////////////////////////////////////////////////////////////////////////
 
-using System.Runtime.Remoting.Messaging;
 using CSMSL.Chemistry;
 using System;
 using System.Collections.Generic;
@@ -33,7 +32,6 @@ namespace CSMSL.Proteomics
     /// </summary>
     public abstract class AminoAcidPolymer : IEquatable<AminoAcidPolymer>, IMass, IAminoAcidSequence
     {
-
         #region Static
 
         /// <summary>
@@ -243,6 +241,13 @@ namespace CSMSL.Proteomics
 
         #region Amino Acid Sequence
 
+        public AminoAcid GetResidue(int position)
+        {
+            if (position < 0 || position >= Length)
+                return null;
+            return _aminoAcids[position];
+        }
+
         /// <summary>
         /// Returns the amino acid sequence with all isoleucines (I) replaced with leucines (L);
         /// </summary>
@@ -367,7 +372,18 @@ namespace CSMSL.Proteomics
                 count += _modifications.Where(mod => mod is IChemicalFormula).Cast<IChemicalFormula>().Sum(mod => mod.ChemicalFormula.Count(isotope));
             return count;
         }
-        
+
+        public bool Contains(IAminoAcidSequence item)
+        {
+            return Contains(item.Sequence);
+        }
+
+        public bool Contains(string sequence)
+        {
+            return Sequence.Contains(sequence);
+        }
+
+
         #endregion
 
         #region Fragmentation
@@ -532,7 +548,7 @@ namespace CSMSL.Proteomics
         /// </summary>        
         public IMass CTerminusModification
         {
-            get { return _modifications == null ? null : _modifications[Length + 1]; }
+            get { return GetModification(Length + 1); }
             set { ReplaceMod(Length + 1, value); }
         }
 
@@ -541,10 +557,10 @@ namespace CSMSL.Proteomics
         /// </summary>        
         public IMass NTerminusModification
         {
-            get { return _modifications == null ? null : _modifications[0]; }
+            get { return GetModification(0); }
             set { ReplaceMod(0, value); }
         }
-
+        
         /// <summary>
         /// Counts the total number of modifications on this polymer
         /// </summary>
@@ -590,17 +606,9 @@ namespace CSMSL.Proteomics
         /// <returns>The modification at the site, null if there isn't any modification present</returns>
         public IMass GetModification(int residueNumber)
         {
-            if (residueNumber > Length || residueNumber < 1)
-            {
-                throw new IndexOutOfRangeException(string.Format("Residue number not in the correct range: [{0}-{1}] you specified: {2}", 1, Length, residueNumber));
-            }
-
-            if (_modifications == null)
-                return null;
-
-            return _modifications[residueNumber];
+            return _modifications == null ? null : _modifications[residueNumber];
         }
-    
+
         public bool TryGetModification(int residueNumber, out IMass mod)
         {
             if (residueNumber > Length || residueNumber < 1 || _modifications == null)
@@ -741,14 +749,12 @@ namespace CSMSL.Proteomics
             // No need to replace identical mods
             if (oldMod.Equals(newMod))
                 return 0;
-
-            if(_modifications == null)
-                _modifications = new IMass[Length + 2];
-
+            
             int count = 0;
             for (int i = 0; i < Length + 2; i++)
             {
-                if (_modifications[i] == null || !oldMod.Equals(_modifications[i]))
+                IMass mod = GetModification(i);
+                if (mod == null || !oldMod.Equals(mod))
                     continue;
 
                 ReplaceMod(i, newMod);
@@ -832,9 +838,8 @@ namespace CSMSL.Proteomics
         {
             if (residueNumber > Length || residueNumber < 1)
                 throw new IndexOutOfRangeException(string.Format("Residue number not in the correct range: [{0}-{1}] you specified: {2}", 1, Length, residueNumber));
-            if(_modifications == null)
-                _modifications = new IMass[Length + 2];
-            IMass currentMod = _modifications[residueNumber];
+          
+            IMass currentMod = GetModification(residueNumber);
             ReplaceMod(residueNumber, currentMod == null ? mod : new ModificationCollection(currentMod, mod));
         }
 
@@ -1043,25 +1048,17 @@ namespace CSMSL.Proteomics
         }
 
         #endregion
-        
-        public bool Contains(IAminoAcidSequence item)
-        {
-            return Contains(item.Sequence);
-        }
-        
-        public bool Contains(string sequence)
-        {
-            return Sequence.Contains(sequence);
-        }
+
+        #region Object
 
         public override string ToString()
         {
             return SequenceWithModifications;
         }
-             
+
         public override int GetHashCode()
         {
-            return Sequence.GetHashCode();          
+            return Sequence.GetHashCode();
         }
 
         public override bool Equals(object obj)
@@ -1074,7 +1071,11 @@ namespace CSMSL.Proteomics
             AminoAcidPolymer aap = obj as AminoAcidPolymer;
             return aap != null && Equals(aap);
         }
-
+        
+        #endregion
+        
+        #region IEquatable
+        
         public bool Equals(AminoAcidPolymer other)
         {
             if (other == null || 
@@ -1102,13 +1103,8 @@ namespace CSMSL.Proteomics
             return true;
         }
 
-        public AminoAcid GetResidue(int position)
-        {
-            if (position < 0 || position >= Length)
-                return null;
-            return _aminoAcids[position];
-        }
-        
+        #endregion
+
         #region Private Methods
 
         private bool ReplaceTerminus(ref IChemicalFormula terminus, IChemicalFormula value)
@@ -1415,9 +1411,7 @@ namespace CSMSL.Proteomics
             aFrags.SymmetricExceptWith(bfrags);
             return aFrags;
         }
-
-        public static IEqualityComparer<AminoAcidPolymer> CompareBySequence { get { return new PeptideSequenceComparer(); } }
-
+        
         public static IEnumerable<Tuple<int, int>> GetDigestionPoints(string sequence, IProtease protease, int maxMissedCleavages = 3, int minLength = 1, int maxLength = int.MaxValue, bool methionineInitiator = true, bool semiDigestion = false)
         {
             return GetDigestionPoints(sequence, new[] { protease }, maxMissedCleavages, minLength, maxLength, methionineInitiator, semiDigestion);
@@ -1550,29 +1544,4 @@ namespace CSMSL.Proteomics
         #endregion
     }
     
-    public class PeptideSequenceComparer : IEqualityComparer<IAminoAcidSequence>
-    {
-        public bool Equals(IAminoAcidSequence aap1, IAminoAcidSequence aap2)
-        {
-            return aap1.Sequence.Equals(aap2.Sequence);
-        }
-
-        public int GetHashCode(IAminoAcidSequence aap)
-        {
-            return aap.Sequence.GetHashCode();
-        }
-    }
-
-    public class PeptideSequenceILComparer : IEqualityComparer<IAminoAcidSequence>
-    {
-        public bool Equals(IAminoAcidSequence aap1, IAminoAcidSequence aap2)
-        {
-            return aap1.GetLeucineSequence().Equals(aap2.GetLeucineSequence());
-        }
-
-        public int GetHashCode(IAminoAcidSequence aap)
-        {
-            return aap.GetLeucineSequence().GetHashCode();
-        }
-    }
 }
