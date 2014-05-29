@@ -18,6 +18,7 @@
 //  along with CSMSL.  If not, see <http://www.gnu.org/licenses/>.        /
 ///////////////////////////////////////////////////////////////////////////
 
+using System.Runtime.Remoting.Messaging;
 using CSMSL.Chemistry;
 using System;
 using System.Collections.Generic;
@@ -113,9 +114,9 @@ namespace CSMSL.Proteomics
         protected AminoAcidPolymer(string sequence, IChemicalFormula nTerm, IChemicalFormula cTerm)
         {
             MonoisotopicMass = 0;
-            int length = sequence.Length;
-            _aminoAcids = new AminoAcid[length];
-            _modifications = new IMass[length + 2]; // +2 for the n and c term   
+            Length = sequence.Length;
+            _aminoAcids = new AminoAcid[Length];
+            //_modifications = new IMass[length + 2]; // +2 for the n and c term   
             NTerminus = nTerm;
             CTerminus = cTerm;
             ParseSequence(sequence);    
@@ -133,7 +134,7 @@ namespace CSMSL.Proteomics
 
             Length = length;
             _aminoAcids = new AminoAcid[length];
-            _modifications = new IMass[length + 2];
+            //_modifications = new IMass[length + 2];
 
             bool isNterm = firstResidue == 0;
             bool isCterm = length + firstResidue == aminoAcidPolymer.Length;
@@ -144,9 +145,10 @@ namespace CSMSL.Proteomics
             double monoMass =_nTerminus.MonoisotopicMass + _cTerminus.MonoisotopicMass;
 
             AminoAcid[] otherAminoAcids = aminoAcidPolymer._aminoAcids;
-         
-            if (includeModifications)
+
+            if (includeModifications && aminoAcidPolymer.ContainsModifications())
             {
+                _modifications = new IMass[length + 2];
                 for (int i = 0; i < length; i++)
                 {
                     var aa = otherAminoAcids[i + firstResidue];
@@ -319,7 +321,6 @@ namespace CSMSL.Proteomics
         {
             return Length;
         }
-
         
         public int ResidueCount(IAminoAcid aminoAcid)
         {
@@ -352,7 +353,8 @@ namespace CSMSL.Proteomics
             // Residues count
             int count = _aminoAcids.Sum(aar => aar.ChemicalFormula.Count(element));
             // Modifications count (if the mod is a IChemicalFormula)
-            count += _modifications.Where(mod => mod is IChemicalFormula).Cast<IChemicalFormula>().Sum(mod => mod.ChemicalFormula.Count(element));
+            if(_modifications != null)
+                count += _modifications.Where(mod => mod is IChemicalFormula).Cast<IChemicalFormula>().Sum(mod => mod.ChemicalFormula.Count(element));
             return count;
         }
 
@@ -361,7 +363,8 @@ namespace CSMSL.Proteomics
             // Residues count
             int count = _aminoAcids.Sum(aar => aar.ChemicalFormula.Count(isotope));
             // Modifications count (if the mod is a IChemicalFormula)
-            count += _modifications.Where(mod => mod is IChemicalFormula).Cast<IChemicalFormula>().Sum(mod => mod.ChemicalFormula.Count(isotope));
+            if (_modifications != null)
+                count += _modifications.Where(mod => mod is IChemicalFormula).Cast<IChemicalFormula>().Sum(mod => mod.ChemicalFormula.Count(isotope));
             return count;
         }
         
@@ -416,6 +419,7 @@ namespace CSMSL.Proteomics
                 }
 
                 bool first = true;
+                bool hasMod = _modifications != null;
 
                 for (int i = 0; i <= max; i++)
                 {
@@ -426,7 +430,37 @@ namespace CSMSL.Proteomics
                     if (first)
                     {
                         first = false;
+                        if (hasMod)
+                        {
+                            mod = _modifications[aaIndex + 1];
+                            if (mod != null)
+                            {
+                                monoMass += mod.MonoisotopicMass;
+
+                                if (isChemicalFormula)
+                                {
+                                    IChemicalFormula modFormula = mod as IChemicalFormula;
+                                    if (modFormula != null)
+                                    {
+                                        formula.Add(modFormula);
+                                    }
+                                    else
+                                    {
+                                        isChemicalFormula = false;
+                                    }
+                                }
+                            }
+                        }
+                        continue;
+                    }
+                    
+                    monoMass += _aminoAcids[aaIndex].MonoisotopicMass;
+                    formula.Add(_aminoAcids[aaIndex]);
+
+                    if (hasMod)
+                    {
                         mod = _modifications[aaIndex + 1];
+
                         if (mod != null)
                         {
                             monoMass += mod.MonoisotopicMass;
@@ -444,32 +478,8 @@ namespace CSMSL.Proteomics
                                 }
                             }
                         }
-                        continue;
                     }
-                    
-                    monoMass += _aminoAcids[aaIndex].MonoisotopicMass;
-                    formula.Add(_aminoAcids[aaIndex]);
 
-                    mod = _modifications[aaIndex + 1];
-
-                    if (mod != null)
-                    {
-                        monoMass += mod.MonoisotopicMass;
-
-                        if (isChemicalFormula)
-                        {
-                            IChemicalFormula modFormula = mod as IChemicalFormula;
-                            if (modFormula != null)
-                            {
-                                formula.Add(modFormula);
-                            }
-                            else
-                            {
-                                isChemicalFormula = false;
-                            }
-                        }
-                    }
-                    
                     if (i < min)
                         continue;
 
@@ -482,136 +492,33 @@ namespace CSMSL.Proteomics
                         yield return new Fragment(type, i, monoMass, this);
                     }
                 }
-
-
-                //if (type.GetTerminus() == Terminus.C)
-                //{
-                //    monoMass += CTerminus.MonoisotopicMass;
-                //    formula.Add(CTerminus);
-                //    if (CTerminusModification != null)
-                //    {
-                //        monoMass += CTerminusModification.MonoisotopicMass;
-                //        mods.Add(CTerminusModification);
-
-                //        IChemicalFormula modFormula = CTerminusModification as IChemicalFormula;
-                //        if (modFormula != null)
-                //        {
-                //            formula.Add(modFormula);
-                //        }
-                //        else
-                //        {
-                //            isChemicalFormula = false;
-                //        }
-                //    }   
-    
-                   
-                //    for (int i = 1; i <= max; i++)
-                //    {
-                //        // Work backwards down the array
-                //        int aaIndex = Length - i;
-
-                //        monoMass += _aminoAcids[aaIndex].MonoisotopicMass;
-                //        formula.Add(_aminoAcids[aaIndex]);
-
-                //        if (_modifications[aaIndex + 1] != null)
-                //        {
-                //            mod = _modifications[aaIndex + 1];
-                //            monoMass += mod.MonoisotopicMass;
-                //            mods.Add(mod);
-
-                //            IChemicalFormula modFormula = mod as IChemicalFormula;
-                //            if (modFormula != null)
-                //            {
-                //                formula.Add(modFormula);
-                //            }
-                //            else
-                //            {
-                //                isChemicalFormula = false;
-                //            }
-                //        }
-                        
-                //        if (i < min)
-                //            continue;
-
-                //        if (isChemicalFormula)
-                //        {
-                //            yield return new ChemicalFormulaFragment(type, i, formula, this, mods);
-                //        }
-                //        else
-                //        {
-                //            yield return new Fragment(type, i, monoMass, this, mods);
-                //        }
-                //    }
-                //}
-                //else
-                //{
-                //    monoMass += NTerminus.MonoisotopicMass;
-                //    formula.Add(NTerminus);
-                //    if (NTerminusModification != null)
-                //    {
-                //        monoMass += NTerminusModification.MonoisotopicMass;
-                //        mods.Add(NTerminusModification);
-                //        IChemicalFormula modFormula = NTerminusModification as IChemicalFormula;
-                //        if (modFormula != null)
-                //        {
-                //            formula.Add(modFormula);
-                //        }
-                //        else
-                //        {
-                //            isChemicalFormula = false;
-                //        }
-                //    }                            
-
-                //    for (int i = 1; i <= max; i++)
-                //    {
-                //        monoMass += _aminoAcids[i - 1].MonoisotopicMass;
-                //        formula.Add(_aminoAcids[i - 1]);
-                //        if (_modifications[i] != null)
-                //        {
-                //            var mod = _modifications[i];
-                //            monoMass += _modifications[i].MonoisotopicMass;
-                //            mods.Add(_modifications[i]);
-                //            IChemicalFormula modFormula = mod as IChemicalFormula;
-                //            if (modFormula != null)
-                //            {
-                //                formula.Add(modFormula);
-                //            }
-                //            else
-                //            {
-                //                isChemicalFormula = false;
-                //            }
-                //        }
-                //        if(i < min)
-                //            continue;
-                        
-                //        if (isChemicalFormula)
-                //        {
-                //            yield return new ChemicalFormulaFragment(type, i, formula, this, mods);
-                //        }
-                //        else
-                //        {
-                //            yield return new Fragment(type, i, monoMass, this, mods);
-                //        }
-                //    }
-                //}
-                
             }
         }
 
         #endregion
 
         #region Modifications
-        
+
+        public bool ContainsModifications()
+        {
+            return _modifications != null && _modifications.Any(m => m != null);
+        }
+
         public IMass[] GetModifications()
         {
-            IMass[] mods = new IMass[_modifications.Length];
-            Array.Copy(_modifications, mods, _modifications.Length);
+            IMass[] mods = new IMass[Length + 2];
+            if(_modifications != null)
+                Array.Copy(_modifications, mods, _modifications.Length);
             return mods;
         }
 
         public ISet<T> GetUniqueModifications<T>() where T : IMass
         {
             HashSet<T> uniqueMods = new HashSet<T>();
+
+            if (_modifications == null)
+                return uniqueMods;
+          
             foreach (IMass mod in _modifications)
             {
                 if (mod is T)
@@ -625,7 +532,7 @@ namespace CSMSL.Proteomics
         /// </summary>        
         public IMass CTerminusModification
         {
-            get { return _modifications[Length + 1]; }
+            get { return _modifications == null ? null : _modifications[Length + 1]; }
             set { ReplaceMod(Length + 1, value); }
         }
 
@@ -634,7 +541,7 @@ namespace CSMSL.Proteomics
         /// </summary>        
         public IMass NTerminusModification
         {
-            get { return _modifications[0]; }
+            get { return _modifications == null ? null : _modifications[0]; }
             set { ReplaceMod(0, value); }
         }
 
@@ -644,6 +551,9 @@ namespace CSMSL.Proteomics
         /// <returns>The number of modifications</returns>
         public int ModificationCount()
         {
+            if (_modifications == null)
+                return 0;
+
             return _modifications.Count(mod => mod != null);
         }
 
@@ -654,7 +564,7 @@ namespace CSMSL.Proteomics
         /// <returns>The number of modifications</returns>
         public int ModificationCount(IMass modification)
         {
-            if (modification == null)
+            if (modification == null || _modifications == null)
                 return 0;
 
             return _modifications.Count(modification.Equals);
@@ -667,7 +577,7 @@ namespace CSMSL.Proteomics
         /// <returns>True if the modification is found, false otherwise</returns>
         public bool Contains(IMass modification)
         {
-            if (modification == null)
+            if (modification == null || _modifications == null)
                 return false;
           
             return _modifications.Contains(modification);
@@ -684,13 +594,16 @@ namespace CSMSL.Proteomics
             {
                 throw new IndexOutOfRangeException(string.Format("Residue number not in the correct range: [{0}-{1}] you specified: {2}", 1, Length, residueNumber));
             }
+
+            if (_modifications == null)
+                return null;
+
             return _modifications[residueNumber];
         }
-
     
         public bool TryGetModification(int residueNumber, out IMass mod)
         {
-            if (residueNumber > Length || residueNumber < 1)
+            if (residueNumber > Length || residueNumber < 1 || _modifications == null)
             {
                 mod = null;
                 return false;
@@ -829,6 +742,9 @@ namespace CSMSL.Proteomics
             if (oldMod.Equals(newMod))
                 return 0;
 
+            if(_modifications == null)
+                _modifications = new IMass[Length + 2];
+
             int count = 0;
             for (int i = 0; i < Length + 2; i++)
             {
@@ -874,6 +790,9 @@ namespace CSMSL.Proteomics
 
         public virtual int AddModification(IMass mod, ModificationSites sites)
         {
+            if(_modifications == null)
+                _modifications = new IMass[Length+2];
+
             int count = 0;
             IMass currentMod;
             if ((sites & ModificationSites.NPep) == ModificationSites.NPep)
@@ -913,6 +832,8 @@ namespace CSMSL.Proteomics
         {
             if (residueNumber > Length || residueNumber < 1)
                 throw new IndexOutOfRangeException(string.Format("Residue number not in the correct range: [{0}-{1}] you specified: {2}", 1, Length, residueNumber));
+            if(_modifications == null)
+                _modifications = new IMass[Length + 2];
             IMass currentMod = _modifications[residueNumber];
             ReplaceMod(residueNumber, currentMod == null ? mod : new ModificationCollection(currentMod, mod));
         }
@@ -968,6 +889,9 @@ namespace CSMSL.Proteomics
                 ReplaceMod(0, null);
             }
 
+            if(_modifications == null)
+                _modifications = new IMass[Length + 2];
+
             for (int i = 0; i < Length; i++)
             {
                 int modIndex = i + 1;
@@ -1015,9 +939,9 @@ namespace CSMSL.Proteomics
         /// <param name="mod">The modification to remove from this polymer</param>
         public void ClearModifications(IMass mod)
         {
-            if (mod == null)
+            if (mod == null || _modifications == null)
                 return;
-         
+            
             for (int i = 0; i <= Length + 1; i++)
             {
                 if (!mod.Equals(_modifications[i])) 
@@ -1038,14 +962,17 @@ namespace CSMSL.Proteomics
             var formula = new ChemicalFormula();
 
             // Handle Modifications
-            for (int i = 0; i < Length + 2; i++)
+            if (ContainsModifications())
             {
-                IChemicalFormula chemMod = _modifications[i] as IChemicalFormula;
-              
-                if (chemMod == null)
-                    continue;
+                for (int i = 0; i < Length + 2; i++)
+                {
+                    IChemicalFormula chemMod = _modifications[i] as IChemicalFormula;
 
-                formula.Add(chemMod.ChemicalFormula);
+                    if (chemMod == null)
+                        continue;
+
+                    formula.Add(chemMod.ChemicalFormula);
+                }
             }
 
             // Handle N-Terminus
@@ -1075,17 +1002,20 @@ namespace CSMSL.Proteomics
             formula = new ChemicalFormula();
 
             // Handle Modifications
-            for (int i = 0; i < Length + 2; i++)
+            if (ContainsModifications())
             {
-                IMass mod;
-                if ((mod = _modifications[i]) == null)
-                    continue;
+                for (int i = 0; i < Length + 2; i++)
+                {
+                    IMass mod;
+                    if ((mod = _modifications[i]) == null)
+                        continue;
 
-                IChemicalFormula chemMod = mod as IChemicalFormula;
-                if (chemMod == null)
-                    return false;
+                    IChemicalFormula chemMod = mod as IChemicalFormula;
+                    if (chemMod == null)
+                        return false;
 
-                formula.Add(chemMod.ChemicalFormula);
+                    formula.Add(chemMod.ChemicalFormula);
+                }
             }
 
             // Handle N-Terminus
@@ -1152,10 +1082,15 @@ namespace CSMSL.Proteomics
                 !NTerminus.Equals(other.NTerminus) || 
                 !CTerminus.Equals(other.CTerminus))
                 return false;
-        
+
+            bool containsMod = ContainsModifications();
+
+            if (containsMod != other.ContainsModifications())
+                return false;
+            
             for (int i = 0; i <= Length + 1; i++)
             {
-                if (!Equals(_modifications[i], other._modifications[i]))
+                if (containsMod && !Equals(_modifications[i], other._modifications[i]))
                     return false;
 
                 if(i == 0 || i == Length + 1)
@@ -1202,6 +1137,11 @@ namespace CSMSL.Proteomics
             // No error checking here as all validation will occur before this method is call. This is to prevent
             // unneeded bounds checking
 
+            if (_modifications == null)
+            {
+                _modifications = new IMass[Length + 2];
+            }
+
             IMass oldMod = _modifications[index]; // Get the mod at the index, if present
 
             if (Equals(mod, oldMod))
@@ -1221,7 +1161,10 @@ namespace CSMSL.Proteomics
         }
 
         public string GetSequenceWithModifications(bool leucineSequence = false)
-        {   
+        {
+            if (_modifications == null)
+                return (leucineSequence) ? GetLeucineSequence() : Sequence;
+
             StringBuilder modSeqSb = new StringBuilder(Length);
 
             IMass mod;    
@@ -1319,6 +1262,9 @@ namespace CSMSL.Proteomics
 
                         monoMass += modification.MonoisotopicMass;
 
+                        if(_modifications == null)
+                            _modifications = new IMass[Length+2];
+
                         if (cterminalMod)
                         {
                             _modifications[index + 1] = modification;
@@ -1373,7 +1319,8 @@ namespace CSMSL.Proteomics
             Length = index;
             MonoisotopicMass += monoMass;
             Array.Resize(ref _aminoAcids, Length);
-            Array.Resize(ref _modifications, Length + 2);    
+            if (_modifications != null)
+                Array.Resize(ref _modifications, Length + 2);    
             IsDirty = true;
 
             return true;
