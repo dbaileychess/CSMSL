@@ -154,7 +154,7 @@ namespace CSMSL
 
             foreach (double value in values)
             {
-                int binnedValue = (int)((value - min)/binSize);
+                int binnedValue = (int)((value - min) / binSize);// (int)Math.Floor((value - min) / binSize);
                 if (binnedValue == numberOfBins)
                     binnedValue--;
                 bins[binnedValue]++;

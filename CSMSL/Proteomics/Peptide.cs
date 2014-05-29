@@ -349,8 +349,18 @@ namespace CSMSL.Proteomics
                 return false;
             for (int i = 0; i < length; i++)
             {
-                if (!x[i].Equals(y[i]))
-                    return false;
+                Modification a = x[i];
+                Modification b = y[i];
+                if (a == null)
+                {
+                    if (b != null)
+                        return false;
+                }
+                else
+                {
+                    if (!a.Equals(b))
+                        return false;
+                }
             }
             return true;
         }

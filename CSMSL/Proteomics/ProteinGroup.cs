@@ -11,6 +11,10 @@ namespace CSMSL.Proteomics
         public HashSet<Protein> Proteins { get; set; }
         public HashSet<IAminoAcidSequence> Peptides { get; set; }
 
+        public Protein RepresentativeProtein { get; private set; }
+
+        public int Length { get { return (RepresentativeProtein == null) ? 0 : RepresentativeProtein.Length; } }
+
         public ProteinGroup()
             : this(new AminoAcidLeucineSequenceComparer()) { }
 
@@ -32,7 +36,6 @@ namespace CSMSL.Proteomics
             AddProtein(protein);
         }
    
-
         public override int GetHashCode()
         {
             unchecked
@@ -67,6 +70,17 @@ namespace CSMSL.Proteomics
         public void AddProtein(Protein protein)
         {
             Proteins.Add(protein);
+            if (RepresentativeProtein == null)
+            {
+                RepresentativeProtein = protein;
+            }
+            else
+            {
+                if (protein.Length > RepresentativeProtein.Length)
+                {
+                    RepresentativeProtein = protein;
+                }
+            }
         }
 
         public void AddPeptide(IAminoAcidSequence peptide)
@@ -84,7 +98,43 @@ namespace CSMSL.Proteomics
             return Proteins.GetEnumerator();
         }
 
+        public int[] GetSequenceCoverage(IEnumerable<IAminoAcidSequence> peptides)
+        {
+            int[] bits = new int[Length];
+            string leucineSequence = RepresentativeProtein.GetLeucineSequence();
+            foreach (IAminoAcidSequence pep in peptides)
+            {
+                int start_index = 0;
+                while (true)
+                {
+                    int index = leucineSequence.IndexOf(pep.GetLeucineSequence(), start_index);
+                    start_index = index + 1;
+                    if (index < 0)
+                    {
+                        break;
+                    }
+
+                    for (int aa = index; aa < index + pep.Length; aa++)
+                    {
+                        bits[aa]++;
+                    }
+                }
+            }
+            return bits;
+        }
+
+        public double CalculateSequenceCoverage(IEnumerable<IAminoAcidSequence> peptides)
+        {
+            int[] bits = GetSequenceCoverage(peptides);
+
+            int observedAminoAcids = bits.Count(bit => bit > 0);
+
+            return (double)observedAminoAcids / Length * 100.0;
+        }
+
         #region Statics
+
+       
 
         public static IEnumerable<ProteinGroup> GroupProteins(string fastaFile, IProtease protease, IEnumerable<IAminoAcidSequence> observeredSequences, IEqualityComparer<IAminoAcidSequence> peptideComparer, int MaxMissedCleavages = 3)
         {
@@ -307,7 +357,7 @@ namespace CSMSL.Proteomics
             #endregion
 
             //// 4) Apply false discovery filtering at the protein level
-            //#region FDR filtering
+            #region FDR filtering
 
             //proteinGroups.Sort();
             //// Mark each protein group that passes fdr filtering
@@ -323,6 +373,7 @@ namespace CSMSL.Proteomics
             return proteinGroups;
         }
         
+    #endregion
     }
    
 }

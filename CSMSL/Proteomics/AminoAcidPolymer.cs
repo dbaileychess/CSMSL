@@ -1173,8 +1173,7 @@ namespace CSMSL.Proteomics
                 return null;
             return _aminoAcids[position];
         }
-
-
+        
         #region Private Methods
 
         private bool ReplaceTerminus(ref IChemicalFormula terminus, IChemicalFormula value)
@@ -1446,8 +1445,7 @@ namespace CSMSL.Proteomics
         }
 
         #endregion
-
-
+        
         public static IEnumerable<Fragment> GetSiteDeterminingFragments(AminoAcidPolymer peptideA, AminoAcidPolymer peptideB, FragmentTypes types)
         {
             if (peptideA == null)

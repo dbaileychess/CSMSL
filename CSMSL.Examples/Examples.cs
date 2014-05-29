@@ -64,17 +64,7 @@ namespace CSMSL.Examples
 
         private static void StartExamples()
         {
-            using (ThermoRawFile rawfile = new ThermoRawFile(@"E:\Software\Compass Tests\FDR\10sep2013_yeast_control_2.raw"))
-            {
-                rawfile.Open();
-                
-                Spectrum spectrum1 = rawfile.GetSpectrum(39191);
-                var spectrum2 = rawfile.GetLabeledSpectrum(39191);
-                
-                Spectrum spectrum = rawfile.GetAveragedSpectrum(39191, 39211, "FTMS + c NSI Full ms", ThermoRawFile.IntensityCutoffType.Absolute, 10);
-            }
-
-
+      
             // Examples coding  
             
             //ChemicalFormulaExamples();
@@ -85,7 +75,7 @@ namespace CSMSL.Examples
             //VennDiagramExamples();
 
             // Example Digestion
-            //TrypticDigestion.Start(minLength: 5, maxLength: 50, maxMissed:3, protease:Protease.Trypsin, storeSequenceString: false);
+            TrypticDigestion.Start(minLength: 5, maxLength: 50, maxMissed:3, protease:Protease.Trypsin, storeSequenceString: false);
             //TrypticDigestion.ExampleDigestion();
 
             // Example Protein Grouping
