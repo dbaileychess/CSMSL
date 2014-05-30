@@ -7,7 +7,7 @@ namespace CSMSL.Analysis.Identification
 {
     public class FragmentSpectralMatch : IMass,  IEquatable<FragmentSpectralMatch>
     {
-        public Spectrum MassSpectrum { get; private set; }
+        public ISpectrum Spectrum { get; private set; }
 
         public Fragment Fragment { get; private set; }
 
@@ -23,9 +23,9 @@ namespace CSMSL.Analysis.Identification
             }
         }
 
-        public FragmentSpectralMatch(Spectrum spectrum, Fragment fragment, Tolerance tolerance, int charge = 1)
+        public FragmentSpectralMatch(ISpectrum spectrum, Fragment fragment, Tolerance tolerance, int charge = 1)
         {
-            MassSpectrum = spectrum;
+            Spectrum = spectrum;
             Fragment = fragment;
             Tolerance = tolerance;
             Charge = charge;

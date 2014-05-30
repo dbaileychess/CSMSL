@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Linq;
 using System.Text;
 using CSMSL.Chemistry;
 using System.Collections.Generic;
@@ -27,10 +28,10 @@ namespace CSMSL.Proteomics
             return sb.ToString();
         }
 
-        public ModificationCollection(IMass mod1, IMass mod2)
+        public ModificationCollection(params IMass[] mods)
         {
-            _modifications = new List<IMass> {mod1, mod2};
-            MonoisotopicMass = mod1.MonoisotopicMass + mod2.MonoisotopicMass;
+            _modifications = mods.ToList();
+            MonoisotopicMass = _modifications.Sum(m => m.MonoisotopicMass);
         }
 
         public void Add(IMass item)
@@ -93,18 +94,12 @@ namespace CSMSL.Proteomics
         public override bool Equals(object obj)
         {
             ModificationCollection col = obj as ModificationCollection;
-            if (col == null)
-                return false;
-
-            return Equals(col);
+            return col != null && Equals(col);
         }
 
         public bool Equals(ModificationCollection other)
         {
-            if (Count != other.Count)
-                return false;
-
-            return _modifications.ScrambledEquals(other._modifications); 
+            return Count == other.Count && _modifications.ScrambledEquals(other._modifications);
         }
     }
 }

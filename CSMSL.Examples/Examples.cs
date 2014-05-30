@@ -67,7 +67,7 @@ namespace CSMSL.Examples
       
             // Examples coding  
             
-            //ChemicalFormulaExamples();
+            ChemicalFormulaExamples();
             //PeptideExamples();
             //ChemicalFormulaGeneratorExample();
                         
@@ -195,7 +195,7 @@ namespace CSMSL.Examples
             // Simple Peptide creation
             Peptide peptide1 = new Peptide("ACDEFGHIKLMNPQRSTVWY");
             WritePeptideToConsole(peptide1);
-            
+           
             // Fragmenting a peptide is simple, you can include as many fragment types as you want
             Console.WriteLine("{0,-4} {1,-20} {2,-10} {3,-10} {4,-5}", "Type", "Formula", "Mass", "m/z +1", "Sequence");
             foreach (Fragment fragment in peptide1.Fragment(FragmentTypes.b | FragmentTypes.y))
@@ -232,6 +232,7 @@ namespace CSMSL.Examples
             // Simple chemical formula creation
             ChemicalFormula formula1 = new ChemicalFormula("C2H3NO");
             WriteFormulaToConsole(formula1);
+     
            
             // Input order does not matter
             ChemicalFormula formula2 = new ChemicalFormula("NH3C2O");

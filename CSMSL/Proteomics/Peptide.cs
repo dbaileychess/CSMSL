@@ -290,7 +290,6 @@ namespace CSMSL.Proteomics
             return modArray;
         }
         
-
         public static IEnumerable<Peptide> GenerateIsoforms(Peptide peptide, Modification modification, long ptms)
         {
             // Get all the possible modified-residues' indices (zero-based)

@@ -7,7 +7,7 @@ namespace CSMSL.Analysis.Identification
 {
     public class SpectrumFragmentsMatch
     {
-        public Spectrum MassSpectrum { get; private set; }
+        public ISpectrum Spectrum { get; private set; }
 
         private readonly HashSet<FragmentSpectralMatch> _fragmentSpectralMatches;
 
@@ -34,9 +34,9 @@ namespace CSMSL.Analysis.Identification
             _fragments.Add(fsm.Fragment);
         }
 
-        public SpectrumFragmentsMatch(Spectrum spectrum)
+        public SpectrumFragmentsMatch(ISpectrum spectrum)
         {
-            MassSpectrum = spectrum;
+            Spectrum = spectrum;
             _fragmentSpectralMatches = new HashSet<FragmentSpectralMatch>();
             _fragments = new HashSet<Fragment>();
         }
@@ -47,20 +47,20 @@ namespace CSMSL.Analysis.Identification
         }
 
         public IEnumerable<Fragment> MatchFragments(IEnumerable<Fragment> fragments, Tolerance tolerance, double percentCutoff, params int[] chargeStates)
-        {    
-            double basePeakInt = MassSpectrum.GetBasePeakIntensity();
+        {
+            double basePeakInt = Spectrum.GetBasePeakIntensity();
             double lowThreshold = basePeakInt*percentCutoff;
             double summedIntensity = 0;
-            double totalIntensity = MassSpectrum.GetTotalIonCurrent();
+            double totalIntensity = Spectrum.GetTotalIonCurrent();
             foreach (Fragment fragment in fragments)
             {
                 foreach (int chargeState in chargeStates)
                 {
-                    double mz = fragment.ToMz(chargeState);  
-                    var peak = MassSpectrum.GetClosestPeak(tolerance.GetRange(mz));
+                    double mz = fragment.ToMz(chargeState);
+                    var peak = Spectrum.GetClosestPeak(tolerance.GetRange(mz));
                     if (peak != null && peak.Intensity >= lowThreshold)
                     {
-                        Add(new FragmentSpectralMatch(MassSpectrum, fragment, tolerance, chargeState));
+                        Add(new FragmentSpectralMatch(Spectrum, fragment, tolerance, chargeState));
                         yield return fragment;
                         summedIntensity += peak.Intensity;
                     }

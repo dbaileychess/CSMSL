@@ -80,7 +80,6 @@ namespace CSMSL.Proteomics
         }
       
         #endregion
-
-    
+        
     }
 }

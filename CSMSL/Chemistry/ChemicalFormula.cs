@@ -735,6 +735,7 @@ namespace CSMSL.Chemistry
             return string.Join(".", GetIsotopes());  
         }
 
+ 
         public double[] GetIsotopicDistribution(int numberOfIsotopes = 3)
         {
             double[] distribution = new double[numberOfIsotopes];
@@ -1213,7 +1214,6 @@ namespace CSMSL.Chemistry
         {
             get { return this; }
         }
-
-    
     }
+ 
 }

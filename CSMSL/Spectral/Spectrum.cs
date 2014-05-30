@@ -188,7 +188,7 @@ namespace CSMSL.Spectral
     /// Represents the standard m/z spectrum, with intensity on the y-axis and m/z on the x-axis.
     /// </summary>
     [Serializable]
-    public abstract class Spectrum<T, T2> : IEnumerable<T>
+    public abstract class Spectrum<T, T2> : IEnumerable<T>, ISpectrum<T>
         where T : IPeak
         where T2 : Spectrum<T, T2>
     {
