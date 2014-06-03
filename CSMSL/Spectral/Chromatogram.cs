@@ -271,6 +271,9 @@ namespace CSMSL.Spectral
             if (index < 0)
                 index = ~index;
 
+            if (index == _times.Length)
+                index--;
+
             double maxTime = _times[index];
             double minTime = maxTime;
             double threshold = _intensities[index] * fraction;

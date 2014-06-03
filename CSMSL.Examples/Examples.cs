@@ -48,7 +48,7 @@ namespace CSMSL.Examples
             {
                 Console.WriteLine("==CSMSL Examples==");
 
-               // Console.WriteLine("Outputting Files to " + BASE_DIRECTORY);
+                //Console.WriteLine("Outputting Files to " + BASE_DIRECTORY);
                 Console.WriteLine();
                 Stopwatch watch = new Stopwatch();
                 watch.Start();
@@ -65,9 +65,19 @@ namespace CSMSL.Examples
         private static void StartExamples()
         {
       
+            ChemicalFormula formula = new ChemicalFormula("C7000H12000Cl000O4000N5000");
+            ChemicalFormulaGenerator generator = new ChemicalFormulaGenerator(formula);
+            List<double> masses = generator.FromMass(50, 2000).Select(f => f.ToMz(1)).ToList();
+            using (StreamWriter writer = new StreamWriter(Path.Combine(BASE_DIRECTORY," test.csv")))
+            {
+                foreach(double mz in masses) {
+                    writer.WriteLine(mz);
+                }
+            }
+
             // Examples coding  
             
-            ChemicalFormulaExamples();
+            //ChemicalFormulaExamples();
             //PeptideExamples();
             //ChemicalFormulaGeneratorExample();
                         
@@ -75,7 +85,7 @@ namespace CSMSL.Examples
             //VennDiagramExamples();
 
             // Example Digestion
-            TrypticDigestion.Start(minLength: 5, maxLength: 50, maxMissed:3, protease:Protease.Trypsin, storeSequenceString: false);
+            //TrypticDigestion.Start(minLength: 5, maxLength: 50, maxMissed:3, protease:Protease.Trypsin, storeSequenceString: false);
             //TrypticDigestion.ExampleDigestion();
 
             // Example Protein Grouping

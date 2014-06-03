@@ -736,19 +736,23 @@ namespace CSMSL.Chemistry
         }
 
  
-        public double[] GetIsotopicDistribution(int numberOfIsotopes = 3)
+        public double[,] GetIsotopicDistribution(int numberOfIsotopes = 3)
         {
-            double[] distribution = new double[numberOfIsotopes];
+            double[,] distribution = new double[2, numberOfIsotopes];
 
-            distribution[0] = 1;
+            double mass = MonoisotopicMass;
+            distribution[0, 0] = mass;
+            distribution[1, 0] = 1;
             
             // Number of C12 isotopes in this peptide
             int numberOfCarbons = Count(PeriodicTable.Instance["C"][12]);
-            double coefficient = numberOfCarbons*PeriodicTable.Instance["C"][13].RelativeAbundance;
-
+            double coefficient = numberOfCarbons * PeriodicTable.Instance["C"][13].RelativeAbundance;
+         
             for (int i = 1; i < numberOfIsotopes; i++)
             {
-                distribution[i] = Math.Pow(coefficient, i) / Factorial(i);
+                mass += Constants.C13C12Difference;
+                distribution[0, i] = mass;
+                distribution[1, i] = Math.Pow(coefficient, i) / Factorial(i);
             }
 
             return distribution;

@@ -37,6 +37,8 @@ namespace CSMSL.IO.MzML
         private const string _magneticSector = "MS:1000080";
         private const string _nozlibCompress = "MS:1000576";
         private const string _zlibCompression = "MS:1000574";
+        private const string _64bit = "MS:1000523";
+        private const string _32bit = "MS:1000521";
 
         private static XmlSerializer _indexedSerializer = new XmlSerializer(typeof(indexedmzML));
         private static XmlSerializer _mzMLSerializer = new XmlSerializer(typeof(mzMLType));
@@ -49,26 +51,29 @@ namespace CSMSL.IO.MzML
 
         public override void Open()
         {
-            if (!IsOpen ||_mzMLConnection == null)
+            if (!IsOpen || _mzMLConnection == null)
             {
                 Stream stream = new FileStream(FilePath, FileMode.Open);
-                // Need these nested try catch to test if the file is a indexed mzML or just a plain mzML
                 try
                 {
                     _indexedmzMLConnection = _indexedSerializer.Deserialize(stream) as indexedmzML;
                     _mzMLConnection = _indexedmzMLConnection.mzML;
                 }
-                catch (Exception)
+                catch (Exception e1)
                 {
                     try
                     {
                         _mzMLConnection = _mzMLSerializer.Deserialize(stream) as mzMLType;
                     }
-                    catch (Exception)
+                    catch (Exception e2)
                     {
                         throw new InvalidDataException("Unable to parse " + FilePath + " as a mzML file!");
                     }
                 }
+
+
+              
+                
                 base.Open();
             }
         }
@@ -80,14 +85,8 @@ namespace CSMSL.IO.MzML
 
         public override void Dispose()
         {
-            if (_mzMLConnection != null)
-            {
-                _mzMLConnection = null;
-            }
-            if (_indexedmzMLConnection != null)
-            {
-                _indexedmzMLConnection = null;
-            }
+            _mzMLConnection = null;
+            _indexedmzMLConnection = null;
             base.Dispose();
         }        
 
@@ -240,11 +239,20 @@ namespace CSMSL.IO.MzML
                 bool compressed = false;
                 bool mzArray = false;
                 bool intensityArray = false;
+                bool bit32 = true;
                 foreach (CVParamType cv in binaryData.cvParam)
                 {
                     if (cv.accession.Equals(_zlibCompression))
                     {
                         compressed = true;
+                    }
+                    if (cv.accession.Equals(_64bit))
+                    {
+                        bit32 = false;
+                    }
+                    if (cv.accession.Equals(_32bit))
+                    {
+                        bit32 = true;
                     }
                     if (cv.accession.Equals(_mzArray))
                     {
@@ -256,7 +264,7 @@ namespace CSMSL.IO.MzML
                     }
                 }
 
-                double[] data = ConvertBase64ToDoubles(binaryData.binary, compressed);
+                double[] data = ConvertBase64ToDoubles(binaryData.binary, compressed, bit32);
                 if (mzArray)
                 {
                     masses = data;
@@ -289,13 +297,22 @@ namespace CSMSL.IO.MzML
             {
                 return double.NaN;
             }
+            double rt = -1;
             foreach (CVParamType cv in _mzMLConnection.run.spectrumList.spectrum[spectrumNumber].scanList.scan[0].cvParam)
             {
                 if(cv.accession.Equals(_retentionTime))
                 {
-                    return double.Parse(cv.value); 
+                    rt = double.Parse(cv.value);
                 }
-            }            
+
+                if (cv.unitName == "second")
+                    rt /= 60;
+
+            }
+
+            if (rt >= 0)
+                return rt;
+
             throw new ArgumentNullException("Could not determine retention time for " + spectrumNumber + 1);
         }
 
@@ -324,13 +341,13 @@ namespace CSMSL.IO.MzML
 
         protected override int GetLastSpectrumNumber()
         {
-            return _mzMLConnection.run.spectrumList.spectrum.Length;           
+            return _mzMLConnection.run.spectrumList.spectrum.Count;           
         }
 
         public override int GetSpectrumNumber(double retentionTime)
         {
             // TODO need to convert this to a binary search of some sort. Or if the data is indexedMZML see if the indices work better.
-            int totalSpectra = _mzMLConnection.run.spectrumList.spectrum.Length;
+            int totalSpectra = _mzMLConnection.run.spectrumList.spectrum.Count;
             for (int i = 0; i < totalSpectra; i++)
             {
                 foreach (CVParamType cv in _mzMLConnection.run.spectrumList.spectrum[i].scanList.scan[0].cvParam)
@@ -353,18 +370,27 @@ namespace CSMSL.IO.MzML
         /// <param name="bytes">the 64-bit encoded byte array</param>
         /// <param name="zlibCompressed">Specifies if the byte array is zlib compressed</param>
         /// <returns>a decompressed, de-encoded double[]</returns>
-        private static double[] ConvertBase64ToDoubles(byte[] bytes, bool zlibCompressed = false)
+        private static double[] ConvertBase64ToDoubles(byte[] bytes, bool zlibCompressed = false, bool bit32 = true)
         {
 
-         
-            int length = bytes.Length / 8;
+            int size = bit32 ? sizeof(float) : sizeof(double);
+          
+            int length = bytes.Length / size;
             double[] convertedArray = new double[length];
 
             for (int i = 0; i < length; i++)
             {
-                convertedArray[i] = BitConverter.ToDouble(bytes, i * 8);
+                if (bit32)
+                {
+                    convertedArray[i] = BitConverter.ToSingle(bytes, i*size);
+                }
+                else
+                {
+                    convertedArray[i] = BitConverter.ToDouble(bytes, i * size);
+                }
             }
             return convertedArray;
+           
         }
         
   }
