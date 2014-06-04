@@ -146,6 +146,7 @@
     <Compile Include="Chemistry\Element.cs" />
     <Compile Include="Chemistry\IChemicalFormula.cs" />
     <Compile Include="Chemistry\Isotope.cs" />
+    <Compile Include="Chemistry\IsotopicDistribution.cs" />
     <Compile Include="Chemistry\PeriodicTable.cs" />
     <Compile Include="ClassExtensions.cs" />
     <Compile Include="Constants.cs" />

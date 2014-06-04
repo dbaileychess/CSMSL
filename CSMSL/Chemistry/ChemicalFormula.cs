@@ -1218,6 +1218,19 @@ namespace CSMSL.Chemistry
         {
             get { return this; }
         }
+
+        internal IEnumerable<Element> GetElements()
+        {
+            HashSet<Element> elements = new HashSet<Element>();
+            for (int i = 0; i <= _largestIsotopeId; i++)
+            {
+                if (_isotopes[i] != 0)
+                {
+                    elements.Add(PeriodicTable.Instance[i].Element);
+                }
+            }
+            return elements;
+        }
     }
  
 }

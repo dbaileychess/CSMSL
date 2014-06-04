@@ -64,16 +64,12 @@ namespace CSMSL.Examples
 
         private static void StartExamples()
         {
+            IsotopicDistribution ID = new IsotopicDistribution(0.01);
+
+            Spectrum spectrum = ID.CalculateDistribuition(new ChemicalFormula("C100"));
+
+            
       
-            ChemicalFormula formula = new ChemicalFormula("C7000H12000Cl000O4000N5000");
-            ChemicalFormulaGenerator generator = new ChemicalFormulaGenerator(formula);
-            List<double> masses = generator.FromMass(50, 2000).Select(f => f.ToMz(1)).ToList();
-            using (StreamWriter writer = new StreamWriter(Path.Combine(BASE_DIRECTORY," test.csv")))
-            {
-                foreach(double mz in masses) {
-                    writer.WriteLine(mz);
-                }
-            }
 
             // Examples coding  
             
