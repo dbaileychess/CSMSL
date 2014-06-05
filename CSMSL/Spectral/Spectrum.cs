@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace CSMSL.Spectral
 {
-    public class Spectrum : Spectrum<MZPeak, Spectrum>
+    public class Spectrum : Spectrum<MZPeak, Spectrum>, ISpectrum
     {
         /// <summary>
         /// Initializes a new spectrum

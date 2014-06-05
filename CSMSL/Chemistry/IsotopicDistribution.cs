@@ -276,18 +276,31 @@ namespace CSMSL.Chemistry
                         if (nPolynomialTerms > maxPolynomialSize)
                         {
                             throw new NotImplementedException();
+                            var elementalComposition2 = new List<List<Composition>> {elementalComposition[k]};
+                            FTFineGrainedID(elementalComposition2, tPolynomial, _fineResolution);
+                            for (int i = 0; i < tPolynomial.Count; i++)
+                            {
+                                if (tPolynomial[i].Power > 0)
+                                {
+                                    fPolynomial[k].Add(new Polynomial { Power = tPolynomial[i].Power / _mwResolution, Probablity = tPolynomial[i].Probablity });
+                                }
+                            }
+                            elementalComposition2.Clear();
+                            tPolynomial.Clear();
                         }
-
-                        int[] mins = new int[means.Length - 1];
-                        int[] maxs = new int[means.Length - 1];
-                        indices = new int[means.Length - 1];
-                        for (int i = 0; i < means.Length - 1; i++)
+                        else
                         {
-                            indices[i] = mins[i] = Math.Max(0, means[i] - stds[i]);
-                            maxs[i] = means[i] + stds[i];
-                        }
+                            int[] mins = new int[means.Length - 1];
+                            int[] maxs = new int[means.Length - 1];
+                            indices = new int[means.Length - 1];
+                            for (int i = 0; i < means.Length - 1; i++)
+                            {
+                                indices[i] = mins[i] = Math.Max(0, means[i] - stds[i]);
+                                maxs[i] = means[i] + stds[i];
+                            }
 
-                        MultipleFinePolynomialRecursiveHelper(mins, maxs, indices, 0, fPolynomial[k], composition, atoms, _fineMinProb, means[means.Length - 1] + stds[stds.Length - 1]);
+                            MultipleFinePolynomialRecursiveHelper(mins, maxs, indices, 0, fPolynomial[k], composition, atoms, _fineMinProb, means[means.Length - 1] + stds[stds.Length - 1]);
+                        }
                     }
                 }
             }
@@ -304,6 +317,269 @@ namespace CSMSL.Chemistry
             }
 
             return tPolynomial;
+        }
+
+        private void FTFineGrainedID(List<List<Composition>> elementalComposition, List<Polynomial> tPolynomial, double resolution)
+        {
+            double usedResolution = resolution;
+            double rhoResolution = 1.0;
+            int flag = 0;
+            int k = 0;
+            int N = 0;
+            double massRange;
+            double delta;
+            const double twoPi = Math.PI*2;
+            double[] MASS_FREQUENCY_DOMAIN;
+            while (true)
+            {
+                resolution = usedResolution / Math.Pow(2.0, k);
+                massRange = 0;// Todo
+                massRange = (int)(15.0 * Math.Sqrt(1 + massRange) + 1);
+                massRange = (int)(Math.Log(massRange) / Math.Log(2.0) + 1);
+                massRange = (int)(Math.Pow(2.0, massRange));
+                N = (int)(massRange / resolution);
+                N = (int)(Math.Log(N) / Math.Log(2.0) + 1);
+                N = (int)(Math.Pow(2.0, N));
+                delta = 1.0 / N;
+                resolution = massRange / N;
+                rhoResolution = resolution;
+                k++;
+                if (rhoResolution < usedResolution)
+                {
+                    MASS_FREQUENCY_DOMAIN = new double[2 * N + 1];
+                    break;
+                }
+            }
+
+            double averageMass = 0; //Todo
+            averageMass /= resolution;
+            double monoisotopicMass = 0; //todo
+
+            int atoms = elementalComposition[k][0].Atoms;
+
+            double x, y;
+            for (int i = 1; i < N / 2;i++)
+            {
+                double freq = (i - 1) * delta;
+                double phi = 0;
+                double angle = 0;
+                double radius = 1.0;
+                for (k = 0; k < elementalComposition.Count; k++)
+                {
+                    if (elementalComposition[k].Count > 0)
+                    {
+                        x = y = 0;
+                        for (int j = 0; j < elementalComposition[k].Count; j++)
+                        {
+                            double mw = (int)(elementalComposition[k][j].MolecularWeight / resolution + 0.5);
+                            phi = twoPi * mw * freq;
+                            x += elementalComposition[k][j].Probability * Math.Cos(phi);
+                            y += elementalComposition[k][j].Probability * Math.Sin(phi);
+                        }
+
+                        radius *= Math.Pow(Math.Sqrt(x * x + y * y), atoms);
+                        angle += atoms * Math.Atan2(y, x);
+                    }
+                }
+                double value = angle - twoPi * averageMass * freq;
+                x = radius * Math.Cos(value);
+                y = radius * Math.Sin(value);
+
+                MASS_FREQUENCY_DOMAIN[2 * i - 1] = x;
+                MASS_FREQUENCY_DOMAIN[2 * 1] = y;
+            }
+
+            for (int i = N/2 + 1; i <= N; i++)
+            {
+                double freq = (i - N - 1) * delta;
+                double phi = 0;
+                double angle = 0;
+                double radius = 1.0;
+                for (k = 0; k < elementalComposition.Count; k++)
+                {
+                    if (elementalComposition[k].Count > 0)
+                    {
+                        x = y = 0;
+                        for (int j = 0; j < elementalComposition[k].Count; j++)
+                        {
+                            double mw = (int)(elementalComposition[k][j].MolecularWeight / resolution + 0.5);
+                            phi = twoPi * mw * freq;
+                            x += elementalComposition[k][j].Probability * Math.Cos(phi);
+                            y += elementalComposition[k][j].Probability * Math.Sin(phi);
+                        }
+
+                        radius *= Math.Pow(Math.Sqrt(x * x + y * y), atoms);
+                        angle += atoms * Math.Atan2(y, x);
+                    }
+                }
+                double value = angle - twoPi * averageMass * freq;
+                x = radius * Math.Cos(value);
+                y = radius * Math.Sin(value);
+
+                MASS_FREQUENCY_DOMAIN[2 * i - 1] = x;
+                MASS_FREQUENCY_DOMAIN[2 * 1] = y;
+            }
+
+            FourierTransform(MASS_FREQUENCY_DOMAIN, N, -1);
+
+            double ave1 = 0; //todo
+            double ave2 = 0; //todo
+            double ave3 = (int)(ave2 + 0.5);
+            double sigma1 = Math.Sqrt(0); // todo
+            double simga2 = Math.Sqrt(0); // todo;
+            double ratio = sigma1 / simga2;
+
+            double probMin = 0;
+            for (int i = 1; i <= N; i++)
+            {
+                y = MASS_FREQUENCY_DOMAIN[2*i-1] /N;
+                if (y < probMin)
+                    probMin = y;
+            }
+            probMin *= -2;
+
+            k = 0;
+            double averageProb = 0;
+            for (int i = 1; i <= N; i++)
+            {
+                y = MASS_FREQUENCY_DOMAIN[2 * i - 1] / N;
+                if (y > probMin)
+                {
+                    averageProb += y;
+                    k++;
+                }
+            }
+            if (k > 0)
+            {
+                averageProb /= k;
+            }
+
+            List<Polynomial> tID = new List<Polynomial>();
+            for (int i = N / 2 + 1; i <= N; i++)
+            {
+                double prob = MASS_FREQUENCY_DOMAIN[2*i-1] / N;
+                if (prob > probMin)
+                {
+                    Polynomial temp = new Polynomial
+                    {
+                        Power = ratio*((i - N - 1)*resolution + averageMass*resolution - ave2) + ave1,
+                        Probablity = prob
+                    };
+                    tID.Add(temp);
+                }
+            }
+            for (int i = 1; i <= N / 2 -1; i++)
+            {
+                double prob = MASS_FREQUENCY_DOMAIN[2 * i - 1] / N;
+                if (prob > probMin)
+                {
+                    Polynomial temp = new Polynomial
+                    {
+                        Power = ratio * ((i - 1) * resolution + averageMass * resolution - ave2) + ave1,
+                        Probablity = prob
+                    };
+                    tID.Add(temp);
+                }
+            }
+
+            for (k = 1; k <= 9; k++)
+            {
+                for (int i = 0; i < tID.Count - 1; i++)
+                {
+                    double power = tID[i].Power;
+                    if (power < monoisotopicMass)
+                        continue;
+
+                    double probability = tID[i].Probablity;
+                    Polynomial tempPolynomial;
+                    tempPolynomial.Power = power * probability;
+                    tempPolynomial.Probablity = probability;
+
+                    for (int j = i + 1; j < tID.Count; j++)
+                    {
+                        double value = Math.Abs(tID[i].Power - tID[j].Power);
+                        double threshold = (k <= 8) ? k * _mergeFineResolution / 8 : _mergeFineResolution + _mergeFineResolution / 100;
+                        if (value <= threshold)
+                        {
+                            tempPolynomial.Power = tempPolynomial.Power + tID[j].Power * tID[j].Probablity;
+                            tempPolynomial.Probablity = tempPolynomial.Probablity + tID[j].Probablity;
+                            tID[i] = new Polynomial { Power = tempPolynomial.Power / tempPolynomial.Probablity, Probablity = tempPolynomial.Probablity };
+                            tID[j] = new Polynomial();
+                        }
+                        else
+                        {
+                            break;
+                        }
+                    }
+                    tID[i] = new Polynomial { Power = tempPolynomial.Power / tempPolynomial.Probablity, Probablity = tempPolynomial.Probablity };
+                }
+            }
+
+            double np = tID.Sum(t => t.Probablity);
+            for (int i = 0; i < tID.Count; i++)
+            {
+                if (tID[i].Power > 0)
+                {
+
+                }
+            }
+               
+        }
+
+        private static void FourierTransform(double[] data, int nn, int isign)
+        {
+            const double twoPi = Math.PI * 2;
+            isign = Math.Sign(isign);
+            int n = nn << 1;
+            int j = 1;
+            for (int i = 1; i < n; i += 2)
+            {
+                if (j > 1)
+                {
+                    double wtemp = data[i];
+                    data[i] = data[j];
+                    data[j] = wtemp;
+                    wtemp = data[i + 1];
+                    data[i + 1] = data[j + 1];
+                    data[j + 1] = wtemp;
+                }
+                int m = n >> 1;
+                while (m >= 2 && j > m)
+                {
+                    j -= m;
+                    m >>= 1;
+                }
+                j += m;
+            }
+
+            n = nn << 1;
+            int mmax = 2;
+            while (n > mmax)
+            {
+                int istep = mmax << 1;
+                double theta = isign * (twoPi / mmax);
+                double wtemp = Math.Sin(0.5 * theta);
+                double wpr = -2.0 * wtemp * wtemp;
+                double wpi = Math.Sin(theta);
+                double wr = 1.0;
+                double wi = 0.0;
+                for (int m = 1; m < mmax; m += 2)
+                {
+                    for (int i = m; i <= n; i += istep)
+                    {
+                        j = i + mmax;
+                        double tempr = wr * data[j] - wi * data[j + 1];
+                        double tempi = wr * data[j + 1] + wi * data[j];
+                        data[j] = data[i] - tempr;
+                        data[j + 1] = data[i + 1] - tempi;
+                        data[i] += tempr;
+                        data[i + 1] += tempi;
+                    }
+                    wr = (wtemp = wr) * wpr - wi * wpi + wr;
+                    wi = wi * wpr + wtemp * wpi + wi;
+                }
+                mmax = istep;
+            }
         }
 
         private void MultiplyFineFinalPolynomial(List<Polynomial> tPolynomial, List<Polynomial> fPolynomial, List<Polynomial> fgidPolynomial)
@@ -370,8 +646,7 @@ namespace CSMSL.Chemistry
                 tPolynomial.RemoveRange(j, tPolynomial.Count - j);
             }
         }
-
-
+        
         private static void MultipleFinePolynomialRecursiveHelper(int[] mins, int[] maxs, int[] indices, int index, IList<Polynomial> fPolynomial, IList<Composition> elementalComposition, int atoms, double minProb, int maxValue)
         {
             for (indices[index] = mins[index]; indices[index] <= maxs[index]; indices[index]++)
@@ -451,4 +726,3 @@ namespace CSMSL.Chemistry
         }
     }
 }
-;
