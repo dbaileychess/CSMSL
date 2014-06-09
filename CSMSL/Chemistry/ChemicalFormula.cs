@@ -68,7 +68,7 @@ namespace CSMSL.Chemistry
         private bool _isDirty;
 
         /// <summary>
-        /// Inidicates if the Hill Notation string representation needs to be recalculated
+        /// Indicates if the Hill Notation string representation needs to be recalculated
         /// </summary>
         private bool _isFormulaDirty;
 
@@ -103,7 +103,7 @@ namespace CSMSL.Chemistry
         private int _elementCount;
 
         /// <summary>
-        /// The number of unikque isotopes in this chemical formula.
+        /// The number of unique isotopes in this chemical formula.
         /// </summary>
         private int _isotopeCount;
 
@@ -586,6 +586,11 @@ namespace CSMSL.Chemistry
             return Count(isotope) != 0;           
         }
 
+        /// <summary>
+        /// Checks if any isotope of the specified element is present in this chemical formula
+        /// </summary>
+        /// <param name="element">The element to look for</param>
+        /// <returns>True if there is a non-zero number of the element in this formula</returns>
         public bool Contains(Element element)
         {
             return Count(element) != 0;
@@ -598,6 +603,24 @@ namespace CSMSL.Chemistry
 
         public bool Contains(ChemicalFormula formula)
         {
+            return IsSuperSetOf(formula);
+        }
+
+        public bool IsSubSetOf(ChemicalFormula formula)
+        {
+            return formula != null && formula.IsSuperSetOf(this);
+        }
+
+        /// <summary>
+        /// Checks whether this formula contains all the isotopes of the specified formula
+        /// </summary>
+        /// <param name="formula"></param>
+        /// <returns></returns>
+        public bool IsSuperSetOf(ChemicalFormula formula)
+        {
+            if (formula == null)
+                return false;
+
             int[] otherFormula = formula._isotopes;
             int[] thisFormula = _isotopes;
 
@@ -654,6 +677,10 @@ namespace CSMSL.Chemistry
             return Count(isotope);
         }
 
+        /// <summary>
+        /// Gets the total number of neutrons in this chemical formula
+        /// </summary>
+        /// <returns></returns>
         public int GetNeutronCount()
         {
             int neutrons = 0;
@@ -667,6 +694,10 @@ namespace CSMSL.Chemistry
             return neutrons;
         }
 
+        /// <summary>
+        /// Gets the total number of protons in this chemical formula
+        /// </summary>
+        /// <returns></returns>
         public int GetProtonCount()
         {
             int protons = 0;
@@ -680,6 +711,10 @@ namespace CSMSL.Chemistry
             return protons;
         }
 
+        /// <summary>
+        /// Gets the ratio of the number of Carbon to Hydrogen in this chemical formula
+        /// </summary>
+        /// <returns></returns>
         public double GetCarbonHydrogenRatio()
         {
             int carbonCount = Count("C");
@@ -695,7 +730,10 @@ namespace CSMSL.Chemistry
         #endregion
         
         public override int GetHashCode()
-        {   
+        {
+            if (_isDirty)
+                CleanUp();
+
             if (_isotopes == null)
                 return 0;
 
@@ -729,33 +767,29 @@ namespace CSMSL.Chemistry
             }
             return true;
         }
-   
-        public string GetUniqueStringIdentifier()
+  
+        public double[,] GetIsotopicDistribution(double resolution = 0.01, int numberOfIsotopes = int.MaxValue)
         {
-            return string.Join(".", GetIsotopes());  
+            IsotopicDistribution id = new IsotopicDistribution(resolution, numberOfIsotopes);
+            var spectrum = id.CalculateDistribuition(this);
+            return spectrum.ToArray();
         }
 
- 
-        public double[,] GetIsotopicDistribution(int numberOfIsotopes = 3)
+        /// <summary>
+        /// Gets the unique elements in this chemical formula
+        /// </summary>
+        /// <returns></returns>
+        public IEnumerable<Element> GetElements()
         {
-            double[,] distribution = new double[2, numberOfIsotopes];
-
-            double mass = MonoisotopicMass;
-            distribution[0, 0] = mass;
-            distribution[1, 0] = 1;
-            
-            // Number of C12 isotopes in this peptide
-            int numberOfCarbons = Count(PeriodicTable.Instance["C"][12]);
-            double coefficient = numberOfCarbons * PeriodicTable.Instance["C"][13].RelativeAbundance;
-         
-            for (int i = 1; i < numberOfIsotopes; i++)
+            HashSet<Element> elements = new HashSet<Element>();
+            for (int i = 0; i <= _largestIsotopeId; i++)
             {
-                mass += Constants.C13C12Difference;
-                distribution[0, i] = mass;
-                distribution[1, i] = Math.Pow(coefficient, i) / Factorial(i);
+                if (_isotopes[i] != 0)
+                {
+                    elements.Add(PeriodicTable.Instance[i].Element);
+                }
             }
-
-            return distribution;
+            return elements;
         }
 
         public override string ToString()
@@ -763,6 +797,12 @@ namespace CSMSL.Chemistry
             return Formula;
         }
                
+        /// <summary>
+        /// Returns the chemical formula with each element separated by the
+        /// specified delimiter
+        /// </summary>
+        /// <param name="delimiter">The delimiter to separate elements by</param>
+        /// <returns></returns>
         public string ToString(string delimiter)
         {
             return GetHillNotation(delimiter);
@@ -1214,23 +1254,16 @@ namespace CSMSL.Chemistry
 
         #endregion
 
+        #region IChemicalFormula
+
         ChemicalFormula IChemicalFormula.ChemicalFormula
         {
             get { return this; }
         }
 
-        internal IEnumerable<Element> GetElements()
-        {
-            HashSet<Element> elements = new HashSet<Element>();
-            for (int i = 0; i <= _largestIsotopeId; i++)
-            {
-                if (_isotopes[i] != 0)
-                {
-                    elements.Add(PeriodicTable.Instance[i].Element);
-                }
-            }
-            return elements;
-        }
+        #endregion
+
+ 
     }
  
 }

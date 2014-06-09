@@ -32,7 +32,7 @@ namespace CSMSL
         #region Subatomic
 
         /// <summary>
-        /// The mass of the subatmoic particle with a single negative elementary charge in
+        /// The mass of the subatomic particle with a single negative elementary charge in
         /// atomic units (u)
         /// </summary>
         public const double Electron = 0.00054857990946;

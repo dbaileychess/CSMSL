@@ -70,7 +70,7 @@ namespace CSMSL
         /// <summary>
         /// Checks to see if this range is a proper super range of another range (inclusive)
         /// </summary>
-        /// <param name="other">Thje other range to compare to</param>
+        /// <param name="other">The other range to compare to</param>
         /// <returns>True if this range is fully encloses the other range, false otherwise</returns>
         public bool IsSuperRange(IRange<T> other)
         {
@@ -117,7 +117,7 @@ namespace CSMSL
         }
 
         /// <summary>
-        /// Returns a formated string of the range [min - max]
+        /// Returns a formatted string of the range [min - max]
         /// </summary>
         /// <returns>Format: [min - max]</returns>
         public override string ToString()
@@ -147,10 +147,7 @@ namespace CSMSL
         {
             IRange<T> other = obj as IRange<T>;
 
-            if (other == null)
-                return false;
-
-            return Equals(other);
+            return other != null && Equals(other);
         }
     }
 }

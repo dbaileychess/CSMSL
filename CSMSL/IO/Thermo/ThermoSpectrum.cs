@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using CSMSL.Spectral;
 
 namespace CSMSL.IO.Thermo
@@ -118,7 +119,26 @@ namespace CSMSL.IO.Thermo
         {
             throw new NotImplementedException();
         }
-        
+
+        public override double[,] ToArray()
+        {
+            double[,] data = new double[5, Count];
+            const int size = sizeof(double);
+            int bytesToCopy = size * Count;
+            Buffer.BlockCopy(_masses, 0, data, 0, bytesToCopy);
+            Buffer.BlockCopy(_intensities, 0, data, bytesToCopy, bytesToCopy);
+            Buffer.BlockCopy(_resolutions, 0, data, (int)ThermoRawFile.RawLabelDataColumn.Resolution *bytesToCopy, bytesToCopy);
+            Buffer.BlockCopy(_noises, 0, data, (int)ThermoRawFile.RawLabelDataColumn.NoiseLevel * bytesToCopy, bytesToCopy;
+
+            double[] charges = new double[Count];
+            for (int i = 0; i < Count; i++)
+            {
+                charges[i] = _charges[i];
+            }
+            Buffer.BlockCopy(charges, 0, data, (int)ThermoRawFile.RawLabelDataColumn.Charge * bytesToCopy, bytesToCopy);
+            return data;
+        }
+
         public override ThermoSpectrum Extract(double minMZ, double maxMZ)
         {
             if (Count == 0)

@@ -7,8 +7,8 @@
         public MzRange(double minMZ, double maxMZ)
             : base(minMZ, maxMZ) { }
 
-        public MzRange(double meanMZ, Tolerance tolerance)
-            : base(meanMZ, tolerance) { }
+        public MzRange(double meanMZ, Tolerance toleranceWidth)
+            : base(meanMZ, toleranceWidth) { }
 
         public override string ToString()
         {
@@ -19,6 +19,14 @@
         {
             return string.Format("{0} - {1} m/z", Minimum.ToString(format), Maximum.ToString(format));
         }
- 
+
+        #region Static
+
+        public static new MzRange FromPPM(double mean, double ppmTolerance)
+        {
+            return new MzRange(mean, new Tolerance(ToleranceType.PPM, ppmTolerance));
+        }
+
+        #endregion
     }
 }

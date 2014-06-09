@@ -36,17 +36,17 @@ namespace CSMSL.Chemistry
             _mwResolution = molecularWeightResolution;
         }
 
-        public Spectrum CalculateDistribuition(string chemicalFormula, Normalization normalization = Normalization.Sum)
+        public Spectrum CalculateDistribuition(string chemicalFormula, int topNPeaks = int.MaxValue, Normalization normalization = Normalization.Sum)
         {
-            return CalculateDistribuition(new ChemicalFormula(chemicalFormula), normalization);
+            return CalculateDistribuition(new ChemicalFormula(chemicalFormula),topNPeaks, normalization);
         }
 
-        public Spectrum CalculateDistribuition(IChemicalFormula obj, Normalization normalization = Normalization.Sum)
+        public Spectrum CalculateDistribuition(IChemicalFormula obj, int topNPeaks = int.MaxValue, Normalization normalization = Normalization.Sum)
         {
-            return CalculateDistribuition(obj.ChemicalFormula, normalization);
+            return CalculateDistribuition(obj.ChemicalFormula,topNPeaks, normalization);
         }
-
-        public Spectrum CalculateDistribuition(ChemicalFormula formula, Normalization normalization = Normalization.Sum)
+        
+        public Spectrum CalculateDistribuition(ChemicalFormula formula, int topNPeaks = int.MaxValue, Normalization normalization = Normalization.Sum)
         {
             double monoisotopicMass = formula.MonoisotopicMass;
             SetResolution(monoisotopicMass);
@@ -275,7 +275,6 @@ namespace CSMSL.Chemistry
 
                         if (nPolynomialTerms > maxPolynomialSize)
                         {
-                            throw new NotImplementedException();
                             var elementalComposition2 = new List<List<Composition>> {elementalComposition[k]};
                             FTFineGrainedID(elementalComposition2, tPolynomial, _fineResolution);
                             for (int i = 0; i < tPolynomial.Count; i++)
@@ -287,6 +286,7 @@ namespace CSMSL.Chemistry
                             }
                             elementalComposition2.Clear();
                             tPolynomial.Clear();
+                            throw new NotImplementedException();
                         }
                         else
                         {
@@ -323,7 +323,6 @@ namespace CSMSL.Chemistry
         {
             double usedResolution = resolution;
             double rhoResolution = 1.0;
-            int flag = 0;
             int k = 0;
             int N = 0;
             double massRange;

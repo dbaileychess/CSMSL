@@ -4,31 +4,48 @@ namespace CSMSL
 {
     public class DoubleRange : Range<double>
     {
+        /// <summary>
+        /// Creates a range from 0 to 0
+        /// </summary>
         public DoubleRange()
-            : this(0, 0) { }
+            : base(0, 0) { }
 
+        /// <summary>
+        /// Creates a range from the minimum to maximum values
+        /// </summary>
+        /// <param name="minimum">The minimum value of the range</param>
+        /// <param name="maximum">The maximum value of the range</param>
         public DoubleRange(double minimum, double maximum)
             : base(minimum, maximum) { }
 
+        /// <summary>
+        /// Creates a range from another double range. This is the
+        /// clone constructor.
+        /// </summary>
+        /// <param name="range">The other range to copy</param>
         public DoubleRange(IRange<double> range)
-            : this(range.Minimum, range.Maximum) { }
+            : base(range.Minimum, range.Maximum) { }
 
         /// <summary>
-        /// Creates a full-width range around some mean value
+        /// Creates a range around some mean value with a specified tolerance. 
+        /// <para>
         /// i.e. 10 ppm at 500 would give you 499.9975 - 500.0025
-        /// which has a width of 0.005. Coverting back to ppm 
+        /// which has a width of 0.005. Converting back to ppm 
         /// (1e6) *0.005 / 500 = 10 ppm.
-        /// The differnce from the mean value to an boundary is exactly
-        /// half the tolearnce you specified
+        /// </para>
+        /// <para>
+        /// The difference from the mean value to an boundary is exactly
+        /// half the tolerance you specified
+        /// </para>
         /// </summary>
-        /// <param name="mean"></param>
-        /// <param name="tolerance"></param>
-        public DoubleRange(double mean, Tolerance tolerance)
+        /// <param name="mean">The mean value for the range</param>
+        /// <param name="toleranceWidth">The full width of the range</param>
+        public DoubleRange(double mean, Tolerance toleranceWidth)
         {
-            SetTolerance(mean, tolerance);
+            SetTolerance(mean, toleranceWidth);
         }
-
-        private void SetTolerance(double mean, Tolerance tolerance)
+        
+        private void SetTolerance(double mean, Tolerance tolerance, bool fullWidth = true)
         {
             if (tolerance == null)
             {
@@ -37,6 +54,9 @@ namespace CSMSL
             }
 
             double value = Math.Abs(tolerance.Value);
+
+            if (!fullWidth)
+                value *= 2;
 
             switch (tolerance.Type)
             {
@@ -57,6 +77,10 @@ namespace CSMSL
             }           
         }
 
+        /// <summary>
+        /// The mean value of this range:
+        /// (Max + Min) / 2
+        /// </summary>
         public double Mean
         {
             get
@@ -65,6 +89,10 @@ namespace CSMSL
             }
         }
 
+        /// <summary>
+        /// The width of this range:
+        /// (Max - Min)
+        /// </summary>
         public double Width
         {
             get
@@ -72,11 +100,28 @@ namespace CSMSL
                 return Maximum - Minimum;              
             }
         }
-
+        
+        /// <summary>
+        /// Calculates the ppm tolerance value for this range:
+        /// 1e6 * Width / Mean;
+        /// </summary>
+        /// <returns>The ppm</returns>
         public double ToPPM()
         {
             return 1e6 * Width / Mean;
         }
+        
+        /// <summary>
+        /// Returns a string representation of this range at the given numerical format
+        /// </summary>
+        /// <param name="format">The format to display the double values</param>
+        /// <returns></returns>
+        public virtual string ToString(string format)
+        {
+            return string.Format("[{0} - {1}]", Minimum.ToString(format), Maximum.ToString(format));
+        }
+
+        #region Static
 
         public static DoubleRange FromPPM(double mean, double ppmTolerance)
         {
@@ -88,9 +133,7 @@ namespace CSMSL
             return new DoubleRange(mean, new Tolerance(ToleranceType.DA, daTolerance));
         }
 
-        public virtual string ToString(string format)
-        {
-            return string.Format("[{0} - {1}]", Minimum.ToString(format), Maximum.ToString(format));
-        }
+        #endregion
+
     }
 }

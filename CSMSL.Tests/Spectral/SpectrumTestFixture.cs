@@ -63,6 +63,34 @@ namespace CSMSL.Tests.Spectral
         }
 
         [Test]
+        public void SpectrumGetMasses()
+        {
+            double[] mz = { 328.73795, 329.23935, 447.73849, 448.23987, 482.23792, 482.57089, 482.90393, 500.95358, 501.28732, 501.62131, 611.99377, 612.32806, 612.66187, 722.85217, 723.35345 };
+            double[] masses = SpectrumA.GetMasses();
+
+            Assert.AreEqual(mz, masses);
+        }
+
+        [Test]
+        public void SpectrumGetIntensities()
+        {
+            double[] intensities = { 81007096.0, 28604418.0, 78353512.0, 39291696.0, 122781408.0, 94147520.0, 44238040.0, 71198680.0, 54184096.0, 21975364.0, 44514172.0, 43061628.0, 23599424.0, 56022696.0, 41019144.0 };
+            double[] intensities2 = SpectrumA.GetIntensities();
+
+            Assert.AreEqual(intensities, intensities2);
+        }
+
+        [Test]
+        public void SpectrumToArray()
+        {
+            double[,] data = SpectrumA.ToArray();
+            double[,] realData = {{ 328.73795, 329.23935, 447.73849, 448.23987, 482.23792, 482.57089, 482.90393, 500.95358, 501.28732, 501.62131, 611.99377, 612.32806, 612.66187, 722.85217, 723.35345 }
+                ,{ 81007096.0, 28604418.0, 78353512.0, 39291696.0, 122781408.0, 94147520.0, 44238040.0, 71198680.0, 54184096.0, 21975364.0, 44514172.0, 43061628.0, 23599424.0, 56022696.0, 41019144.0 }};
+            
+            Assert.AreEqual(data, realData);
+        }
+
+        [Test]
         public void SpectrumGetIntensityFirst()
         {
             double intensity = SpectrumA.GetIntensity(0);

@@ -25,7 +25,6 @@ using System.IO;
 using System.Linq;
 using System.Text;
 
-
 namespace CSMSL.IO
 {
     public class FastaReader : IDisposable

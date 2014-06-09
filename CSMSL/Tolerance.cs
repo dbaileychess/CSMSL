@@ -52,8 +52,14 @@ namespace CSMSL
             Type = type;
         }
 
+        /// <summary>
+        /// The tolerance unit type
+        /// </summary>
         public ToleranceType Type { get; set; }
 
+        /// <summary>
+        /// The value of the tolerance
+        /// </summary>
         public double Value { get; set; }
 
         public DoubleRange GetRange(double mass)
@@ -100,10 +106,21 @@ namespace CSMSL
             }
         }
 
+        /// <summary>
+        /// Indicates if the two values provided are within this tolerance
+        /// </summary>
+        /// <param name="experimental">The experimental value</param>
+        /// <param name="theoretical">The theoretical value</param>
+        /// <returns>Returns true if the value is within this tolerance  </returns>
         public bool Within(double experimental, double theoretical)
         {
             double tolerance = GetTolerance(experimental, theoretical, Type);
             return Math.Abs(tolerance) <= Value;
+        }
+
+        public static double PPMTolerance(double experimental, double theoretical)
+        {
+            return (experimental - theoretical) / theoretical * 1000000.0;
         }
 
         public static double GetTolerance(double experimental, double theoretical, ToleranceType type)

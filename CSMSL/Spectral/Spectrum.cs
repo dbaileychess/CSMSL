@@ -343,6 +343,20 @@ namespace CSMSL.Spectral
             return intensities;
         }
 
+
+        /// <summary>
+        /// Converts the spectrum into a multi-dimensional array of doubles
+        /// </summary>
+        /// <returns></returns>
+        public virtual double[,] ToArray()
+        {
+            double[,] data = new double[2,Count];
+            const int size = sizeof(double);
+            Buffer.BlockCopy(_masses, 0, data, 0, size * Count);
+            Buffer.BlockCopy(_intensities, 0, data, size * Count, size * Count);
+            return data;
+        }
+
         /// <summary>
         /// Calculates the total ion current of this spectrum
         /// </summary>

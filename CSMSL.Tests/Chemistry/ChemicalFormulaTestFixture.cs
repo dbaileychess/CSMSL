@@ -884,6 +884,42 @@ namespace CSMSL.Tests.Chemistry
          
             Assert.AreEqual(5, formulaA.IsotopeCount);
         }
-     
+
+        [Test]
+        public void ChemicalForulaIsSubSet()
+        {
+            ChemicalFormula formulaA = new ChemicalFormula("C2H3NO");
+            ChemicalFormula formulaB = new ChemicalFormula("C3H3NO");
+
+            Assert.IsTrue(formulaA.IsSubSetOf(formulaB));
+        }
+
+        [Test]
+        public void ChemicalForulaIsNotSubSet()
+        {
+            ChemicalFormula formulaA = new ChemicalFormula("C2H3NO");
+            ChemicalFormula formulaB = new ChemicalFormula("C3H2NO");
+
+            Assert.IsFalse(formulaA.IsSubSetOf(formulaB));
+        }
+
+        [Test]
+        public void ChemicalForulaIsSuperSet()
+        {
+            ChemicalFormula formulaA = new ChemicalFormula("C2H3NO");
+            ChemicalFormula formulaB = new ChemicalFormula("C3H3NO");
+
+            Assert.IsTrue(formulaB.IsSuperSetOf(formulaA));
+        }
+
+        [Test]
+        public void ChemicalForulaIsNotSuperSet()
+        {
+            ChemicalFormula formulaA = new ChemicalFormula("C2H3NO2");
+            ChemicalFormula formulaB = new ChemicalFormula("C3H3NO");
+
+            Assert.IsFalse(formulaB.IsSuperSetOf(formulaA));
+        }
+
     }
 }

@@ -2,7 +2,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using CSMSL.IO;
 
 namespace CSMSL.Util.Collections
 {
@@ -23,7 +22,7 @@ namespace CSMSL.Util.Collections
         private const int DefaultSizeOfArray = 4;
 
         /// <summary>
-        /// The collection of items, in sorted order, 0 being the loweset value
+        /// The collection of items, in sorted order, 0 being the lowest value
         /// </summary>
         private T[] _items;
 
@@ -90,13 +89,13 @@ namespace CSMSL.Util.Collections
             }
             else if (Count == MaxSize)
             {
-                // The conatiner is full, check if the item is lower than the last item in this conatiner
+                // The container is full, check if the item is lower than the last item in this container
                 if (_comparer.Compare(_items[Count - 1], item) <= 0)
                 {
                     return false;
                 }
 
-                // Special case for a maxsize of one, just replace the only item in the conatiner
+                // Special case for a max size of one, just replace the only item in the container
                 if (MaxSize == 1)
                 {
                     _items[0] = item;
@@ -306,7 +305,7 @@ namespace CSMSL.Util.Collections
         }
         
         /// <summary>
-        /// This Collection is not readonly by design
+        /// This Collection is not read only by design
         /// </summary>
         public bool IsReadOnly
         {
