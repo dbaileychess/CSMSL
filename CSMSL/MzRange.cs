@@ -24,7 +24,7 @@
 
         public static new MzRange FromPPM(double mean, double ppmTolerance)
         {
-            return new MzRange(mean, new Tolerance(ToleranceType.PPM, ppmTolerance));
+            return new MzRange(mean, new Tolerance(ToleranceUnit.PPM, ppmTolerance));
         }
 
         #endregion

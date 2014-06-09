@@ -24,7 +24,7 @@
 
         public static new MassRange FromPPM(double mean, double ppmTolerance)
         {
-            return new MassRange(mean, new Tolerance(ToleranceType.PPM, ppmTolerance));
+            return new MassRange(mean, new Tolerance(ToleranceUnit.PPM, ppmTolerance));
         }
 
         #endregion

@@ -55,22 +55,22 @@ namespace CSMSL
 
             double value = Math.Abs(tolerance.Value);
 
-            if (tolerance.PlusAndMinus)
+            if (tolerance.Type == ToleranceType.PlusAndMinus)
                 value *= 2;
 
-            switch (tolerance.Type)
+            switch (tolerance.Unit)
             {
                 default:
                     Minimum = mean - value / 2.0;
                     Maximum = mean + value / 2.0;
                     break;
 
-                case ToleranceType.MMU:
+                case ToleranceUnit.MMU:
                     Minimum = mean - value / 2000.0;
                     Maximum = mean + value / 2000.0;
                     break;
 
-                case ToleranceType.PPM:
+                case ToleranceUnit.PPM:
                     Minimum = mean * (1 - (value / 2e6));
                     Maximum = mean * (1 + (value / 2e6));
                     break;
@@ -125,12 +125,12 @@ namespace CSMSL
 
         public static DoubleRange FromPPM(double mean, double ppmTolerance)
         {
-            return new DoubleRange(mean, new Tolerance(ToleranceType.PPM, ppmTolerance));
+            return new DoubleRange(mean, new Tolerance(ToleranceUnit.PPM, ppmTolerance));
         }
 
         public static DoubleRange FromDa(double mean, double daTolerance)
         {
-            return new DoubleRange(mean, new Tolerance(ToleranceType.DA, daTolerance));
+            return new DoubleRange(mean, new Tolerance(ToleranceUnit.DA, daTolerance));
         }
 
         #endregion

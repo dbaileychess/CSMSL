@@ -35,18 +35,18 @@ namespace CSMSL
         /// <summary>
         /// Creates a new tolerance given a type, value, and whether the tolerance is ±
         /// </summary>
-        /// <param name="type"></param>
+        /// <param name="unit"></param>
         /// <param name="value"></param>
-        /// <param name="plusAndMinus"></param>
-        public Tolerance(ToleranceType type, double value, bool plusAndMinus = true)
+        /// <param name="type"></param>
+        public Tolerance(ToleranceUnit unit, double value, ToleranceType type = ToleranceType.PlusAndMinus)
         {
-            Type = type;
+            Unit = unit;
             Value = value;
-            PlusAndMinus = plusAndMinus;
+            Type = type;
         }
 
-        public Tolerance(ToleranceType type, double experimental, double theoretical, bool plusAndMinus = true)
-            : this(type, GetTolerance(experimental, theoretical, type), plusAndMinus) { }
+        public Tolerance(ToleranceUnit unit, double experimental, double theoretical, ToleranceType toleranceType = ToleranceType.PlusAndMinus)
+            : this(unit, GetTolerance(experimental, theoretical, unit), toleranceType) { }
 
         /// <summary>
         /// Calculates a tolerance from the string representation
@@ -60,17 +60,17 @@ namespace CSMSL
             Match m = StringRegex.Match(s);
             if (!m.Success)
                 throw new ArgumentException("Input string is not in the correct format: " + s);
-            PlusAndMinus = m.Groups[1].Success;
+            Type = m.Groups[1].Success ? ToleranceType.PlusAndMinus : ToleranceType.FullWidth;
             Value = double.Parse(m.Groups[2].Value);
-            ToleranceType type;
+            ToleranceUnit type;
             Enum.TryParse(m.Groups[3].Value, true, out type);
-            Type = type;
+            Unit = type;
         }
 
         /// <summary>
         /// The tolerance unit type
         /// </summary>
-        public ToleranceType Type { get; set; }
+        public ToleranceUnit Unit { get; set; }
 
         /// <summary>
         /// The value of the tolerance
@@ -80,17 +80,17 @@ namespace CSMSL
         /// <summary>
         /// Indicates if this tolerance is ± or not
         /// </summary>
-        public bool PlusAndMinus { get; set; }
+        public ToleranceType Type { get; set; }
 
         public DoubleRange GetRange(double mass)
         {
             double tol;
-            switch (Type)
+            switch (Unit)
             {
-                case ToleranceType.MMU:
+                case ToleranceUnit.MMU:
                     tol = Value/2000.0;
                     break;
-                case ToleranceType.PPM:
+                case ToleranceUnit.PPM:
                     tol = Value * mass / 2e6;
                     break;
                 default:
@@ -102,11 +102,11 @@ namespace CSMSL
 
         public double GetMinimumValue(double mass)
         {
-            switch (Type)
+            switch (Unit)
             {
-                case ToleranceType.MMU:
+                case ToleranceUnit.MMU:
                     return mass - Value / 2000.0;
-                case ToleranceType.PPM:
+                case ToleranceUnit.PPM:
                     return mass * (1 - (Value / 2e6));
                 default:
                     return mass - Value / 2.0;
@@ -115,11 +115,11 @@ namespace CSMSL
 
         public double GetMaximumValue(double mass)
         {
-            switch (Type)
+            switch (Unit)
             {
-                case ToleranceType.MMU:
+                case ToleranceUnit.MMU:
                     return mass + Value / 2000.0;
-                case ToleranceType.PPM:
+                case ToleranceUnit.PPM:
                     return mass * (1 + (Value / 2e6));
                 default:
                     return mass + Value / 2.0;
@@ -134,47 +134,47 @@ namespace CSMSL
         /// <returns>Returns true if the value is within this tolerance  </returns>
         public bool Within(double experimental, double theoretical)
         {
-            double tolerance = GetTolerance(experimental, theoretical, Type);
+            double tolerance = GetTolerance(experimental, theoretical, Unit);
             return Math.Abs(tolerance) <= Value;
         }
 
         public override string ToString()
         {
-            return string.Format("{0}{1:f4} {2}", (PlusAndMinus) ? "±" : "", Value, Enum.GetName(typeof(ToleranceType), Type));
+            return string.Format("{0}{1:f4} {2}", (Type == ToleranceType.PlusAndMinus) ? "±" : "", Value, Enum.GetName(typeof(ToleranceUnit), Unit));
         }
 
         #region Static
         
-        public static double GetTolerance(double experimental, double theoretical, ToleranceType type)
+        public static double GetTolerance(double experimental, double theoretical, ToleranceUnit type)
         {
             switch (type)
             {
-                case ToleranceType.MMU:
+                case ToleranceUnit.MMU:
                     return (experimental - theoretical) * 1000.0;
-                case ToleranceType.PPM:
+                case ToleranceUnit.PPM:
                     return (experimental - theoretical) / theoretical * 1e6;
                 default:
                     return experimental - theoretical;
             }
         }
         
-        public static Tolerance FromPPM(double value, bool plusAndMinus = true)
+        public static Tolerance FromPPM(double value, ToleranceType toleranceType = ToleranceType.PlusAndMinus)
         {
-            return new Tolerance(ToleranceType.PPM, value, plusAndMinus);
+            return new Tolerance(ToleranceUnit.PPM, value, toleranceType);
         }
 
-        public static Tolerance FromDA(double value, bool plusAndMinus = true)
+        public static Tolerance FromDA(double value, ToleranceType toleranceType = ToleranceType.PlusAndMinus)
         {
-            return new Tolerance(ToleranceType.DA, value, plusAndMinus);
+            return new Tolerance(ToleranceUnit.DA, value, toleranceType);
         }
 
-        public static Tolerance FromMMU(double value, bool plusAndMinus = true)
+        public static Tolerance FromMMU(double value, ToleranceType toleranceType = ToleranceType.PlusAndMinus)
         {
-            return new Tolerance(ToleranceType.MMU, value, plusAndMinus);
+            return new Tolerance(ToleranceUnit.MMU, value, toleranceType);
         }
 
         public static Tolerance CalculatePrecursorMassError(double theoreticalMass, double observedMass, out int nominalMassOffset, out double adjustedObservedMass, double difference = Constants.C13C12Difference,
-           ToleranceType type = ToleranceType.PPM)
+           ToleranceUnit type = ToleranceUnit.PPM)
         {
             double massError = observedMass - theoreticalMass;
             nominalMassOffset = (int)Math.Round(massError / difference);

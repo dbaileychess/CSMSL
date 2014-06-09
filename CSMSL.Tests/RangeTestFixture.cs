@@ -197,7 +197,7 @@ namespace CSMSL.Tests
         [Test]
         public void MassRangeFromDAWidth()
         {
-            var range1 = new DoubleRange(10, new Tolerance(ToleranceType.DA, 4));
+            var range1 = new DoubleRange(10, new Tolerance(ToleranceUnit.DA, 4));
 
             Assert.AreEqual(8, range1.Width);
         }
@@ -205,7 +205,7 @@ namespace CSMSL.Tests
         [Test]
         public void MassRangeFromDAMean()
         {
-            var range1 = new DoubleRange(10, new Tolerance(ToleranceType.DA, 4));
+            var range1 = new DoubleRange(10, new Tolerance(ToleranceUnit.DA, 4));
            
             Assert.AreEqual(10, range1.Mean);
         }
@@ -213,7 +213,7 @@ namespace CSMSL.Tests
         [Test]
         public void MassRangeFromDAMin()
         {
-            var range1 = new DoubleRange(10, new Tolerance(ToleranceType.DA, 4));
+            var range1 = new DoubleRange(10, new Tolerance(ToleranceUnit.DA, 4));
 
             Assert.AreEqual(6, range1.Minimum);
         }
@@ -221,7 +221,7 @@ namespace CSMSL.Tests
         [Test]
         public void MassRangeFromDAMax()
         {
-            var range1 = new DoubleRange(10, new Tolerance(ToleranceType.DA, 4));
+            var range1 = new DoubleRange(10, new Tolerance(ToleranceUnit.DA, 4));
 
             Assert.AreEqual(14, range1.Maximum);
         }
@@ -261,8 +261,8 @@ namespace CSMSL.Tests
         [Test]
         public void MassRangeFromDANegative()
         {
-            var range1 = new DoubleRange(10, new Tolerance(ToleranceType.DA, 4));
-            var range2 = new DoubleRange(10, new Tolerance(ToleranceType.DA, -4));
+            var range1 = new DoubleRange(10, new Tolerance(ToleranceUnit.DA, 4));
+            var range2 = new DoubleRange(10, new Tolerance(ToleranceUnit.DA, -4));
 
             Assert.AreEqual(range1, range2);
         }

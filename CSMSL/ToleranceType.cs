@@ -2,8 +2,7 @@
 {
     public enum ToleranceType
     {
-        PPM,
-        DA,
-        MMU
+        PlusAndMinus,
+        FullWidth
     }
 }
