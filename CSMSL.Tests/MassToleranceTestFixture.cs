@@ -30,11 +30,67 @@ namespace CSMSL.Tests
         }
 
         [Test]
+        public void MassToleranceImplicitValue()
+        {
+            var tol = new Tolerance("10 ppm");
+
+            Assert.AreEqual(10, tol.Value);
+        }
+
+        [Test]
+        public void MassToleranceImplicitType()
+        {
+            var tol = new Tolerance("10 ppm");
+
+            Assert.AreEqual(ToleranceType.PPM, tol.Type);
+        }
+
+        [Test]
         public void MassToleranceFromDaType()
         {
             var tol = Tolerance.FromDA(10);
 
             Assert.AreEqual(ToleranceType.DA, tol.Type);
+        }
+
+        [Test]
+        public void MassToleranceImplicitPlusMinus()
+        {
+            var tol = new Tolerance("+-10 ppm");
+
+            Assert.IsTrue(tol.PlusAndMinus);
+        }
+
+        [Test]
+        public void MassToleranceImplicitPlusMinus2()
+        {
+            var tol = new Tolerance("-+10 ppm");
+
+            Assert.IsTrue(tol.PlusAndMinus);
+        }
+
+        [Test]
+        public void MassToleranceImplicitPlusMinus3()
+        {
+            var tol = new Tolerance("±10 ppm");  // alt-code 241
+
+            Assert.IsTrue(tol.PlusAndMinus);
+        }
+
+        [Test]
+        public void MassToleranceImplicitPlusMinus4()
+        {
+            var tol = new Tolerance("± 10 ppm");  // alt-code 241
+
+            Assert.IsTrue(tol.PlusAndMinus);
+        }
+
+        [Test]
+        public void MassToleranceImplicitPlusMinus5()
+        {
+            var tol = new Tolerance("10 ppm");
+
+            Assert.IsFalse(tol.PlusAndMinus);
         }
 
         [Test]

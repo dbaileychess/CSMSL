@@ -23,32 +23,47 @@ using System.Text.RegularExpressions;
 
 namespace CSMSL
 {
+
+    /// <summary>
+    /// The tolerance, or error, of two points
+    /// </summary>
     public class Tolerance
     {
-        private static readonly Regex _fromString = new Regex(@"([\d.-]+)\s(PPM|DA|MMU)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+
+        private static readonly Regex StringRegex = new Regex(@"(\+-|-\+|±)?\s*([\d.]+)\s*(PPM|DA|MMU)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
         /// <summary>
-        /// 
+        /// Creates a new tolerance given a type, value, and whether the tolerance is ±
         /// </summary>
         /// <param name="type"></param>
         /// <param name="value"></param>
-        public Tolerance(ToleranceType type, double value)
+        /// <param name="plusAndMinus"></param>
+        public Tolerance(ToleranceType type, double value, bool plusAndMinus = true)
         {
             Type = type;
             Value = value;
+            PlusAndMinus = plusAndMinus;
         }
 
-        public Tolerance(ToleranceType type, double experimental, double theoretical)
-            : this(type, GetTolerance(experimental, theoretical, type)) { }
+        public Tolerance(ToleranceType type, double experimental, double theoretical, bool plusAndMinus = true)
+            : this(type, GetTolerance(experimental, theoretical, type), plusAndMinus) { }
 
+        /// <summary>
+        /// Calculates a tolerance from the string representation
+        /// <para>
+        /// i.e., "10 PPM", "-+10 PPM", "5 DA", "±10 MMU", etc...
+        /// </para>
+        /// </summary>
+        /// <param name="s"></param>
         public Tolerance(string s)
         {
-            Match m = _fromString.Match(s);
+            Match m = StringRegex.Match(s);
             if (!m.Success)
-                throw new ArgumentException("Input string is not in the correct format: " + s); 
-            Value = double.Parse(m.Groups[1].Value);
+                throw new ArgumentException("Input string is not in the correct format: " + s);
+            PlusAndMinus = m.Groups[1].Success;
+            Value = double.Parse(m.Groups[2].Value);
             ToleranceType type;
-            Enum.TryParse(m.Groups[2].Value, true, out type);
+            Enum.TryParse(m.Groups[3].Value, true, out type);
             Type = type;
         }
 
@@ -61,6 +76,11 @@ namespace CSMSL
         /// The value of the tolerance
         /// </summary>
         public double Value { get; set; }
+
+        /// <summary>
+        /// Indicates if this tolerance is ± or not
+        /// </summary>
+        public bool PlusAndMinus { get; set; }
 
         public DoubleRange GetRange(double mass)
         {
@@ -118,11 +138,13 @@ namespace CSMSL
             return Math.Abs(tolerance) <= Value;
         }
 
-        public static double PPMTolerance(double experimental, double theoretical)
+        public override string ToString()
         {
-            return (experimental - theoretical) / theoretical * 1000000.0;
+            return string.Format("{0}{1:f4} {2}", (PlusAndMinus) ? "±" : "", Value, Enum.GetName(typeof(ToleranceType), Type));
         }
 
+        #region Static
+        
         public static double GetTolerance(double experimental, double theoretical, ToleranceType type)
         {
             switch (type)
@@ -130,20 +152,25 @@ namespace CSMSL
                 case ToleranceType.MMU:
                     return (experimental - theoretical) * 1000.0;
                 case ToleranceType.PPM:
-                    return (experimental - theoretical) / theoretical * 1000000.0;
+                    return (experimental - theoretical) / theoretical * 1e6;
                 default:
                     return experimental - theoretical;
             }
         }
         
-        public static Tolerance FromPPM(double value)
+        public static Tolerance FromPPM(double value, bool plusAndMinus = true)
         {
-            return new Tolerance(ToleranceType.PPM, value);
+            return new Tolerance(ToleranceType.PPM, value, plusAndMinus);
         }
 
-        public static Tolerance FromDA(double value)
+        public static Tolerance FromDA(double value, bool plusAndMinus = true)
         {
-            return new Tolerance(ToleranceType.DA, value);
+            return new Tolerance(ToleranceType.DA, value, plusAndMinus);
+        }
+
+        public static Tolerance FromMMU(double value, bool plusAndMinus = true)
+        {
+            return new Tolerance(ToleranceType.MMU, value, plusAndMinus);
         }
 
         public static Tolerance CalculatePrecursorMassError(double theoreticalMass, double observedMass, out int nominalMassOffset, out double adjustedObservedMass, double difference = Constants.C13C12Difference,
@@ -156,15 +183,6 @@ namespace CSMSL
             return new Tolerance(type, adjustedObservedMass, theoreticalMass);
         }
 
-        //public static Tolerance CalculatePrecursorMassError(double theoreticalMZ, double observedMZ, int charge, out int nominalMassOffset, out double experimentalNeutralMass, double difference = Constants.Carbon13 - Constants.Carbon, ToleranceType type = ToleranceType.PPM)
-        //{
-        //    return CalculatePrecursorMassError(Mass.MassFromMz(theoreticalMZ, charge),
-        //        Mass.MassFromMz(observedMZ, charge), out nominalMassOffset, out experimentalNeutralMass, difference, type);
-        //}
-
-        public override string ToString()
-        {
-            return string.Format("{0:f4} {1}", Value, Enum.GetName(typeof(ToleranceType), Type));
-        }
+        #endregion
     }
 }

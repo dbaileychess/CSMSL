@@ -1,62 +1,34 @@
 ﻿using System;
 using System.Linq;
-using CSMSL.Chemistry;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
-using CSMSL.Spectral;
 
 namespace CSMSL
 {
-    public static class SpectrumExtension
-    {
-        public static Chromatogram GetExtractedIonChromatogram(this IEnumerable<ISpectrumTime> spectra, MzRange range)
-        {
-            if (range == null)
-            {
-                throw new ArgumentException("A range must be declared for a m/z range chromatogram");
-            }
-
-            List<double> times = new List<double>();
-            List<double> intensities = new List<double>();
-
-            foreach (ISpectrumTime spectrum in spectra)
-            {
-                double intensity;          
-            
-                spectrum.TryGetIntensities(range, out intensity);
-                times.Add(spectrum.Time);
-                intensities.Add(intensity);
-            }
-
-            return new MassRangeChromatogram(times.ToArray(), intensities.ToArray(), range);
-        }
-
-        public static Chromatogram GetClosetsPeakChromatogram(this IEnumerable<ISpectrumTime> spectra, MzRange range)
-        {
-            if (range == null)
-            {
-                throw new ArgumentException("A range must be declared for a m/z range chromatogram");
-            }
-
-            List<double> times = new List<double>();
-            List<double> intensities = new List<double>();
-
-            foreach (ISpectrumTime spectrum in spectra)
-            {
-                times.Add(spectrum.Time);
-                var peak = spectrum.GetClosestPeak(range);               
-                intensities.Add((peak != null) ? peak.Intensity : 0);                
-            }
-
-            return new MassRangeChromatogram(times.ToArray(), intensities.ToArray(), range);
-        }
-    }
+    /// A collection of extension methods used in CSMSL
 
     public static class UtilExtension
     {
+
         /// <summary>
-        /// Checks if two collections are equivalent, regardless of order
+        /// Compares to doubles for equality based on their absolute difference being less
+        /// than some specified tolerace.
+        /// </summary>
+        /// <param name="item1"></param>
+        /// <param name="item2"></param>
+        /// <param name="tolerance"></param>
+        /// <returns></returns>
+        public static bool FussyEquals(this double item1, double item2, double tolerance = 1e-10)
+        {
+            return Math.Abs(item1 - item2) < tolerance;
+        }
+    }
+
+    public static class CollectionExtension
+    {
+        /// <summary>
+        /// Checks if two collections are equivalent, regardless of the order of their contents
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="list1"></param>
@@ -90,6 +62,14 @@ namespace CSMSL
             return cnt.Values.All(c => c == 0);
         }
 
+        /// <summary>
+        /// Extracts a subarray from a larger array (similar to String.Substring)
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="data"></param>
+        /// <param name="index"></param>
+        /// <param name="length"></param>
+        /// <returns></returns>
         public static T[] SubArray<T>(this T[] data, int index, int length)
         {
             T[] result = new T[length];
@@ -97,22 +77,7 @@ namespace CSMSL
             return result;
         }
 
-        /// <summary>
-        /// Compares to doubles for equality based on their absolute difference being less
-        /// than some specified tolerace.
-        /// </summary>
-        /// <param name="item1"></param>
-        /// <param name="item2"></param>
-        /// <param name="tolerance"></param>
-        /// <returns></returns>
-        public static bool FussyEquals(this double item1, double item2, double tolerance = 1e-10)
-        {
-            return Math.Abs(item1 - item2) < tolerance;
-        }
-    }
 
-    public static class ListExtension
-    {
         public static double Median(this List<double> values)
         {
             int length = values.Count;
@@ -129,7 +94,6 @@ namespace CSMSL
             }
 
             return (values[mid] + values[mid - 1])/2.0;
-
         }
 
         public static double StdDev(this IList<double> values)
@@ -267,70 +231,7 @@ namespace CSMSL
             return bytes.Length >= 2 && bytes[0] == 31 && bytes[1] == 139;
         }
     }
-
-    public static class ChemicalFormulaFilterExtension
-    {
-        [Flags]
-        public enum FilterTypes
-        {
-            None = 0,
-            Valence = 1,
-            HydrogenCarbonRatio = 2,
-            All = 3,
-        }
-
-        public static IEnumerable<IChemicalFormula> Validate(this IEnumerable<IChemicalFormula> formulas, FilterTypes filters = FilterTypes.All)
-        {
-            bool useValence = filters.HasFlag(FilterTypes.Valence);
-            bool useHydrogenCarbonRatio = filters.HasFlag(FilterTypes.HydrogenCarbonRatio);
-
-            foreach (ChemicalFormula formula in formulas)
-            {
-                if (useHydrogenCarbonRatio)
-                {
-                    double ratio = formula.GetCarbonHydrogenRatio();
-               
-                    if (ratio < 0.5 || ratio > 2.0)
-                        continue;
-                }
-
-                if (useValence)
-                {
-                    int totalValence = 0;
-                    int maxValence = 0;
-                    int oddValences = 0;
-                    int atomCount = 0;
-                    int[] isotopes = formula.GetIsotopes();
-                    for (int i = 0; i < isotopes.Length; i++)
-                    {
-                        int numAtoms = isotopes[i];
-                        if (numAtoms != 0) 
-                            continue;
-                        Isotope isotope = PeriodicTable.Instance[i];
-                          
-                        int numValenceElectrons = isotope.ValenceElectrons;
-                        totalValence += numValenceElectrons * numAtoms;
-                        atomCount += numAtoms;
-                        if (numValenceElectrons > maxValence)
-                        {
-                            maxValence = numValenceElectrons;
-                        }
-                        if (numValenceElectrons % 2 != 0)
-                        {
-                            oddValences += numAtoms;
-                        }
-                    }
-                    if (!((totalValence % 2 == 0 || oddValences % 2 == 0) && (totalValence >= 2 * maxValence) && (totalValence >= ((2 * atomCount) - 1))))
-                    {
-                        continue;
-                    }
-                }
-                
-                yield return formula;
-            }
-        }
-    }
-
+    
     public static class MatrixExtension
     {
         public static double[,] Copy(this double[,] matrix)
@@ -369,12 +270,12 @@ namespace CSMSL
                 big = 0.0;
                 for (j = 0; j < n; j++)
                     if ((temp = Math.Abs(m[i, j])) > big) big = temp;
-                if (big.MassEquals(0.0))
+                if (big.FussyEquals(0.0))
                     throw new Exception("singular matrix");
 
                 vv[i] = 1.0 / big; //calculate scaling and save
             }
-            //k is for colums start with the left look for the columns under the diagonal for the biggest value want to move the largest over diagonal
+            //k is for columns start with the left look for the columns under the diagonal for the biggest value want to move the largest over diagonal
             for (k = 0; k < n; k++)//find the largest pivot element 
             {
                 big = 0.0;

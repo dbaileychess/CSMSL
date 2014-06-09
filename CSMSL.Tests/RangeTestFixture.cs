@@ -199,7 +199,7 @@ namespace CSMSL.Tests
         {
             var range1 = new DoubleRange(10, new Tolerance(ToleranceType.DA, 4));
 
-            Assert.AreEqual(4, range1.Width);
+            Assert.AreEqual(8, range1.Width);
         }
 
         [Test]
@@ -215,7 +215,7 @@ namespace CSMSL.Tests
         {
             var range1 = new DoubleRange(10, new Tolerance(ToleranceType.DA, 4));
 
-            Assert.AreEqual(8, range1.Minimum);
+            Assert.AreEqual(6, range1.Minimum);
         }
 
         [Test]
@@ -223,7 +223,7 @@ namespace CSMSL.Tests
         {
             var range1 = new DoubleRange(10, new Tolerance(ToleranceType.DA, 4));
 
-            Assert.AreEqual(12, range1.Maximum);
+            Assert.AreEqual(14, range1.Maximum);
         }
 
         [Test]

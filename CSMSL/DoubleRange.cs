@@ -40,12 +40,12 @@ namespace CSMSL
         /// </summary>
         /// <param name="mean">The mean value for the range</param>
         /// <param name="toleranceWidth">The full width of the range</param>
-        public DoubleRange(double mean, Tolerance toleranceWidth)
+        public DoubleRange(double mean, Tolerance tolerance)
         {
-            SetTolerance(mean, toleranceWidth);
+            SetTolerance(mean, tolerance);
         }
         
-        private void SetTolerance(double mean, Tolerance tolerance, bool fullWidth = true)
+        private void SetTolerance(double mean, Tolerance tolerance)
         {
             if (tolerance == null)
             {
@@ -55,7 +55,7 @@ namespace CSMSL
 
             double value = Math.Abs(tolerance.Value);
 
-            if (!fullWidth)
+            if (tolerance.PlusAndMinus)
                 value *= 2;
 
             switch (tolerance.Type)
