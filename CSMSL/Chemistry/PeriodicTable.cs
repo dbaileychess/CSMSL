@@ -1,22 +1,19 @@
-﻿///////////////////////////////////////////////////////////////////////////
-//  PeriodicTable.cs - The periodic table of the elements                 /
-//                                                                        /
-//  Copyright 2012 Derek J. Bailey                                        /
-//  This file is part of CSMSL.                                           /
-//                                                                        /
-//  CSMSL is free software: you can redistribute it and/or modify         /
-//  it under the terms of the GNU General Public License as published by  /
-//  the Free Software Foundation, either version 3 of the License, or     /
-//  (at your option) any later version.                                   /
-//                                                                        /
-//  CSMSL is distributed in the hope that it will be useful,              /
-//  but WITHOUT ANY WARRANTY; without even the implied warranty of        /
-//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         /
-//  GNU General Public License for more details.                          /
-//                                                                        /
-//  You should have received a copy of the GNU General Public License     /
-//  along with CSMSL.  If not, see <http://www.gnu.org/licenses/>.        /
-///////////////////////////////////////////////////////////////////////////
+﻿// Copyright 2012, 2013, 2014 Derek J. Bailey
+// 
+// This file (PeriodicTable.cs) is part of CSMSL.
+// 
+// CSMSL is free software: you can redistribute it and/or modify it
+// under the terms of the GNU Lesser General Public License as published
+// by the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// 
+// CSMSL is distributed in the hope that it will be useful, but WITHOUT
+// ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public
+// License for more details.
+// 
+// You should have received a copy of the GNU Lesser General Public
+// License along with CSMSL. If not, see <http://www.gnu.org/licenses/>.
 
 using System;
 using System.Collections.Generic;
@@ -30,7 +27,7 @@ namespace CSMSL.Chemistry
     /// The Periodic Table of Elements.
     /// </summary>
     public sealed class PeriodicTable
-    {    
+    {
         /// <summary>
         /// The singleton instance of the periodic table
         /// </summary>
@@ -46,7 +43,9 @@ namespace CSMSL.Chemistry
         /// </summary>
         internal const int RecommendedId = 5;
 
-        static PeriodicTable() { }
+        static PeriodicTable()
+        {
+        }
 
         /// <summary>
         /// Creates a default periodictable with the supplied elements in "Resources/Elements.xml"
@@ -54,7 +53,7 @@ namespace CSMSL.Chemistry
         private PeriodicTable()
         {
             _elements = new Dictionary<string, Element>();
-           
+
             // from: http://stackoverflow.com/questions/3314140/how-to-read-embedded-resource-text-file
             var assembly = Assembly.GetExecutingAssembly();
             LoadElements(assembly.GetManifestResourceStream("CSMSL.Resources.Elements.xml"));
@@ -68,38 +67,32 @@ namespace CSMSL.Chemistry
         /// </summary>
         public static PeriodicTable Instance
         {
-            get
-            {
-                return _instance;
-            }
+            get { return _instance; }
         }
-   
+
         /// <summary>
         /// The number of unique isotopes in this periodic table
         /// </summary>
         private int _uniqueId;
 
-        public int BiggestIsotopeNumber { get { return _uniqueId; }}
+        public int BiggestIsotopeNumber
+        {
+            get { return _uniqueId; }
+        }
 
         /// <summary>
         /// The main data store for all the isotopes in this periodic table. The isotope unique ID serves as the index in the array, these IDs are unique for each isotope.
         /// </summary>
         private Isotope[] _isotopes;
-      
+
         public Element this[string element]
         {
-            get
-            {
-                return _elements[element];
-            }
+            get { return _elements[element]; }
         }
 
         internal Isotope this[int uniqueId]
         {
-            get
-            {
-                return _isotopes[uniqueId];
-            }
+            get { return _isotopes[uniqueId]; }
         }
 
         public bool TryGetElement(string elementSymbol, out Element element)
@@ -120,13 +113,13 @@ namespace CSMSL.Chemistry
                     throw new Exception();
                 _uniqueId = int.Parse(idstr);
                 var isoStr = reader.GetAttribute("isotopesCount");
-                if(isoStr == null)
+                if (isoStr == null)
                     throw new Exception();
                 int isotopes = int.Parse(isoStr);
                 _isotopes = new Isotope[isotopes];
                 while (reader.ReadToFollowing("Element"))
-                {                  
-                    reader.ReadToFollowing("Name");   
+                {
+                    reader.ReadToFollowing("Name");
                     string name = reader.ReadElementContentAsString();
                     reader.ReadToFollowing("Symbol");
                     string symbol = reader.ReadElementContentAsString();
@@ -135,11 +128,11 @@ namespace CSMSL.Chemistry
                     reader.ReadToFollowing("ValenceElectrons");
                     int valenceElectrons = reader.ReadElementContentAsInt();
                     Element element = new Element(name, symbol, atomicnumber, valenceElectrons);
-                    
+
                     bool isStartNode = reader.ReadToNextSibling("Isotope");
-                    while(isStartNode)
-                    {                        
-                        string unqiueId = reader.GetAttribute("uniqueID");     
+                    while (isStartNode)
+                    {
+                        string unqiueId = reader.GetAttribute("uniqueID");
                         reader.ReadToFollowing("Mass");
                         double mass = reader.ReadElementContentAsDouble();
                         reader.ReadToFollowing("MassNumber");
@@ -149,7 +142,7 @@ namespace CSMSL.Chemistry
                         if (abundance > 0)
                         {
                             Isotope isotope = element.AddIsotope(massNumber, mass, abundance);
-                           
+
                             if (unqiueId != null)
                             {
                                 int uniqueId = int.Parse(unqiueId);
@@ -164,14 +157,14 @@ namespace CSMSL.Chemistry
                         }
                         if (!reader.IsStartElement("Isotope"))
                             isStartNode = reader.ReadToNextSibling("Isotope");
-                    } 
+                    }
 
 
-                    AddElement(element);                 
+                    AddElement(element);
                 }
             }
 
-            if(_isotopes.Length != _uniqueId)
+            if (_isotopes.Length != _uniqueId)
                 Array.Resize(ref _isotopes, _uniqueId);
         }
 
@@ -188,7 +181,7 @@ namespace CSMSL.Chemistry
                 _elements[element.AtomicSymbol] = element;
                 return false;
             }
-            
+
             _elements.Add(element.AtomicSymbol, element);
 
             // Special case for Deuterium

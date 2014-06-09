@@ -1,4 +1,21 @@
-﻿using NUnit.Framework;
+﻿// Copyright 2012, 2013, 2014 Derek J. Bailey
+// 
+// This file (MassToleranceTestFixture.cs) is part of CSMSL.Tests.
+// 
+// CSMSL.Tests is free software: you can redistribute it and/or modify it
+// under the terms of the GNU Lesser General Public License as published
+// by the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// 
+// CSMSL.Tests is distributed in the hope that it will be useful, but WITHOUT
+// ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public
+// License for more details.
+// 
+// You should have received a copy of the GNU Lesser General Public
+// License along with CSMSL.Tests. If not, see <http://www.gnu.org/licenses/>.
+
+using NUnit.Framework;
 
 namespace CSMSL.Tests
 {
@@ -72,15 +89,15 @@ namespace CSMSL.Tests
         [Test]
         public void MassToleranceImplicitPlusMinus3()
         {
-            var tol = new Tolerance("±10 ppm");  // alt-code 241
+            var tol = new Tolerance("±10 ppm"); // alt-code 241
 
-            Assert.AreEqual(tol.Type , ToleranceType.PlusAndMinus);
+            Assert.AreEqual(tol.Type, ToleranceType.PlusAndMinus);
         }
 
         [Test]
         public void MassToleranceImplicitPlusMinus4()
         {
-            var tol = new Tolerance("± 10 ppm");  // alt-code 241
+            var tol = new Tolerance("± 10 ppm"); // alt-code 241
 
             Assert.AreEqual(tol.Type, ToleranceType.PlusAndMinus);
         }
@@ -89,7 +106,7 @@ namespace CSMSL.Tests
         public void MassToleranceImplicitPlusMinus5()
         {
             var tol = new Tolerance("10 ppm");
-      
+
             Assert.AreEqual(tol.Type, ToleranceType.FullWidth);
         }
 
@@ -97,7 +114,7 @@ namespace CSMSL.Tests
         public void GetToleranceDaPositive()
         {
             double value = Tolerance.GetTolerance(10, 5, ToleranceUnit.DA);
-      
+
             Assert.AreEqual(5, value);
         }
 
@@ -124,6 +141,21 @@ namespace CSMSL.Tests
 
             Assert.AreEqual(1.9999999999527063, value);
         }
-        
+
+        [Test]
+        public void ToleranceWithin1()
+        {
+            var tol = Tolerance.FromPPM(10);
+
+            Assert.IsTrue(tol.Within(500, 500.005));
+        }
+
+        [Test]
+        public void ToleranceWithin2()
+        {
+            var tol = Tolerance.FromPPM(10, ToleranceType.FullWidth);
+
+            Assert.IsTrue(tol.Within(500, 500.005));
+        }
     }
 }

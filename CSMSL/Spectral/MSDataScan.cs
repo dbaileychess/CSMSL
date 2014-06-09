@@ -1,4 +1,21 @@
-﻿using CSMSL.IO;
+﻿// Copyright 2012, 2013, 2014 Derek J. Bailey
+// 
+// This file (MSDataScan.cs) is part of CSMSL.
+// 
+// CSMSL is free software: you can redistribute it and/or modify it
+// under the terms of the GNU Lesser General Public License as published
+// by the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// 
+// CSMSL is distributed in the hope that it will be useful, but WITHOUT
+// ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public
+// License for more details.
+// 
+// You should have received a copy of the GNU Lesser General Public
+// License along with CSMSL. If not, see <http://www.gnu.org/licenses/>.
+
+using CSMSL.IO;
 using System;
 
 namespace CSMSL.Spectral
@@ -29,15 +46,13 @@ namespace CSMSL.Spectral
                 }
                 return _massSpectrum;
             }
-            internal set
-            {
-                _massSpectrum = value;
-            }
+            internal set { _massSpectrum = value; }
         }
 
         public int SpectrumNumber { get; protected set; }
 
         private double _resolution = double.NaN;
+
         public double Resolution
         {
             get
@@ -52,29 +67,22 @@ namespace CSMSL.Spectral
                     {
                         throw new ArgumentException("The parent data file is closed");
                     }
-                }             
+                }
                 return _resolution;
             }
-            internal set
-            {
-                _resolution = value;
-            }
+            internal set { _resolution = value; }
         }
 
         private int _msnOrder = -1;
+
         public int MsnOrder
         {
-            get
-            {              
-                return _msnOrder;
-            }
-            protected set
-            {
-                _msnOrder = value;
-            }
+            get { return _msnOrder; }
+            protected set { _msnOrder = value; }
         }
 
         private double _injectionTime = double.NaN;
+
         public virtual double InjectionTime
         {
             get
@@ -92,13 +100,11 @@ namespace CSMSL.Spectral
                 }
                 return _injectionTime;
             }
-            internal set
-            {
-                _injectionTime = value;
-            }
+            internal set { _injectionTime = value; }
         }
 
         private double _retentionTime = double.NaN;
+
         public double RetentionTime
         {
             get
@@ -113,16 +119,14 @@ namespace CSMSL.Spectral
                     {
                         throw new ArgumentException("The parent data file is closed");
                     }
-                }              
+                }
                 return _retentionTime;
             }
-            internal set
-            {
-                _retentionTime = value;
-            }
+            internal set { _retentionTime = value; }
         }
 
         private Polarity _polarity = Polarity.Neutral;
+
         public Polarity Polarity
         {
             get
@@ -140,10 +144,7 @@ namespace CSMSL.Spectral
                 }
                 return _polarity;
             }
-            internal set
-            {
-                _polarity = value;
-            }
+            internal set { _polarity = value; }
         }
 
         private MZAnalyzerType _mzAnalyzer = MZAnalyzerType.Unknown;
@@ -165,13 +166,11 @@ namespace CSMSL.Spectral
                 }
                 return _mzAnalyzer;
             }
-            internal set
-            {
-                _mzAnalyzer = value;
-            }
+            internal set { _mzAnalyzer = value; }
         }
 
         private DoubleRange _mzRange;
+
         public DoubleRange MzRange
         {
             get
@@ -189,18 +188,16 @@ namespace CSMSL.Spectral
                 }
                 return _mzRange;
             }
-            internal set
-            {
-                _mzRange = value;
-            }
+            internal set { _mzRange = value; }
         }
 
         private int _parentScanNumber = -1;
+
         public int ParentScanNumber
         {
             get
             {
-                if(_parentScanNumber < 0)
+                if (_parentScanNumber < 0)
                 {
                     _parentScanNumber = ParentFile.GetParentSpectrumNumber(SpectrumNumber);
                 }
@@ -210,15 +207,11 @@ namespace CSMSL.Spectral
                 }
                 return _parentScanNumber;
             }
-            internal set
-            {
-                _parentScanNumber = value;
-            }
+            internal set { _parentScanNumber = value; }
         }
-        
+
         public MSDataScan()
         {
-
         }
 
         public MSDataScan(int spectrumNumber, int msnOrder = 1, MSDataFile parentFile = null)
@@ -247,7 +240,5 @@ namespace CSMSL.Spectral
             if (ReferenceEquals(this, other)) return true;
             return SpectrumNumber.Equals(other.SpectrumNumber) && ParentFile.Equals(other.ParentFile);
         }
-
-       
     }
 }

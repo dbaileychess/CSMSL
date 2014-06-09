@@ -1,4 +1,21 @@
-﻿using CSMSL.Chemistry;
+﻿// Copyright 2012, 2013, 2014 Derek J. Bailey
+// 
+// This file (ChemicalFormulaTestFixture.cs) is part of CSMSL.Tests.
+// 
+// CSMSL.Tests is free software: you can redistribute it and/or modify it
+// under the terms of the GNU Lesser General Public License as published
+// by the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// 
+// CSMSL.Tests is distributed in the hope that it will be useful, but WITHOUT
+// ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public
+// License for more details.
+// 
+// You should have received a copy of the GNU Lesser General Public
+// License along with CSMSL.Tests. If not, see <http://www.gnu.org/licenses/>.
+
+using CSMSL.Chemistry;
 using NUnit.Framework;
 using System.Collections.Generic;
 
@@ -7,7 +24,7 @@ namespace CSMSL.Tests.Chemistry
     [TestFixture]
     [Category("Chemical Formula")]
     public class ChemicalFormulaTestFixture
-    {    
+    {
         private static readonly ChemicalFormula NullChemicalFormula = null;
         private static readonly Element NullElement = null;
         private static readonly Isotope NullIsotope = null;
@@ -119,12 +136,12 @@ namespace CSMSL.Tests.Chemistry
         }
 
         [Test]
-        [ExpectedException(typeof(KeyNotFoundException), ExpectedMessage = "The element symbol 'Faa' is not found in the periodic table")]
+        [ExpectedException(typeof (KeyNotFoundException), ExpectedMessage = "The element symbol 'Faa' is not found in the periodic table")]
         public void AddNonExistentSymbolToFormula()
         {
-            ChemicalFormula formulaA = new ChemicalFormula("C2H3NO");          
-            
-            formulaA.Add("Faa", 1);           
+            ChemicalFormula formulaA = new ChemicalFormula("C2H3NO");
+
+            formulaA.Add("Faa", 1);
         }
 
         [Test]
@@ -132,9 +149,9 @@ namespace CSMSL.Tests.Chemistry
         {
             ChemicalFormula formulaA = new ChemicalFormula("C2H3NO");
             ChemicalFormula formulaB = new ChemicalFormula("C2H3NO");
-                       
+
             formulaA.Add(NullElement, 1);
-                      
+
             Assert.AreEqual(formulaA, formulaB);
         }
 
@@ -143,7 +160,7 @@ namespace CSMSL.Tests.Chemistry
         {
             ChemicalFormula formulaA = new ChemicalFormula("C2H3NO");
             ChemicalFormula formulaB = new ChemicalFormula("C2H3NO");
-                       
+
             formulaA.Add(NullIsotope, 1);
 
             Assert.AreEqual(formulaA, formulaB);
@@ -202,7 +219,7 @@ namespace CSMSL.Tests.Chemistry
         {
             ChemicalFormula formulaA = new ChemicalFormula("C2H3NO");
             ChemicalFormula formulaB = new ChemicalFormula("C2H3NO");
-                   
+
             formulaA.Add("H", 0);
 
             Assert.AreEqual(formulaA, formulaB);
@@ -212,8 +229,8 @@ namespace CSMSL.Tests.Chemistry
         public void BasicChemicalFormulaMassMonoisotopic()
         {
             ChemicalFormula water = new ChemicalFormula("H2O");
-           
-            Assert.AreEqual(2 * Constants.Hydrogen + Constants.Oxygen, water.MonoisotopicMass);
+
+            Assert.AreEqual(2*Constants.Hydrogen + Constants.Oxygen, water.MonoisotopicMass);
         }
 
         [Test]
@@ -224,13 +241,13 @@ namespace CSMSL.Tests.Chemistry
             Assert.AreEqual(18.015286435051941, water.AverageMass);
         }
 
-        [Test]        
+        [Test]
         public void ClearFormula()
         {
             ChemicalFormula formulaA = new ChemicalFormula("C2H3NO");
             formulaA.Clear();
 
-            Assert.AreEqual(formulaA, ChemicalFormula.Empty);            
+            Assert.AreEqual(formulaA, ChemicalFormula.Empty);
         }
 
 
@@ -239,7 +256,7 @@ namespace CSMSL.Tests.Chemistry
         {
             ChemicalFormula formulaA = new ChemicalFormula("");
 
-            Assert.AreEqual(formulaA, ChemicalFormula.Empty);          
+            Assert.AreEqual(formulaA, ChemicalFormula.Empty);
         }
 
         [Test]
@@ -247,15 +264,15 @@ namespace CSMSL.Tests.Chemistry
         {
             ChemicalFormula formulaA = new ChemicalFormula(string.Empty);
 
-            Assert.AreEqual(formulaA, ChemicalFormula.Empty);          
+            Assert.AreEqual(formulaA, ChemicalFormula.Empty);
         }
-        
+
         [Test]
         public void ConstructorDefaultEqualsEmptyFormula()
         {
             ChemicalFormula formulaA = new ChemicalFormula();
 
-            Assert.AreEqual(formulaA, ChemicalFormula.Empty);          
+            Assert.AreEqual(formulaA, ChemicalFormula.Empty);
         }
 
         [Test]
@@ -269,10 +286,10 @@ namespace CSMSL.Tests.Chemistry
 
         [Test]
         public void CopyConstructorNullEqualsEmptyFormula()
-        {           
+        {
             ChemicalFormula formulaA = new ChemicalFormula(NullChemicalFormula);
 
-            Assert.AreEqual(formulaA, ChemicalFormula.Empty);      
+            Assert.AreEqual(formulaA, ChemicalFormula.Empty);
         }
 
         [Test]
@@ -283,11 +300,11 @@ namespace CSMSL.Tests.Chemistry
 
             Assert.AreNotSame(formulaA, formulaB);
         }
-        
+
 
         [Test]
         public void EmptyMonoisotopicMassIsZero()
-        {           
+        {
             Assert.AreEqual(0.0, ChemicalFormula.Empty.MonoisotopicMass);
         }
 
@@ -296,7 +313,7 @@ namespace CSMSL.Tests.Chemistry
         {
             Assert.AreEqual(0.0, ChemicalFormula.Empty.AverageMass);
         }
-        
+
         [Test]
         public void EmptyStringIsBlank()
         {
@@ -317,7 +334,7 @@ namespace CSMSL.Tests.Chemistry
 
         [Test]
         public void EmptyIsotopeCountIsZero()
-        {   
+        {
             Assert.AreEqual(0, ChemicalFormula.Empty.IsotopeCount);
         }
 
@@ -343,7 +360,7 @@ namespace CSMSL.Tests.Chemistry
         {
             ChemicalFormula formulaA = new ChemicalFormula("C2H3NO");
             ChemicalFormula formulaB = new ChemicalFormula("CC{13}H3NO");
-            
+
             Assert.AreNotEqual(formulaA, formulaB);
         }
 
@@ -401,7 +418,7 @@ namespace CSMSL.Tests.Chemistry
         public void HillNotationNoCarbon()
         {
             ChemicalFormula formulaA = new ChemicalFormula("HBr");
-            
+
             Assert.AreEqual("BrH", formulaA.Formula);
         }
 
@@ -417,7 +434,7 @@ namespace CSMSL.Tests.Chemistry
         public void HillNotationNoHydrogen()
         {
             ChemicalFormula formulaA = new ChemicalFormula("NC2O");
-            
+
             Assert.AreEqual("C2NO", formulaA.Formula);
         }
 
@@ -425,7 +442,7 @@ namespace CSMSL.Tests.Chemistry
         public void HillNotationWithHeavyIsotope()
         {
             ChemicalFormula formulaA = new ChemicalFormula("H3NC2C{13}2O");
-            
+
             Assert.AreEqual("C2C{13}2H3NO", formulaA.Formula);
         }
 
@@ -433,7 +450,7 @@ namespace CSMSL.Tests.Chemistry
         public void HillNotationWithNegativeCount()
         {
             ChemicalFormula formulaA = new ChemicalFormula("H3NC-2O");
-            
+
             Assert.AreEqual("C-2H3NO", formulaA.Formula);
         }
 
@@ -441,10 +458,10 @@ namespace CSMSL.Tests.Chemistry
         public void HillNotationWithHeavyIsotopeNegativeCount()
         {
             ChemicalFormula formulaA = new ChemicalFormula("H3NC2C{13}-2O");
-            
+
             Assert.AreEqual("C2C{13}-2H3NO", formulaA.Formula);
         }
-        
+
         [Test]
         public void HillNotationDelimiter()
         {
@@ -477,7 +494,7 @@ namespace CSMSL.Tests.Chemistry
         [Test]
         public void ImplicitAddNullFormulaRight()
         {
-            ChemicalFormula formulaA = new ChemicalFormula("C2H3NO");     
+            ChemicalFormula formulaA = new ChemicalFormula("C2H3NO");
             ChemicalFormula formulaB = new ChemicalFormula("C2H3NO");
 
             ChemicalFormula formulaC = formulaA + NullChemicalFormula;
@@ -519,7 +536,7 @@ namespace CSMSL.Tests.Chemistry
             ChemicalFormula formulaA = new ChemicalFormula("C2H3NO");
             ChemicalFormula formulaB = new ChemicalFormula("C4H6N2O2");
 
-            ChemicalFormula formulaC = formulaA * 2;
+            ChemicalFormula formulaC = formulaA*2;
 
             Assert.AreEqual(formulaC, formulaB);
         }
@@ -530,7 +547,7 @@ namespace CSMSL.Tests.Chemistry
             ChemicalFormula formulaA = new ChemicalFormula("C2H3NO");
             ChemicalFormula formulaB = new ChemicalFormula("C4H6N2O2");
 
-            ChemicalFormula formulaC = 2 * formulaA;
+            ChemicalFormula formulaC = 2*formulaA;
 
             Assert.AreEqual(formulaC, formulaB);
         }
@@ -545,14 +562,14 @@ namespace CSMSL.Tests.Chemistry
             ChemicalFormula formulaD = formulaA - formulaB;
 
             Assert.AreEqual(formulaC, formulaD);
-        }        
+        }
 
         [Test]
         public void InvalidChemicalElement()
         {
             Assert.Throws<KeyNotFoundException>(() => { _ignore = Element.PeriodicTable["Faa"]; });
         }
-         
+
         [Test]
         public void InvalidElementIsotope()
         {
@@ -580,7 +597,7 @@ namespace CSMSL.Tests.Chemistry
         {
             Assert.AreEqual(0, ChemicalFormula.Empty.AtomCount);
         }
-        
+
         [Test]
         public void NumberOfAtomsOfNegativeFormula()
         {
@@ -796,13 +813,14 @@ namespace CSMSL.Tests.Chemistry
         [Test]
         public void RemoveNullFormulaFromFromula()
         {
-            ChemicalFormula formulaA = new ChemicalFormula("C2H3NO");     
+            ChemicalFormula formulaA = new ChemicalFormula("C2H3NO");
             ChemicalFormula formulaB = new ChemicalFormula("C2H3NO");
 
             formulaA.Remove(NullChemicalFormula);
 
             Assert.AreEqual(formulaA, formulaB);
         }
+
         [Test]
         public void RemoveNullIsotopeFromFromula()
         {
@@ -837,7 +855,7 @@ namespace CSMSL.Tests.Chemistry
         public void TotalProtons()
         {
             ChemicalFormula formulaA = new ChemicalFormula("C2H3NO");
-            
+
             Assert.AreEqual(22, formulaA.GetProtonCount());
         }
 
@@ -881,7 +899,7 @@ namespace CSMSL.Tests.Chemistry
         public void UniqueIsotopesWithHeavyIsotope()
         {
             ChemicalFormula formulaA = new ChemicalFormula("CC{13}H3NO");
-         
+
             Assert.AreEqual(5, formulaA.IsotopeCount);
         }
 
@@ -920,6 +938,5 @@ namespace CSMSL.Tests.Chemistry
 
             Assert.IsFalse(formulaB.IsSuperSetOf(formulaA));
         }
-
     }
 }

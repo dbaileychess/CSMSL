@@ -1,4 +1,21 @@
-﻿using System;
+﻿// Copyright 2012, 2013, 2014 Derek J. Bailey
+// 
+// This file (SortedMaxSizedContainer.cs) is part of CSMSL.
+// 
+// CSMSL is free software: you can redistribute it and/or modify it
+// under the terms of the GNU Lesser General Public License as published
+// by the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// 
+// CSMSL is distributed in the hope that it will be useful, but WITHOUT
+// ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public
+// License for more details.
+// 
+// You should have received a copy of the GNU Lesser General Public
+// License along with CSMSL. If not, see <http://www.gnu.org/licenses/>.
+
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -62,7 +79,9 @@ namespace CSMSL.Util.Collections
         /// </summary>
         /// <param name="maxSize">The maximum number of items to store in this container</param>
         public SortedMaxSizedContainer(int maxSize)
-            : this(maxSize, Comparer<T>.Default) { }
+            : this(maxSize, Comparer<T>.Default)
+        {
+        }
 
 
         public override string ToString()
@@ -157,7 +176,7 @@ namespace CSMSL.Util.Collections
         private void ShrinkArray(int size)
         {
             int newSize = Math.Max(Math.Max(Count, size), DefaultSizeOfArray);
-            if(_items.Length != newSize)
+            if (_items.Length != newSize)
                 Array.Resize(ref _items, newSize);
         }
 
@@ -223,7 +242,7 @@ namespace CSMSL.Util.Collections
             {
                 _items[i] = _items[i + 1];
             }
-            
+
             Count--;
             int arraySize = _items.Length;
             if (Count < (arraySize/2))
@@ -260,7 +279,7 @@ namespace CSMSL.Util.Collections
         /// <returns>True if it exists, false otherwise</returns>
         public bool Contains(T item)
         {
-            if (Count < SizeForLinearOrBinarySearch) 
+            if (Count < SizeForLinearOrBinarySearch)
                 return _items.Contains(item);
             return Array.BinarySearch(_items, 0, Count, item, _comparer) >= 0;
         }
@@ -303,7 +322,7 @@ namespace CSMSL.Util.Collections
         {
             return _items.Take(Count).GetEnumerator();
         }
-        
+
         /// <summary>
         /// This Collection is not read only by design
         /// </summary>
@@ -311,6 +330,5 @@ namespace CSMSL.Util.Collections
         {
             get { return false; }
         }
-        
     }
 }

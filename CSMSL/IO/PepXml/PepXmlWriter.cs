@@ -1,4 +1,21 @@
-﻿using System;
+﻿// Copyright 2012, 2013, 2014 Derek J. Bailey
+// 
+// This file (PepXmlWriter.cs) is part of CSMSL.
+// 
+// CSMSL is free software: you can redistribute it and/or modify it
+// under the terms of the GNU Lesser General Public License as published
+// by the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// 
+// CSMSL is distributed in the hope that it will be useful, but WITHOUT
+// ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public
+// License for more details.
+// 
+// You should have received a copy of the GNU Lesser General Public
+// License along with CSMSL. If not, see <http://www.gnu.org/licenses/>.
+
+using System;
 using System.Text;
 using System.Xml;
 using System.IO;
@@ -38,9 +55,9 @@ namespace CSMSL.IO.PepXML
             _writer.WriteAttributeString("summary_xml", filePath);
             _writer.WriteAttributeString("xmlns", "http://regis-web.systembiology.net/pepXML");
 
-            SetCurrentStage(Stage.RunSummary, false);    
+            SetCurrentStage(Stage.RunSummary, false);
         }
-        
+
 
         public void SetCurrentStage(Stage stage, bool endPreviousStage = true)
         {
@@ -55,14 +72,14 @@ namespace CSMSL.IO.PepXML
                 case Stage.SearchSummary:
                     _writer.WriteStartElement("search_summary");
                     break;
-                case Stage.Spectra:                   
+                case Stage.Spectra:
                 default:
                     break;
             }
         }
 
         public void WriteParameter(string name, string value)
-        {            
+        {
             _writer.WriteStartElement("parameter");
             _writer.WriteAttributeString("name", name);
             _writer.WriteAttributeString("value", value);
@@ -76,7 +93,7 @@ namespace CSMSL.IO.PepXML
 
         private double spectrumNeutralMass;
 
-        public void StartSpectrum(int spectrumNumbner, double rt, double precursorNeutralMass, int chargeState, string title ="")
+        public void StartSpectrum(int spectrumNumbner, double rt, double precursorNeutralMass, int chargeState, string title = "")
         {
             _writer.WriteStartElement("spectrum_query");
             _writer.WriteAttributeString("spectrum", title);
@@ -95,7 +112,7 @@ namespace CSMSL.IO.PepXML
             _writer.WriteStartElement("search_hit");
             _writer.WriteAttributeString("hit_rank", hitRank.ToString());
             _writer.WriteAttributeString("peptide", psm.Peptide.Sequence);
-            _writer.WriteAttributeString("peptide_prev_aa" , (psm.Peptide.PreviousAminoAcid != null) ? psm.Peptide.PreviousAminoAcid.Letter.ToString() : "-");
+            _writer.WriteAttributeString("peptide_prev_aa", (psm.Peptide.PreviousAminoAcid != null) ? psm.Peptide.PreviousAminoAcid.Letter.ToString() : "-");
             _writer.WriteAttributeString("peptide_next_aa", (psm.Peptide.NextAminoAcid != null) ? psm.Peptide.NextAminoAcid.Letter.ToString() : "-");
 
             double pepMonoMass = psm.Peptide.MonoisotopicMass;
@@ -105,7 +122,8 @@ namespace CSMSL.IO.PepXML
 
             Protein protein = psm.Peptide.Parent as Protein;
 
-            if(protein != null) {
+            if (protein != null)
+            {
                 _writer.WriteAttributeString("protein", protein.Description);
                 _writer.WriteAttributeString("protein_descr", protein.Description);
             }
@@ -114,7 +132,7 @@ namespace CSMSL.IO.PepXML
             _writer.WriteAttributeString("is_rejected", "0");
 
             _writer.WriteStartElement("search_score");
-            _writer.WriteAttributeString("name", Enum.GetName(typeof(PeptideSpectralMatchScoreType), psm.ScoreType));
+            _writer.WriteAttributeString("name", Enum.GetName(typeof (PeptideSpectralMatchScoreType), psm.ScoreType));
             _writer.WriteAttributeString("value", psm.Score.ToString());
             _writer.WriteEndElement(); // search_score
 
@@ -134,7 +152,7 @@ namespace CSMSL.IO.PepXML
 
             _writer.WriteAttributeString("base_name", BaseName);
             _writer.WriteAttributeString("search_engine", searchEngine);
-            _writer.WriteAttributeString("precursor_mass_type", (isPrecursorMassMonoisotopic) ? "monoisotopic": "average");
+            _writer.WriteAttributeString("precursor_mass_type", (isPrecursorMassMonoisotopic) ? "monoisotopic" : "average");
             _writer.WriteAttributeString("fragment_mass_type", (isProductMassMonoisotopic) ? "monoisotopic" : "average");
             _writer.WriteAttributeString("search_id", "1");
         }
@@ -146,20 +164,20 @@ namespace CSMSL.IO.PepXML
 
             _writer.WriteStartElement("search_database");
             _writer.WriteAttributeString("seq_type", "AA");
-            _writer.WriteAttributeString("local_path", fastaFilePath);          
+            _writer.WriteAttributeString("local_path", fastaFilePath);
 
-            name = (string.IsNullOrEmpty(name)) ? Path.GetFileNameWithoutExtension(fastaFilePath) : name;           
+            name = (string.IsNullOrEmpty(name)) ? Path.GetFileNameWithoutExtension(fastaFilePath) : name;
             _writer.WriteAttributeString("database_name", name);
 
             if (!string.IsNullOrEmpty(releaseDate))
                 _writer.WriteAttributeString("database_release_date", releaseDate);
-            
+
             int entries = FastaReader.NumberOfEntries(fastaFilePath);
             _writer.WriteAttributeString("size_in_db_entries", entries.ToString());
 
             _writer.WriteEndElement(); // search_database
         }
-           
+
         public void WriteModification(IMass modification, ModificationSites sites, bool fixedModification = true)
         {
             if (CurrentStage != Stage.SearchSummary)
@@ -181,17 +199,16 @@ namespace CSMSL.IO.PepXML
                         _writer.WriteAttributeString("terminus", "C");
                         basemass += AminoAcidPolymer.DefaultCTerminus.MonoisotopicMass;
                     }
-                   
+
                     _writer.WriteAttributeString("protein_terminus", (singleSite.HasFlag(ModificationSites.NProt) || singleSite.HasFlag(ModificationSites.ProtC)) ? "Y" : "N");
                 }
                 else
                 {
-                    string letter = Enum.GetName(typeof(ModificationSites), singleSite);
+                    string letter = Enum.GetName(typeof (ModificationSites), singleSite);
                     AminoAcid aa = AminoAcid.GetResidue(letter);
                     _writer.WriteStartElement("aminoacid_modification");
                     _writer.WriteAttributeString("aminoacid", letter);
                     basemass += aa.MonoisotopicMass;
-
                 }
                 double massshift = modification.MonoisotopicMass;
                 _writer.WriteAttributeString("variable", (fixedModification) ? "N" : "Y");
@@ -222,14 +239,14 @@ namespace CSMSL.IO.PepXML
             _writer.WriteStartElement("sample_enzyme");
             _writer.WriteAttributeString("name", protease.Name);
             _writer.WriteStartElement("specificity");
-            _writer.WriteAttributeString("sense", Enum.GetName(typeof(Terminus), protease.Terminal));
+            _writer.WriteAttributeString("sense", Enum.GetName(typeof (Terminus), protease.Terminal));
             //_writer.WriteAttributeString("pattern", protease.CleavagePattern); // not part of the schema
             _writer.WriteAttributeString("cut", protease.Cut);
             _writer.WriteAttributeString("no_cut", protease.NoCut);
             _writer.WriteEndElement(); // specificity
             _writer.WriteEndElement(); // sample_enzyme
         }
-        
+
         public void Dispose()
         {
             if (_writer != null)

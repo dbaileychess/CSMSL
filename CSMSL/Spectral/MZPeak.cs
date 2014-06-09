@@ -1,22 +1,19 @@
-﻿///////////////////////////////////////////////////////////////////////////
-//  Peak.cs - A particular feature on a m/z spectrum                      /
-//                                                                        /
-//  Copyright 2012 Derek J. Bailey                                        /
-//  This file is part of CSMSL.                                           /
-//                                                                        /
-//  CSMSL is free software: you can redistribute it and/or modify         /
-//  it under the terms of the GNU General Public License as published by  /
-//  the Free Software Foundation, either version 3 of the License, or     /
-//  (at your option) any later version.                                   /
-//                                                                        /
-//  CSMSL is distributed in the hope that it will be useful,              /
-//  but WITHOUT ANY WARRANTY; without even the implied warranty of        /
-//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         /
-//  GNU General Public License for more details.                          /
-//                                                                        /
-//  You should have received a copy of the GNU General Public License     /
-//  along with CSMSL.  If not, see <http://www.gnu.org/licenses/>.        /
-///////////////////////////////////////////////////////////////////////////
+﻿// Copyright 2012, 2013, 2014 Derek J. Bailey
+// 
+// This file (MZPeak.cs) is part of CSMSL.
+// 
+// CSMSL is free software: you can redistribute it and/or modify it
+// under the terms of the GNU Lesser General Public License as published
+// by the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// 
+// CSMSL is distributed in the hope that it will be useful, but WITHOUT
+// ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public
+// License for more details.
+// 
+// You should have received a copy of the GNU Lesser General Public
+// License along with CSMSL. If not, see <http://www.gnu.org/licenses/>.
 
 using System;
 
@@ -29,12 +26,12 @@ namespace CSMSL.Spectral
     {
         public double Intensity { get; private set; }
         public double MZ { get; private set; }
-        
+
         public MZPeak(double mz = 0.0, double intensity = 0.0)
         {
             MZ = mz;
             Intensity = intensity;
-        }       
+        }
 
         public bool Equals(IPeak other)
         {
@@ -45,8 +42,8 @@ namespace CSMSL.Spectral
         public override string ToString()
         {
             return string.Format("({0:F4},{1:G5})", MZ, Intensity);
-        }        
-                
+        }
+
         public int CompareTo(double other)
         {
             return MZ.CompareTo(other);
@@ -62,7 +59,7 @@ namespace CSMSL.Spectral
         public int CompareTo(object other)
         {
             if (other is double)
-                return MZ.CompareTo((double)other);
+                return MZ.CompareTo((double) other);
             var peak = other as IPeak;
             if (peak != null)
                 return CompareTo(peak);
@@ -81,7 +78,7 @@ namespace CSMSL.Spectral
 
         public override bool Equals(object obj)
         {
-            return obj is MZPeak && Equals((MZPeak)obj);
+            return obj is MZPeak && Equals((MZPeak) obj);
         }
 
         public override int GetHashCode()

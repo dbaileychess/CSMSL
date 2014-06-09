@@ -1,23 +1,19 @@
-﻿///////////////////////////////////////////////////////////////////////////
-//  Peptide.cs - An amino acid residue that is the child of a protein     /
-//                                                                        /
-//  Copyright 2012 Derek J. Bailey                                        /
-//  This file is part of CSMSL.                                           /
-//                                                                        /
-//  CSMSL is free software: you can redistribute it and/or modify         /
-//  it under the terms of the GNU General Public License as published by  /
-//  the Free Software Foundation, either version 3 of the License, or     /
-//  (at your option) any later version.                                   /
-//                                                                        /
-//  CSMSL is distributed in the hope that it will be useful,              /
-//  but WITHOUT ANY WARRANTY; without even the implied warranty of        /
-//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         /
-//  GNU General Public License for more details.                          /
-//                                                                        /
-//  You should have received a copy of the GNU General Public License     /
-//  along with CSMSL.  If not, see <http://www.gnu.org/licenses/>.        /
-///////////////////////////////////////////////////////////////////////////
-
+﻿// Copyright 2012, 2013, 2014 Derek J. Bailey
+// 
+// This file (Peptide.cs) is part of CSMSL.
+// 
+// CSMSL is free software: you can redistribute it and/or modify it
+// under the terms of the GNU Lesser General Public License as published
+// by the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// 
+// CSMSL is distributed in the hope that it will be useful, but WITHOUT
+// ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public
+// License for more details.
+// 
+// You should have received a copy of the GNU Lesser General Public
+// License along with CSMSL. If not, see <http://www.gnu.org/licenses/>.
 
 using System;
 using System.Collections.Generic;
@@ -69,13 +65,19 @@ namespace CSMSL.Proteomics
         }
 
         public Peptide(AminoAcidPolymer aminoAcidPolymer)
-            : this(aminoAcidPolymer, 0, aminoAcidPolymer.Length) { }
-                 
+            : this(aminoAcidPolymer, 0, aminoAcidPolymer.Length)
+        {
+        }
+
         public Peptide(string sequence)
-            : this(sequence, null, 0) { }
+            : this(sequence, null, 0)
+        {
+        }
 
         public Peptide(string sequence, Protein parent)
-            : this(sequence, parent, 0) { }
+            : this(sequence, parent, 0)
+        {
+        }
 
         public Peptide(string sequence, Protein parent, int startResidue)
             : base(sequence)
@@ -86,7 +88,6 @@ namespace CSMSL.Proteomics
 
             if (parent != null)
             {
-
                 if (StartResidue > 0)
                     PreviousAminoAcid = parent.AminoAcids[StartResidue - 1];
 
@@ -104,8 +105,8 @@ namespace CSMSL.Proteomics
             if (isotopologues.Length < 1)
             {
                 yield break;
-            } 
-          
+            }
+
             // Grab the the first isotopologue
             IIsotopologue isotopologue = isotopologues[0];
 
@@ -133,12 +134,11 @@ namespace CSMSL.Proteomics
                     yield return peptide;
                 }
             }
-            
-        }        
+        }
 
         public IEnumerable<Peptide> GenerateIsoforms()
-        {            
-            return GenerateIsoforms(this, false, GetModifications().Where(mod => mod != null).Cast<Modification>().ToArray()); 
+        {
+            return GenerateIsoforms(this, false, GetModifications().Where(mod => mod != null).Cast<Modification>().ToArray());
         }
 
         public IEnumerable<Peptide> GenerateIsoforms(bool keepBaseModifications, params Modification[] modifications)
@@ -202,7 +202,7 @@ namespace CSMSL.Proteomics
                 HashSet<Modification[]> results = new HashSet<Modification[]>(new ModificationArrayComparer());
 
                 // Call out to the recursive helper method, starting with mod 0 and site 0
-                GenIsoHelper(results, new Modification[peptide.Length+2], modifications, allowedSites, 0, 0);
+                GenIsoHelper(results, new Modification[peptide.Length + 2], modifications, allowedSites, 0, 0);
 
                 // Create correct peptide mappings
                 foreach (Modification[] modArray in results)
@@ -211,7 +211,7 @@ namespace CSMSL.Proteomics
                     for (int i = 0; i < modArray.Length; i++)
                     {
                         var mod = modArray[i];
-                        if(mod == null)
+                        if (mod == null)
                             continue;
 
                         if (i == 0)
@@ -226,7 +226,6 @@ namespace CSMSL.Proteomics
                         {
                             pep.AddModification(mod, i);
                         }
-
                     }
                     yield return pep;
                 }
@@ -275,8 +274,8 @@ namespace CSMSL.Proteomics
                     else
                     {
                         // Completed all the mods, add the configuration to the saved list, if possible
-                        results.Add((Modification[])modArray.Clone());
-                        
+                        results.Add((Modification[]) modArray.Clone());
+
                         // Remove the last mod added
                         modArray[index] = null;
                     }
@@ -289,7 +288,7 @@ namespace CSMSL.Proteomics
             // All Done with this level
             return modArray;
         }
-        
+
         public static IEnumerable<Peptide> GenerateIsoforms(Peptide peptide, Modification modification, long ptms)
         {
             // Get all the possible modified-residues' indices (zero-based)
@@ -315,11 +314,11 @@ namespace CSMSL.Proteomics
                 for (int i = 0; i < ptms; i++)
                 {
                     long ans = Combinatorics.LargestV(a, b, x);
-                    int index = sites[(int)(ptmsites - ans - 1)];
+                    int index = sites[(int) (ptmsites - ans - 1)];
                     if (index == 0)
                     {
                         pep.AddModification(modification, Terminus.N);
-                    } 
+                    }
                     else if (index > pep.Length)
                     {
                         pep.AddModification(modification, Terminus.C);
@@ -336,10 +335,9 @@ namespace CSMSL.Proteomics
                 yield return pep;
             }
         }
-
     }
 
-    class ModificationArrayComparer : IEqualityComparer<Modification[]>
+    internal class ModificationArrayComparer : IEqualityComparer<Modification[]>
     {
         public bool Equals(Modification[] x, Modification[] y)
         {

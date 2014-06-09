@@ -1,4 +1,21 @@
-﻿using System;
+﻿// Copyright 2012, 2013, 2014 Derek J. Bailey
+// 
+// This file (ClassExtensions.cs) is part of CSMSL.
+// 
+// CSMSL is free software: you can redistribute it and/or modify it
+// under the terms of the GNU Lesser General Public License as published
+// by the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// 
+// CSMSL is distributed in the hope that it will be useful, but WITHOUT
+// ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public
+// License for more details.
+// 
+// You should have received a copy of the GNU Lesser General Public
+// License along with CSMSL. If not, see <http://www.gnu.org/licenses/>.
+
+using System;
 using System.Linq;
 using System.Collections.Generic;
 using System.IO;
@@ -7,10 +24,8 @@ using System.IO.Compression;
 namespace CSMSL
 {
     /// A collection of extension methods used in CSMSL
-
     public static class UtilExtension
     {
-
         /// <summary>
         /// Compares to doubles for equality based on their absolute difference being less
         /// than some specified tolerace.
@@ -105,7 +120,7 @@ namespace CSMSL
 
             double mean = values.Average();
             double stdDev = values.Sum(value => (value - mean)*(value - mean));
-            return Math.Sqrt(stdDev / values.Count);
+            return Math.Sqrt(stdDev/values.Count);
         }
 
         public static int[] Histogram(this IList<double> values, int numberOfBins, out double min, out double max, out double binSize)
@@ -118,7 +133,7 @@ namespace CSMSL
 
             foreach (double value in values)
             {
-                int binnedValue = (int)((value - min) / binSize);// (int)Math.Floor((value - min) / binSize);
+                int binnedValue = (int) ((value - min)/binSize); // (int)Math.Floor((value - min) / binSize);
                 if (binnedValue == numberOfBins)
                     binnedValue--;
                 bins[binnedValue]++;
@@ -129,20 +144,20 @@ namespace CSMSL
         public static int[] Histogram(this IList<double> values, int numberOfBins, double min, double max, out double binSize)
         {
             double range = max - min;
-            binSize = range / numberOfBins;
+            binSize = range/numberOfBins;
             int[] bins = new int[numberOfBins];
 
             foreach (double value in values)
             {
-                if(value < min || value > max)
+                if (value < min || value > max)
                     continue;
-                int binnedValue = (int)((value - min) / binSize);
+                int binnedValue = (int) ((value - min)/binSize);
                 if (binnedValue == numberOfBins)
                     binnedValue--;
                 bins[binnedValue]++;
             }
             return bins;
-        } 
+        }
 
         public static int MaxIndex<T>(this IEnumerable<T> sequence) where T : IComparable<T>
         {
@@ -168,20 +183,21 @@ namespace CSMSL
             if (list == null)
                 throw new ArgumentNullException("list");
             if (index < 0 || length < 0)
-                throw new ArgumentOutOfRangeException( (index < 0) ? "index" : "length" );
+                throw new ArgumentOutOfRangeException((index < 0) ? "index" : "length");
             if (list.Count - index < length)
                 throw new ArgumentException();
 
             int lower = index;
-            int upper = (index + length -1);
-            while(lower <= upper) {
+            int upper = (index + length - 1);
+            while (lower <= upper)
+            {
                 int adjustedIndex = lower + ((upper - lower) >> 1);
                 int comparison = comparer.Compare(list[adjustedIndex], value);
-                if(comparison == 0)
+                if (comparison == 0)
                     return adjustedIndex;
                 if (comparison < 0)
                     lower = adjustedIndex + 1;
-                else 
+                else
                     upper = adjustedIndex - 1;
             }
             return ~lower;
@@ -198,7 +214,6 @@ namespace CSMSL
         {
             return list.BinarySearch(value, Comparer<T>.Default);
         }
-       
     }
 
     public static class ByteArrayExtension
@@ -231,14 +246,14 @@ namespace CSMSL
             return bytes.Length >= 2 && bytes[0] == 31 && bytes[1] == 139;
         }
     }
-    
+
     public static class MatrixExtension
     {
         public static double[,] Copy(this double[,] matrix)
         {
             int rows = matrix.GetLength(0);
             int cols = matrix.GetLength(1);
-            double[,] newMatrix = new double[rows,cols];
+            double[,] newMatrix = new double[rows, cols];
             for (int r = 0; r < rows; r++)
             {
                 for (int c = 0; c < cols; c++)
@@ -273,15 +288,15 @@ namespace CSMSL
                 if (big.FussyEquals(0.0))
                     throw new Exception("singular matrix");
 
-                vv[i] = 1.0 / big; //calculate scaling and save
+                vv[i] = 1.0/big; //calculate scaling and save
             }
             //k is for columns start with the left look for the columns under the diagonal for the biggest value want to move the largest over diagonal
-            for (k = 0; k < n; k++)//find the largest pivot element 
+            for (k = 0; k < n; k++) //find the largest pivot element 
             {
                 big = 0.0;
                 for (i = k; i < n; i++)
                 {
-                    temp = vv[i] * Math.Abs(m[i, k]);
+                    temp = vv[i]*Math.Abs(m[i, k]);
                     if (temp > big)
                     {
                         big = temp;
@@ -289,11 +304,11 @@ namespace CSMSL
                     }
                 }
 
-                if (k != imax)//do we need a row change 
+                if (k != imax) //do we need a row change 
                 {
-                    for (j = 0; j < n; j++)// counter for the colums
+                    for (j = 0; j < n; j++) // counter for the colums
                     {
-                        temp = m[imax, j];// change the rows
+                        temp = m[imax, j]; // change the rows
                         m[imax, j] = m[k, j];
                         m[k, j] = temp;
                     }
@@ -303,9 +318,9 @@ namespace CSMSL
 
                 for (i = k + 1; i < n; i++)
                 {
-                    temp = m[i, k] /= m[k, k];//divide pilot element
+                    temp = m[i, k] /= m[k, k]; //divide pilot element
                     for (j = k + 1; j < n; j++)
-                        m[i, j] -= temp * m[k, j];
+                        m[i, j] -= temp*m[k, j];
                 }
             }
             return m;
@@ -329,7 +344,7 @@ namespace CSMSL
                 sum = result[ip];
                 result[ip] = result[i];
                 if (ii != 0)
-                    for (j = ii - 1; j < i; j++) sum -= luMatrix[i, j] * result[j];
+                    for (j = ii - 1; j < i; j++) sum -= luMatrix[i, j]*result[j];
                 else if (sum.Equals(0.0))
                     ii = i + 1;
                 result[i] = sum;
@@ -337,14 +352,11 @@ namespace CSMSL
             for (i = n - 1; i >= 0; i--)
             {
                 sum = result[i];
-                for (j = i + 1; j < n; j++) sum -= luMatrix[i, j] * result[j];
-                result[i] = sum / luMatrix[i, i];
+                for (j = i + 1; j < n; j++) sum -= luMatrix[i, j]*result[j];
+                result[i] = sum/luMatrix[i, i];
             }
 
             return result;
         }
     }
-    
 }
-
-

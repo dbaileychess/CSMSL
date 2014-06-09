@@ -1,22 +1,19 @@
-﻿///////////////////////////////////////////////////////////////////////////
-//  ChemicalFormula.cs - A collection of elements in a single molecule    /
-//                                                                        /
-//  Copyright 2012 Derek J. Bailey                                        /
-//  This file is part of CSMSL.                                           /
-//                                                                        /
-//  CSMSL is free software: you can redistribute it and/or modify         /
-//  it under the terms of the GNU General Public License as published by  /
-//  the Free Software Foundation, either version 3 of the License, or     /
-//  (at your option) any later version.                                   /
-//                                                                        /
-//  CSMSL is distributed in the hope that it will be useful,              /
-//  but WITHOUT ANY WARRANTY; without even the implied warranty of        /
-//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         /
-//  GNU General Public License for more details.                          /
-//                                                                        /
-//  You should have received a copy of the GNU General Public License     /
-//  along with CSMSL.  If not, see <http://www.gnu.org/licenses/>.        /
-///////////////////////////////////////////////////////////////////////////
+﻿// Copyright 2012, 2013, 2014 Derek J. Bailey
+// 
+// This file (ChemicalFormula.cs) is part of CSMSL.
+// 
+// CSMSL is free software: you can redistribute it and/or modify it
+// under the terms of the GNU Lesser General Public License as published
+// by the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// 
+// CSMSL is distributed in the hope that it will be useful, but WITHOUT
+// ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public
+// License for more details.
+// 
+// You should have received a copy of the GNU Lesser General Public
+// License along with CSMSL. If not, see <http://www.gnu.org/licenses/>.
 
 using System;
 using System.Collections.Generic;
@@ -131,7 +128,7 @@ namespace CSMSL.Chemistry
         }
 
         internal ChemicalFormula(int[] uniqueIdCounts)
-        {           
+        {
             int count = uniqueIdCounts.Length;
             _isotopes = new int[count];
             MonoisotopicMass = 0;
@@ -141,10 +138,10 @@ namespace CSMSL.Chemistry
                 if (isotopes != 0)
                 {
                     _isotopes[i] = isotopes;
-                    MonoisotopicMass += isotopes * PeriodicTable.Instance[i].AtomicMass;
+                    MonoisotopicMass += isotopes*PeriodicTable.Instance[i].AtomicMass;
                     _largestIsotopeId = i;
                 }
-            }               
+            }
             _isFormulaDirty = _isDirty = true;
         }
 
@@ -163,7 +160,9 @@ namespace CSMSL.Chemistry
         /// </summary>
         /// <param name="item">The item of which a new chemical formula will be made from</param>
         public ChemicalFormula(IChemicalFormula item)
-            : this(item.ChemicalFormula) {}
+            : this(item.ChemicalFormula)
+        {
+        }
 
         /// <summary>
         /// Create a copy of a chemical formula from another chemical formula
@@ -238,7 +237,7 @@ namespace CSMSL.Chemistry
                 return _atomCount;
             }
         }
-        
+
         /// <summary>
         /// Gets the number of unique chemical elements in this chemical formula
         /// </summary>
@@ -333,7 +332,7 @@ namespace CSMSL.Chemistry
             if (id > _largestIsotopeId)
             {
                 _largestIsotopeId = id;
-               
+
                 if (id >= _isotopes.Length)
                 {
                     // Resize this formula array to match the size of the incoming one
@@ -389,7 +388,7 @@ namespace CSMSL.Chemistry
                 throw new KeyNotFoundException(string.Format("The element symbol '{0}' is not found in the periodic table", symbol), e);
             }
         }
-               
+
         /// <summary>
         /// Add an isotope to this chemical formula
         /// </summary>
@@ -397,7 +396,7 @@ namespace CSMSL.Chemistry
         /// <param name="count">The number of the isotope to add</param>
         public void Add(Isotope isotope, int count)
         {
-            if (isotope == null || count == 0)            
+            if (isotope == null || count == 0)
                 return;
 
             MonoisotopicMass += isotope.AtomicMass*count;
@@ -418,10 +417,10 @@ namespace CSMSL.Chemistry
                 }
 
                 _isotopes[id] = count;
-                
+
                 return;
             }
-           
+
             _isotopes[id] += count;
 
             // Force update of the largest isotope
@@ -546,7 +545,7 @@ namespace CSMSL.Chemistry
         {
             return Remove(Element.PeriodicTable[symbol]);
         }
-        
+
         /// <summary>
         /// Remove all the isotopes of an chemical element from this
         /// chemical formula
@@ -569,10 +568,10 @@ namespace CSMSL.Chemistry
             Array.Clear(_isotopes, 0, _isotopes.Length);
             _largestIsotopeId = 0;
             MonoisotopicMass = 0;
-            _isFormulaDirty = _isDirty = true;  
+            _isFormulaDirty = _isDirty = true;
         }
 
-        #endregion 
+        #endregion
 
         #region Count/Contains
 
@@ -583,7 +582,7 @@ namespace CSMSL.Chemistry
         /// <returns>True if there is a non-negative number of the isotope in this formula</returns>
         public bool Contains(Isotope isotope)
         {
-            return Count(isotope) != 0;           
+            return Count(isotope) != 0;
         }
 
         /// <summary>
@@ -689,7 +688,7 @@ namespace CSMSL.Chemistry
                 if (_isotopes[i] == 0)
                     continue;
 
-                neutrons += Element.PeriodicTable[i].Neutrons * _isotopes[i];
+                neutrons += Element.PeriodicTable[i].Neutrons*_isotopes[i];
             }
             return neutrons;
         }
@@ -706,7 +705,7 @@ namespace CSMSL.Chemistry
                 if (_isotopes[i] == 0)
                     continue;
 
-                protons += Element.PeriodicTable[i].Protons * _isotopes[i];
+                protons += Element.PeriodicTable[i].Protons*_isotopes[i];
             }
             return protons;
         }
@@ -724,11 +723,11 @@ namespace CSMSL.Chemistry
 
             int hydrogenCount = Count("H");
 
-            return hydrogenCount / (double)carbonCount;
+            return hydrogenCount/(double) carbonCount;
         }
 
         #endregion
-        
+
         public override int GetHashCode()
         {
             if (_isDirty)
@@ -738,7 +737,7 @@ namespace CSMSL.Chemistry
                 return 0;
 
             int hCode = 17;
-           
+
             for (int i = 0; i <= _largestIsotopeId; i++)
             {
                 unchecked
@@ -746,7 +745,7 @@ namespace CSMSL.Chemistry
                     hCode = hCode*23 + _isotopes[i];
                 }
             }
-            return hCode;            
+            return hCode;
         }
 
         public override bool Equals(object obj)
@@ -758,7 +757,7 @@ namespace CSMSL.Chemistry
         public virtual bool Equals(ChemicalFormula other)
         {
             if (ReferenceEquals(this, other)) return true;
-            if (_largestIsotopeId != other._largestIsotopeId) return false;          
+            if (_largestIsotopeId != other._largestIsotopeId) return false;
 
             for (int i = 0; i < _largestIsotopeId; i++)
             {
@@ -767,7 +766,7 @@ namespace CSMSL.Chemistry
             }
             return true;
         }
-  
+
         public double[,] GetIsotopicDistribution(double resolution = 0.01, int numberOfIsotopes = int.MaxValue)
         {
             IsotopicDistribution id = new IsotopicDistribution(resolution, numberOfIsotopes);
@@ -796,7 +795,7 @@ namespace CSMSL.Chemistry
         {
             return Formula;
         }
-               
+
         /// <summary>
         /// Returns the chemical formula with each element separated by the
         /// specified delimiter
@@ -809,7 +808,7 @@ namespace CSMSL.Chemistry
         }
 
         #region Private Methods
-                 
+
         private void FindLargestIsotope()
         {
             int index = _largestIsotopeId;
@@ -821,7 +820,7 @@ namespace CSMSL.Chemistry
             }
             _largestIsotopeId = index;
         }
-        
+
         /// <summary>
         /// Recalculate parameters of the chemical formula
         /// </summary>
@@ -831,9 +830,9 @@ namespace CSMSL.Chemistry
             int isotopeCount = 0;
             double monoMass = 0.0;
             double avgMass = 0.0;
-           
+
             HashSet<int> elements = new HashSet<int>();
-                       
+
             // Loop over every possible isotope in this formula
             for (int i = 0; i <= _largestIsotopeId; i++)
             {
@@ -841,7 +840,7 @@ namespace CSMSL.Chemistry
 
                 // Skip zero isotopes
                 if (count == 0)
-                    continue;                 
+                    continue;
 
                 Isotope isotope = Element.PeriodicTable[i];
                 Element element = isotope.Element;
@@ -850,9 +849,9 @@ namespace CSMSL.Chemistry
                 isotopeCount++;
                 atomCount += count;
 
-                monoMass += count * isotope.AtomicMass;
-                avgMass += count * element.AverageMass;
-            }            
+                monoMass += count*isotope.AtomicMass;
+                avgMass += count*element.AverageMass;
+            }
 
             // Set the instance variables to their new values
             _elementCount = elements.Count;
@@ -864,7 +863,7 @@ namespace CSMSL.Chemistry
             // Mark as clean
             _isDirty = false;
         }
-                
+
         /// <summary>
         /// Produces the Hill Notation of the chemical formula
         /// </summary>
@@ -894,7 +893,7 @@ namespace CSMSL.Chemistry
                     sb.Append(isotope.MassNumber);
                     sb.Append('}');
                 }
-                
+
                 if (count != 1)
                 {
                     sb.Append(count);
@@ -918,7 +917,7 @@ namespace CSMSL.Chemistry
                         break;
                 }
             }
-          
+
             if (string.IsNullOrEmpty(carbonPart))
             {
                 // No carbons, so just add the hydrogen to the list and sort alphabetically
@@ -932,7 +931,7 @@ namespace CSMSL.Chemistry
 
                 if (!string.IsNullOrEmpty(hydrogenPart))
                     otherParts.Insert(0, hydrogenPart);
-                
+
                 otherParts.Insert(0, carbonPart);
             }
 
@@ -946,7 +945,7 @@ namespace CSMSL.Chemistry
         /// <param name="formula">the Chemical Formula to parse</param>
         private void ParseString(string formula)
         {
-            if (string.IsNullOrEmpty(formula))         
+            if (string.IsNullOrEmpty(formula))
                 return;
 
             if (!IsValidChemicalFormula(formula))
@@ -956,31 +955,31 @@ namespace CSMSL.Chemistry
 
             foreach (Match match in FormulaRegex.Matches(formula))
             {
-                string chemsym = match.Groups[1].Value;             // Group 1: Chemical Symbol
+                string chemsym = match.Groups[1].Value; // Group 1: Chemical Symbol
 
                 Element element;
                 if (Element.PeriodicTable.TryGetElement(chemsym, out element))
                 {
-                    Isotope isotope = element.PrincipalIsotope;     // Start with the most abundant (principal) isotope
+                    Isotope isotope = element.PrincipalIsotope; // Start with the most abundant (principal) isotope
 
-                    if (chemsym.Equals("D"))                        // Special case for Deuterium
+                    if (chemsym.Equals("D")) // Special case for Deuterium
                     {
                         isotope = element.Isotopes[2];
                     }
-                    else if (match.Groups[2].Success)               // Group 2 (optional): Isotope Mass Number
+                    else if (match.Groups[2].Success) // Group 2 (optional): Isotope Mass Number
                     {
                         isotope = element[int.Parse(match.Groups[2].Value)];
                     }
 
-                    int sign = match.Groups[3].Success ?            // Group 3 (optional): Negative Sign
+                    int sign = match.Groups[3].Success ? // Group 3 (optional): Negative Sign
                         -1 :
                         1;
 
-                    int numofelem = match.Groups[4].Success ?       // Group 4 (optional): Number of Elements
+                    int numofelem = match.Groups[4].Success ? // Group 4 (optional): Number of Elements
                         int.Parse(match.Groups[4].Value) :
                         1;
 
-                    Add(isotope, sign * numofelem);
+                    Add(isotope, sign*numofelem);
                 }
                 else
                 {
@@ -1074,7 +1073,7 @@ namespace CSMSL.Chemistry
             //        continue;
             //    }
 
-               
+
             //}
 
             //if (elementSB.Length > 0)
@@ -1107,7 +1106,7 @@ namespace CSMSL.Chemistry
             //    }
             //}
         }
-       
+
         #endregion
 
         #region Internal
@@ -1126,8 +1125,9 @@ namespace CSMSL.Chemistry
         #endregion
 
         #region Statics
-        private static readonly int[] _factorials = { 1, 1, 2, 6, 24, 120, 720, 5040, 40320 };
-       
+
+        private static readonly int[] _factorials = {1, 1, 2, 6, 24, 120, 720, 5040, 40320};
+
         private static int Factorial(int n)
         {
             if (n < _factorials.Length)
@@ -1188,7 +1188,7 @@ namespace CSMSL.Chemistry
 
         public static ChemicalFormula operator *(int count, ChemicalFormula formula)
         {
-            return formula * count;
+            return formula*count;
         }
 
         public static ChemicalFormula operator +(ChemicalFormula left, IChemicalFormula right)
@@ -1203,7 +1203,7 @@ namespace CSMSL.Chemistry
             ChemicalFormula newFormula = new ChemicalFormula(left);
             newFormula.Add(right);
             return newFormula;
-        }      
+        }
 
         public static ChemicalFormula Combine(IEnumerable<IChemicalFormula> formulas)
         {
@@ -1211,7 +1211,7 @@ namespace CSMSL.Chemistry
             int[] isotopes = new int[Element.PeriodicTable.BiggestIsotopeNumber];
             double mass = 0;
             foreach (IChemicalFormula iformula in formulas)
-            {             
+            {
                 if (iformula == null)
                     continue;
 
@@ -1237,7 +1237,7 @@ namespace CSMSL.Chemistry
 
             ChemicalFormula returnFormula = new ChemicalFormula(largestId);
             Array.Copy(isotopes, returnFormula._isotopes, largestId + 1);
-           
+
             // Force update of the largest isotope
             // if the largest isotope got cleared
             if (returnFormula._isotopes[largestId] == 0)
@@ -1262,8 +1262,5 @@ namespace CSMSL.Chemistry
         }
 
         #endregion
-
- 
     }
- 
 }

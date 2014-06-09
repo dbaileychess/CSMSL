@@ -1,4 +1,21 @@
-﻿using System;
+﻿// Copyright 2012, 2013, 2014 Derek J. Bailey
+// 
+// This file (IsobaricTagPurityCorrection.cs) is part of CSMSL.
+// 
+// CSMSL is free software: you can redistribute it and/or modify it
+// under the terms of the GNU Lesser General Public License as published
+// by the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// 
+// CSMSL is distributed in the hope that it will be useful, but WITHOUT
+// ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public
+// License for more details.
+// 
+// You should have received a copy of the GNU Lesser General Public
+// License along with CSMSL. If not, see <http://www.gnu.org/licenses/>.
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -12,7 +29,7 @@ namespace CSMSL.Analysis.Quantitation
         private readonly double[,] _purityMatrix;
         private readonly double[,] _purityLUMatrix;
         private readonly int[] _purityLUMatrixIndex;
-        
+
         private IsobaricTagPurityCorrection(double[,] matrix)
         {
             _purityMatrix = matrix;
@@ -31,7 +48,7 @@ namespace CSMSL.Analysis.Quantitation
         //{
         //    return _purityMatrix.Determinant();
         //}
-        
+
         public double[] ApplyPurityCorrection(IEnumerable<double> rawData)
         {
             return ApplyPurityCorrection(rawData.ToArray());
@@ -58,9 +75,9 @@ namespace CSMSL.Analysis.Quantitation
             int inputCount = purityValues.GetLength(1);
 
             double[,] purityMatrix = new double[rows, rows];
-           
 
-             //w x y z part of iTracker Paper
+
+            //w x y z part of iTracker Paper
             for (int i = 0; i < rows; i++)
             {
                 double startvalue = 100;
@@ -78,7 +95,7 @@ namespace CSMSL.Analysis.Quantitation
 
                     if (k < inputCount && k >= 0)
                         value = purityValues[j, k];
-                 
+
                     purityMatrix[i, j] = value;
                 }
 
@@ -88,6 +105,5 @@ namespace CSMSL.Analysis.Quantitation
 
             return new IsobaricTagPurityCorrection(purityMatrix);
         }
-
     }
 }

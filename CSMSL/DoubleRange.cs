@@ -1,4 +1,21 @@
-﻿using System;
+﻿// Copyright 2012, 2013, 2014 Derek J. Bailey
+// 
+// This file (DoubleRange.cs) is part of CSMSL.
+// 
+// CSMSL is free software: you can redistribute it and/or modify it
+// under the terms of the GNU Lesser General Public License as published
+// by the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// 
+// CSMSL is distributed in the hope that it will be useful, but WITHOUT
+// ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public
+// License for more details.
+// 
+// You should have received a copy of the GNU Lesser General Public
+// License along with CSMSL. If not, see <http://www.gnu.org/licenses/>.
+
+using System;
 
 namespace CSMSL
 {
@@ -8,7 +25,9 @@ namespace CSMSL
         /// Creates a range from 0 to 0
         /// </summary>
         public DoubleRange()
-            : base(0, 0) { }
+            : base(0, 0)
+        {
+        }
 
         /// <summary>
         /// Creates a range from the minimum to maximum values
@@ -16,7 +35,9 @@ namespace CSMSL
         /// <param name="minimum">The minimum value of the range</param>
         /// <param name="maximum">The maximum value of the range</param>
         public DoubleRange(double minimum, double maximum)
-            : base(minimum, maximum) { }
+            : base(minimum, maximum)
+        {
+        }
 
         /// <summary>
         /// Creates a range from another double range. This is the
@@ -24,7 +45,9 @@ namespace CSMSL
         /// </summary>
         /// <param name="range">The other range to copy</param>
         public DoubleRange(IRange<double> range)
-            : base(range.Minimum, range.Maximum) { }
+            : base(range.Minimum, range.Maximum)
+        {
+        }
 
         /// <summary>
         /// Creates a range around some mean value with a specified tolerance. 
@@ -44,12 +67,12 @@ namespace CSMSL
         {
             SetTolerance(mean, tolerance);
         }
-        
+
         private void SetTolerance(double mean, Tolerance tolerance)
         {
             if (tolerance == null)
             {
-                Minimum = Maximum = mean;         
+                Minimum = Maximum = mean;
                 return;
             }
 
@@ -61,20 +84,20 @@ namespace CSMSL
             switch (tolerance.Unit)
             {
                 default:
-                    Minimum = mean - value / 2.0;
-                    Maximum = mean + value / 2.0;
+                    Minimum = mean - value/2.0;
+                    Maximum = mean + value/2.0;
                     break;
 
                 case ToleranceUnit.MMU:
-                    Minimum = mean - value / 2000.0;
-                    Maximum = mean + value / 2000.0;
+                    Minimum = mean - value/2000.0;
+                    Maximum = mean + value/2000.0;
                     break;
 
                 case ToleranceUnit.PPM:
-                    Minimum = mean * (1 - (value / 2e6));
-                    Maximum = mean * (1 + (value / 2e6));
+                    Minimum = mean*(1 - (value/2e6));
+                    Maximum = mean*(1 + (value/2e6));
                     break;
-            }           
+            }
         }
 
         /// <summary>
@@ -83,10 +106,7 @@ namespace CSMSL
         /// </summary>
         public double Mean
         {
-            get
-            {
-                return (Maximum + Minimum) / 2.0;
-            }
+            get { return (Maximum + Minimum)/2.0; }
         }
 
         /// <summary>
@@ -95,12 +115,9 @@ namespace CSMSL
         /// </summary>
         public double Width
         {
-            get
-            {
-                return Maximum - Minimum;              
-            }
+            get { return Maximum - Minimum; }
         }
-        
+
         /// <summary>
         /// Calculates the ppm tolerance value for this range:
         /// 1e6 * Width / Mean;
@@ -108,9 +125,9 @@ namespace CSMSL
         /// <returns>The ppm</returns>
         public double ToPPM()
         {
-            return 1e6 * Width / Mean;
+            return 1e6*Width/Mean;
         }
-        
+
         /// <summary>
         /// Returns a string representation of this range at the given numerical format
         /// </summary>
@@ -134,6 +151,5 @@ namespace CSMSL
         }
 
         #endregion
-
     }
 }

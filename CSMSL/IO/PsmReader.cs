@@ -1,4 +1,21 @@
-﻿using CSMSL.Analysis.Identification;
+﻿// Copyright 2012, 2013, 2014 Derek J. Bailey
+// 
+// This file (PsmReader.cs) is part of CSMSL.
+// 
+// CSMSL is free software: you can redistribute it and/or modify it
+// under the terms of the GNU Lesser General Public License as published
+// by the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// 
+// CSMSL is distributed in the hope that it will be useful, but WITHOUT
+// ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public
+// License for more details.
+// 
+// You should have received a copy of the GNU Lesser General Public
+// License along with CSMSL. If not, see <http://www.gnu.org/licenses/>.
+
+using CSMSL.Analysis.Identification;
 using CSMSL.Chemistry;
 using CSMSL.Proteomics;
 using System;
@@ -19,7 +36,7 @@ namespace CSMSL.IO
             _dataFiles = new Dictionary<string, MSDataFile>();
             _extraColumns = new List<string>();
         }
-                       
+
         protected Dictionary<string, Protein> _proteins;
 
         protected List<Modification> _fixedMods;
@@ -55,7 +72,7 @@ namespace CSMSL.IO
 
         public void AddMSDataFile(MSDataFile dataFile)
         {
-            _dataFiles.Add(dataFile.Name, dataFile);          
+            _dataFiles.Add(dataFile.Name, dataFile);
         }
 
         public void AddVariableModification(string chemicalFormula, string name)
@@ -67,7 +84,7 @@ namespace CSMSL.IO
         {
             _variableMods.Add(name, modification);
         }
-    
+
         public IMass AddFixedModification(Modification modification)
         {
             _fixedMods.Add(modification);
@@ -93,13 +110,13 @@ namespace CSMSL.IO
             if (_variableMods.TryGetValue(modname, out mod))
             {
                 peptide.SetModification(mod, residue);
-            }            
+            }
         }
 
         protected bool _disposed;
 
         protected virtual void Dispose(bool disposing)
-        {   
+        {
             if (_proteins != null)
                 _proteins.Clear();
             _proteins = null;

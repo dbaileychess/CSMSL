@@ -1,4 +1,21 @@
-﻿using CSMSL.Proteomics;
+﻿// Copyright 2012, 2013, 2014 Derek J. Bailey
+// 
+// This file (Mzml.cs) is part of CSMSL.
+// 
+// CSMSL is free software: you can redistribute it and/or modify it
+// under the terms of the GNU Lesser General Public License as published
+// by the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// 
+// CSMSL is distributed in the hope that it will be useful, but WITHOUT
+// ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public
+// License for more details.
+// 
+// You should have received a copy of the GNU Lesser General Public
+// License along with CSMSL. If not, see <http://www.gnu.org/licenses/>.
+
+using CSMSL.Proteomics;
 using CSMSL.Spectral;
 using System;
 using System.IO;
@@ -6,7 +23,6 @@ using System.Xml.Serialization;
 
 namespace CSMSL.IO.MzML
 {
-
     public class Mzml : MSDataFile
     {
         private static string _msnOrderAccession = "MS:1000511";
@@ -40,14 +56,16 @@ namespace CSMSL.IO.MzML
         private const string _64bit = "MS:1000523";
         private const string _32bit = "MS:1000521";
 
-        private static XmlSerializer _indexedSerializer = new XmlSerializer(typeof(indexedmzML));
-        private static XmlSerializer _mzMLSerializer = new XmlSerializer(typeof(mzMLType));
+        private static XmlSerializer _indexedSerializer = new XmlSerializer(typeof (indexedmzML));
+        private static XmlSerializer _mzMLSerializer = new XmlSerializer(typeof (mzMLType));
 
         private indexedmzML _indexedmzMLConnection;
         private mzMLType _mzMLConnection;
-        
+
         public Mzml(string filePath)
-            : base(filePath, MSDataFileType.Mzml) { }
+            : base(filePath, MSDataFileType.Mzml)
+        {
+        }
 
         public override void Open()
         {
@@ -72,8 +90,6 @@ namespace CSMSL.IO.MzML
                 }
 
 
-              
-                
                 base.Open();
             }
         }
@@ -88,17 +104,17 @@ namespace CSMSL.IO.MzML
             _mzMLConnection = null;
             _indexedmzMLConnection = null;
             base.Dispose();
-        }        
+        }
 
         public override DissociationType GetDissociationType(int spectrumNumber, int msnOrder = 2)
         {
             spectrumNumber--;
             foreach (CVParamType cv in _mzMLConnection.run.spectrumList.spectrum[spectrumNumber].precursorList.precursor[0].activation.cvParam)
-            {               
-                switch(cv.accession)
+            {
+                switch (cv.accession)
                 {
                     case _CID:
-                        return DissociationType.CI; 
+                        return DissociationType.CI;
                     case _HCD:
                         return DissociationType.HCD;
                     case _ETD:
@@ -118,11 +134,11 @@ namespace CSMSL.IO.MzML
         {
             spectrumNumber--;
             foreach (CVParamType cv in _mzMLConnection.run.spectrumList.spectrum[spectrumNumber].cvParam)
-            {             
+            {
                 if (cv.accession.Equals(_msnOrderAccession))
                 {
                     return int.Parse(cv.value);
-                }                
+                }
             }
             throw new ArgumentNullException("Could not find MSn level for spectrum number " + spectrumNumber + 1);
         }
@@ -132,7 +148,7 @@ namespace CSMSL.IO.MzML
             spectrumNumber--;
             foreach (CVParamType cv in _mzMLConnection.run.spectrumList.spectrum[spectrumNumber].precursorList.precursor[0].selectedIonList.selectedIon[0].cvParam)
             {
-                if(cv.accession.Equals(_precursorCharge))
+                if (cv.accession.Equals(_precursorCharge))
                 {
                     return short.Parse(cv.value);
                 }
@@ -144,24 +160,24 @@ namespace CSMSL.IO.MzML
         {
             spectrumNumber--;
             double high = double.NaN;
-            double low = double.NaN;          
+            double low = double.NaN;
 
             foreach (CVParamType cv in _mzMLConnection.run.spectrumList.spectrum[spectrumNumber].scanList.scan[0].scanWindowList.scanWindow[0].cvParam)
-            { 
-                if(cv.accession.Equals(_lowestObservedMass))
+            {
+                if (cv.accession.Equals(_lowestObservedMass))
                 {
                     low = double.Parse(cv.value);
                 }
-                if(cv.accession.Equals(_highestObservedMass))
+                if (cv.accession.Equals(_highestObservedMass))
                 {
                     high = double.Parse(cv.value);
-                }                
+                }
             }
             if (double.IsNaN(low) || double.IsNaN(high))
             {
                 throw new ArgumentNullException("Could not determine isolation width for " + spectrumNumber + 1);
             }
-            return new MzRange(low, high);        
+            return new MzRange(low, high);
         }
 
         public override double GetPrecusorMz(int spectrumNumber, int msnOrder = 2)
@@ -182,7 +198,7 @@ namespace CSMSL.IO.MzML
             spectrumNumber--;
             double low = double.NaN;
             double high = double.NaN;
-                      
+
             foreach (CVParamType cv in _mzMLConnection.run.spectrumList.spectrum[spectrumNumber].precursorList.precursor[0].isolationWindow.cvParam)
             {
                 if (cv.accession.Equals(_isolationWindowLowerOffset))
@@ -192,37 +208,38 @@ namespace CSMSL.IO.MzML
                 if (cv.accession.Equals(_isolationWindowUpperOffset))
                 {
                     high = double.Parse(cv.value);
-                }               
+                }
             }
             if (double.IsNaN(low) || double.IsNaN(high))
             {
                 throw new ArgumentNullException("Could not determine isolation width for " + spectrumNumber + 1);
             }
-            return high - low;            
+            return high - low;
         }
 
         public override MZAnalyzerType GetMzAnalyzer(int spectrumNumber)
         {
             // TODO need to do this on a spectrum-by-spectrum basis.
             //currently gets the first analyzer used.          
-           string analyzer = _mzMLConnection.instrumentConfigurationList.instrumentConfiguration[0].componentList.analyzer[0].cvParam[0].accession;
-  
-            switch(analyzer){
-               case _quadrupole:
-                   return MZAnalyzerType.Quadrupole;
-               case _linearIonTrap:
-                   return MZAnalyzerType.IonTrap2D;
-               case _IonTrap3D:
-                   return MZAnalyzerType.IonTrap3D;
-               case _orbitrap:
-                   return MZAnalyzerType.Orbitrap;
-               case _TOF:
-                   return MZAnalyzerType.TOF;
-               case _FTICR:
-                   return MZAnalyzerType.FTICR;
-               case _magneticSector:
-                   return MZAnalyzerType.Sector;
-               default:
+            string analyzer = _mzMLConnection.instrumentConfigurationList.instrumentConfiguration[0].componentList.analyzer[0].cvParam[0].accession;
+
+            switch (analyzer)
+            {
+                case _quadrupole:
+                    return MZAnalyzerType.Quadrupole;
+                case _linearIonTrap:
+                    return MZAnalyzerType.IonTrap2D;
+                case _IonTrap3D:
+                    return MZAnalyzerType.IonTrap3D;
+                case _orbitrap:
+                    return MZAnalyzerType.Orbitrap;
+                case _TOF:
+                    return MZAnalyzerType.TOF;
+                case _FTICR:
+                    return MZAnalyzerType.FTICR;
+                case _magneticSector:
+                    return MZAnalyzerType.Sector;
+                default:
                     return MZAnalyzerType.Unknown;
             }
         }
@@ -230,7 +247,7 @@ namespace CSMSL.IO.MzML
         public override Spectrum GetSpectrum(int spectrumNumber)
         {
             spectrumNumber--; // 0-based indexing
-        
+
             double[] masses = null;
             double[] intensities = null;
 
@@ -300,14 +317,13 @@ namespace CSMSL.IO.MzML
             double rt = -1;
             foreach (CVParamType cv in _mzMLConnection.run.spectrumList.spectrum[spectrumNumber].scanList.scan[0].cvParam)
             {
-                if(cv.accession.Equals(_retentionTime))
+                if (cv.accession.Equals(_retentionTime))
                 {
                     rt = double.Parse(cv.value);
                 }
 
                 if (cv.unitName == "second")
                     rt /= 60;
-
             }
 
             if (rt >= 0)
@@ -322,7 +338,7 @@ namespace CSMSL.IO.MzML
             foreach (CVParamType cv in _mzMLConnection.run.spectrumList.spectrum[spectrumNumber].scanList.scan[0].cvParam)
             {
                 if (cv.accession.Equals(_ionInjectionTime))
-                {              
+                {
                     return double.Parse(cv.value);
                 }
             }
@@ -341,7 +357,7 @@ namespace CSMSL.IO.MzML
 
         protected override int GetLastSpectrumNumber()
         {
-            return _mzMLConnection.run.spectrumList.spectrum.Count;           
+            return _mzMLConnection.run.spectrumList.spectrum.Count;
         }
 
         public override int GetSpectrumNumber(double retentionTime)
@@ -363,7 +379,7 @@ namespace CSMSL.IO.MzML
             }
             throw new ArgumentNullException("Could not determine spectrum number");
         }
-                
+
         /// <summary>
         /// Converts a 64-based encoded byte array into an double[]
         /// </summary>
@@ -372,10 +388,9 @@ namespace CSMSL.IO.MzML
         /// <returns>a decompressed, de-encoded double[]</returns>
         private static double[] ConvertBase64ToDoubles(byte[] bytes, bool zlibCompressed = false, bool bit32 = true)
         {
+            int size = bit32 ? sizeof (float) : sizeof (double);
 
-            int size = bit32 ? sizeof(float) : sizeof(double);
-          
-            int length = bytes.Length / size;
+            int length = bytes.Length/size;
             double[] convertedArray = new double[length];
 
             for (int i = 0; i < length; i++)
@@ -386,12 +401,10 @@ namespace CSMSL.IO.MzML
                 }
                 else
                 {
-                    convertedArray[i] = BitConverter.ToDouble(bytes, i * size);
+                    convertedArray[i] = BitConverter.ToDouble(bytes, i*size);
                 }
             }
             return convertedArray;
-           
         }
-        
-  }
+    }
 }

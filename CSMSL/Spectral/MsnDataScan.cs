@@ -1,4 +1,21 @@
-﻿using CSMSL.IO;
+﻿// Copyright 2012, 2013, 2014 Derek J. Bailey
+// 
+// This file (MsnDataScan.cs) is part of CSMSL.
+// 
+// CSMSL is free software: you can redistribute it and/or modify it
+// under the terms of the GNU Lesser General Public License as published
+// by the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// 
+// CSMSL is distributed in the hope that it will be useful, but WITHOUT
+// ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public
+// License for more details.
+// 
+// You should have received a copy of the GNU Lesser General Public
+// License along with CSMSL. If not, see <http://www.gnu.org/licenses/>.
+
+using CSMSL.IO;
 using CSMSL.Proteomics;
 using System;
 
@@ -7,11 +24,16 @@ namespace CSMSL.Spectral
     public class MsnDataScan : MSDataScan
     {
         public MsnDataScan(int spectrumNumber, int msnOrder, MSDataFile parentFile = null)
-            : base(spectrumNumber, msnOrder, parentFile) { }
+            : base(spectrumNumber, msnOrder, parentFile)
+        {
+        }
 
-        public MsnDataScan() { }
-    
+        public MsnDataScan()
+        {
+        }
+
         private double _precursorMz = double.NaN;
+
         public double PrecursorMz
         {
             get
@@ -27,15 +49,13 @@ namespace CSMSL.Spectral
                         throw new ArgumentException("The parent data file is closed");
                     }
                 }
-                return _precursorMz;             
+                return _precursorMz;
             }
-            internal set
-            {
-                _precursorMz = value;
-            }
+            internal set { _precursorMz = value; }
         }
 
         private DoubleRange _isolationRange;
+
         public DoubleRange IsolationRange
         {
             get
@@ -50,16 +70,14 @@ namespace CSMSL.Spectral
                     {
                         throw new ArgumentException("The parent data file is closed");
                     }
-                }           
+                }
                 return _isolationRange;
             }
-            internal set
-            {
-                _isolationRange = value;
-            }
+            internal set { _isolationRange = value; }
         }
 
         private int _precursorCharge;
+
         public virtual int PrecursorCharge
         {
             get
@@ -75,15 +93,13 @@ namespace CSMSL.Spectral
                         throw new ArgumentException("The parent data file is closed");
                     }
                 }
-                return _precursorCharge;     
+                return _precursorCharge;
             }
-            internal set
-            {
-                _precursorCharge = value;
-            }
+            internal set { _precursorCharge = value; }
         }
 
         private DissociationType _dissociationType = DissociationType.UnKnown;
+
         public DissociationType DissociationType
         {
             get
@@ -98,14 +114,10 @@ namespace CSMSL.Spectral
                     {
                         throw new ArgumentException("The parent data file is closed");
                     }
-                }             
+                }
                 return _dissociationType;
             }
-            internal set
-            {
-                _dissociationType = value;
-            }
-        }      
-       
+            internal set { _dissociationType = value; }
+        }
     }
 }

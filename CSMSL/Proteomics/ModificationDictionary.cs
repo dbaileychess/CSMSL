@@ -1,4 +1,21 @@
-﻿using System;
+﻿// Copyright 2012, 2013, 2014 Derek J. Bailey
+// 
+// This file (ModificationDictionary.cs) is part of CSMSL.
+// 
+// CSMSL is free software: you can redistribute it and/or modify it
+// under the terms of the GNU Lesser General Public License as published
+// by the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// 
+// CSMSL is distributed in the hope that it will be useful, but WITHOUT
+// ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public
+// License for more details.
+// 
+// You should have received a copy of the GNU Lesser General Public
+// License along with CSMSL. If not, see <http://www.gnu.org/licenses/>.
+
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -11,14 +28,14 @@ namespace CSMSL.Proteomics
     public static class ModificationDictionary
     {
         private static readonly Dictionary<string, Modification> Modifications;
-        
+
         private static readonly string UserModificationPath;
 
         static ModificationDictionary()
         {
             UserModificationPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), @"CSMSL\Modifications.xml");
             Modifications = new Dictionary<string, Modification>();
-          
+
             // Load the default modification file
             Load();
         }
@@ -48,7 +65,7 @@ namespace CSMSL.Proteomics
             {
                 var modsXml = new XmlDocument();
                 modsXml.Load(filePath);
-             
+
                 foreach (XmlNode modNode in modsXml.SelectNodes("//Modifications/Modification"))
                 {
                     string modName = modNode.Attributes["name"].Value;
@@ -65,17 +82,17 @@ namespace CSMSL.Proteomics
                     {
                         mass = double.Parse(modNode.SelectSingleNode("DeltaMass").InnerText);
                     }
-                    
+
                     ModificationSites sites = ModificationSites.None;
                     foreach (XmlNode siteNode in modNode.SelectNodes("ModificationSite"))
                     {
                         string modSite = siteNode.InnerText;
-                        var site = (ModificationSites)Enum.Parse(typeof(ModificationSites), modSite);
+                        var site = (ModificationSites) Enum.Parse(typeof (ModificationSites), modSite);
                         sites |= site;
                     }
 
                     var modification = isChemicalFormula ? new ChemicalFormulaModification(chemicalFormula, modName, sites) : new Modification(mass, modName, sites);
-                   
+
                     Modifications.Add(modName, modification);
 
                     foreach (XmlNode modAltNameNode in modNode.SelectNodes("AlternativeName"))
@@ -83,19 +100,15 @@ namespace CSMSL.Proteomics
                         string altName = modAltNameNode.InnerText;
                         Modifications.Add(altName, modification);
                     }
-
-                   
                 }
                 OnModificationsChanged(false);
-                
             }
             catch (XmlException)
             {
-
                 //RestoreDefaults();
             }
         }
-        
+
         /// <summary>
         /// Saves the current modifications and isotopologues to the default modification file
         /// </summary>
@@ -109,12 +122,12 @@ namespace CSMSL.Proteomics
         /// </summary>
         public static void SaveTo(string filePath)
         {
-            using (XmlWriter writer = XmlWriter.Create(filePath, new XmlWriterSettings { Indent = true }))
+            using (XmlWriter writer = XmlWriter.Create(filePath, new XmlWriterSettings {Indent = true}))
             {
                 writer.WriteStartDocument();
 
                 writer.WriteStartElement("Modifications");
-               
+
                 foreach (var mod in Modifications.Values.Distinct())
                 {
                     writer.WriteStartElement("Modification");
@@ -145,7 +158,7 @@ namespace CSMSL.Proteomics
 
                     writer.WriteEndElement();
                 }
-               
+
                 writer.WriteEndElement(); // end Modifications
 
                 writer.WriteEndDocument();
@@ -158,13 +171,13 @@ namespace CSMSL.Proteomics
 
             var assembly = Assembly.GetExecutingAssembly();
             Stream defaultModsStream = assembly.GetManifestResourceStream("CSMSL.Resources.Modifications.xml");
-            
+
             Directory.CreateDirectory(Path.GetDirectoryName(UserModificationPath));
             using (var fileStream = File.Create(UserModificationPath))
             {
                 if (defaultModsStream != null) defaultModsStream.CopyTo(fileStream);
             }
-   
+
             Load();
         }
 
@@ -180,7 +193,7 @@ namespace CSMSL.Proteomics
                 handler(null, EventArgs.Empty);
             }
         }
-        
+
         public static event EventHandler ModificationsChanged;
 
         public static IEnumerable<Modification> GetAllModifications()
@@ -216,8 +229,8 @@ namespace CSMSL.Proteomics
             modification = mod as T;
             return modification != null;
         }
-    
-        public static void AddModification(Modification modification, string name ="", bool saveToDisk = false)
+
+        public static void AddModification(Modification modification, string name = "", bool saveToDisk = false)
         {
             if (!string.IsNullOrEmpty(name))
             {

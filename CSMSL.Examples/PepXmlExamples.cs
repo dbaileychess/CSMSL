@@ -1,4 +1,21 @@
-﻿using System;
+﻿// Copyright 2012, 2013, 2014 Derek J. Bailey
+// 
+// This file (PepXmlExamples.cs) is part of CSMSL.
+// 
+// CSMSL is free software: you can redistribute it and/or modify it
+// under the terms of the GNU Lesser General Public License as published
+// by the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// 
+// CSMSL is distributed in the hope that it will be useful, but WITHOUT
+// ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public
+// License for more details.
+// 
+// You should have received a copy of the GNU Lesser General Public
+// License along with CSMSL. If not, see <http://www.gnu.org/licenses/>.
+
+using System;
 using System.Collections.Generic;
 using System.IO;
 using CSMSL.IO.PepXML;
@@ -15,7 +32,7 @@ namespace CSMSL.Examples
 
             Console.WriteLine("Writting to " + filePath);
             using (PepXmlWriter writer = new PepXmlWriter(filePath))
-            {                
+            {
                 writer.WriteSampleProtease(Protease.Trypsin);
 
                 writer.StartSearchSummary("OMSSA", true, true);
@@ -36,13 +53,12 @@ namespace CSMSL.Examples
                 PeptideSpectralMatch psm = new PeptideSpectralMatch(PeptideSpectralMatchScoreType.OmssaEvalue);
                 psm.Score = 1.5e-5;
                 Protein protein = new Protein("", "Test Protein");
-                psm.Peptide = new Peptide("DEREK",protein);
+                psm.Peptide = new Peptide("DEREK", protein);
                 psm.Charge = 3;
                 writer.WritePSM(psm);
 
                 writer.EndSpectrum();
             }
-
         }
 
         public static void ReadPepXml()
@@ -70,7 +86,6 @@ namespace CSMSL.Examples
                     Console.WriteLine("\t" + mod);
                 }
             }
-
         }
     }
 }

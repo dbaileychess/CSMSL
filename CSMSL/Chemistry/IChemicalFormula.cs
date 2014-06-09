@@ -1,22 +1,19 @@
-﻿///////////////////////////////////////////////////////////////////////////
-//  IChemicalFormula.cs - An object that contains a chemical formula      /
-//                                                                        /
-//  Copyright 2012 Derek J. Bailey                                        /
-//  This file is part of CSMSL.                                           /
-//                                                                        /
-//  CSMSL is free software: you can redistribute it and/or modify         /
-//  it under the terms of the GNU General Public License as published by  /
-//  the Free Software Foundation, either version 3 of the License, or     /
-//  (at your option) any later version.                                   /
-//                                                                        /
-//  CSMSL is distributed in the hope that it will be useful,              /
-//  but WITHOUT ANY WARRANTY; without even the implied warranty of        /
-//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         /
-//  GNU General Public License for more details.                          /
-//                                                                        /
-//  You should have received a copy of the GNU General Public License     /
-//  along with CSMSL.  If not, see <http://www.gnu.org/licenses/>.        /
-///////////////////////////////////////////////////////////////////////////
+﻿// Copyright 2012, 2013, 2014 Derek J. Bailey
+// 
+// This file (IChemicalFormula.cs) is part of CSMSL.
+// 
+// CSMSL is free software: you can redistribute it and/or modify it
+// under the terms of the GNU Lesser General Public License as published
+// by the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// 
+// CSMSL is distributed in the hope that it will be useful, but WITHOUT
+// ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public
+// License for more details.
+// 
+// You should have received a copy of the GNU Lesser General Public
+// License along with CSMSL. If not, see <http://www.gnu.org/licenses/>.
 
 using System;
 using System.Collections.Generic;
@@ -72,18 +69,18 @@ namespace CSMSL.Chemistry
                         Isotope isotope = PeriodicTable.Instance[i];
 
                         int numValenceElectrons = isotope.ValenceElectrons;
-                        totalValence += numValenceElectrons * numAtoms;
+                        totalValence += numValenceElectrons*numAtoms;
                         atomCount += numAtoms;
                         if (numValenceElectrons > maxValence)
                         {
                             maxValence = numValenceElectrons;
                         }
-                        if (numValenceElectrons % 2 != 0)
+                        if (numValenceElectrons%2 != 0)
                         {
                             oddValences += numAtoms;
                         }
                     }
-                    if (!((totalValence % 2 == 0 || oddValences % 2 == 0) && (totalValence >= 2 * maxValence) && (totalValence >= ((2 * atomCount) - 1))))
+                    if (!((totalValence%2 == 0 || oddValences%2 == 0) && (totalValence >= 2*maxValence) && (totalValence >= ((2*atomCount) - 1))))
                     {
                         continue;
                     }

@@ -1,4 +1,21 @@
-﻿using System;
+﻿// Copyright 2012, 2013, 2014 Derek J. Bailey
+// 
+// This file (Chromatogram.cs) is part of CSMSL.
+// 
+// CSMSL is free software: you can redistribute it and/or modify it
+// under the terms of the GNU Lesser General Public License as published
+// by the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// 
+// CSMSL is distributed in the hope that it will be useful, but WITHOUT
+// ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public
+// License for more details.
+// 
+// You should have received a copy of the GNU Lesser General Public
+// License along with CSMSL. If not, see <http://www.gnu.org/licenses/>.
+
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,17 +25,25 @@ namespace CSMSL.Spectral
     public class Chromatogram : Chromatogram<ChromatographicPeak>
     {
         public Chromatogram(double[] times, double[] intensities, bool shouldCopy = true)
-            :base(times,intensities,shouldCopy) { }
-        
+            : base(times, intensities, shouldCopy)
+        {
+        }
+
         public Chromatogram(double[,] timeintensities)
-            :base(timeintensities) { }
-   
+            : base(timeintensities)
+        {
+        }
+
         public Chromatogram(Chromatogram other)
-            : base(other) { }
-        
+            : base(other)
+        {
+        }
+
         public Chromatogram(byte[] bytes)
-            :base(bytes) { }
-        
+            : base(bytes)
+        {
+        }
+
         public Chromatogram Smooth(SmoothingType smoothing, int points)
         {
             switch (smoothing)
@@ -40,7 +65,7 @@ namespace CSMSL.Spectral
         private Chromatogram BoxCar(int points)
         {
             // Force to be odd
-            points = points - (1 - points % 2);
+            points = points - (1 - points%2);
 
             if (points <= 0 || points > Count)
                 return new Chromatogram(this); // no smoothing
@@ -61,8 +86,8 @@ namespace CSMSL.Spectral
                     intensity += _intensities[j];
                 }
 
-                times[i] = time / points;
-                intensities[i] = intensity / points;
+                times[i] = time/points;
+                intensities[i] = intensity/points;
             }
 
             return new Chromatogram(times, intensities, false);
@@ -75,8 +100,8 @@ namespace CSMSL.Spectral
 
         public override byte[] ToBytes(bool zlibCompressed = false)
         {
-            int length = Count * sizeof(double);
-            byte[] bytes = new byte[length * 2];
+            int length = Count*sizeof (double);
+            byte[] bytes = new byte[length*2];
             Buffer.BlockCopy(_times, 0, bytes, 0, length);
             Buffer.BlockCopy(_intensities, 0, bytes, length, length);
 
@@ -89,16 +114,23 @@ namespace CSMSL.Spectral
         }
     }
 
-    public abstract class Chromatogram<T> : IEnumerable<T> where T : IPeak 
+    public abstract class Chromatogram<T> : IEnumerable<T> where T : IPeak
     {
         protected readonly double[] _times;
         protected readonly double[] _intensities;
 
         public int Count { get; private set; }
 
-        public double FirstTime { get { return _times[0]; } }
-        public double LastTime { get { return _times[Count - 1]; } }
-        
+        public double FirstTime
+        {
+            get { return _times[0]; }
+        }
+
+        public double LastTime
+        {
+            get { return _times[Count - 1]; }
+        }
+
         protected Chromatogram(double[] times, double[] intensities, bool shouldCopy = true)
         {
             Count = times.Length;
@@ -122,22 +154,24 @@ namespace CSMSL.Spectral
             Count = timeintensities.GetLength(1);
             _times = new double[Count];
             _intensities = new double[Count];
-            Buffer.BlockCopy(timeintensities, 0, _times, 0, 8 * Count);
-            Buffer.BlockCopy(timeintensities, 8 * Count, _intensities, 0, 8 * Count);         
+            Buffer.BlockCopy(timeintensities, 0, _times, 0, 8*Count);
+            Buffer.BlockCopy(timeintensities, 8*Count, _intensities, 0, 8*Count);
         }
 
         protected Chromatogram(byte[] timeintensities)
         {
-            Count = timeintensities.Length / (sizeof(double) * 2);
-            int size = sizeof(double) * Count;
+            Count = timeintensities.Length/(sizeof (double)*2);
+            int size = sizeof (double)*Count;
             _times = new double[Count];
             _intensities = new double[Count];
             Buffer.BlockCopy(timeintensities, 0, _times, 0, size);
-            Buffer.BlockCopy(timeintensities, size, _intensities, 0, size);     
+            Buffer.BlockCopy(timeintensities, size, _intensities, 0, size);
         }
 
         protected Chromatogram(Chromatogram<T> other)
-            : this(other._times, other._intensities) { }
+            : this(other._times, other._intensities)
+        {
+        }
 
         public abstract T GetPeak(int index);
 
@@ -151,14 +185,14 @@ namespace CSMSL.Spectral
         public double[] GetTimes()
         {
             double[] times = new double[Count];
-            Buffer.BlockCopy(_times, 0, times, 0, sizeof(double) * Count);
+            Buffer.BlockCopy(_times, 0, times, 0, sizeof (double)*Count);
             return times;
         }
 
         public double[] GetIntensities()
         {
             double[] intensities = new double[Count];
-            Buffer.BlockCopy(_intensities, 0, intensities, 0, sizeof(double) * Count);
+            Buffer.BlockCopy(_intensities, 0, intensities, 0, sizeof (double)*Count);
             return intensities;
         }
 
@@ -208,7 +242,7 @@ namespace CSMSL.Spectral
             int index = _intensities.MaxIndex();
             return GetPeak(index);
         }
-        
+
         public T FindNearestApex(double rt, int skipablePts = 1)
         {
             if (Count == 1)
@@ -237,13 +271,13 @@ namespace CSMSL.Spectral
                 else
                 {
                     count++;
-                    if(count >= skipablePts) 
+                    if (count >= skipablePts)
                         break;
                 }
                 i--;
             }
-            
-            i = index +1;
+
+            i = index + 1;
             count = 0;
             while (i < Count)
             {
@@ -276,15 +310,15 @@ namespace CSMSL.Spectral
 
             double maxTime = _times[index];
             double minTime = maxTime;
-            double threshold = _intensities[index] * fraction;
-            
+            double threshold = _intensities[index]*fraction;
+
             int count = 0;
             double localMin = _intensities[index];
             for (int i = index + 1; i < Count; i++)
             {
                 double peakIntensity = _intensities[i];
 
-                if (peakIntensity > localMin * upPrecent)
+                if (peakIntensity > localMin*upPrecent)
                 {
                     // Going up
                     count++;
@@ -293,7 +327,6 @@ namespace CSMSL.Spectral
                     continue;
                 }
 
-               
 
                 maxTime = _times[i];
 
@@ -307,26 +340,26 @@ namespace CSMSL.Spectral
             }
 
             //maxTime = Math.Min(maxTime, _times[Count - 1]);
-          
+
             localMin = _intensities[index];
             count = 0;
-            for (int i = index - 1; i >= 0; i--)              
+            for (int i = index - 1; i >= 0; i--)
             {
                 double peakIntensity = _intensities[i];
 
-                if (peakIntensity > localMin * upPrecent)
+                if (peakIntensity > localMin*upPrecent)
                 {
                     // Going up
                     count++;
                     if (count > upPts)
                         break;
-                    
+
                     continue;
                 }
 
                 minTime = _times[i];
 
-                if(peakIntensity < localMin)
+                if (peakIntensity < localMin)
                     localMin = peakIntensity;
 
                 count = 0;
@@ -334,7 +367,7 @@ namespace CSMSL.Spectral
                 if (peakIntensity < threshold)
                     break;
             }
-            
+
             //minTime = Math.Max(minTime,_times[0]);
 
             return new DoubleRange(minTime, maxTime);
@@ -343,20 +376,19 @@ namespace CSMSL.Spectral
         public override string ToString()
         {
             return string.Format("Count = {0:N0} TIC = {1:G4}", Count, _intensities.Sum());
-        }        
-        
+        }
+
         public IEnumerator<T> GetEnumerator()
         {
             for (int i = 0; i < Count; i++)
             {
                 yield return GetPeak(i);
             }
-        }       
+        }
 
         IEnumerator IEnumerable.GetEnumerator()
         {
             return GetEnumerator();
         }
-         
     }
 }

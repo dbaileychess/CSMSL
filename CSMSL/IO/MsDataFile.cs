@@ -1,4 +1,21 @@
-﻿using System.Collections;
+﻿// Copyright 2012, 2013, 2014 Derek J. Bailey
+// 
+// This file (MSDataFile.cs) is part of CSMSL.
+// 
+// CSMSL is free software: you can redistribute it and/or modify it
+// under the terms of the GNU Lesser General Public License as published
+// by the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// 
+// CSMSL is distributed in the hope that it will be useful, but WITHOUT
+// ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public
+// License for more details.
+// 
+// You should have received a copy of the GNU Lesser General Public
+// License along with CSMSL. If not, see <http://www.gnu.org/licenses/>.
+
+using System.Collections;
 using CSMSL.Proteomics;
 using CSMSL.Spectral;
 using System;
@@ -62,10 +79,7 @@ namespace CSMSL.IO
                 }
                 return _firstSpectrumNumber;
             }
-            set
-            {
-                _firstSpectrumNumber = value;
-            }
+            set { _firstSpectrumNumber = value; }
         }
 
         public bool IsOpen
@@ -93,10 +107,7 @@ namespace CSMSL.IO
 
         public MSDataScan this[int spectrumNumber]
         {
-            get
-            {
-                return GetMsScan(spectrumNumber);
-            }
+            get { return GetMsScan(spectrumNumber); }
         }
 
         IEnumerator IEnumerable.GetEnumerator()
@@ -107,9 +118,9 @@ namespace CSMSL.IO
         public virtual void Dispose()
         {
             if (Scans != null)
-            {               
+            {
                 ClearCachedScans();
-                Scans = null;                
+                Scans = null;
             }
             _isOpen = false;
         }
@@ -199,10 +210,10 @@ namespace CSMSL.IO
         protected virtual MSDataScan GetMSDataScan(int spectrumNumber)
         {
             int msn = GetMsnOrder(spectrumNumber);
-            
+
             MSDataScan scan = msn > 1 ? new MsnDataScan(spectrumNumber, msn, this) : new MSDataScan(spectrumNumber, msn, this);
 
-            return scan;            
+            return scan;
         }
 
         public abstract int GetPrecusorCharge(int spectrumNumber, int msnOrder = 2);
@@ -210,13 +221,13 @@ namespace CSMSL.IO
         public abstract MzRange GetMzRange(int spectrumNumber);
 
         public abstract double GetPrecusorMz(int spectrumNumber, int msnOrder = 2);
-        
+
         public abstract double GetIsolationWidth(int spectrumNumber, int msnOrder = 2);
 
         public virtual MzRange GetIsolationRange(int spectrumNumber, int msnOrder = 2)
         {
             double precursormz = GetPrecusorMz(spectrumNumber, msnOrder);
-            double halfWidth = GetIsolationWidth(spectrumNumber, msnOrder) / 2;
+            double halfWidth = GetIsolationWidth(spectrumNumber, msnOrder)/2;
             return new MzRange(precursormz - halfWidth, precursormz + halfWidth);
         }
 
@@ -235,7 +246,7 @@ namespace CSMSL.IO
 
         public virtual IEnumerable<MSDataScan> GetMsScans(double firstRT, double lastRT)
         {
-            int spectrumNumber = GetSpectrumNumber(firstRT - 0.0000001);         
+            int spectrumNumber = GetSpectrumNumber(firstRT - 0.0000001);
             while (spectrumNumber <= LastSpectrumNumber)
             {
                 MSDataScan scan = GetMsScan(spectrumNumber++);
@@ -256,7 +267,7 @@ namespace CSMSL.IO
         public abstract MZAnalyzerType GetMzAnalyzer(int spectrumNumber);
 
         public abstract Spectrum GetSpectrum(int spectrumNumber);
-        
+
         public abstract Polarity GetPolarity(int spectrumNumber);
 
         public abstract double GetRetentionTime(int spectrumNumber);
@@ -264,8 +275,8 @@ namespace CSMSL.IO
         public abstract double GetInjectionTime(int spectrumNumber);
 
         public abstract double GetResolution(int spectrumNumber);
-        
-        public abstract int GetSpectrumNumber(double retentionTime);     
+
+        public abstract int GetSpectrumNumber(double retentionTime);
 
         /// <summary>
         /// Open up a connection to the underlying MS data stream
@@ -277,14 +288,11 @@ namespace CSMSL.IO
 
         public override string ToString()
         {
-            return string.Format("{0} ({1})", Name, Enum.GetName(typeof(MSDataFileType), FileType));
+            return string.Format("{0} ({1})", Name, Enum.GetName(typeof (MSDataFileType), FileType));
         }
 
         protected abstract int GetFirstSpectrumNumber();
 
         protected abstract int GetLastSpectrumNumber();
-
-        
-       
     }
 }

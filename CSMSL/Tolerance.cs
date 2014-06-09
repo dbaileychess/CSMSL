@@ -1,35 +1,30 @@
-﻿///////////////////////////////////////////////////////////////////////////
-//  Tolerance.cs - A measure of the difference between two values         /
-//                                                                        /
-//  Copyright 2012 Derek J. Bailey                                        /
-//  This file is part of CSMSL.                                           /
-//                                                                        /
-//  CSMSL is free software: you can redistribute it and/or modify         /
-//  it under the terms of the GNU General Public License as published by  /
-//  the Free Software Foundation, either version 3 of the License, or     /
-//  (at your option) any later version.                                   /
-//                                                                        /
-//  CSMSL is distributed in the hope that it will be useful,              /
-//  but WITHOUT ANY WARRANTY; without even the implied warranty of        /
-//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         /
-//  GNU General Public License for more details.                          /
-//                                                                        /
-//  You should have received a copy of the GNU General Public License     /
-//  along with CSMSL.  If not, see <http://www.gnu.org/licenses/>.        /
-///////////////////////////////////////////////////////////////////////////
+﻿// Copyright 2012, 2013, 2014 Derek J. Bailey
+// 
+// This file (Tolerance.cs) is part of CSMSL.
+// 
+// CSMSL is free software: you can redistribute it and/or modify it
+// under the terms of the GNU Lesser General Public License as published
+// by the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// 
+// CSMSL is distributed in the hope that it will be useful, but WITHOUT
+// ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public
+// License for more details.
+// 
+// You should have received a copy of the GNU Lesser General Public
+// License along with CSMSL. If not, see <http://www.gnu.org/licenses/>.
 
 using System;
 using System.Text.RegularExpressions;
 
 namespace CSMSL
 {
-
     /// <summary>
     /// The tolerance, or error, of two points
     /// </summary>
     public class Tolerance
     {
-
         private static readonly Regex StringRegex = new Regex(@"(\+-|-\+|±)?\s*([\d.]+)\s*(PPM|DA|MMU)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
         /// <summary>
@@ -46,7 +41,9 @@ namespace CSMSL
         }
 
         public Tolerance(ToleranceUnit unit, double experimental, double theoretical, ToleranceType toleranceType = ToleranceType.PlusAndMinus)
-            : this(unit, GetTolerance(experimental, theoretical, unit), toleranceType) { }
+            : this(unit, GetTolerance(experimental, theoretical, unit), toleranceType)
+        {
+        }
 
         /// <summary>
         /// Calculates a tolerance from the string representation
@@ -82,47 +79,63 @@ namespace CSMSL
         /// </summary>
         public ToleranceType Type { get; set; }
 
-        public DoubleRange GetRange(double mass)
+        public DoubleRange GetRange(double mean)
         {
+            double value = Value*((Type == ToleranceType.PlusAndMinus) ? 2 : 1);
+
             double tol;
             switch (Unit)
             {
                 case ToleranceUnit.MMU:
-                    tol = Value/2000.0;
+                    tol = value/2000.0;
                     break;
                 case ToleranceUnit.PPM:
-                    tol = Value * mass / 2e6;
+                    tol = value*mean/2e6;
                     break;
                 default:
-                    tol = Value / 2.0;
+                    tol = value/2.0;
                     break;
             }
-            return new DoubleRange(mass - tol, mass + tol);
+            return new DoubleRange(mean - tol, mean + tol);
         }
 
-        public double GetMinimumValue(double mass)
+        /// <summary>
+        /// Gets the minimum value that is still within this tolerance
+        /// </summary>
+        /// <param name="mean"></param>
+        /// <returns></returns>
+        public double GetMinimumValue(double mean)
         {
+            double value = Value*((Type == ToleranceType.PlusAndMinus) ? 2 : 1);
+
             switch (Unit)
             {
                 case ToleranceUnit.MMU:
-                    return mass - Value / 2000.0;
+                    return mean - value/2000.0;
                 case ToleranceUnit.PPM:
-                    return mass * (1 - (Value / 2e6));
+                    return mean*(1 - (value/2e6));
                 default:
-                    return mass - Value / 2.0;
+                    return mean - value/2.0;
             }
         }
 
-        public double GetMaximumValue(double mass)
+        /// <summary>
+        /// Gets the maximum value that is still within this tolerance
+        /// </summary>
+        /// <param name="mean"></param>
+        /// <returns></returns>
+        public double GetMaximumValue(double mean)
         {
+            double value = Value*((Type == ToleranceType.PlusAndMinus) ? 2 : 1);
+
             switch (Unit)
             {
                 case ToleranceUnit.MMU:
-                    return mass + Value / 2000.0;
+                    return mean + value/2000.0;
                 case ToleranceUnit.PPM:
-                    return mass * (1 + (Value / 2e6));
+                    return mean*(1 + (value/2e6));
                 default:
-                    return mass + Value / 2.0;
+                    return mean + value/2.0;
             }
         }
 
@@ -134,30 +147,30 @@ namespace CSMSL
         /// <returns>Returns true if the value is within this tolerance  </returns>
         public bool Within(double experimental, double theoretical)
         {
-            double tolerance = GetTolerance(experimental, theoretical, Unit);
-            return Math.Abs(tolerance) <= Value;
+            double tolerance = Math.Abs(GetTolerance(experimental, theoretical, Unit));
+            return tolerance <= Value;
         }
 
         public override string ToString()
         {
-            return string.Format("{0}{1:f4} {2}", (Type == ToleranceType.PlusAndMinus) ? "±" : "", Value, Enum.GetName(typeof(ToleranceUnit), Unit));
+            return string.Format("{0}{1:f4} {2}", (Type == ToleranceType.PlusAndMinus) ? "±" : "", Value, Enum.GetName(typeof (ToleranceUnit), Unit));
         }
 
         #region Static
-        
+
         public static double GetTolerance(double experimental, double theoretical, ToleranceUnit type)
         {
             switch (type)
             {
                 case ToleranceUnit.MMU:
-                    return (experimental - theoretical) * 1000.0;
+                    return (experimental - theoretical)*1000.0;
                 case ToleranceUnit.PPM:
-                    return (experimental - theoretical) / theoretical * 1e6;
+                    return (experimental - theoretical)/theoretical*1e6;
                 default:
                     return experimental - theoretical;
             }
         }
-        
+
         public static Tolerance FromPPM(double value, ToleranceType toleranceType = ToleranceType.PlusAndMinus)
         {
             return new Tolerance(ToleranceUnit.PPM, value, toleranceType);
@@ -174,11 +187,11 @@ namespace CSMSL
         }
 
         public static Tolerance CalculatePrecursorMassError(double theoreticalMass, double observedMass, out int nominalMassOffset, out double adjustedObservedMass, double difference = Constants.C13C12Difference,
-           ToleranceUnit type = ToleranceUnit.PPM)
+            ToleranceUnit type = ToleranceUnit.PPM)
         {
             double massError = observedMass - theoreticalMass;
-            nominalMassOffset = (int)Math.Round(massError / difference);
-            double massOffset = nominalMassOffset * difference;
+            nominalMassOffset = (int) Math.Round(massError/difference);
+            double massOffset = nominalMassOffset*difference;
             adjustedObservedMass = observedMass - massOffset;
             return new Tolerance(type, adjustedObservedMass, theoreticalMass);
         }

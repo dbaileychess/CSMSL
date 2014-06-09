@@ -1,4 +1,21 @@
-﻿using System;
+﻿// Copyright 2012, 2013, 2014 Derek J. Bailey
+// 
+// This file (OmssaModification.cs) is part of CSMSL.
+// 
+// CSMSL is free software: you can redistribute it and/or modify it
+// under the terms of the GNU Lesser General Public License as published
+// by the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// 
+// CSMSL is distributed in the hope that it will be useful, but WITHOUT
+// ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public
+// License for more details.
+// 
+// You should have received a copy of the GNU Lesser General Public
+// License along with CSMSL. If not, see <http://www.gnu.org/licenses/>.
+
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
@@ -13,19 +30,19 @@ namespace CSMSL.IO.OMSSA
     {
         private static readonly Dictionary<int, string> _modificationKeyDicitonary;
 
-        private static readonly Dictionary<string, OmssaModification> Modifications; 
-        
-        static OmssaModification() 
-        { 
+        private static readonly Dictionary<string, OmssaModification> Modifications;
+
+        static OmssaModification()
+        {
             _modificationKeyDicitonary = new Dictionary<int, string>();
             Modifications = new Dictionary<string, OmssaModification>();
 
             // Load in the default omssa mods
             var assembly = Assembly.GetExecutingAssembly();
-      
-            LoadOmssaModifications(assembly.GetManifestResourceStream("CSMSL.IO.OMSSA.Resources.mods.xml"),false);
+
+            LoadOmssaModifications(assembly.GetManifestResourceStream("CSMSL.IO.OMSSA.Resources.mods.xml"), false);
         }
-        
+
         public int ID { get; set; }
 
         public bool UserMod { get; set; }
@@ -36,7 +53,7 @@ namespace CSMSL.IO.OMSSA
             ID = id;
             UserMod = userMod;
         }
- 
+
         public static bool TryGetModification(int id, out OmssaModification modification)
         {
             string name;
@@ -49,8 +66,8 @@ namespace CSMSL.IO.OMSSA
             return Modifications.TryGetValue(name, out modification);
         }
 
-        private static readonly char[] _omssaModDelimiter = { ',', ';' };
-        private static readonly char[] _omssaModPartDelimiter = { ':' };
+        private static readonly char[] _omssaModDelimiter = {',', ';'};
+        private static readonly char[] _omssaModPartDelimiter = {':'};
 
         public static void LoadOmssaModifications(Stream stream, bool userMod = true)
         {
@@ -96,8 +113,8 @@ namespace CSMSL.IO.OMSSA
                 {
                     case 0:
                         foreach (
-                                           XmlNode node in
-                                               mod_node.SelectNodes("./omssa:MSModSpec_residues/omssa:MSModSpec_residues_E", mods_xml_ns))
+                            XmlNode node in
+                                mod_node.SelectNodes("./omssa:MSModSpec_residues/omssa:MSModSpec_residues_E", mods_xml_ns))
                         {
                             string aa = node.FirstChild.Value;
                             sites = sites.Set(aa[0]);
@@ -115,17 +132,16 @@ namespace CSMSL.IO.OMSSA
                     case 6:
                         sites |= ModificationSites.PepC;
                         break;
-
                 }
-               
-               
+
+
                 OmssaModification mod = new OmssaModification(name, id, mono, average, userMod, sites);
                 Modifications[name] = mod;
                 _modificationKeyDicitonary[id] = name;
             }
         }
 
-        public static IEnumerable<Tuple<string,int>> SplitModificationLine(string line)
+        public static IEnumerable<Tuple<string, int>> SplitModificationLine(string line)
         {
             foreach (string mod in line.Split(_omssaModDelimiter, StringSplitOptions.RemoveEmptyEntries))
             {
@@ -175,32 +191,32 @@ namespace CSMSL.IO.OMSSA
                 sb.Append(i);
                 sb.Append(',');
             }
-            if(sb.Length > 0) {
+            if (sb.Length > 0)
+            {
                 sb.Remove(sb.Length - 1, 1);
             }
             return sb.ToString();
         }
-        
+
         public static IEnumerable<OmssaModification> GetAllModifications()
         {
             return Modifications.Values;
         }
-                       
     }
 
     public static class OmssaModExtension
     {
-        public static AminoAcidPolymer SetModifications(this AminoAcidPolymer aap, string mods) {
+        public static AminoAcidPolymer SetModifications(this AminoAcidPolymer aap, string mods)
+        {
             if (string.IsNullOrEmpty(mods))
-                 return aap;
-           
+                return aap;
+
             foreach (Tuple<Modification, int> modPosition in OmssaModification.ParseModificationLine(mods))
             {
                 aap.SetModification(modPosition.Item1, modPosition.Item2);
             }
-            
+
             return aap;
         }
-
     }
 }

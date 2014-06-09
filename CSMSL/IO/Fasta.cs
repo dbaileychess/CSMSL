@@ -1,22 +1,19 @@
-﻿///////////////////////////////////////////////////////////////////////////
-//  Fasta.cs - Text-based file using the fasta format                     /
-//                                                                        /
-//  Copyright 2012 Derek J. Bailey                                        /
-//  This file is part of CSMSL.                                           /
-//                                                                        /
-//  CSMSL is free software: you can redistribute it and/or modify         /
-//  it under the terms of the GNU General Public License as published by  /
-//  the Free Software Foundation, either version 3 of the License, or     /
-//  (at your option) any later version.                                   /
-//                                                                        /
-//  CSMSL is distributed in the hope that it will be useful,              /
-//  but WITHOUT ANY WARRANTY; without even the implied warranty of        /
-//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         /
-//  GNU General Public License for more details.                          /
-//                                                                        /
-//  You should have received a copy of the GNU General Public License     /
-//  along with CSMSL.  If not, see <http://www.gnu.org/licenses/>.        /
-///////////////////////////////////////////////////////////////////////////
+﻿// Copyright 2012, 2013, 2014 Derek J. Bailey
+// 
+// This file (Fasta.cs) is part of CSMSL.
+// 
+// CSMSL is free software: you can redistribute it and/or modify it
+// under the terms of the GNU Lesser General Public License as published
+// by the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// 
+// CSMSL is distributed in the hope that it will be useful, but WITHOUT
+// ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public
+// License for more details.
+// 
+// You should have received a copy of the GNU Lesser General Public
+// License along with CSMSL. If not, see <http://www.gnu.org/licenses/>.
 
 using System;
 using System.Collections.Generic;
@@ -44,7 +41,7 @@ namespace CSMSL.IO
         public override int GetHashCode()
         {
             return Sequence.GetHashCode();
-        }        
+        }
 
         /// <summary>
         /// Generate a decoy version of the given fasta
@@ -63,6 +60,7 @@ namespace CSMSL.IO
          * Method to generate decoy sequence according to a given input sequence and other options like
          * decoy type and whether to exclude N-terminus. 
          **/
+
         private static string GenerateDecoySequence(string sequence, DecoyDatabaseMethod decoyType, bool excludeNTerminus, bool onlyIfNTerminusIsMethionine)
         {
             char[] temp = new char[sequence.Length];
@@ -82,7 +80,7 @@ namespace CSMSL.IO
 
                 case DecoyDatabaseMethod.Shuffle:
 
-                   temp = sequence.ToCharArray();
+                    temp = sequence.ToCharArray();
                     if (keepNTerminus)
                         Shuffle(temp, 1, temp.Length - 1);
                     else
@@ -93,7 +91,7 @@ namespace CSMSL.IO
                 case DecoyDatabaseMethod.Random:
 
                     int index = 0;
-                    if (keepNTerminus) 
+                    if (keepNTerminus)
                         temp[index++] = sequence[0];
 
                     // Generate Random Characters
@@ -113,7 +111,7 @@ namespace CSMSL.IO
 
         private static readonly Random Random = new Random();
 
-        private static readonly List<char> AminoAcids = new List<char>(new[] { 'A', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'K', 'L', 'M', 'N', 'P', 'Q', 'R', 'S', 'T', 'V', 'W', 'Y' });
+        private static readonly List<char> AminoAcids = new List<char>(new[] {'A', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'K', 'L', 'M', 'N', 'P', 'Q', 'R', 'S', 'T', 'V', 'W', 'Y'});
 
         private static void Shuffle(char[] array)
         {
@@ -134,13 +132,16 @@ namespace CSMSL.IO
         public string Description
         {
             get { return _description; }
-            set { 
+            set
+            {
                 _description = value;
-                foreach(string decoyIdentifier in DecoyIdentifiers) {
-                    if(_description.StartsWith(decoyIdentifier)) {
+                foreach (string decoyIdentifier in DecoyIdentifiers)
+                {
+                    if (_description.StartsWith(decoyIdentifier))
+                    {
                         IsDecoy = true;
                         break;
-                    }                        
+                    }
                 }
             }
         }
@@ -153,8 +154,6 @@ namespace CSMSL.IO
         {
             return Sequence.Equals(other.Sequence);
         }
-
-
     } // class Fasta
 
 
@@ -165,5 +164,4 @@ namespace CSMSL.IO
         Shuffle,
         Random
     }
-    
 }

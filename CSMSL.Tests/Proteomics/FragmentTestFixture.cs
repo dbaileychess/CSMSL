@@ -1,4 +1,21 @@
-﻿using CSMSL.Chemistry;
+﻿// Copyright 2012, 2013, 2014 Derek J. Bailey
+// 
+// This file (FragmentTestFixture.cs) is part of CSMSL.Tests.
+// 
+// CSMSL.Tests is free software: you can redistribute it and/or modify it
+// under the terms of the GNU Lesser General Public License as published
+// by the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// 
+// CSMSL.Tests is distributed in the hope that it will be useful, but WITHOUT
+// ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public
+// License for more details.
+// 
+// You should have received a copy of the GNU Lesser General Public
+// License along with CSMSL.Tests. If not, see <http://www.gnu.org/licenses/>.
+
+using CSMSL.Chemistry;
 using CSMSL.Proteomics;
 using NUnit.Framework;
 using System;
@@ -11,17 +28,17 @@ namespace CSMSL.Tests.Proteomics
     public sealed class FragmentTestFixture
     {
         private Peptide _mockPeptideEveryAminoAcid;
-       
+
         [SetUp]
         public void SetUp()
         {
             _mockPeptideEveryAminoAcid = new Peptide("ACDEFGHIKLMNPQRSTVWY");
         }
-       
+
         [Test]
         public void FragmentNumberToLow()
         {
-            Assert.Throws<IndexOutOfRangeException>(() =>  _mockPeptideEveryAminoAcid.Fragment(FragmentTypes.b, 0).ToList());
+            Assert.Throws<IndexOutOfRangeException>(() => _mockPeptideEveryAminoAcid.Fragment(FragmentTypes.b, 0).ToList());
         }
 
         [Test]
@@ -43,14 +60,14 @@ namespace CSMSL.Tests.Proteomics
         {
             List<Fragment> fragments = _mockPeptideEveryAminoAcid.Fragment(FragmentTypes.b).ToList();
 
-            Assert.AreEqual(19,fragments.Count);
+            Assert.AreEqual(19, fragments.Count);
         }
-        
+
         [Test]
         public void FragmentChemicalFormulaAIon()
         {
             Fragment fragment = _mockPeptideEveryAminoAcid.Fragment(FragmentTypes.a, 1).ToArray()[0];
-            
+
             Assert.IsTrue(fragment.MassEquals(43.04219916514));
         }
 

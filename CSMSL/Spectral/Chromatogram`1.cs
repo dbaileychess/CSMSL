@@ -1,4 +1,21 @@
-﻿using System;
+﻿// Copyright 2012, 2013, 2014 Derek J. Bailey
+// 
+// This file (Chromatogram`1.cs) is part of CSMSL.
+// 
+// CSMSL is free software: you can redistribute it and/or modify it
+// under the terms of the GNU Lesser General Public License as published
+// by the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// 
+// CSMSL is distributed in the hope that it will be useful, but WITHOUT
+// ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public
+// License for more details.
+// 
+// You should have received a copy of the GNU Lesser General Public
+// License along with CSMSL. If not, see <http://www.gnu.org/licenses/>.
+
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,7 +35,7 @@ namespace CSMSL.Spectral
         BoxCar = 1,
         SavitzkyGolay = 2
     }
-     
+
     //public class MzRangeChromatogram : Chromatogram
     //{
     //    public MassRange MzRange { get; private set; }
@@ -152,14 +169,14 @@ namespace CSMSL.Spectral
     //    }
 
     //    protected readonly SortedList<double, T> _curve;
-        
+
     //    public double TotalIonCurrent { get; private set; }
 
     //    public int Count
     //    {
     //        get { return _curve.Count; }
     //    }
-              
+
     //    public ChromatogramType Type { get; private set; }
 
     //    public T BasePeak { get; private set; }
@@ -177,7 +194,7 @@ namespace CSMSL.Spectral
     //        _curve = new SortedList<double, T>(points.ToDictionary(p => p.X));
     //        TotalIonCurrent = _curve.Values.Sum(p => p.Y);
     //    }
-        
+
     //    public T GetMinPeak(T peak, double percentOfApex = 0.1)
     //    {
     //        int index = _curve.IndexOfValue(peak);           
@@ -247,7 +264,7 @@ namespace CSMSL.Spectral
     //    {
     //        return string.Format("Count = {0:N0} TIC = {1:G4} ({2})", Count, TotalIonCurrent, Enum.GetName(typeof(ChromatogramType), Type));
     //    }
-        
+
     //    public IEnumerator<T> GetEnumerator()
     //    {
     //        return _curve.Values.GetEnumerator();
@@ -281,7 +298,7 @@ namespace CSMSL.Spectral
     //        return apex;
     //    }      
     //}
-    
+
     public static class Extension
     {
         public static MassRangeChromatogram GetExtractedIonChromatogram(this IList<Tuple<ISpectrum, double>> spectra, DoubleRange range)
@@ -295,14 +312,14 @@ namespace CSMSL.Spectral
             double[] times = new double[count];
             double[] intensities = new double[count];
 
-            int i =0;
+            int i = 0;
             foreach (Tuple<ISpectrum, double> data in spectra)
             {
-                double intensity;              
-                ISpectrum spectrum = data.Item1;               
+                double intensity;
+                ISpectrum spectrum = data.Item1;
                 spectrum.TryGetIntensities(range, out intensity);
                 times[i] = data.Item2;
-                intensities[i] = intensity;              
+                intensities[i] = intensity;
                 i++;
             }
 

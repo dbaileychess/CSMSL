@@ -1,22 +1,19 @@
-﻿///////////////////////////////////////////////////////////////////////////
-//  Protease.cs - An enzyme that cleaves amino acid polymers              /
-//                                                                        /
-//  Copyright 2012 Derek J. Bailey                                        /
-//  This file is part of CSMSL.                                           /
-//                                                                        /
-//  CSMSL is free software: you can redistribute it and/or modify         /
-//  it under the terms of the GNU General Public License as published by  /
-//  the Free Software Foundation, either version 3 of the License, or     /
-//  (at your option) any later version.                                   /
-//                                                                        /
-//  CSMSL is distributed in the hope that it will be useful,              /
-//  but WITHOUT ANY WARRANTY; without even the implied warranty of        /
-//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         /
-//  GNU General Public License for more details.                          /
-//                                                                        /
-//  You should have received a copy of the GNU General Public License     /
-//  along with CSMSL.  If not, see <http://www.gnu.org/licenses/>.        /
-///////////////////////////////////////////////////////////////////////////
+﻿// Copyright 2012, 2013, 2014 Derek J. Bailey
+// 
+// This file (Protease.cs) is part of CSMSL.
+// 
+// CSMSL is free software: you can redistribute it and/or modify it
+// under the terms of the GNU Lesser General Public License as published
+// by the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// 
+// CSMSL is distributed in the hope that it will be useful, but WITHOUT
+// ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public
+// License for more details.
+// 
+// You should have received a copy of the GNU Lesser General Public
+// License along with CSMSL. If not, see <http://www.gnu.org/licenses/>.
 
 using System.Collections.Generic;
 using System.Linq;
@@ -25,12 +22,11 @@ using System.Text.RegularExpressions;
 
 namespace CSMSL.Proteomics
 {
-    public class Protease: IProtease
+    public class Protease : IProtease
     {
-
         #region Common Proteases
 
-        public static Protease Trypsin {get; private set;}
+        public static Protease Trypsin { get; private set; }
         public static Protease TrypsinNoProlineRule { get; private set; }
         public static Protease GluC { get; private set; }
         public static Protease LysN { get; private set; }
@@ -51,19 +47,19 @@ namespace CSMSL.Proteomics
         {
             Proteases = new Dictionary<string, Protease>(14);
 
-            Trypsin = AddProtease("Trypsin", Terminus.C,"KR","P");
+            Trypsin = AddProtease("Trypsin", Terminus.C, "KR", "P");
             TrypsinNoProlineRule = AddProtease("Trypsin No Proline Rule", Terminus.C, "KR");
             GluC = AddProtease("GluC", Terminus.C, "E");
-            LysN = AddProtease("LysN", Terminus.N,"K");
+            LysN = AddProtease("LysN", Terminus.N, "K");
             ArgC = AddProtease("ArgC", Terminus.C, "R");
-            Chymotrypsin = AddProtease("Chymotrypsin", Terminus.C, "YWFL","P");
+            Chymotrypsin = AddProtease("Chymotrypsin", Terminus.C, "YWFL", "P");
             ChymotrypsinNoProlineRule = AddProtease("Chymotrypsin No Proline Rule", Terminus.C, "YWFL");
             LysC = AddProtease("LysC", Terminus.C, "K");
             CNBr = AddProtease("CNBr", Terminus.C, "M");
             AspN = AddProtease("AspN", Terminus.N, "BD");
-            Thermolysin = AddProtease("Thermolysin", Terminus.N, "AFILMV","DE");
-            None = AddProtease("None", Terminus.C,"ACDEFGHIKLMNPQRSTVWY");            
-        }            
+            Thermolysin = AddProtease("Thermolysin", Terminus.N, "AFILMV", "DE");
+            None = AddProtease("None", Terminus.C, "ACDEFGHIKLMNPQRSTVWY");
+        }
 
         public static IEnumerable<Protease> GetAllProteases()
         {
@@ -79,13 +75,13 @@ namespace CSMSL.Proteomics
         {
             return Proteases.TryGetValue(name, out protease);
         }
-        
+
         public static Protease AddProtease(string name, Terminus terminus, string cut, string noCut = "")
         {
             Protease protease = new Protease(name, terminus, cut, noCut);
             Proteases.Add(protease.Name, protease);
             return protease;
-        }        
+        }
 
         private readonly Regex _cleavageRegex;
 
@@ -96,7 +92,10 @@ namespace CSMSL.Proteomics
 
         public Terminus Terminal { get; private set; }
 
-        public string CleavagePattern { get { return _cleavageRegex.ToString(); } }
+        public string CleavagePattern
+        {
+            get { return _cleavageRegex.ToString(); }
+        }
 
         public int MissedCleavages(string sequence)
         {
@@ -107,7 +106,7 @@ namespace CSMSL.Proteomics
 
             if (count == 0)
                 return 0;
-            
+
             if (Terminal == Terminus.N)
             {
                 if (matches[0].Index == 0)
@@ -115,7 +114,7 @@ namespace CSMSL.Proteomics
                 return count;
             }
 
-            if (matches[count-1].Index == sequence.Length - 1)
+            if (matches[count - 1].Index == sequence.Length - 1)
                 return count - 1;
 
             return count;
@@ -126,7 +125,7 @@ namespace CSMSL.Proteomics
             return MissedCleavages(aminoAcidSequence.Sequence);
         }
 
-        public Protease(string name, Terminus terminus, string cut, string nocut = "",string cleavePattern = "")
+        public Protease(string name, Terminus terminus, string cut, string nocut = "", string cleavePattern = "")
         {
             Name = name;
             Terminal = terminus;
@@ -167,7 +166,7 @@ namespace CSMSL.Proteomics
             else
             {
                 _cleavageRegex = new Regex(cleavePattern, RegexOptions.Compiled);
-            }          
+            }
         }
 
         public override string ToString()

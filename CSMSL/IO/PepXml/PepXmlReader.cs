@@ -1,4 +1,21 @@
-﻿using System;
+﻿// Copyright 2012, 2013, 2014 Derek J. Bailey
+// 
+// This file (PepXmlReader.cs) is part of CSMSL.
+// 
+// CSMSL is free software: you can redistribute it and/or modify it
+// under the terms of the GNU Lesser General Public License as published
+// by the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// 
+// CSMSL is distributed in the hope that it will be useful, but WITHOUT
+// ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public
+// License for more details.
+// 
+// You should have received a copy of the GNU Lesser General Public
+// License along with CSMSL. If not, see <http://www.gnu.org/licenses/>.
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml;
@@ -8,35 +25,34 @@ namespace CSMSL.IO.PepXML
 {
     public class PepXmlReader : IDisposable
     {
-        public string FilePath { get; private set; }     
+        public string FilePath { get; private set; }
         private XmlDocument _document;
         private XmlNode _root;
         private XmlNamespaceManager _nsmgr;
-  
+
 
         public PepXmlReader(string filePath)
         {
-            FilePath = filePath;  
+            FilePath = filePath;
             _document = new XmlDocument();
             _document.Load(filePath);
             _root = _document.DocumentElement;
             _nsmgr = new XmlNamespaceManager(_document.NameTable);
-            _nsmgr.AddNamespace("pepxml", "http://regis-web.systembiology.net/pepXML");            
+            _nsmgr.AddNamespace("pepxml", "http://regis-web.systembiology.net/pepXML");
         }
 
         public Protease GetSampleProtease()
-        {      
+        {
             var node = _root.SelectSingleNode("//pepxml:sample_enzyme", _nsmgr);
             var name = node.Attributes["name"].Value;
             Protease protease;
 
-                            var specificityNode = node.FirstChild;
-                string sense = specificityNode.Attributes["sense"].Value;
-                string cut = specificityNode.Attributes["cut"].Value;
-                string nocut = specificityNode.Attributes["no_cut"].Value;
-                protease = new Protease(name, (sense.Equals("C")) ? Terminus.C : Terminus.N, cut, nocut);
-            
-           
+            var specificityNode = node.FirstChild;
+            string sense = specificityNode.Attributes["sense"].Value;
+            string cut = specificityNode.Attributes["cut"].Value;
+            string nocut = specificityNode.Attributes["no_cut"].Value;
+            protease = new Protease(name, (sense.Equals("C")) ? Terminus.C : Terminus.N, cut, nocut);
+
 
             //Protease protease = new Protease(name, (sense.Equals("C")) ? Terminus.C : Terminus.N, cut, nocut);
 
@@ -52,7 +68,7 @@ namespace CSMSL.IO.PepXML
         {
             return GetModifications(true);
         }
-        
+
         private List<Modification> GetModifications(bool fixedMod)
         {
             var modifications = new Dictionary<string, Modification>();
@@ -113,10 +129,9 @@ namespace CSMSL.IO.PepXML
 
             return modifications.Values.ToList();
         }
-         
+
         public void Dispose()
         {
-          
         }
     }
 }

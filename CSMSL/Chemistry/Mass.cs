@@ -1,37 +1,36 @@
-﻿///////////////////////////////////////////////////////////////////////////
-//  Mass.cs - The monoisotopic and average mass of an object              /
-//                                                                        /
-//  Copyright 2012 Derek J. Bailey                                        /
-//  This file is part of CSMSL.                                           /
-//                                                                        /
-//  CSMSL is free software: you can redistribute it and/or modify         /
-//  it under the terms of the GNU General Public License as published by  /
-//  the Free Software Foundation, either version 3 of the License, or     /
-//  (at your option) any later version.                                   /
-//                                                                        /
-//  CSMSL is distributed in the hope that it will be useful,              /
-//  but WITHOUT ANY WARRANTY; without even the implied warranty of        /
-//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         /
-//  GNU General Public License for more details.                          /
-//                                                                        /
-//  You should have received a copy of the GNU General Public License     /
-//  along with CSMSL.  If not, see <http://www.gnu.org/licenses/>.        /
-///////////////////////////////////////////////////////////////////////////
+﻿// Copyright 2012, 2013, 2014 Derek J. Bailey
+// 
+// This file (Mass.cs) is part of CSMSL.
+// 
+// CSMSL is free software: you can redistribute it and/or modify it
+// under the terms of the GNU Lesser General Public License as published
+// by the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// 
+// CSMSL is distributed in the hope that it will be useful, but WITHOUT
+// ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public
+// License for more details.
+// 
+// You should have received a copy of the GNU Lesser General Public
+// License along with CSMSL. If not, see <http://www.gnu.org/licenses/>.
 
 using System;
 
 namespace CSMSL.Chemistry
 {
-    public class Mass : IMass, IComparable<Mass>, IEquatable<Mass> 
+    public class Mass : IMass, IComparable<Mass>, IEquatable<Mass>
     {
         /// <summary>
         /// The mass of all the isotopes (in unified atomic mass units)
         /// </summary>
         public double MonoisotopicMass { get; internal set; }
-        
+
         public Mass(IMass item)
-            : this(item.MonoisotopicMass) { }
-               
+            : this(item.MonoisotopicMass)
+        {
+        }
+
         public Mass(double monoisotopic = 0)
         {
             MonoisotopicMass = monoisotopic;
@@ -67,7 +66,7 @@ namespace CSMSL.Chemistry
         /// <param name="item">The item which possesses a mass</param>
         public void Remove(Mass item)
         {
-            if (item == null) 
+            if (item == null)
                 return;
 
             MonoisotopicMass -= item.MonoisotopicMass;
@@ -90,14 +89,14 @@ namespace CSMSL.Chemistry
 
         public string ToString(string format)
         {
-            return MonoisotopicMass.ToString(format);            
+            return MonoisotopicMass.ToString(format);
         }
 
         public int CompareTo(Mass other)
         {
             return this.Compare(other);
         }
-                
+
         public bool Equals(Mass other)
         {
             return MonoisotopicMass.MassEquals(other);
@@ -113,7 +112,7 @@ namespace CSMSL.Chemistry
         {
             return MonoisotopicMass.GetHashCode();
         }
-        
+
         #region Static Methods
 
         public static Mass operator +(Mass left, IMass right)
@@ -128,22 +127,22 @@ namespace CSMSL.Chemistry
 
         public static Mass operator /(Mass left, int right)
         {
-            return new Mass(left.MonoisotopicMass / right);
+            return new Mass(left.MonoisotopicMass/right);
         }
 
         public static Mass operator /(Mass left, double right)
         {
-            return new Mass(left.MonoisotopicMass / right);
+            return new Mass(left.MonoisotopicMass/right);
         }
 
         public static Mass operator *(Mass left, int right)
         {
-            return new Mass(left.MonoisotopicMass * right);
+            return new Mass(left.MonoisotopicMass*right);
         }
 
         public static Mass operator *(Mass left, double right)
         {
-            return new Mass(left.MonoisotopicMass * right);
+            return new Mass(left.MonoisotopicMass*right);
         }
 
         /// <summary>
@@ -156,7 +155,7 @@ namespace CSMSL.Chemistry
         {
             if (charge == 0)
                 throw new DivideByZeroException("Charge cannot be zero");
-            return Math.Abs(charge) * mz - charge * Constants.Proton;
+            return Math.Abs(charge)*mz - charge*Constants.Proton;
         }
 
         /// <summary>
@@ -169,12 +168,9 @@ namespace CSMSL.Chemistry
         {
             if (charge == 0)
                 throw new DivideByZeroException("Charge cannot be zero");
-            return mass / Math.Abs(charge) + Math.Sign(charge) * Constants.Proton;
+            return mass/Math.Abs(charge) + Math.Sign(charge)*Constants.Proton;
         }
 
-       
         #endregion Static Methods
-
     }
-   
 }

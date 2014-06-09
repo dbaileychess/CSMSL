@@ -1,4 +1,21 @@
-﻿using CSMSL.Chemistry;
+﻿// Copyright 2012, 2013, 2014 Derek J. Bailey
+// 
+// This file (QuantitationChannelSet.cs) is part of CSMSL.
+// 
+// CSMSL is free software: you can redistribute it and/or modify it
+// under the terms of the GNU Lesser General Public License as published
+// by the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// 
+// CSMSL is distributed in the hope that it will be useful, but WITHOUT
+// ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public
+// License for more details.
+// 
+// You should have received a copy of the GNU Lesser General Public
+// License along with CSMSL. If not, see <http://www.gnu.org/licenses/>.
+
+using CSMSL.Chemistry;
 using CSMSL.Proteomics;
 using System;
 using System.Collections.Generic;
@@ -6,7 +23,7 @@ using System.Linq;
 
 namespace CSMSL.Analysis.Quantitation
 {
-    public class QuantitationChannelSet: IMass
+    public class QuantitationChannelSet : IMass
     {
         public static readonly QuantitationChannelSet TMT6PlexHeavy;
         public static readonly QuantitationChannelSet TMT6PlexLight;
@@ -63,26 +80,22 @@ namespace CSMSL.Analysis.Quantitation
             TMT10Plex.Add(tmt130l);
             TMT10Plex.Add(tmt130h);
             TMT10Plex.Add(tmt131);
-
         }
 
         public string Name { get; set; }
 
         private readonly SortedList<double, IQuantitationChannel> _channels;
-         
+
         public QuantitationChannelSetMassType MassType { get; set; }
 
         public double MonoisotopicMass { get; private set; }
 
         public IQuantitationChannel this[int index]
         {
-            get
-            {
-                return _channels.Values[index];
-            }
+            get { return _channels.Values[index]; }
         }
 
-        public bool IsSequenceDependent { get; set;}
+        public bool IsSequenceDependent { get; set; }
 
         public IQuantitationChannel this[string name]
         {
@@ -109,7 +122,7 @@ namespace CSMSL.Analysis.Quantitation
         public IQuantitationChannel Add(IQuantitationChannel channel)
         {
             _channels.Add(channel.ReporterMass, channel);
-            MonoisotopicMass += channel.MonoisotopicMass;        
+            MonoisotopicMass += channel.MonoisotopicMass;
 
             return channel;
         }
@@ -157,18 +170,12 @@ namespace CSMSL.Analysis.Quantitation
 
         public DoubleRange MassRange
         {
-            get
-            {
-                return new DoubleRange(LightestChannel.ReporterMass, HeaviestChannel.ReporterMass);
-            }
+            get { return new DoubleRange(LightestChannel.ReporterMass, HeaviestChannel.ReporterMass); }
         }
 
         public int Count
         {
-            get
-            {
-                return _channels.Count;
-            }
+            get { return _channels.Count; }
         }
 
         public override string ToString()
@@ -187,32 +194,28 @@ namespace CSMSL.Analysis.Quantitation
             {
                 default:
                 case QuantitationChannelSetMassType.Average:
-                    return MonoisotopicMass / Count;
+                    return MonoisotopicMass/Count;
                 case QuantitationChannelSetMassType.Lightest:
                     return LightestChannel.MonoisotopicMass;
                 case QuantitationChannelSetMassType.Heaviest:
                     return HeaviestChannel.MonoisotopicMass;
                 case QuantitationChannelSetMassType.Median:
-                    if (Count % 2 == 0)
+                    if (Count%2 == 0)
                     {
-                        return (_channels.Values[(Count / 2) - 1].MonoisotopicMass + _channels.Values[Count / 2].MonoisotopicMass) / 2.0;
+                        return (_channels.Values[(Count/2) - 1].MonoisotopicMass + _channels.Values[Count/2].MonoisotopicMass)/2.0;
                     }
-                    
-                    return _channels.Values[Count / 2].MonoisotopicMass;
-                    
+
+                    return _channels.Values[Count/2].MonoisotopicMass;
             }
         }
 
         double IMass.MonoisotopicMass
         {
-            get
-            {
-                return GetMass(MassType);
-            }
+            get { return GetMass(MassType); }
         }
 
         #region Static 
-        
+
         public static IEnumerable<Peptide> GetUniquePeptides(Peptide peptide)
         {
             HashSet<QuantitationChannelSet> sets = new HashSet<QuantitationChannelSet>();
@@ -226,15 +229,15 @@ namespace CSMSL.Analysis.Quantitation
                 if (mods[i] != null)
                 {
                     IMass mod = mods[i];
-                    
+
                     List<QuantitationChannelSet> channelsets = new List<QuantitationChannelSet>();
 
                     QuantitationChannelSet quantSetMod;
                     ModificationCollection modCol;
-                    if ((modCol = mod as ModificationCollection) != null)                     
+                    if ((modCol = mod as ModificationCollection) != null)
                     {
                         foreach (IMass mod2 in modCol)
-                        {                            
+                        {
                             if ((quantSetMod = mod2 as QuantitationChannelSet) != null)
                             {
                                 channelsets.Add(quantSetMod);
@@ -258,11 +261,11 @@ namespace CSMSL.Analysis.Quantitation
                             }
                             else
                             {
-                                residues = new HashSet<int> { i };
+                                residues = new HashSet<int> {i};
                                 locations.Add(channel, residues);
                             }
                         }
-                    }                 
+                    }
                 }
             }
 
@@ -271,7 +274,7 @@ namespace CSMSL.Analysis.Quantitation
                 yield return new Peptide(peptide, true);
             }
             else if (sets.Count == 1)
-            {  
+            {
                 foreach (QuantitationChannelSet set in sets)
                 {
                     foreach (IQuantitationChannel channel in set.GetChannels())
@@ -357,7 +360,7 @@ namespace CSMSL.Analysis.Quantitation
         {
             if (setIndex >= sets.Count)
             {
-                result.Add(new HashSet<IQuantitationChannel>(channels));               
+                result.Add(new HashSet<IQuantitationChannel>(channels));
             }
             else
             {
@@ -371,13 +374,7 @@ namespace CSMSL.Analysis.Quantitation
                 }
             }
         }
-        
 
         #endregion
-
-
-
-
-       
     }
 }

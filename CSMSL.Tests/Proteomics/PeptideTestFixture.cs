@@ -1,11 +1,28 @@
-﻿using CSMSL.Chemistry;
+﻿// Copyright 2012, 2013, 2014 Derek J. Bailey
+// 
+// This file (PeptideTestFixture.cs) is part of CSMSL.Tests.
+// 
+// CSMSL.Tests is free software: you can redistribute it and/or modify it
+// under the terms of the GNU Lesser General Public License as published
+// by the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// 
+// CSMSL.Tests is distributed in the hope that it will be useful, but WITHOUT
+// ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public
+// License for more details.
+// 
+// You should have received a copy of the GNU Lesser General Public
+// License along with CSMSL.Tests. If not, see <http://www.gnu.org/licenses/>.
+
+using CSMSL.Chemistry;
 using CSMSL.Proteomics;
 using NUnit.Framework;
 using System;
 
 namespace CSMSL.Tests.Proteomics
 {
-    [TestFixture,Category("Peptide")]
+    [TestFixture, Category("Peptide")]
     public sealed class PeptideTestFixture
     {
         private Peptide _mockPeptideEveryAminoAcid;
@@ -32,7 +49,7 @@ namespace CSMSL.Tests.Proteomics
             ChemicalFormula formula2;
             pep.TryGetChemicalFormula(out formula2);
 
-            Assert.AreEqual(formula,formula2);
+            Assert.AreEqual(formula, formula2);
         }
 
         [Test]
@@ -44,13 +61,13 @@ namespace CSMSL.Tests.Proteomics
             Assert.AreEqual(formula, formula2);
         }
 
-    
-        [Test]      
+
+        [Test]
         public void PeptideAminoAcidCount()
         {
             Assert.AreEqual(20, _mockPeptideEveryAminoAcid.Length);
         }
-        
+
         [Test]
         public void ParseNTerminalChemicalFormula()
         {
@@ -100,7 +117,7 @@ namespace CSMSL.Tests.Proteomics
             ChemicalFormula formulaB;
             peptide.TryGetChemicalFormula(out formulaB);
 
-            Assert.AreEqual(formulaA, formulaB);   
+            Assert.AreEqual(formulaA, formulaB);
         }
 
         [Test]
@@ -133,7 +150,7 @@ namespace CSMSL.Tests.Proteomics
             ChemicalFormula formulaB;
             peptide.TryGetChemicalFormula(out formulaB);
 
-            Assert.AreEqual(formulaA, formulaB);   
+            Assert.AreEqual(formulaA, formulaB);
         }
 
         [Test]
@@ -162,7 +179,7 @@ namespace CSMSL.Tests.Proteomics
 
         [Test]
         public void ParseNamedChemicalNamedChemicalModification()
-        { 
+        {
             Peptide peptide = new Peptide("THGEAK[Acetyl]K");
 
             Assert.AreEqual(811.41881631550984, peptide.MonoisotopicMass);
@@ -199,7 +216,7 @@ namespace CSMSL.Tests.Proteomics
             Peptide peptide1 = new Peptide("TTGSSS SSS SK");
             Peptide peptide2 = new Peptide("TTGSSSSSSSK");
 
-            Assert.AreEqual(peptide1,peptide2);
+            Assert.AreEqual(peptide1, peptide2);
         }
 
         [Test]
@@ -230,10 +247,10 @@ namespace CSMSL.Tests.Proteomics
         }
 
         [Test]
-        [ExpectedException(typeof(ArgumentException), ExpectedMessage = "Unable to correctly parse the following modification: TMT 7-plex")]
+        [ExpectedException(typeof (ArgumentException), ExpectedMessage = "Unable to correctly parse the following modification: TMT 7-plex")]
         public void ParseNamedChemicalModificationInvalidName()
         {
-            Peptide peptide = new Peptide("T[TMT 7-plex]HGEAK[Acetyl]K");           
+            Peptide peptide = new Peptide("T[TMT 7-plex]HGEAK[Acetyl]K");
         }
 
         [Test]
@@ -299,7 +316,7 @@ namespace CSMSL.Tests.Proteomics
 
             Assert.AreEqual("[Fe]-ACDEFGHIKLMNPQRSTVWY-[Fe]", _mockPeptideEveryAminoAcid.ToString());
         }
-        
+
         [Test]
         public void SetAminoAcidCharacterModification()
         {
@@ -320,28 +337,28 @@ namespace CSMSL.Tests.Proteomics
         }
 
         [Test]
-        [ExpectedException(typeof(IndexOutOfRangeException), ExpectedMessage="Residue number not in the correct range: [1-20] you specified: 25")]
+        [ExpectedException(typeof (IndexOutOfRangeException), ExpectedMessage = "Residue number not in the correct range: [1-20] you specified: 25")]
         public void SetResiduePositionModificationOutOfRangeUpper()
         {
             ChemicalFormula formula = new ChemicalFormula("Fe");
-            _mockPeptideEveryAminoAcid.SetModification(formula, 25);           
+            _mockPeptideEveryAminoAcid.SetModification(formula, 25);
         }
 
         [Test]
-        [ExpectedException(typeof(IndexOutOfRangeException), ExpectedMessage = "Residue number not in the correct range: [1-20] you specified: 0")]
+        [ExpectedException(typeof (IndexOutOfRangeException), ExpectedMessage = "Residue number not in the correct range: [1-20] you specified: 0")]
         public void SetResiduePositionModificationOutOfRangeLower()
         {
             ChemicalFormula formula = new ChemicalFormula("Fe");
             _mockPeptideEveryAminoAcid.SetModification(formula, 0);
         }
-        
+
         [Test]
         public void SetCTerminusModStringRepresentation()
         {
             ChemicalFormula formula = new ChemicalFormula("Fe");
             _mockPeptideEveryAminoAcid.SetModification(formula, Terminus.C);
 
-            Assert.AreEqual("ACDEFGHIKLMNPQRSTVWY-[Fe]",_mockPeptideEveryAminoAcid.ToString());
+            Assert.AreEqual("ACDEFGHIKLMNPQRSTVWY-[Fe]", _mockPeptideEveryAminoAcid.ToString());
         }
 
         [Test]
@@ -370,7 +387,7 @@ namespace CSMSL.Tests.Proteomics
 
             Assert.AreEqual("[Fe]-ACDEFGHIKLMNPQRSTVWY-[Fe]", _mockPeptideEveryAminoAcid.ToString());
         }
-             
+
         [Test]
         public void ClearNTerminusMod()
         {
@@ -419,7 +436,7 @@ namespace CSMSL.Tests.Proteomics
         {
             Peptide pepA = new Peptide();
 
-            Assert.AreEqual(0,pepA.Length);
+            Assert.AreEqual(0, pepA.Length);
         }
 
         [Test]
@@ -454,7 +471,7 @@ namespace CSMSL.Tests.Proteomics
         {
             Peptide pepA = new Peptide("DEREK");
             Peptide pepB = new Peptide("DEERK");
-            Assert.AreNotEqual(pepA, pepB);        
+            Assert.AreNotEqual(pepA, pepB);
         }
 
         [Test]
@@ -464,7 +481,7 @@ namespace CSMSL.Tests.Proteomics
             Peptide pepB = new Peptide("DEREK");
             pepB.SetModification(new ChemicalFormula("H2O"), 'R');
 
-            Assert.AreNotEqual(pepA,pepB);
+            Assert.AreNotEqual(pepA, pepB);
         }
 
         [Test]
@@ -481,7 +498,7 @@ namespace CSMSL.Tests.Proteomics
             Peptide pepA = new Peptide("DEREK");
             Peptide pepB = new Peptide(pepA);
 
-            Assert.AreNotSame(pepA,pepB);
+            Assert.AreNotSame(pepA, pepB);
         }
 
         [Test]
@@ -536,18 +553,18 @@ namespace CSMSL.Tests.Proteomics
             Peptide pepC = new Peptide("R[Fe]EK");
             Assert.AreEqual(pepB, pepC);
         }
-        
+
         [Test]
         public void PeptideParitalCloneInternalWithCTerminusModification()
         {
-            Peptide pepA = new Peptide("DEREK");  
+            Peptide pepA = new Peptide("DEREK");
             pepA.SetModification(new ChemicalFormula("H2O"), Terminus.C);
             Peptide pepB = new Peptide(pepA, 2, 3);
 
             Peptide pepC = new Peptide("REK");
             pepC.SetModification(new ChemicalFormula("H2O"), Terminus.C);
 
-            Assert.AreEqual(pepB,pepC);
+            Assert.AreEqual(pepB, pepC);
         }
 
         [Test]
@@ -568,6 +585,5 @@ namespace CSMSL.Tests.Proteomics
 
             Assert.AreEqual("DERLEK", leuSeq);
         }
-
     }
 }

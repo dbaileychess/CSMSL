@@ -1,22 +1,19 @@
-﻿///////////////////////////////////////////////////////////////////////////
-//  VennDiagram.cs - A set of overlapping objects divided into regions    /
-//                                                                        /
-//  Copyright 2012 Derek J. Bailey                                        /
-//  This file is part of CSMSL.                                           /
-//                                                                        /
-//  CSMSL is free software: you can redistribute it and/or modify         /
-//  it under the terms of the GNU General Public License as published by  /
-//  the Free Software Foundation, either version 3 of the License, or     /
-//  (at your option) any later version.                                   /
-//                                                                        /
-//  CSMSL is distributed in the hope that it will be useful,              /
-//  but WITHOUT ANY WARRANTY; without even the implied warranty of        /
-//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         /
-//  GNU General Public License for more details.                          /
-//                                                                        /
-//  You should have received a copy of the GNU General Public License     /
-//  along with CSMSL.  If not, see <http://www.gnu.org/licenses/>.        /
-///////////////////////////////////////////////////////////////////////////
+﻿// Copyright 2012, 2013, 2014 Derek J. Bailey
+// 
+// This file (VennDiagram.cs) is part of CSMSL.
+// 
+// CSMSL is free software: you can redistribute it and/or modify it
+// under the terms of the GNU Lesser General Public License as published
+// by the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// 
+// CSMSL is distributed in the hope that it will be useful, but WITHOUT
+// ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public
+// License for more details.
+// 
+// You should have received a copy of the GNU Lesser General Public
+// License along with CSMSL. If not, see <http://www.gnu.org/licenses/>.
 
 using System.Linq;
 using System;
@@ -29,23 +26,17 @@ namespace CSMSL.Util.Collections
     {
         public int Count
         {
-            get { return _inputSets.Length; }      
+            get { return _inputSets.Length; }
         }
 
         public VennSet<T> this[int index]
         {
-            get
-            {
-                return _subSets[index - 1];
-            }
+            get { return _subSets[index - 1]; }
         }
 
         public VennSet<T> this[string region]
         {
-            get
-            {
-                return _regions[region];
-            }
+            get { return _regions[region]; }
         }
 
         private VennSet<T>[] _exclusiveSubSets;
@@ -104,7 +95,7 @@ namespace CSMSL.Util.Collections
                 // Removed This as this was the only code i needed from the third party: Combinatorics.Collections;
                 //Combinations<VennSet<T>> combinations = new Combinations<VennSet<T>>(diagram._inputSets, depth);
                 //foreach (IList<VennSet<T>> combo_sets in combinations)
-                foreach(VennSet<T>[] combo_sets in Combinatorics.Combinations(diagram._inputSets, depth))
+                foreach (VennSet<T>[] combo_sets in Combinatorics.Combinations(diagram._inputSets, depth))
                 {
                     HashSet<T> baseSet = new HashSet<T>(combo_sets[0]);
                     StringBuilder sb = new StringBuilder();
@@ -155,7 +146,5 @@ namespace CSMSL.Util.Collections
         {
             return _regions.Values.GetEnumerator();
         }
-
-       
     }
 }

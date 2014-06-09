@@ -1,4 +1,21 @@
-﻿using System;
+﻿// Copyright 2012, 2013, 2014 Derek J. Bailey
+// 
+// This file (IsotopicDistribution.cs) is part of CSMSL.
+// 
+// CSMSL is free software: you can redistribute it and/or modify it
+// under the terms of the GNU Lesser General Public License as published
+// by the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// 
+// CSMSL is distributed in the hope that it will be useful, but WITHOUT
+// ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public
+// License for more details.
+// 
+// You should have received a copy of the GNU Lesser General Public
+// License along with CSMSL. If not, see <http://www.gnu.org/licenses/>.
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using CSMSL.Spectral;
@@ -22,13 +39,17 @@ namespace CSMSL.Chemistry
     /// </remarks>
     public class IsotopicDistribution
     {
-        public enum Normalization { Sum, BasePeak };
+        public enum Normalization
+        {
+            Sum,
+            BasePeak
+        };
 
-        readonly double _mwResolution;
-        double _mergeFineResolution;
-        double _fineResolution;
-        readonly double _fineMinProb;
-        
+        private readonly double _mwResolution;
+        private double _mergeFineResolution;
+        private double _fineResolution;
+        private readonly double _fineMinProb;
+
         public IsotopicDistribution(double fineResolution = 0.01, double minProbability = 1e-200, double molecularWeightResolution = 1e-12)
         {
             _fineResolution = fineResolution;
@@ -38,14 +59,14 @@ namespace CSMSL.Chemistry
 
         public Spectrum CalculateDistribuition(string chemicalFormula, int topNPeaks = int.MaxValue, Normalization normalization = Normalization.Sum)
         {
-            return CalculateDistribuition(new ChemicalFormula(chemicalFormula),topNPeaks, normalization);
+            return CalculateDistribuition(new ChemicalFormula(chemicalFormula), topNPeaks, normalization);
         }
 
         public Spectrum CalculateDistribuition(IChemicalFormula obj, int topNPeaks = int.MaxValue, Normalization normalization = Normalization.Sum)
         {
-            return CalculateDistribuition(obj.ChemicalFormula,topNPeaks, normalization);
+            return CalculateDistribuition(obj.ChemicalFormula, topNPeaks, normalization);
         }
-        
+
         public Spectrum CalculateDistribuition(ChemicalFormula formula, int topNPeaks = int.MaxValue, Normalization normalization = Normalization.Sum)
         {
             double monoisotopicMass = formula.MonoisotopicMass;
@@ -61,14 +82,16 @@ namespace CSMSL.Chemistry
                 foreach (Isotope isotope in element.Isotopes.Values.OrderBy(iso => iso.AtomicMass))
                 {
                     double probability = isotope.RelativeAbundance;
-                    if (probability <= 0) 
+                    if (probability <= 0)
                         continue;
 
-                    Composition c = new Composition {
-                        Atoms = count, 
-                        MolecularWeight = isotope.AtomicMass, 
-                        Power = isotope.AtomicMass, 
-                        Probability = isotope.RelativeAbundance};
+                    Composition c = new Composition
+                    {
+                        Atoms = count,
+                        MolecularWeight = isotope.AtomicMass,
+                        Power = isotope.AtomicMass,
+                        Probability = isotope.RelativeAbundance
+                    };
 
                     isotopeComposition.Add(c);
                 }
@@ -82,7 +105,7 @@ namespace CSMSL.Chemistry
                 {
                     composition.Probability /= sumProb;
                     composition.LogProbability = Math.Log(composition.Probability);
-                    composition.Power = Math.Floor(composition.MolecularWeight / _mwResolution + 0.5);
+                    composition.Power = Math.Floor(composition.MolecularWeight/_mwResolution + 0.5);
                 }
             }
 
@@ -119,9 +142,9 @@ namespace CSMSL.Chemistry
                 fineResolution = 1e-2;
             }
 
-            _fineResolution = fineResolution / 2.0;
+            _fineResolution = fineResolution/2.0;
         }
-        
+
         private Spectrum CalculateFineGrain(List<List<Composition>> elementalComposition, Normalization normalization)
         {
             List<Polynomial> fPolynomial = MultiplyFinePolynomial(elementalComposition);
@@ -141,7 +164,7 @@ namespace CSMSL.Chemistry
                 {
                     basePeak = polynomial.Probablity;
                 }
-                mz[i] = polynomial.Power * _mwResolution;
+                mz[i] = polynomial.Power*_mwResolution;
                 intensities[i] = polynomial.Probablity;
                 i++;
             }
@@ -153,7 +176,7 @@ namespace CSMSL.Chemistry
             {
                 intensities[i] /= normalizedValue;
             }
-           
+
             return new Spectrum(mz, intensities, false);
         }
 
@@ -175,21 +198,21 @@ namespace CSMSL.Chemistry
 
                     double probability = tPolynomial[i].Probablity;
                     Polynomial tempPolynomial;
-                    tempPolynomial.Power = power * probability;
+                    tempPolynomial.Power = power*probability;
                     tempPolynomial.Probablity = probability;
 
                     for (int j = i + 1; j < count; j++)
                     {
-                        double value = Math.Abs(tPolynomial[i].Power * _mwResolution - tPolynomial[j].Power * _mwResolution);
+                        double value = Math.Abs(tPolynomial[i].Power*_mwResolution - tPolynomial[j].Power*_mwResolution);
 
-                        double threshold = (k <= 8) ? k * _mergeFineResolution / 8 : _mergeFineResolution + _mergeFineResolution / 100;
+                        double threshold = (k <= 8) ? k*_mergeFineResolution/8 : _mergeFineResolution + _mergeFineResolution/100;
 
                         // Combine terms if their mass difference (i.e. power difference) is less than some threshold
-                        if (value <= threshold) 
+                        if (value <= threshold)
                         {
-                            tempPolynomial.Power = tempPolynomial.Power + tPolynomial[j].Power * tPolynomial[j].Probablity;
+                            tempPolynomial.Power = tempPolynomial.Power + tPolynomial[j].Power*tPolynomial[j].Probablity;
                             tempPolynomial.Probablity = tempPolynomial.Probablity + tPolynomial[j].Probablity;
-                            tPolynomial[i] = new Polynomial { Power = tempPolynomial.Power / tempPolynomial.Probablity, Probablity = tempPolynomial.Probablity };
+                            tPolynomial[i] = new Polynomial {Power = tempPolynomial.Power/tempPolynomial.Probablity, Probablity = tempPolynomial.Probablity};
                             tPolynomial[j] = new Polynomial();
                         }
                         else
@@ -197,11 +220,11 @@ namespace CSMSL.Chemistry
                             break;
                         }
                     }
-                   
-                    tPolynomial[i] = new Polynomial { Power = tempPolynomial.Power / tempPolynomial.Probablity, Probablity = tempPolynomial.Probablity };
+
+                    tPolynomial[i] = new Polynomial {Power = tempPolynomial.Power/tempPolynomial.Probablity, Probablity = tempPolynomial.Probablity};
                 }
             }
-        
+
             // return only non-zero terms
             return tPolynomial.Where(poly => poly.Power != 0).ToList();
         }
@@ -213,7 +236,7 @@ namespace CSMSL.Chemistry
             const int nAtoms = 200;
             double maxPolynomialSize = Math.Log(1e13);
             List<Polynomial> tPolynomial = new List<Polynomial>();
-            
+
             int maxIsotope = 0;
             int n = 0;
             int k = 0;
@@ -248,14 +271,14 @@ namespace CSMSL.Chemistry
                     {
                         double probability = composition[0].Probability;
 
-                        int n1 = (int)(atoms * probability);
+                        int n1 = (int) (atoms*probability);
 
-                        double prob = FactorLn(atoms) - FactorLn(n1) + n1 * composition[0].LogProbability;
+                        double prob = FactorLn(atoms) - FactorLn(n1) + n1*composition[0].LogProbability;
                         prob = Math.Exp(prob);
 
-                        fPolynomial[k].Add(new Polynomial { Power = n1 * composition[0].Power, Probablity = prob });
-                    } 
-                    else 
+                        fPolynomial[k].Add(new Polynomial {Power = n1*composition[0].Power, Probablity = prob});
+                    }
+                    else
                     {
                         int[] means = new int[size];
                         int[] stds = new int[size];
@@ -264,10 +287,10 @@ namespace CSMSL.Chemistry
                         double nPolynomialTerms = Math.Log(Math.Pow(2, size));
                         for (int i = 0; i < size; i++)
                         {
-                            int n1 = (int)(elementalComposition[k][0].Atoms*elementalComposition[k][i].Probability);
-                            int s1 = (int)Math.Ceiling(ncAdd + nc* Math.Sqrt(elementalComposition[k][i].Atoms * elementalComposition[k][i].Probability*(1.0-elementalComposition[k][i].Probability)));
+                            int n1 = (int) (elementalComposition[k][0].Atoms*elementalComposition[k][i].Probability);
+                            int s1 = (int) Math.Ceiling(ncAdd + nc*Math.Sqrt(elementalComposition[k][i].Atoms*elementalComposition[k][i].Probability*(1.0 - elementalComposition[k][i].Probability)));
                             nPolynomialTerms += Math.Log(n1 + s1);
-                            
+
                             means[i] = n1;
                             stds[i] = s1;
                             indices[i] = n1 + s1;
@@ -281,7 +304,7 @@ namespace CSMSL.Chemistry
                             {
                                 if (tPolynomial[i].Power > 0)
                                 {
-                                    fPolynomial[k].Add(new Polynomial { Power = tPolynomial[i].Power / _mwResolution, Probablity = tPolynomial[i].Probablity });
+                                    fPolynomial[k].Add(new Polynomial {Power = tPolynomial[i].Power/_mwResolution, Probablity = tPolynomial[i].Probablity});
                                 }
                             }
                             elementalComposition2.Clear();
@@ -331,21 +354,21 @@ namespace CSMSL.Chemistry
             double[] MASS_FREQUENCY_DOMAIN;
             while (true)
             {
-                resolution = usedResolution / Math.Pow(2.0, k);
-                massRange = 0;// Todo
-                massRange = (int)(15.0 * Math.Sqrt(1 + massRange) + 1);
-                massRange = (int)(Math.Log(massRange) / Math.Log(2.0) + 1);
-                massRange = (int)(Math.Pow(2.0, massRange));
-                N = (int)(massRange / resolution);
-                N = (int)(Math.Log(N) / Math.Log(2.0) + 1);
-                N = (int)(Math.Pow(2.0, N));
-                delta = 1.0 / N;
-                resolution = massRange / N;
+                resolution = usedResolution/Math.Pow(2.0, k);
+                massRange = 0; // Todo
+                massRange = (int) (15.0*Math.Sqrt(1 + massRange) + 1);
+                massRange = (int) (Math.Log(massRange)/Math.Log(2.0) + 1);
+                massRange = (int) (Math.Pow(2.0, massRange));
+                N = (int) (massRange/resolution);
+                N = (int) (Math.Log(N)/Math.Log(2.0) + 1);
+                N = (int) (Math.Pow(2.0, N));
+                delta = 1.0/N;
+                resolution = massRange/N;
                 rhoResolution = resolution;
                 k++;
                 if (rhoResolution < usedResolution)
                 {
-                    MASS_FREQUENCY_DOMAIN = new double[2 * N + 1];
+                    MASS_FREQUENCY_DOMAIN = new double[2*N + 1];
                     break;
                 }
             }
@@ -357,9 +380,9 @@ namespace CSMSL.Chemistry
             int atoms = elementalComposition[k][0].Atoms;
 
             double x, y;
-            for (int i = 1; i < N / 2;i++)
+            for (int i = 1; i < N/2; i++)
             {
-                double freq = (i - 1) * delta;
+                double freq = (i - 1)*delta;
                 double phi = 0;
                 double angle = 0;
                 double radius = 1.0;
@@ -370,27 +393,27 @@ namespace CSMSL.Chemistry
                         x = y = 0;
                         for (int j = 0; j < elementalComposition[k].Count; j++)
                         {
-                            double mw = (int)(elementalComposition[k][j].MolecularWeight / resolution + 0.5);
-                            phi = twoPi * mw * freq;
-                            x += elementalComposition[k][j].Probability * Math.Cos(phi);
-                            y += elementalComposition[k][j].Probability * Math.Sin(phi);
+                            double mw = (int) (elementalComposition[k][j].MolecularWeight/resolution + 0.5);
+                            phi = twoPi*mw*freq;
+                            x += elementalComposition[k][j].Probability*Math.Cos(phi);
+                            y += elementalComposition[k][j].Probability*Math.Sin(phi);
                         }
 
-                        radius *= Math.Pow(Math.Sqrt(x * x + y * y), atoms);
-                        angle += atoms * Math.Atan2(y, x);
+                        radius *= Math.Pow(Math.Sqrt(x*x + y*y), atoms);
+                        angle += atoms*Math.Atan2(y, x);
                     }
                 }
-                double value = angle - twoPi * averageMass * freq;
-                x = radius * Math.Cos(value);
-                y = radius * Math.Sin(value);
+                double value = angle - twoPi*averageMass*freq;
+                x = radius*Math.Cos(value);
+                y = radius*Math.Sin(value);
 
-                MASS_FREQUENCY_DOMAIN[2 * i - 1] = x;
-                MASS_FREQUENCY_DOMAIN[2 * 1] = y;
+                MASS_FREQUENCY_DOMAIN[2*i - 1] = x;
+                MASS_FREQUENCY_DOMAIN[2*1] = y;
             }
 
             for (int i = N/2 + 1; i <= N; i++)
             {
-                double freq = (i - N - 1) * delta;
+                double freq = (i - N - 1)*delta;
                 double phi = 0;
                 double angle = 0;
                 double radius = 1.0;
@@ -401,37 +424,37 @@ namespace CSMSL.Chemistry
                         x = y = 0;
                         for (int j = 0; j < elementalComposition[k].Count; j++)
                         {
-                            double mw = (int)(elementalComposition[k][j].MolecularWeight / resolution + 0.5);
-                            phi = twoPi * mw * freq;
-                            x += elementalComposition[k][j].Probability * Math.Cos(phi);
-                            y += elementalComposition[k][j].Probability * Math.Sin(phi);
+                            double mw = (int) (elementalComposition[k][j].MolecularWeight/resolution + 0.5);
+                            phi = twoPi*mw*freq;
+                            x += elementalComposition[k][j].Probability*Math.Cos(phi);
+                            y += elementalComposition[k][j].Probability*Math.Sin(phi);
                         }
 
-                        radius *= Math.Pow(Math.Sqrt(x * x + y * y), atoms);
-                        angle += atoms * Math.Atan2(y, x);
+                        radius *= Math.Pow(Math.Sqrt(x*x + y*y), atoms);
+                        angle += atoms*Math.Atan2(y, x);
                     }
                 }
-                double value = angle - twoPi * averageMass * freq;
-                x = radius * Math.Cos(value);
-                y = radius * Math.Sin(value);
+                double value = angle - twoPi*averageMass*freq;
+                x = radius*Math.Cos(value);
+                y = radius*Math.Sin(value);
 
-                MASS_FREQUENCY_DOMAIN[2 * i - 1] = x;
-                MASS_FREQUENCY_DOMAIN[2 * 1] = y;
+                MASS_FREQUENCY_DOMAIN[2*i - 1] = x;
+                MASS_FREQUENCY_DOMAIN[2*1] = y;
             }
 
             FourierTransform(MASS_FREQUENCY_DOMAIN, N, -1);
 
             double ave1 = 0; //todo
             double ave2 = 0; //todo
-            double ave3 = (int)(ave2 + 0.5);
+            double ave3 = (int) (ave2 + 0.5);
             double sigma1 = Math.Sqrt(0); // todo
             double simga2 = Math.Sqrt(0); // todo;
-            double ratio = sigma1 / simga2;
+            double ratio = sigma1/simga2;
 
             double probMin = 0;
             for (int i = 1; i <= N; i++)
             {
-                y = MASS_FREQUENCY_DOMAIN[2*i-1] /N;
+                y = MASS_FREQUENCY_DOMAIN[2*i - 1]/N;
                 if (y < probMin)
                     probMin = y;
             }
@@ -441,7 +464,7 @@ namespace CSMSL.Chemistry
             double averageProb = 0;
             for (int i = 1; i <= N; i++)
             {
-                y = MASS_FREQUENCY_DOMAIN[2 * i - 1] / N;
+                y = MASS_FREQUENCY_DOMAIN[2*i - 1]/N;
                 if (y > probMin)
                 {
                     averageProb += y;
@@ -454,9 +477,9 @@ namespace CSMSL.Chemistry
             }
 
             List<Polynomial> tID = new List<Polynomial>();
-            for (int i = N / 2 + 1; i <= N; i++)
+            for (int i = N/2 + 1; i <= N; i++)
             {
-                double prob = MASS_FREQUENCY_DOMAIN[2*i-1] / N;
+                double prob = MASS_FREQUENCY_DOMAIN[2*i - 1]/N;
                 if (prob > probMin)
                 {
                     Polynomial temp = new Polynomial
@@ -467,14 +490,14 @@ namespace CSMSL.Chemistry
                     tID.Add(temp);
                 }
             }
-            for (int i = 1; i <= N / 2 -1; i++)
+            for (int i = 1; i <= N/2 - 1; i++)
             {
-                double prob = MASS_FREQUENCY_DOMAIN[2 * i - 1] / N;
+                double prob = MASS_FREQUENCY_DOMAIN[2*i - 1]/N;
                 if (prob > probMin)
                 {
                     Polynomial temp = new Polynomial
                     {
-                        Power = ratio * ((i - 1) * resolution + averageMass * resolution - ave2) + ave1,
+                        Power = ratio*((i - 1)*resolution + averageMass*resolution - ave2) + ave1,
                         Probablity = prob
                     };
                     tID.Add(temp);
@@ -491,18 +514,18 @@ namespace CSMSL.Chemistry
 
                     double probability = tID[i].Probablity;
                     Polynomial tempPolynomial;
-                    tempPolynomial.Power = power * probability;
+                    tempPolynomial.Power = power*probability;
                     tempPolynomial.Probablity = probability;
 
                     for (int j = i + 1; j < tID.Count; j++)
                     {
                         double value = Math.Abs(tID[i].Power - tID[j].Power);
-                        double threshold = (k <= 8) ? k * _mergeFineResolution / 8 : _mergeFineResolution + _mergeFineResolution / 100;
+                        double threshold = (k <= 8) ? k*_mergeFineResolution/8 : _mergeFineResolution + _mergeFineResolution/100;
                         if (value <= threshold)
                         {
-                            tempPolynomial.Power = tempPolynomial.Power + tID[j].Power * tID[j].Probablity;
+                            tempPolynomial.Power = tempPolynomial.Power + tID[j].Power*tID[j].Probablity;
                             tempPolynomial.Probablity = tempPolynomial.Probablity + tID[j].Probablity;
-                            tID[i] = new Polynomial { Power = tempPolynomial.Power / tempPolynomial.Probablity, Probablity = tempPolynomial.Probablity };
+                            tID[i] = new Polynomial {Power = tempPolynomial.Power/tempPolynomial.Probablity, Probablity = tempPolynomial.Probablity};
                             tID[j] = new Polynomial();
                         }
                         else
@@ -510,7 +533,7 @@ namespace CSMSL.Chemistry
                             break;
                         }
                     }
-                    tID[i] = new Polynomial { Power = tempPolynomial.Power / tempPolynomial.Probablity, Probablity = tempPolynomial.Probablity };
+                    tID[i] = new Polynomial {Power = tempPolynomial.Power/tempPolynomial.Probablity, Probablity = tempPolynomial.Probablity};
                 }
             }
 
@@ -519,15 +542,13 @@ namespace CSMSL.Chemistry
             {
                 if (tID[i].Power > 0)
                 {
-
                 }
             }
-               
         }
 
         private static void FourierTransform(double[] data, int nn, int isign)
         {
-            const double twoPi = Math.PI * 2;
+            const double twoPi = Math.PI*2;
             isign = Math.Sign(isign);
             int n = nn << 1;
             int j = 1;
@@ -556,9 +577,9 @@ namespace CSMSL.Chemistry
             while (n > mmax)
             {
                 int istep = mmax << 1;
-                double theta = isign * (twoPi / mmax);
-                double wtemp = Math.Sin(0.5 * theta);
-                double wpr = -2.0 * wtemp * wtemp;
+                double theta = isign*(twoPi/mmax);
+                double wtemp = Math.Sin(0.5*theta);
+                double wpr = -2.0*wtemp*wtemp;
                 double wpi = Math.Sin(theta);
                 double wr = 1.0;
                 double wi = 0.0;
@@ -567,15 +588,15 @@ namespace CSMSL.Chemistry
                     for (int i = m; i <= n; i += istep)
                     {
                         j = i + mmax;
-                        double tempr = wr * data[j] - wi * data[j + 1];
-                        double tempi = wr * data[j + 1] + wi * data[j];
+                        double tempr = wr*data[j] - wi*data[j + 1];
+                        double tempi = wr*data[j + 1] + wi*data[j];
                         data[j] = data[i] - tempr;
                         data[j + 1] = data[i + 1] - tempi;
                         data[i] += tempr;
                         data[i + 1] += tempi;
                     }
-                    wr = (wtemp = wr) * wpr - wi * wpi + wr;
-                    wi = wi * wpr + wtemp * wpi + wi;
+                    wr = (wtemp = wr)*wpr - wi*wpi + wr;
+                    wi = wi*wpr + wtemp*wpi + wi;
                 }
                 mmax = istep;
             }
@@ -586,14 +607,14 @@ namespace CSMSL.Chemistry
             int i = tPolynomial.Count;
             int j = fPolynomial.Count;
 
-            double deltaMass = (_fineResolution / _mwResolution);
+            double deltaMass = (_fineResolution/_mwResolution);
             double minProbability = _fineMinProb;
 
             int index = 0;
             double minMass = tPolynomial[0].Power + fPolynomial[0].Power;
             double maxMass = tPolynomial[i - 1].Power + fPolynomial[j - 1].Power;
 
-            int maxIndex = (int)(Math.Abs(maxMass - minMass) / deltaMass + 0.5);
+            int maxIndex = (int) (Math.Abs(maxMass - minMass)/deltaMass + 0.5);
             if (maxIndex >= fgidPolynomial.Count)
             {
                 j = maxIndex - fgidPolynomial.Count;
@@ -607,16 +628,16 @@ namespace CSMSL.Chemistry
             {
                 for (int f = 0; f < fPolynomial.Count; f++)
                 {
-                    double prob = tPolynomial[t].Probablity * fPolynomial[f].Probablity;
+                    double prob = tPolynomial[t].Probablity*fPolynomial[f].Probablity;
                     if (prob <= minProbability)
                         continue;
 
                     double power = tPolynomial[t].Power + fPolynomial[f].Power;
-                    index = (int)(Math.Abs(power - minMass) / deltaMass + 0.5);
+                    index = (int) (Math.Abs(power - minMass)/deltaMass + 0.5);
 
                     Polynomial tempPolynomial = fgidPolynomial[index];
 
-                    fgidPolynomial[index] = new Polynomial { Power = tempPolynomial.Power + power * prob, Probablity = tempPolynomial.Probablity + prob };
+                    fgidPolynomial[index] = new Polynomial {Power = tempPolynomial.Power + power*prob, Probablity = tempPolynomial.Probablity + prob};
                 }
             }
 
@@ -628,12 +649,12 @@ namespace CSMSL.Chemistry
                 {
                     if (j < index)
                     {
-                        tPolynomial[j] = new Polynomial { Power = fgidPolynomial[i].Power / fgidPolynomial[i].Probablity, Probablity = fgidPolynomial[i].Probablity };
+                        tPolynomial[j] = new Polynomial {Power = fgidPolynomial[i].Power/fgidPolynomial[i].Probablity, Probablity = fgidPolynomial[i].Probablity};
                         j++;
                     }
                     else
                     {
-                        tPolynomial.Add(new Polynomial { Power = fgidPolynomial[i].Power / fgidPolynomial[i].Probablity, Probablity = fgidPolynomial[i].Probablity });
+                        tPolynomial.Add(new Polynomial {Power = fgidPolynomial[i].Power/fgidPolynomial[i].Probablity, Probablity = fgidPolynomial[i].Probablity});
                     }
                 }
 
@@ -645,43 +666,42 @@ namespace CSMSL.Chemistry
                 tPolynomial.RemoveRange(j, tPolynomial.Count - j);
             }
         }
-        
+
         private static void MultipleFinePolynomialRecursiveHelper(int[] mins, int[] maxs, int[] indices, int index, IList<Polynomial> fPolynomial, IList<Composition> elementalComposition, int atoms, double minProb, int maxValue)
         {
             for (indices[index] = mins[index]; indices[index] <= maxs[index]; indices[index]++)
             {
-                if (index < mins.Length-1)
+                if (index < mins.Length - 1)
                 {
                     MultipleFinePolynomialRecursiveHelper(mins, maxs, indices, index + 1, fPolynomial, elementalComposition, atoms, minProb, maxValue);
                 }
                 else
                 {
                     int l = atoms - indices.Sum();
-                    if(l < 0 || l > maxValue)
-                        continue; 
-                   
-                    double prob = FactorLn(atoms) - FactorLn(l) + l * elementalComposition[elementalComposition.Count - 1].LogProbability;
-                    double power = l * elementalComposition[elementalComposition.Count - 1].Power;
+                    if (l < 0 || l > maxValue)
+                        continue;
+
+                    double prob = FactorLn(atoms) - FactorLn(l) + l*elementalComposition[elementalComposition.Count - 1].LogProbability;
+                    double power = l*elementalComposition[elementalComposition.Count - 1].Power;
                     for (int i = 0; i <= elementalComposition.Count - 2; i++)
                     {
                         int indexValue = indices[i];
                         Composition tComposition = elementalComposition[i];
                         prob -= FactorLn(indexValue);
-                        prob += indexValue * tComposition.LogProbability;
-                        power += indexValue * tComposition.Power;
+                        prob += indexValue*tComposition.LogProbability;
+                        power += indexValue*tComposition.Power;
                     }
 
                     prob = Math.Exp(prob);
                     if (prob >= minProb)
                     {
-                        Polynomial tPolynomial = new Polynomial { Probablity = prob, Power = power };
+                        Polynomial tPolynomial = new Polynomial {Probablity = prob, Power = power};
                         fPolynomial.Add(tPolynomial);
                     }
-                    
                 }
             }
         }
-        
+
         private static readonly double[] factorLnArray = new double[50003];
         private static int _factorLnTop = 1;
 
@@ -689,13 +709,13 @@ namespace CSMSL.Chemistry
         {
             if (n < 0)
                 throw new ArgumentException("n must be zero or greater");
-            
+
             if (n <= 1)
                 return 0;
 
             if (n > 50000)
-                return n * Math.Log(n) - n + 0.5 * Math.Log(6.28318530717959 * n) + 0.08333333333333 / n - 0.00333333333333 / (n * n * n);
-            
+                return n*Math.Log(n) - n + 0.5*Math.Log(6.28318530717959*n) + 0.08333333333333/n - 0.00333333333333/(n*n*n);
+
             while (_factorLnTop <= n)
             {
                 int j = _factorLnTop++;
@@ -712,7 +732,7 @@ namespace CSMSL.Chemistry
             public double MolecularWeight;
             public int Atoms;
         }
-       
+
         private struct Polynomial
         {
             public double Power;

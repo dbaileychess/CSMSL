@@ -1,4 +1,21 @@
-﻿using System;
+﻿// Copyright 2012, 2013, 2014 Derek J. Bailey
+// 
+// This file (ChemicalFormulaGenerator.cs) is part of CSMSL.
+// 
+// CSMSL is free software: you can redistribute it and/or modify it
+// under the terms of the GNU Lesser General Public License as published
+// by the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// 
+// CSMSL is distributed in the hope that it will be useful, but WITHOUT
+// ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public
+// License for more details.
+// 
+// You should have received a copy of the GNU Lesser General Public
+// License along with CSMSL. If not, see <http://www.gnu.org/licenses/>.
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -17,14 +34,18 @@ namespace CSMSL.Chemistry
         /// Create a empty generator, which will produce no formulas unless a constraint is added
         /// </summary>
         public ChemicalFormulaGenerator()
-            : this (new ChemicalFormula(), new ChemicalFormula()) { }
-        
+            : this(new ChemicalFormula(), new ChemicalFormula())
+        {
+        }
+
         /// <summary>
         /// Creates a generator with a maximum chemical formula allowed
         /// </summary>
         /// <param name="maximumChemicalFormula">The maximum chemical formula to generate</param>
         public ChemicalFormulaGenerator(ChemicalFormula maximumChemicalFormula)
-            : this (new ChemicalFormula(), maximumChemicalFormula) { }
+            : this(new ChemicalFormula(), maximumChemicalFormula)
+        {
+        }
 
         /// <summary>
         /// Creates a generator with a maximum chemical formula allowed
@@ -36,7 +57,7 @@ namespace CSMSL.Chemistry
             _minFormula = new ChemicalFormula(minimumChemicalFormula);
             _maxFormula = new ChemicalFormula(maximumChemicalFormula);
         }
-        
+
         public void AddConstraint(ChemicalFormula minimumChemicalFormula, ChemicalFormula maximumChemicalFormula)
         {
             _minFormula.Add(minimumChemicalFormula);
@@ -49,7 +70,7 @@ namespace CSMSL.Chemistry
             _maxFormula.Add(isotope, max);
         }
 
-        public void AddConstraint(Isotope isotope, Range<int> range) 
+        public void AddConstraint(Isotope isotope, Range<int> range)
         {
             AddConstraint(isotope, range.Minimum, range.Maximum);
         }
@@ -70,7 +91,7 @@ namespace CSMSL.Chemistry
         {
             return FromMass(0, int.MaxValue - 1);
         }
-        
+
         private static double GetMass(int[] isotopes, double[] masses)
         {
             double mass = 0;
@@ -79,7 +100,7 @@ namespace CSMSL.Chemistry
             {
                 if (isotopes[i] != 0)
                 {
-                    mass += isotopes[i] * masses[i];
+                    mass += isotopes[i]*masses[i];
                 }
             }
             return mass;
@@ -106,7 +127,7 @@ namespace CSMSL.Chemistry
                 currentFormula[index] = 0;
                 double currentMass = GetMass(currentFormula, masses);
                 int minCount = Math.Max((int) Math.Floor((lowMass - currentMass)/massAtIndex), 0);
-                int value = (int)Math.Ceiling((highMass - currentMass) / massAtIndex);
+                int value = (int) Math.Ceiling((highMass - currentMass)/massAtIndex);
                 int maxCount = Math.Min(value, max[index]);
                 for (int count = minCount; count <= maxCount; count++)
                 {
@@ -156,9 +177,8 @@ namespace CSMSL.Chemistry
                 correctedHighMass -= minFormulaMass;
 
                 // Add the minimum formula itself if it is within the bounds
-              
             }
-        
+
             // The maximum formula allowed, represented in number of isotopes
             int[] maxValues = _maxFormula.GetIsotopes();
 
@@ -169,7 +189,7 @@ namespace CSMSL.Chemistry
             double[] masses = new double[maxValues.Length];
 
             int length = maxValues.Length;
-                      
+
             for (int j = 0; j < length; j++)
             {
                 if (minFormulaExists && j < minValues.Length)
@@ -179,7 +199,7 @@ namespace CSMSL.Chemistry
                 masses[j] = PeriodicTable.Instance[j].AtomicMass;
             }
             masses[0] = PeriodicTable.Instance[0].AtomicMass;
-            
+
             GenerateFormulaHelper(correctedLowMass, correctedHighMass, masses, maxValues, length - 1, currentFormula, returnFormulas);
 
             if (minFormulaExists)
@@ -194,9 +214,9 @@ namespace CSMSL.Chemistry
                 }
             }
 
-            if (!sort) 
+            if (!sort)
                 return returnFormulas;
-            double meanValue = (highMass + lowMass) / 2.0;
+            double meanValue = (highMass + lowMass)/2.0;
             return returnFormulas.OrderBy(formula => Math.Abs(formula.MonoisotopicMass - meanValue)).Take(maxNumberOfResults);
         }
 
@@ -204,6 +224,5 @@ namespace CSMSL.Chemistry
         {
             return FromMass(massRange.Minimum, massRange.Maximum, maxNumberOfResults, sort);
         }
-
     }
 }

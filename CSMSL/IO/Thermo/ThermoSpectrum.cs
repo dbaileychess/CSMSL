@@ -1,4 +1,21 @@
-﻿using System;
+﻿// Copyright 2012, 2013, 2014 Derek J. Bailey
+// 
+// This file (ThermoSpectrum.cs) is part of CSMSL.
+// 
+// CSMSL is free software: you can redistribute it and/or modify it
+// under the terms of the GNU Lesser General Public License as published
+// by the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// 
+// CSMSL is distributed in the hope that it will be useful, but WITHOUT
+// ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public
+// License for more details.
+// 
+// You should have received a copy of the GNU Lesser General Public
+// License along with CSMSL. If not, see <http://www.gnu.org/licenses/>.
+
+using System;
 using System.Linq;
 using CSMSL.Spectral;
 
@@ -31,20 +48,22 @@ namespace CSMSL.IO.Thermo
             _resolutions = new double[Count];
             var charges = new double[Count];
 
-            Buffer.BlockCopy(peakData, sizeof(double) * arrayLength * (int)ThermoRawFile.RawLabelDataColumn.Resolution, _resolutions, 0, sizeof(double) * Count);
-            Buffer.BlockCopy(peakData, sizeof(double) * arrayLength * (int)ThermoRawFile.RawLabelDataColumn.NoiseLevel, _noises, 0, sizeof(double) * Count);
-            Buffer.BlockCopy(peakData, sizeof(double) * arrayLength * (int)ThermoRawFile.RawLabelDataColumn.Charge, charges, 0, sizeof(double) * Count);
+            Buffer.BlockCopy(peakData, sizeof (double)*arrayLength*(int) ThermoRawFile.RawLabelDataColumn.Resolution, _resolutions, 0, sizeof (double)*Count);
+            Buffer.BlockCopy(peakData, sizeof (double)*arrayLength*(int) ThermoRawFile.RawLabelDataColumn.NoiseLevel, _noises, 0, sizeof (double)*Count);
+            Buffer.BlockCopy(peakData, sizeof (double)*arrayLength*(int) ThermoRawFile.RawLabelDataColumn.Charge, charges, 0, sizeof (double)*Count);
 
             _charges = new int[Count];
             for (int i = 0; i < Count; i++)
             {
-                _charges[i] = (int)charges[i];
+                _charges[i] = (int) charges[i];
             }
         }
 
         internal ThermoSpectrum(double[,] peakData)
-            : this(peakData, peakData.GetLength(1)) { }
- 
+            : this(peakData, peakData.GetLength(1))
+        {
+        }
+
         public ThermoSpectrum(double[] mz, double[] intensity, double[] noise, int[] charge, double[] resolutions, bool shouldCopy = true)
             : base(mz, intensity, shouldCopy)
         {
@@ -54,9 +73,9 @@ namespace CSMSL.IO.Thermo
                 _charges = new int[Count];
                 _resolutions = new double[Count];
 
-                Buffer.BlockCopy(noise, 0, _noises, 0, sizeof(double) * Count);
-                Buffer.BlockCopy(charge, 0, _charges, 0, sizeof(int) * Count);
-                Buffer.BlockCopy(resolutions, 0, _resolutions, 0, sizeof(double) * Count);
+                Buffer.BlockCopy(noise, 0, _noises, 0, sizeof (double)*Count);
+                Buffer.BlockCopy(charge, 0, _charges, 0, sizeof (int)*Count);
+                Buffer.BlockCopy(resolutions, 0, _resolutions, 0, sizeof (double)*Count);
             }
             else
             {
@@ -65,7 +84,7 @@ namespace CSMSL.IO.Thermo
                 _resolutions = resolutions;
             }
         }
-        
+
         public double GetNoise(int index)
         {
             return _noises[index];
@@ -76,9 +95,9 @@ namespace CSMSL.IO.Thermo
             double noise = _noises[index];
             if (noise == 0)
                 return 0;
-            return _intensities[index] / noise;
+            return _intensities[index]/noise;
         }
-        
+
         public int GetCharge(int index)
         {
             return _charges[index];
@@ -92,29 +111,29 @@ namespace CSMSL.IO.Thermo
         public double[] GetNoises()
         {
             double[] noises = new double[Count];
-            Buffer.BlockCopy(_noises, 0, noises, 0, sizeof(double) * Count);
+            Buffer.BlockCopy(_noises, 0, noises, 0, sizeof (double)*Count);
             return noises;
         }
 
         public double[] GetResolutions()
         {
             double[] resolutions = new double[Count];
-            Buffer.BlockCopy(_resolutions, 0, resolutions, 0, sizeof(double) * Count);
+            Buffer.BlockCopy(_resolutions, 0, resolutions, 0, sizeof (double)*Count);
             return resolutions;
         }
 
         public int[] GetCharges()
         {
             int[] charges = new int[Count];
-            Buffer.BlockCopy(_charges, 0, charges, 0, sizeof(int) * Count);
+            Buffer.BlockCopy(_charges, 0, charges, 0, sizeof (int)*Count);
             return charges;
         }
-        
+
         public override ThermoLabeledPeak GetPeak(int index)
         {
             return new ThermoLabeledPeak(_masses[index], _intensities[index], _charges[index], _noises[index], _resolutions[index]);
         }
-        
+
         public override byte[] ToBytes(bool zlibCompressed = false)
         {
             throw new NotImplementedException();
@@ -123,19 +142,19 @@ namespace CSMSL.IO.Thermo
         public override double[,] ToArray()
         {
             double[,] data = new double[5, Count];
-            const int size = sizeof(double);
-            int bytesToCopy = size * Count;
+            const int size = sizeof (double);
+            int bytesToCopy = size*Count;
             Buffer.BlockCopy(_masses, 0, data, 0, bytesToCopy);
             Buffer.BlockCopy(_intensities, 0, data, bytesToCopy, bytesToCopy);
-            Buffer.BlockCopy(_resolutions, 0, data, (int)ThermoRawFile.RawLabelDataColumn.Resolution *bytesToCopy, bytesToCopy);
-            Buffer.BlockCopy(_noises, 0, data, (int)ThermoRawFile.RawLabelDataColumn.NoiseLevel * bytesToCopy, bytesToCopy;
+            Buffer.BlockCopy(_resolutions, 0, data, (int) ThermoRawFile.RawLabelDataColumn.Resolution*bytesToCopy, bytesToCopy);
+            Buffer.BlockCopy(_noises, 0, data, (int) ThermoRawFile.RawLabelDataColumn.NoiseLevel*bytesToCopy, bytesToCopy);
 
             double[] charges = new double[Count];
             for (int i = 0; i < Count; i++)
             {
                 charges[i] = _charges[i];
             }
-            Buffer.BlockCopy(charges, 0, data, (int)ThermoRawFile.RawLabelDataColumn.Charge * bytesToCopy, bytesToCopy);
+            Buffer.BlockCopy(charges, 0, data, (int) ThermoRawFile.RawLabelDataColumn.Charge*bytesToCopy, bytesToCopy);
             return data;
         }
 

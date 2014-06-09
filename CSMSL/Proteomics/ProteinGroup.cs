@@ -1,4 +1,21 @@
-﻿using System.Collections;
+﻿// Copyright 2012, 2013, 2014 Derek J. Bailey
+// 
+// This file (ProteinGroup.cs) is part of CSMSL.
+// 
+// CSMSL is free software: you can redistribute it and/or modify it
+// under the terms of the GNU Lesser General Public License as published
+// by the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// 
+// CSMSL is distributed in the hope that it will be useful, but WITHOUT
+// ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public
+// License for more details.
+// 
+// You should have received a copy of the GNU Lesser General Public
+// License along with CSMSL. If not, see <http://www.gnu.org/licenses/>.
+
+using System.Collections;
 using CSMSL.IO;
 using System;
 using System.Collections.Generic;
@@ -13,15 +30,20 @@ namespace CSMSL.Proteomics
 
         public Protein RepresentativeProtein { get; private set; }
 
-        public int Length { get { return (RepresentativeProtein == null) ? 0 : RepresentativeProtein.Length; } }
+        public int Length
+        {
+            get { return (RepresentativeProtein == null) ? 0 : RepresentativeProtein.Length; }
+        }
 
         public ProteinGroup()
-            : this(new AminoAcidLeucineSequenceComparer()) { }
+            : this(new AminoAcidLeucineSequenceComparer())
+        {
+        }
 
         public ProteinGroup(IEqualityComparer<IAminoAcidSequence> peptideComparer)
         {
             Proteins = new HashSet<Protein>();
-            Peptides = new HashSet<IAminoAcidSequence>(peptideComparer);        
+            Peptides = new HashSet<IAminoAcidSequence>(peptideComparer);
         }
 
         public ProteinGroup(IEnumerable<IAminoAcidSequence> peptideSequences, IEqualityComparer<IAminoAcidSequence> peptideComparer)
@@ -35,7 +57,7 @@ namespace CSMSL.Proteomics
         {
             AddProtein(protein);
         }
-   
+
         public override int GetHashCode()
         {
             unchecked
@@ -47,7 +69,7 @@ namespace CSMSL.Proteomics
                     hCode = (hCode >> 3);
                 }
                 return hCode;
-            }           
+            }
         }
 
         public override bool Equals(object obj)
@@ -62,10 +84,16 @@ namespace CSMSL.Proteomics
         {
             return Proteins.SetEquals(other.Proteins);
         }
-        
-        public int ProteinCount { get { return Proteins.Count; } }
 
-        public int PeptideCount { get { return Peptides.Count; } }
+        public int ProteinCount
+        {
+            get { return Proteins.Count; }
+        }
+
+        public int PeptideCount
+        {
+            get { return Peptides.Count; }
+        }
 
         public void AddProtein(Protein protein)
         {
@@ -87,7 +115,7 @@ namespace CSMSL.Proteomics
         {
             Peptides.Add(peptide);
         }
-        
+
         public IEnumerator<Protein> GetEnumerator()
         {
             return Proteins.GetEnumerator();
@@ -129,18 +157,16 @@ namespace CSMSL.Proteomics
 
             int observedAminoAcids = bits.Count(bit => bit > 0);
 
-            return (double)observedAminoAcids / Length * 100.0;
+            return (double) observedAminoAcids/Length*100.0;
         }
 
         #region Statics
-
-       
 
         public static IEnumerable<ProteinGroup> GroupProteins(string fastaFile, IProtease protease, IEnumerable<IAminoAcidSequence> observeredSequences, IEqualityComparer<IAminoAcidSequence> peptideComparer, int MaxMissedCleavages = 3)
         {
             using (FastaReader fasta = new FastaReader(fastaFile))
             {
-                return GroupProteins(fasta.ReadNextProtein(), new[] { protease }, observeredSequences,peptideComparer, MaxMissedCleavages);
+                return GroupProteins(fasta.ReadNextProtein(), new[] {protease}, observeredSequences, peptideComparer, MaxMissedCleavages);
             }
         }
 
@@ -165,11 +191,11 @@ namespace CSMSL.Proteomics
                 if (length < smallestPeptide)
                     smallestPeptide = length;
             }
-           
+
             foreach (Protein protein in proteins)
             {
                 HashSet<IAminoAcidSequence> proteinSequences = new HashSet<IAminoAcidSequence>();
-                
+
                 foreach (Protease protease in proteases)
                 {
                     foreach (Peptide peptide in protein.Digest(protease, MaxMissedCleavages, smallestPeptide, largestPeptide))
@@ -197,28 +223,26 @@ namespace CSMSL.Proteomics
                     var proteinGroup = new ProteinGroup(protein, proteinSequences, peptideComparer);
                     proteinGroups.Add(proteinGroup);
                 }
-
             }
 
             if (mappedSequences.Count != peptideSequences.Count)
             {
                 throw new Exception("All peptides were not mapped to a protein!");
             }
-            
+
             return CombinedProteins(proteinGroups, mappedSequences, minPepPerProtein);
         }
 
         public static IEnumerable<ProteinGroup> GroupProteins(IEnumerable<Protein> proteins, IProtease protease, IEnumerable<IAminoAcidSequence> observeredSequences, IEqualityComparer<IAminoAcidSequence> peptideComparer, int MaxMissedCleavages = 3, int minPepPerProtein = 1)
         {
-            return GroupProteins(proteins, new[] { protease }, observeredSequences, peptideComparer, MaxMissedCleavages);
-           
+            return GroupProteins(proteins, new[] {protease}, observeredSequences, peptideComparer, MaxMissedCleavages);
         }
-        
+
         private static IEnumerable<ProteinGroup> CombinedProteins(IList<ProteinGroup> proteins, Dictionary<IAminoAcidSequence, int> sharedPeptides, int minPeptidesPerProtein = 1)
         {
             // A list of protein groups that, at the end of this method, will have distinct protein groups.
             List<ProteinGroup> proteinGroups = new List<ProteinGroup>();
-          
+
             // 1) Find Indistinguishable Proteins and group them together into Protein Groups
             // If they are not indistinguishable, then they are still converted to Protein Groups
             // but only contain one protein.
@@ -227,6 +251,7 @@ namespace CSMSL.Proteomics
             // C 1   3 4
             // Proteins A and B are indistinguisable (have same set of peptides 1,2,3,4), and thus would become a Protein Group (PG1 [a,b])
             // C is distinguishable and would become a Protein Group (PG2 [c]).
+
             #region Indistinguishable
 
             // Loop over each protein
@@ -280,6 +305,7 @@ namespace CSMSL.Proteomics
             // 0.01 C   2 3
             // Which would mean Protein Group B and C are distinct groups, but share a common peptide (3), peptides 1 and 2 would remain unshared.
             // Protein Group A is removed, as it its peptides can be explained by groups B and C.
+
             #region Subsumable
 
             // First, make sure all the peptides know which protein groups they belong too, so we can determined shared peptides
@@ -320,11 +346,11 @@ namespace CSMSL.Proteomics
                     p1++;
                 }
             }
-            
 
             #endregion Subsumable
 
             // 3) Remove protein groups that do not have enough peptides within them
+
             #region MinimumGroupSize
 
             // No need to filter if this is one or less
@@ -357,6 +383,7 @@ namespace CSMSL.Proteomics
             #endregion
 
             //// 4) Apply false discovery filtering at the protein level
+
             #region FDR filtering
 
             //proteinGroups.Sort();
@@ -367,13 +394,12 @@ namespace CSMSL.Proteomics
             //    proteinGroup.PassesFDR = true;
             //    count++;
             //}
-            
+
             #endregion FDR filtering
 
             return proteinGroups;
         }
-        
-    #endregion
+
+        #endregion
     }
-   
 }

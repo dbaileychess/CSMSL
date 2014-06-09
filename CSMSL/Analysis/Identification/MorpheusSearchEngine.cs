@@ -1,31 +1,19 @@
-﻿///////////////////////////////////////////////////////////////////////////
-//  MorpehusSearchEngine.cs - Peptide Spectral Identification Algorithm   /
-//                                                                        /
-//  Please cite the following publication when using these algorithms     /
-//  in a publication:                                                     /
-//                                                                        /
-//  Wenger CD, Coon JJ. "A Proteomics Search Algorithm Specifically       /
-//  Designed for High-Resolution Tandem Mass Spectra" Journal of Proteome /
-//  Research (in press)                                                   /
-//                                                                        /
-//  http://pubs.acs.org/doi/abs/10.1021/pr301024c                         /
-//                                                                        /
-//  Copyright 2013 Craig D. Wenger & Derek J. Bailey                      /
-//  This file is part of CSMSL.                                           /
-//                                                                        /
-//  CSMSL is free software: you can redistribute it and/or modify         /
-//  it under the terms of the GNU General Public License as published by  /
-//  the Free Software Foundation, either version 3 of the License, or     /
-//  (at your option) any later version.                                   /
-//                                                                        /
-//  CSMSL is distributed in the hope that it will be useful,              /
-//  but WITHOUT ANY WARRANTY; without even the implied warranty of        /
-//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         /
-//  GNU General Public License for more details.                          /
-//                                                                        /
-//  You should have received a copy of the GNU General Public License     /
-//  along with CSMSL.  If not, see <http://www.gnu.org/licenses/>.        /
-///////////////////////////////////////////////////////////////////////////
+﻿// Copyright 2012, 2013, 2014 Derek J. Bailey
+// 
+// This file (MorpheusSearchEngine.cs) is part of CSMSL.
+// 
+// CSMSL is free software: you can redistribute it and/or modify it
+// under the terms of the GNU Lesser General Public License as published
+// by the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// 
+// CSMSL is distributed in the hope that it will be useful, but WITHOUT
+// ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public
+// License for more details.
+// 
+// You should have received a copy of the GNU Lesser General Public
+// License along with CSMSL. If not, see <http://www.gnu.org/licenses/>.
 
 using CSMSL.Chemistry;
 using CSMSL.Proteomics;
@@ -51,8 +39,8 @@ namespace CSMSL.Analysis.Identification
             double[] eMasses = massSpectrum.MassSpectrum.GetMasses();
             double[] eIntenisties = massSpectrum.MassSpectrum.GetIntensities();
             double tic = massSpectrum.MassSpectrum.GetTotalIonCurrent();
-           
-            PeptideSpectralMatch psm = new PeptideSpectralMatch(DefaultPsmScoreType) { Peptide = peptide };
+
+            PeptideSpectralMatch psm = new PeptideSpectralMatch(DefaultPsmScoreType) {Peptide = peptide};
             double[] tMasses = peptide.Fragment(fragmentTypes).Select(frag => Mass.MzFromMass(frag.MonoisotopicMass, 1)).OrderBy(val => val).ToArray();
             double score = Search(eMasses, eIntenisties, tMasses, productMassTolerance, tic);
             psm.Score = score;
@@ -66,21 +54,22 @@ namespace CSMSL.Analysis.Identification
 
             double[] eMasses = spectrum.MassSpectrum.GetMasses();
             double[] eIntenisties = spectrum.MassSpectrum.GetIntensities();
-            double tic = spectrum.MassSpectrum.GetTotalIonCurrent();;
-            
+            double tic = spectrum.MassSpectrum.GetTotalIonCurrent();
+            ;
+
             foreach (var peptide in peptides)
             {
                 PeptideSpectralMatch psm = new PeptideSpectralMatch(DefaultPsmScoreType) {Peptide = peptide};
                 double[] tMasses =
                     peptide.Fragment(fragmentTypes)
-                            .Select(frag => Mass.MzFromMass(frag.MonoisotopicMass, 1))
-                            .OrderBy(val => val)
-                            .ToArray();
+                        .Select(frag => Mass.MzFromMass(frag.MonoisotopicMass, 1))
+                        .OrderBy(val => val)
+                        .ToArray();
                 double score = Search(eMasses, eIntenisties, tMasses, productMassTolerance, tic);
                 psm.Score = score;
                 results.Add(psm);
             }
-            
+
 
             return results;
         }
@@ -89,7 +78,7 @@ namespace CSMSL.Analysis.Identification
         //private double Search(ref double[] eMasses, ref double[] eIntenisties, double[] tMasses, double productTolerance, double tic, ref Dictionary<double, double> scores)
         //{
         //    double score = 0.0;
-          
+
         //    int eLength = eMasses.Length;
         //    int tLength = tMasses.Length;
         //    int e = 0;
@@ -114,7 +103,7 @@ namespace CSMSL.Analysis.Identification
 
         //        if (eMasses[e] > maxMZ)
         //            continue;
-                
+
         //        double intensities = 0;
         //        int index = e; // switch variables to keep e the same for the next loop around
         //        do
@@ -128,7 +117,7 @@ namespace CSMSL.Analysis.Identification
         //        score += storedScore;
         //        scores[t] = storedScore;
         //    }
-          
+
         //    return score;
         //}
 
@@ -157,7 +146,7 @@ namespace CSMSL.Analysis.Identification
                     IRange<double> range = productTolerance.GetRange(t);
                     double minMZ = range.Minimum;
                     double maxMZ = range.Maximum;
-                 
+
                     while (e < eLength && eMasses[e] < minMZ)
                         e++;
 
@@ -184,7 +173,7 @@ namespace CSMSL.Analysis.Identification
                     IRange<double> range = productTolerance.GetRange(t);
                     double minMZ = range.Minimum;
                     double maxMZ = range.Maximum;
-                 
+
 
                     while (eMasses[e] < minMZ)
                         e++;
@@ -202,10 +191,7 @@ namespace CSMSL.Analysis.Identification
                     } while (index < eLength && eMasses[index] < maxMZ);
                 }
             }
-            return score + intensities / tic;
+            return score + intensities/tic;
         }
-
-
-       
     }
 }

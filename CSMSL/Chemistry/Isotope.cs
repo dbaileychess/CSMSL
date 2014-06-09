@@ -1,33 +1,28 @@
-﻿///////////////////////////////////////////////////////////////////////////
-//  Isotope.cs - A single isotope of an element                           /
-//                                                                        /
-//  Copyright 2012 Derek J. Bailey                                        /
-//  This file is part of CSMSL.                                           /
-//                                                                        /
-//  CSMSL is free software: you can redistribute it and/or modify         /
-//  it under the terms of the GNU General Public License as published by  /
-//  the Free Software Foundation, either version 3 of the License, or     /
-//  (at your option) any later version.                                   /
-//                                                                        /
-//  CSMSL is distributed in the hope that it will be useful,              /
-//  but WITHOUT ANY WARRANTY; without even the implied warranty of        /
-//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         /
-//  GNU General Public License for more details.                          /
-//                                                                        /
-//  You should have received a copy of the GNU General Public License     /
-//  along with CSMSL.  If not, see <http://www.gnu.org/licenses/>.        /
-///////////////////////////////////////////////////////////////////////////
+﻿// Copyright 2012, 2013, 2014 Derek J. Bailey
+// 
+// This file (Isotope.cs) is part of CSMSL.
+// 
+// CSMSL is free software: you can redistribute it and/or modify it
+// under the terms of the GNU Lesser General Public License as published
+// by the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// 
+// CSMSL is distributed in the hope that it will be useful, but WITHOUT
+// ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public
+// License for more details.
+// 
+// You should have received a copy of the GNU Lesser General Public
+// License along with CSMSL. If not, see <http://www.gnu.org/licenses/>.
 
 namespace CSMSL.Chemistry
 {
-
     /// <summary>
     /// Represents a single isotope of a chemical element. Contains a unique number
     /// of protons and neutrons compared to every other isotope.
     /// </summary>
     public sealed class Isotope
-    {        
-
+    {
         /// <summary>
         /// Create a new isotope
         /// </summary>
@@ -92,12 +87,12 @@ namespace CSMSL.Chemistry
         {
             get { return MassNumber - Element.AtomicNumber; }
         }
-        
+
         /// <summary>
         /// The element this isotope is apart of (based on atomic number)
         /// </summary>
-        public Element Element { get; private set; }            
-       
+        public Element Element { get; private set; }
+
         /// <summary>
         /// The atomic mass of this isotope (in unified atomic mass units)
         /// </summary>
@@ -111,7 +106,7 @@ namespace CSMSL.Chemistry
         /// <summary>
         /// The relative natural abundance of this isotope in nature (on Earth)
         /// </summary>
-        public float RelativeAbundance { get; private set; }     
+        public float RelativeAbundance { get; private set; }
 
         /// <summary>
         /// Returns a textual representation of this isotope in the following format: H1 He4 O16

@@ -1,4 +1,21 @@
-﻿using System;
+﻿// Copyright 2012, 2013, 2014 Derek J. Bailey
+// 
+// This file (FalseDiscoveryRate.cs) is part of CSMSL.
+// 
+// CSMSL is free software: you can redistribute it and/or modify it
+// under the terms of the GNU Lesser General Public License as published
+// by the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// 
+// CSMSL is distributed in the hope that it will be useful, but WITHOUT
+// ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public
+// License for more details.
+// 
+// You should have received a copy of the GNU Lesser General Public
+// License along with CSMSL. If not, see <http://www.gnu.org/licenses/>.
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -21,7 +38,7 @@ namespace CSMSL.Analysis.Identification
         public double MaxFdr { get; set; }
 
         public double ActualFdr { get; private set; }
-      
+
         public bool RemoveDuplicateItems { get; set; }
 
         public List<TSource> ForwardHits { get; private set; }
@@ -43,7 +60,7 @@ namespace CSMSL.Analysis.Identification
         {
             Filter(MaxFdr, RemoveDuplicateItems);
         }
-        
+
         /// <summary>
         /// Filter the internal list of items at a given Maximum FDR rate and store the results in this object
         /// </summary>
@@ -77,7 +94,7 @@ namespace CSMSL.Analysis.Identification
             if (forward > 0)
             {
                 // The actual FDR is just the decoys count over the forward hits
-                ActualFdr = decoy / (double)forward;
+                ActualFdr = decoy/(double) forward;
             }
             else
             {
@@ -150,7 +167,7 @@ namespace CSMSL.Analysis.Identification
                 else forward++;
 
                 // Calculate the local fdr rate
-                double fdr = decoy / (double)forward;
+                double fdr = decoy/(double) forward;
 
                 // Check to see if the local fdr rate is larger than the max
                 if (fdr > maxFdr)
@@ -176,7 +193,7 @@ namespace CSMSL.Analysis.Identification
                 // Set the cutoff value for the last item analyzed (which is the score metric)
                 currentCutoff = item.FdrScoreMetric;
             }
-         
+
             // If the max fdr was never hit once, every item passes FDR filtering then return all items
             if (!hitOnce)
             {
@@ -276,7 +293,7 @@ namespace CSMSL.Analysis.Identification
 
                 // Calculate the local fdr rate
                 double fdr = decoy/forward;
-                
+
                 fdrs[index] = fdr;
                 qvalues[index] = fdr;
             }
@@ -296,7 +313,7 @@ namespace CSMSL.Analysis.Identification
             // Filter the list until the q-value is > maximum false discovery rate allowed
             for (int index = 0; index < count; index++)
             {
-                if(qvalues[index] <= maxFdr)
+                if (qvalues[index] <= maxFdr)
                     continue;
                 if (index == 0)
                     return sorteditems[0].FdrScoreMetric;
@@ -308,6 +325,5 @@ namespace CSMSL.Analysis.Identification
         }
 
         #endregion Static Methods
-        
     }
 }

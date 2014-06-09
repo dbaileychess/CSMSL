@@ -1,4 +1,21 @@
-﻿using System;
+﻿// Copyright 2012, 2013, 2014 Derek J. Bailey
+// 
+// This file (Spectrum.cs) is part of CSMSL.
+// 
+// CSMSL is free software: you can redistribute it and/or modify it
+// under the terms of the GNU Lesser General Public License as published
+// by the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// 
+// CSMSL is distributed in the hope that it will be useful, but WITHOUT
+// ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public
+// License for more details.
+// 
+// You should have received a copy of the GNU Lesser General Public
+// License along with CSMSL. If not, see <http://www.gnu.org/licenses/>.
+
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,30 +31,42 @@ namespace CSMSL.Spectral
         /// <param name="intensities">The intensities</param>
         /// <param name="shouldCopy">Indicates whether the input arrays should be copied to new ones</param>
         public Spectrum(double[] mz, double[] intensities, bool shouldCopy = true)
-            : base(mz, intensities, shouldCopy) {}
-           
+            : base(mz, intensities, shouldCopy)
+        {
+        }
+
         /// <summary>
         /// Initializes a new spectrum from another spectrum
         /// </summary>
         /// <param name="spectrum">The spectrum to clone</param>
         public Spectrum(Spectrum spectrum)
-            : this(spectrum._masses, spectrum._intensities) { }
+            : this(spectrum._masses, spectrum._intensities)
+        {
+        }
 
         /// <summary>
         /// Initializes a new spectrum
         /// </summary>
         /// <param name="mzintensities"></param>
         public Spectrum(double[,] mzintensities)
-            : this(mzintensities, mzintensities.GetLength(1)) {}
+            : this(mzintensities, mzintensities.GetLength(1))
+        {
+        }
 
         public Spectrum(double[,] mzintensities, int count)
-            : base(mzintensities,count) {}
+            : base(mzintensities, count)
+        {
+        }
 
         public Spectrum(byte[] mzintensities)
-            : base (mzintensities) {}
+            : base(mzintensities)
+        {
+        }
 
-        private Spectrum() {}
-     
+        private Spectrum()
+        {
+        }
+
         /// <summary>
         /// An empty spectrum
         /// </summary>
@@ -47,11 +76,11 @@ namespace CSMSL.Spectral
         {
             return new MZPeak(_masses[index], _intensities[index]);
         }
-        
+
         public override byte[] ToBytes(bool zlibCompressed = false)
         {
-            int length = Count * sizeof(double);
-            byte[] bytes = new byte[length * 2];
+            int length = Count*sizeof (double);
+            byte[] bytes = new byte[length*2];
             Buffer.BlockCopy(_masses, 0, bytes, 0, length);
             Buffer.BlockCopy(_intensities, 0, bytes, length, length);
 
@@ -62,7 +91,7 @@ namespace CSMSL.Spectral
 
             return bytes;
         }
- 
+
         public override Spectrum Extract(double minMZ, double maxMZ)
         {
             if (Count == 0)
@@ -181,7 +210,6 @@ namespace CSMSL.Spectral
             // Return a new spectrum, don't bother recopying the arrays
             return new Spectrum(mz, intensities, false);
         }
-        
     }
 
     /// <summary>
@@ -201,7 +229,7 @@ namespace CSMSL.Spectral
         /// The intensity of this spectrum, linked to their m/z by index in the array
         /// </summary>
         protected readonly double[] _intensities;
-        
+
         /// <summary>
         /// The number of peaks in this spectrum
         /// </summary>
@@ -210,13 +238,19 @@ namespace CSMSL.Spectral
         /// <summary>
         /// The first m/z of this spectrum
         /// </summary>
-        public double FirstMz { get { return Count == 0 ? 0 : _masses[0]; } }
+        public double FirstMz
+        {
+            get { return Count == 0 ? 0 : _masses[0]; }
+        }
 
         /// <summary>
         /// The last m/z of this spectrum
         /// </summary>
-        public double LastMZ { get { return Count == 0 ? 0 : _masses[Count - 1]; } }
-        
+        public double LastMZ
+        {
+            get { return Count == 0 ? 0 : _masses[Count - 1]; }
+        }
+
         /// <summary>
         /// Initializes a new spectrum
         /// </summary>
@@ -230,13 +264,13 @@ namespace CSMSL.Spectral
             {
                 throw new ArgumentException("M/Z and Intensity arrays are not the same length");
             }
-           
+
             if (shouldCopy)
             {
                 _masses = new double[Count];
                 _intensities = new double[Count];
-                Buffer.BlockCopy(mz, 0, _masses, 0, sizeof(double) * Count);
-                Buffer.BlockCopy(intensities, 0, _intensities, 0, sizeof(double) * Count);
+                Buffer.BlockCopy(mz, 0, _masses, 0, sizeof (double)*Count);
+                Buffer.BlockCopy(intensities, 0, _intensities, 0, sizeof (double)*Count);
             }
             else
             {
@@ -259,7 +293,6 @@ namespace CSMSL.Spectral
         protected Spectrum(Spectrum spectrum)
             : this(spectrum._masses, spectrum._intensities)
         {
-
         }
 
         /// <summary>
@@ -269,7 +302,6 @@ namespace CSMSL.Spectral
         protected Spectrum(double[,] mzintensities)
             : this(mzintensities, mzintensities.GetLength(1))
         {
-           
         }
 
         protected Spectrum(double[,] mzintensities, int count)
@@ -278,21 +310,21 @@ namespace CSMSL.Spectral
 
             _masses = new double[count];
             _intensities = new double[count];
-            Buffer.BlockCopy(mzintensities, 0, _masses, 0, sizeof(double) * count);
-            Buffer.BlockCopy(mzintensities, sizeof(double) * length, _intensities, 0, sizeof(double) * count);
+            Buffer.BlockCopy(mzintensities, 0, _masses, 0, sizeof (double)*count);
+            Buffer.BlockCopy(mzintensities, sizeof (double)*length, _intensities, 0, sizeof (double)*count);
             Count = count;
         }
 
         protected Spectrum(byte[] mzintensities)
         {
-            Count = mzintensities.Length / (sizeof(double) * 2);
-            int size = sizeof(double) * Count;
+            Count = mzintensities.Length/(sizeof (double)*2);
+            int size = sizeof (double)*Count;
             _masses = new double[Count];
             _intensities = new double[Count];
             Buffer.BlockCopy(mzintensities, 0, _masses, 0, size);
             Buffer.BlockCopy(mzintensities, size, _intensities, 0, size);
         }
-        
+
         /// <summary>
         /// Gets the peak at the specified index
         /// </summary>
@@ -316,9 +348,9 @@ namespace CSMSL.Spectral
         /// Gets the full m/z range of this spectrum
         /// </summary>
         /// <returns></returns>
-        public virtual MzRange GetMzRange() 
-        { 
-            return new MzRange(FirstMz, LastMZ); 
+        public virtual MzRange GetMzRange()
+        {
+            return new MzRange(FirstMz, LastMZ);
         }
 
         /// <summary>
@@ -328,7 +360,7 @@ namespace CSMSL.Spectral
         public virtual double[] GetMasses()
         {
             double[] masses = new double[Count];
-            Buffer.BlockCopy(_masses, 0, masses, 0, sizeof(double) * Count);
+            Buffer.BlockCopy(_masses, 0, masses, 0, sizeof (double)*Count);
             return masses;
         }
 
@@ -339,7 +371,7 @@ namespace CSMSL.Spectral
         public virtual double[] GetIntensities()
         {
             double[] intensities = new double[Count];
-            Buffer.BlockCopy(_intensities, 0, intensities, 0, sizeof(double) * Count);
+            Buffer.BlockCopy(_intensities, 0, intensities, 0, sizeof (double)*Count);
             return intensities;
         }
 
@@ -350,10 +382,10 @@ namespace CSMSL.Spectral
         /// <returns></returns>
         public virtual double[,] ToArray()
         {
-            double[,] data = new double[2,Count];
-            const int size = sizeof(double);
-            Buffer.BlockCopy(_masses, 0, data, 0, size * Count);
-            Buffer.BlockCopy(_intensities, 0, data, size * Count, size * Count);
+            double[,] data = new double[2, Count];
+            const int size = sizeof (double);
+            Buffer.BlockCopy(_masses, 0, data, 0, size*Count);
+            Buffer.BlockCopy(_intensities, 0, data, size*Count, size*Count);
             return data;
         }
 
@@ -394,7 +426,7 @@ namespace CSMSL.Spectral
         {
             return Count > 0;
         }
-        
+
         /// <summary>
         /// Checks if this spectrum contains any peaks within the range
         /// </summary>
@@ -455,7 +487,7 @@ namespace CSMSL.Spectral
 
         public virtual T GetClosestPeak(IRange<double> massRange)
         {
-            double mean = (massRange.Maximum + massRange.Minimum) / 2.0;
+            double mean = (massRange.Maximum + massRange.Minimum)/2.0;
             double width = massRange.Maximum - massRange.Minimum;
             return GetClosestPeak(mean, width);
         }
@@ -497,11 +529,11 @@ namespace CSMSL.Spectral
         #region Abstract
 
         public abstract T GetPeak(int index);
-   
+
         public abstract byte[] ToBytes(bool zlibCompressed = false);
 
         public abstract T2 Extract(double minMZ, double maxMZ);
-     
+
         #endregion
 
         #region Protected Methods
@@ -571,7 +603,7 @@ namespace CSMSL.Spectral
 
             return ~index;
         }
-        
+
         #endregion
 
         public override string ToString()

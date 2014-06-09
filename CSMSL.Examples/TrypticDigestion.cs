@@ -1,22 +1,19 @@
-﻿///////////////////////////////////////////////////////////////////////////
-//  ExampleTrypticDigest.cs - An example tryptic digestion                /
-//                                                                        /
-//  Copyright 2012 Derek J. Bailey                                        /
-//  This file is part of CSMSL.                                           /
-//                                                                        /
-//  CSMSL is free software: you can redistribute it and/or modify         /
-//  it under the terms of the GNU General Public License as published by  /
-//  the Free Software Foundation, either version 3 of the License, or     /
-//  (at your option) any later version.                                   /
-//                                                                        /
-//  CSMSL is distributed in the hope that it will be useful,              /
-//  but WITHOUT ANY WARRANTY; without even the implied warranty of        /
-//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         /
-//  GNU General Public License for more details.                          /
-//                                                                        /
-//  You should have received a copy of the GNU General Public License     /
-//  along with CSMSL.  If not, see <http://www.gnu.org/licenses/>.        /
-///////////////////////////////////////////////////////////////////////////
+﻿// Copyright 2012, 2013, 2014 Derek J. Bailey
+// 
+// This file (TrypticDigestion.cs) is part of CSMSL.
+// 
+// CSMSL is free software: you can redistribute it and/or modify it
+// under the terms of the GNU Lesser General Public License as published
+// by the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// 
+// CSMSL is distributed in the hope that it will be useful, but WITHOUT
+// ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public
+// License for more details.
+// 
+// You should have received a copy of the GNU Lesser General Public
+// License along with CSMSL. If not, see <http://www.gnu.org/licenses/>.
 
 using System.Linq;
 using CSMSL.Chemistry;
@@ -34,7 +31,7 @@ namespace CSMSL.Examples
         {
             Console.WriteLine("**Start Digestion**");
             Stopwatch watch = new Stopwatch();
-            watch.Start();          
+            watch.Start();
             List<Peptide> peps = new List<Peptide>();
             List<Protein> prots = new List<Protein>();
             List<double> allMzs = new List<double>();
@@ -50,11 +47,11 @@ namespace CSMSL.Examples
                     }
                     prots.Add(protein);
                 }
-            }       
+            }
             watch.Stop();
             Console.WriteLine("{0:N0} proteins produced {1:N0} peptides using {2:N0} missed cleavages", prots.Count, peps.Count, maxMissed);
             Console.WriteLine("Time elapsed: {0}", watch.Elapsed);
-            Console.WriteLine("Memory used: {0:N0} MB", Environment.WorkingSet / (1024 * 1024));
+            Console.WriteLine("Memory used: {0:N0} MB", Environment.WorkingSet/(1024*1024));
             Console.WriteLine("**End Digestion**");
         }
 
@@ -67,7 +64,7 @@ namespace CSMSL.Examples
             const int maxPeptideLength = 50;
             List<double> masses = new List<double>();
             Stopwatch watch = new Stopwatch();
-            watch.Start();    
+            watch.Start();
             using (FastaReader reader = new FastaReader(fastaFilePath))
             {
                 foreach (Protein protein in reader.ReadNextProtein())
@@ -82,6 +79,5 @@ namespace CSMSL.Examples
             watch.Stop();
             Console.WriteLine("Time elapsed: {0}", watch.Elapsed);
         }
-
     }
 }

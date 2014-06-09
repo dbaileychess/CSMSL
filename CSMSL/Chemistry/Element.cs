@@ -1,22 +1,19 @@
-﻿///////////////////////////////////////////////////////////////////////////
-//  Element.cs - A collection of naturally occuring isotopes              /
-//                                                                        /
-//  Copyright 2012 Derek J. Bailey                                        /
-//  This file is part of CSMSL.                                           /
-//                                                                        /
-//  CSMSL is free software: you can redistribute it and/or modify         /
-//  it under the terms of the GNU General Public License as published by  /
-//  the Free Software Foundation, either version 3 of the License, or     /
-//  (at your option) any later version.                                   /
-//                                                                        /
-//  CSMSL is distributed in the hope that it will be useful,              /
-//  but WITHOUT ANY WARRANTY; without even the implied warranty of        /
-//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         /
-//  GNU General Public License for more details.                          /
-//                                                                        /
-//  You should have received a copy of the GNU General Public License     /
-//  along with CSMSL.  If not, see <http://www.gnu.org/licenses/>.        /
-///////////////////////////////////////////////////////////////////////////
+﻿// Copyright 2012, 2013, 2014 Derek J. Bailey
+// 
+// This file (Element.cs) is part of CSMSL.
+// 
+// CSMSL is free software: you can redistribute it and/or modify it
+// under the terms of the GNU Lesser General Public License as published
+// by the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// 
+// CSMSL is distributed in the hope that it will be useful, but WITHOUT
+// ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public
+// License for more details.
+// 
+// You should have received a copy of the GNU Lesser General Public
+// License along with CSMSL. If not, see <http://www.gnu.org/licenses/>.
 
 using System.Collections.Generic;
 
@@ -27,8 +24,8 @@ namespace CSMSL.Chemistry
     /// isotopes, with the element mass being a weighted average of all the
     /// isotopes atomic masses weighted by their natural relative abundance.
     /// </summary>
-    public sealed class Element 
-    {     
+    public sealed class Element
+    {
         /// <summary>
         /// The element's isotopes stored based on their atomic number
         /// </summary>
@@ -43,10 +40,7 @@ namespace CSMSL.Chemistry
         /// <returns>The isotope with the supplied atomic number</returns>
         public Isotope this[int atomicNumber]
         {
-            get
-            {
-                return Isotopes[atomicNumber];
-            }
+            get { return Isotopes[atomicNumber]; }
         }
 
         /// <summary>
@@ -102,13 +96,16 @@ namespace CSMSL.Chemistry
         /// <summary>
         /// The name of this element
         /// </summary>
-        public string Name { get; private set;}
+        public string Name { get; private set; }
 
         /// <summary>
         /// The number of isotopes this element comprises of (only isotopes with
         /// natural relative abundances > 0% are considered)
         /// </summary>
-        public int IsotopeCount { get { return Isotopes.Count; } }
+        public int IsotopeCount
+        {
+            get { return Isotopes.Count; }
+        }
 
         /// <summary>
         /// Returns a textual representation of this element in the following format: Hydrogen (H) Helium (He)
@@ -118,7 +115,7 @@ namespace CSMSL.Chemistry
         {
             return string.Format("{0} ({1})", Name, AtomicSymbol);
         }
-              
+
         /// <summary>
         /// The sum of the weighted isotope masses
         /// </summary>
@@ -138,8 +135,8 @@ namespace CSMSL.Chemistry
             {
                 Isotopes.Add(atomicNumber, isotope);
                 TotalAbundance += abundance;
-                _totalMass += abundance * atomicMass;
-                AverageMass = _totalMass / TotalAbundance;
+                _totalMass += abundance*atomicMass;
+                AverageMass = _totalMass/TotalAbundance;
                 if (PrincipalIsotope == null || abundance > PrincipalIsotope.RelativeAbundance)
                 {
                     if (PrincipalIsotope != null)
@@ -147,11 +144,10 @@ namespace CSMSL.Chemistry
                         PrincipalIsotope.IsPrincipalIsotope = false;
                     }
                     PrincipalIsotope = isotope;
-                    PrincipalIsotope.IsPrincipalIsotope = true;                    
+                    PrincipalIsotope.IsPrincipalIsotope = true;
                 }
             }
             return isotope;
         }
-
     }
 }

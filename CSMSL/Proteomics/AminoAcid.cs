@@ -1,22 +1,19 @@
-﻿///////////////////////////////////////////////////////////////////////////
-//  AminoAcidResidue.cs -  An amino acid residue                          /
-//                                                                        /
-//  Copyright 2012 Derek J. Bailey                                        /
-//  This file is part of CSMSL.                                           /
-//                                                                        /
-//  CSMSL is free software: you can redistribute it and/or modify         /
-//  it under the terms of the GNU General Public License as published by  /
-//  the Free Software Foundation, either version 3 of the License, or     /
-//  (at your option) any later version.                                   /
-//                                                                        /
-//  CSMSL is distributed in the hope that it will be useful,              /
-//  but WITHOUT ANY WARRANTY; without even the implied warranty of        /
-//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         /
-//  GNU General Public License for more details.                          /
-//                                                                        /
-//  You should have received a copy of the GNU General Public License     /
-//  along with CSMSL.  If not, see <http://www.gnu.org/licenses/>.        /
-///////////////////////////////////////////////////////////////////////////
+﻿// Copyright 2012, 2013, 2014 Derek J. Bailey
+// 
+// This file (AminoAcid.cs) is part of CSMSL.
+// 
+// CSMSL is free software: you can redistribute it and/or modify it
+// under the terms of the GNU Lesser General Public License as published
+// by the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// 
+// CSMSL is distributed in the hope that it will be useful, but WITHOUT
+// ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public
+// License for more details.
+// 
+// You should have received a copy of the GNU Lesser General Public
+// License along with CSMSL. If not, see <http://www.gnu.org/licenses/>.
 
 using CSMSL.Chemistry;
 using System;
@@ -64,7 +61,7 @@ namespace CSMSL.Proteomics
         /// <returns></returns>
         public static AminoAcid GetResidue(string symbol)
         {
-            return symbol.Length == 1 ?  ResiduesByLetter[symbol[0]] : Residues[symbol];
+            return symbol.Length == 1 ? ResiduesByLetter[symbol[0]] : Residues[symbol];
         }
 
         /// <summary>
@@ -104,8 +101,8 @@ namespace CSMSL.Proteomics
         static AminoAcid()
         {
             Residues = new Dictionary<string, AminoAcid>(66);
-            ResiduesByLetter = new AminoAcid['z' + 1];  //Make it big enough for all the Upper and Lower characters          
-            Alanine = AddResidue("Alanine",'A',"Ala","C3H5NO" ,ModificationSites.A);
+            ResiduesByLetter = new AminoAcid['z' + 1]; //Make it big enough for all the Upper and Lower characters          
+            Alanine = AddResidue("Alanine", 'A', "Ala", "C3H5NO", ModificationSites.A);
             Arginine = AddResidue("Arginine", 'R', "Arg", "C6H12N4O", ModificationSites.R);
             Asparagine = AddResidue("Asparagine", 'N', "Asn", "C4H6N2O2", ModificationSites.N);
             AsparticAcid = AddResidue("Aspartic Acid", 'D', "Asp", "C4H5NO3", ModificationSites.D);
@@ -125,21 +122,23 @@ namespace CSMSL.Proteomics
             Threonine = AddResidue("Threonine", 'T', "Thr", "C4H7NO2", ModificationSites.T);
             Tryptophan = AddResidue("Tryptophan", 'W', "Trp", "C11H10N2O", ModificationSites.W);
             Tyrosine = AddResidue("Tyrosine", 'Y', "Try", "C9H9NO2", ModificationSites.Y);
-            Valine = AddResidue("Valine", 'V', "Val", "C5H9NO", ModificationSites.V); 
-        }     
-        
+            Valine = AddResidue("Valine", 'V', "Val", "C5H9NO", ModificationSites.V);
+        }
+
         private static void AddResidueToDictionary(AminoAcid residue)
         {
             Residues.Add(residue.Letter.ToString(CultureInfo.InvariantCulture), residue);
             Residues.Add(residue.Name, residue);
             Residues.Add(residue.Symbol, residue);
             ResiduesByLetter[residue.Letter] = residue;
-            ResiduesByLetter[Char.ToLower(residue.Letter)] = residue;           
+            ResiduesByLetter[Char.ToLower(residue.Letter)] = residue;
         }
 
         internal AminoAcid(string name, char oneLetterAbbreviation, string threeLetterAbbreviation, string chemicalFormula, ModificationSites site)
-            : this(name, oneLetterAbbreviation, threeLetterAbbreviation, new ChemicalFormula(chemicalFormula), site) { }
-       
+            : this(name, oneLetterAbbreviation, threeLetterAbbreviation, new ChemicalFormula(chemicalFormula), site)
+        {
+        }
+
         internal AminoAcid(string name, char oneLetterAbbreviation, string threeLetterAbbreviation, ChemicalFormula chemicalFormula, ModificationSites site)
         {
             Name = name;
@@ -155,7 +154,7 @@ namespace CSMSL.Proteomics
         public char Letter { get; private set; }
 
         public ModificationSites Site { get; private set; }
-        
+
         public double MonoisotopicMass { get; private set; }
 
         public string Name { get; private set; }
@@ -174,21 +173,19 @@ namespace CSMSL.Proteomics
             {
                 Element carbon = Element.PeriodicTable["C"];
                 int carbon12 = ChemicalFormula.Count(carbon[12]);
-                formula.Add(carbon[12], -carbon12);               
-                formula.Add(carbon[13], carbon12);               
+                formula.Add(carbon[12], -carbon12);
+                formula.Add(carbon[13], carbon12);
             }
 
             if (n)
             {
                 Element nitrogen = Element.PeriodicTable["N"];
                 int nitrogen14 = ChemicalFormula.Count(nitrogen[14]);
-                formula.Add(nitrogen[14], -nitrogen14);  
-                formula.Add(nitrogen[15], nitrogen14);  
+                formula.Add(nitrogen[14], -nitrogen14);
+                formula.Add(nitrogen[15], nitrogen14);
             }
-     
+
             return new ChemicalFormulaModification(formula, "#", Site);
         }
-
-      
     }
 }

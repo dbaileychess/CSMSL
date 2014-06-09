@@ -1,22 +1,19 @@
-﻿///////////////////////////////////////////////////////////////////////////
-//  Examples.cs - A collection of examples of how to use CSMSL            /
-//                                                                        /
-//  Copyright 2012 Derek J. Bailey                                        /
-//  This file is part of CSMSL.                                           /
-//                                                                        /
-//  CSMSL is free software: you can redistribute it and/or modify         /
-//  it under the terms of the GNU General Public License as published by  /
-//  the Free Software Foundation, either version 3 of the License, or     /
-//  (at your option) any later version.                                   /
-//                                                                        /
-//  CSMSL is distributed in the hope that it will be useful,              /
-//  but WITHOUT ANY WARRANTY; without even the implied warranty of        /
-//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         /
-//  GNU General Public License for more details.                          /
-//                                                                        /
-//  You should have received a copy of the GNU General Public License     /
-//  along with CSMSL.  If not, see <http://www.gnu.org/licenses/>.        /
-///////////////////////////////////////////////////////////////////////////
+﻿// Copyright 2012, 2013, 2014 Derek J. Bailey
+// 
+// This file (Examples.cs) is part of CSMSL.
+// 
+// CSMSL is free software: you can redistribute it and/or modify it
+// under the terms of the GNU Lesser General Public License as published
+// by the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// 
+// CSMSL is distributed in the hope that it will be useful, but WITHOUT
+// ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public
+// License for more details.
+// 
+// You should have received a copy of the GNU Lesser General Public
+// License along with CSMSL. If not, see <http://www.gnu.org/licenses/>.
 
 using System.Collections.Generic;
 using System.IO;
@@ -36,7 +33,7 @@ namespace CSMSL.Examples
     internal class Examples
     {
         public static string BASE_DIRECTORY = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "CSMSL Examples");
-        
+
         private static void Main()
         {
             DirectoryInfo info = Directory.CreateDirectory(BASE_DIRECTORY);
@@ -60,7 +57,7 @@ namespace CSMSL.Examples
                 Console.WriteLine(watch.Elapsed);
             }
             Console.ReadKey();
-        }                
+        }
 
         private static void StartExamples()
         {
@@ -68,15 +65,13 @@ namespace CSMSL.Examples
 
             Spectrum spectrum = ID.CalculateDistribuition(new ChemicalFormula("C100"));
 
-            
-      
 
             // Examples coding  
-            
+
             //ChemicalFormulaExamples();
             //PeptideExamples();
             //ChemicalFormulaGeneratorExample();
-                        
+
             // Example Objects
             //VennDiagramExamples();
 
@@ -103,7 +98,7 @@ namespace CSMSL.Examples
 
             // Writing data to files
             //FileOutputExamples.Start();
-            
+
             //PepXmlExamples.ReadPepXml();
 
             //MzIdentMLExamples.ReadMzIdentML();
@@ -124,18 +119,18 @@ namespace CSMSL.Examples
             var iso1 = new Isotopologue("One", ModificationSites.K);
             iso1.AddModification(new ChemicalFormulaModification("C1", "Sample 1"));
             iso1.AddModification(new ChemicalFormulaModification("C2", "Sample 2"));
-            
+
             var iso2 = new Isotopologue("Two", ModificationSites.R);
             iso2.AddModification(new ChemicalFormulaModification("C3", "Sample 3"));
             iso2.AddModification(Modification.Empty);
-           
+
             Peptide peptide = new Peptide("DEREK");
             peptide.SetModification(iso1);
             peptide.SetModification(iso2);
 
             foreach (var iso in peptide.GenerateIsotopologues())
             {
-                Console.WriteLine(iso +", "+iso.MonoisotopicMass);
+                Console.WriteLine(iso + ", " + iso.MonoisotopicMass);
             }
         }
 
@@ -161,7 +156,7 @@ namespace CSMSL.Examples
             foreach (var formula in generator.FromMass(range).Validate())
             {
                 Console.WriteLine("{0,-15} {1:F10} {2,-5:G5} ppm", formula, formula.MonoisotopicMass,
-                    Tolerance.GetTolerance(formula.MonoisotopicMass, mass, ToleranceType.PPM));
+                    Tolerance.GetTolerance(formula.MonoisotopicMass, mass, ToleranceUnit.PPM));
                 count++;
             }
             Console.WriteLine("Unique Formulas: " + count);
@@ -188,7 +183,7 @@ namespace CSMSL.Examples
             }
 
             // Create diagram
-            VennDiagram<int> diagram = VennDiagram<int>.CreateDiagram(sets);            
+            VennDiagram<int> diagram = VennDiagram<int>.CreateDiagram(sets);
         }
 
         /// <summary>
@@ -197,22 +192,22 @@ namespace CSMSL.Examples
         private static void PeptideExamples()
         {
             Console.WriteLine("**Peptide Examples**");
-            
+
             // Simple Peptide creation
             Peptide peptide1 = new Peptide("ACDEFGHIKLMNPQRSTVWY");
             WritePeptideToConsole(peptide1);
-           
+
             // Fragmenting a peptide is simple, you can include as many fragment types as you want
             Console.WriteLine("{0,-4} {1,-20} {2,-10} {3,-10} {4,-5}", "Type", "Formula", "Mass", "m/z +1", "Sequence");
             foreach (Fragment fragment in peptide1.Fragment(FragmentTypes.b | FragmentTypes.y))
             {
                 WriteFragmentToConsole(fragment);
             }
-           
+
             // Modifications can be applied to any residue or termini
             Console.WriteLine("Lets add some Iron to our peptide...");
             peptide1.SetModification(new ChemicalFormula("Fe"), Terminus.C | Terminus.N);
-            WritePeptideToConsole(peptide1);            
+            WritePeptideToConsole(peptide1);
 
             // A chemicalmodification is a simple wrapper for a chemical formula. You can name your mods if you want
             Console.WriteLine("Add a modification of Oxygen with the name \"Oxidation\" to all Methionines");
@@ -234,12 +229,12 @@ namespace CSMSL.Examples
         private static void ChemicalFormulaExamples()
         {
             Console.WriteLine("**Chemical Formula Examples**");
-          
+
             // Simple chemical formula creation
             ChemicalFormula formula1 = new ChemicalFormula("C2H3NO");
             WriteFormulaToConsole(formula1);
-     
-           
+
+
             // Input order does not matter
             ChemicalFormula formula2 = new ChemicalFormula("NH3C2O");
             WriteFormulaToConsole(formula2);
@@ -266,7 +261,7 @@ namespace CSMSL.Examples
             WriteFormulaToConsole(formula3);
             ChemicalFormula formula4 = formula3 + formula1;
             WriteFormulaToConsole(formula4);
-            ChemicalFormula formula5 = formula2 * 5;
+            ChemicalFormula formula5 = formula2*5;
             WriteFormulaToConsole(formula5);
 
             // Formulas consist of a dictionary of isotopes and count, and by default, the most common (abundant) isotope of an element
@@ -286,8 +281,6 @@ namespace CSMSL.Examples
             formula3 = new ChemicalFormula("C{12}2C2H3NO");
             formula4 = new ChemicalFormula("C4H3NO");
             Console.WriteLine("Are {0} and {1} equivalent? {2}", formula3, formula4, formula3.Equals(formula4));
-
-
         }
 
         /// <summary>
@@ -313,7 +306,6 @@ namespace CSMSL.Examples
             if (formula != null)
                 f = formula.ChemicalFormula.ToString();
             Console.WriteLine("{0,-4} {1,-20} {2,10:F5} {3,10:F5} {4,-5}", frag, f, frag.MonoisotopicMass, frag.ToMz(1), frag.GetSequence());
-            
         }
     }
 }
