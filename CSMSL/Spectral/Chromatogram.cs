@@ -1,17 +1,17 @@
 ﻿// Copyright 2012, 2013, 2014 Derek J. Bailey
-// 
+//
 // This file (Chromatogram.cs) is part of CSMSL.
-// 
+//
 // CSMSL is free software: you can redistribute it and/or modify it
 // under the terms of the GNU Lesser General Public License as published
 // by the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
-// 
+//
 // CSMSL is distributed in the hope that it will be useful, but WITHOUT
 // ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
 // FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public
 // License for more details.
-// 
+//
 // You should have received a copy of the GNU Lesser General Public
 // License along with CSMSL. If not, see <http://www.gnu.org/licenses/>.
 
@@ -50,8 +50,10 @@ namespace CSMSL.Spectral
             {
                 case SmoothingType.BoxCar:
                     return BoxCar(points);
+
                 case SmoothingType.SavitzkyGolay:
                     return SavitzkyGolay();
+
                 default:
                     return new Chromatogram(this);
             }
@@ -65,7 +67,7 @@ namespace CSMSL.Spectral
         private Chromatogram BoxCar(int points)
         {
             // Force to be odd
-            points = points - (1 - points%2);
+            points = points - (1 - points % 2);
 
             if (points <= 0 || points > Count)
                 return new Chromatogram(this); // no smoothing
@@ -86,8 +88,8 @@ namespace CSMSL.Spectral
                     intensity += _intensities[j];
                 }
 
-                times[i] = time/points;
-                intensities[i] = intensity/points;
+                times[i] = time / points;
+                intensities[i] = intensity / points;
             }
 
             return new Chromatogram(times, intensities, false);
@@ -100,8 +102,8 @@ namespace CSMSL.Spectral
 
         public override byte[] ToBytes(bool zlibCompressed = false)
         {
-            int length = Count*sizeof (double);
-            byte[] bytes = new byte[length*2];
+            int length = Count * sizeof(double);
+            byte[] bytes = new byte[length * 2];
             Buffer.BlockCopy(_times, 0, bytes, 0, length);
             Buffer.BlockCopy(_intensities, 0, bytes, length, length);
 
@@ -139,8 +141,8 @@ namespace CSMSL.Spectral
             {
                 _times = new double[Count];
                 _intensities = new double[Count];
-                Buffer.BlockCopy(times, 0, _times, 0, 8*Count);
-                Buffer.BlockCopy(intensities, 0, _intensities, 0, 8*Count);
+                Buffer.BlockCopy(times, 0, _times, 0, 8 * Count);
+                Buffer.BlockCopy(intensities, 0, _intensities, 0, 8 * Count);
             }
             else
             {
@@ -154,14 +156,14 @@ namespace CSMSL.Spectral
             Count = timeintensities.GetLength(1);
             _times = new double[Count];
             _intensities = new double[Count];
-            Buffer.BlockCopy(timeintensities, 0, _times, 0, 8*Count);
-            Buffer.BlockCopy(timeintensities, 8*Count, _intensities, 0, 8*Count);
+            Buffer.BlockCopy(timeintensities, 0, _times, 0, 8 * Count);
+            Buffer.BlockCopy(timeintensities, 8 * Count, _intensities, 0, 8 * Count);
         }
 
         protected Chromatogram(byte[] timeintensities)
         {
-            Count = timeintensities.Length/(sizeof (double)*2);
-            int size = sizeof (double)*Count;
+            Count = timeintensities.Length / (sizeof(double) * 2);
+            int size = sizeof(double) * Count;
             _times = new double[Count];
             _intensities = new double[Count];
             Buffer.BlockCopy(timeintensities, 0, _times, 0, size);
@@ -185,14 +187,14 @@ namespace CSMSL.Spectral
         public double[] GetTimes()
         {
             double[] times = new double[Count];
-            Buffer.BlockCopy(_times, 0, times, 0, sizeof (double)*Count);
+            Buffer.BlockCopy(_times, 0, times, 0, sizeof(double) * Count);
             return times;
         }
 
         public double[] GetIntensities()
         {
             double[] intensities = new double[Count];
-            Buffer.BlockCopy(_intensities, 0, intensities, 0, sizeof (double)*Count);
+            Buffer.BlockCopy(_intensities, 0, intensities, 0, sizeof(double) * Count);
             return intensities;
         }
 
@@ -310,7 +312,7 @@ namespace CSMSL.Spectral
 
             double maxTime = _times[index];
             double minTime = maxTime;
-            double threshold = _intensities[index]*fraction;
+            double threshold = _intensities[index] * fraction;
 
             int count = 0;
             double localMin = _intensities[index];
@@ -318,7 +320,7 @@ namespace CSMSL.Spectral
             {
                 double peakIntensity = _intensities[i];
 
-                if (peakIntensity > localMin*upPrecent)
+                if (peakIntensity > localMin * upPrecent)
                 {
                     // Going up
                     count++;
@@ -326,7 +328,6 @@ namespace CSMSL.Spectral
                         break;
                     continue;
                 }
-
 
                 maxTime = _times[i];
 
@@ -347,7 +348,7 @@ namespace CSMSL.Spectral
             {
                 double peakIntensity = _intensities[i];
 
-                if (peakIntensity > localMin*upPrecent)
+                if (peakIntensity > localMin * upPrecent)
                 {
                     // Going up
                     count++;

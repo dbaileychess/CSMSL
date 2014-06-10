@@ -1,17 +1,17 @@
 ﻿// Copyright 2012, 2013, 2014 Derek J. Bailey
-// 
+//
 // This file (FalseDiscoveryRate.cs) is part of CSMSL.
-// 
+//
 // CSMSL is free software: you can redistribute it and/or modify it
 // under the terms of the GNU Lesser General Public License as published
 // by the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
-// 
+//
 // CSMSL is distributed in the hope that it will be useful, but WITHOUT
 // ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
 // FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public
 // License for more details.
-// 
+//
 // You should have received a copy of the GNU Lesser General Public
 // License along with CSMSL. If not, see <http://www.gnu.org/licenses/>.
 
@@ -94,7 +94,7 @@ namespace CSMSL.Analysis.Identification
             if (forward > 0)
             {
                 // The actual FDR is just the decoys count over the forward hits
-                ActualFdr = decoy/(double) forward;
+                ActualFdr = decoy / (double)forward;
             }
             else
             {
@@ -167,7 +167,7 @@ namespace CSMSL.Analysis.Identification
                 else forward++;
 
                 // Calculate the local fdr rate
-                double fdr = decoy/(double) forward;
+                double fdr = decoy / (double)forward;
 
                 // Check to see if the local fdr rate is larger than the max
                 if (fdr > maxFdr)
@@ -292,7 +292,7 @@ namespace CSMSL.Analysis.Identification
                 else forward++;
 
                 // Calculate the local fdr rate
-                double fdr = decoy/forward;
+                double fdr = decoy / forward;
 
                 fdrs[index] = fdr;
                 qvalues[index] = fdr;

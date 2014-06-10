@@ -1,17 +1,17 @@
 ﻿// Copyright 2012, 2013, 2014 Derek J. Bailey
-// 
+//
 // This file (LinearRegression.cs) is part of CSMSL.
-// 
+//
 // CSMSL is free software: you can redistribute it and/or modify it
 // under the terms of the GNU Lesser General Public License as published
 // by the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
-// 
+//
 // CSMSL is distributed in the hope that it will be useful, but WITHOUT
 // ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
 // FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public
 // License for more details.
-// 
+//
 // You should have received a copy of the GNU Lesser General Public
 // License along with CSMSL. If not, see <http://www.gnu.org/licenses/>.
 
@@ -35,12 +35,12 @@ namespace CSMSL.Util
 
         public double GetX(double y)
         {
-            return (y - Intercept)/Slope;
+            return (y - Intercept) / Slope;
         }
 
         public double GetY(double x)
         {
-            return Slope*x + Intercept;
+            return Slope * x + Intercept;
         }
 
         public override string ToString()
@@ -68,18 +68,18 @@ namespace CSMSL.Util
             {
                 double xdiff = xy[i, 0] - xAvg;
                 double ydiff = xy[i, 1] - yAvg;
-                sxy += xdiff*ydiff;
-                sxx += xdiff*xdiff;
-                syy += ydiff*ydiff;
+                sxy += xdiff * ydiff;
+                sxx += xdiff * xdiff;
+                syy += ydiff * ydiff;
             }
-            double m = sxy/sxx;
-            double b = yAvg - m*xAvg;
+            double m = sxy / sxx;
+            double b = yAvg - m * xAvg;
             LinearRegression regression = new LinearRegression(m, b);
             for (int i = 0; i < length; i++)
             {
                 sserr += Math.Pow(xy[i, 1] - regression.GetY(xy[i, 0]), 2);
             }
-            regression.RSquared = 1 - (sserr/syy);
+            regression.RSquared = 1 - (sserr / syy);
             return regression;
         }
 
@@ -105,21 +105,21 @@ namespace CSMSL.Util
             {
                 double xdiff = x[i] - xAvg;
                 double ydiff = y[i] - yAvg;
-                sxy += xdiff*ydiff;
-                sxx += xdiff*xdiff;
-                syy += ydiff*ydiff;
+                sxy += xdiff * ydiff;
+                sxx += xdiff * xdiff;
+                syy += ydiff * ydiff;
             }
-            double m = sxy/sxx;
-            double b = yAvg - m*xAvg;
+            double m = sxy / sxx;
+            double b = yAvg - m * xAvg;
             LinearRegression regression = new LinearRegression(m, b);
             for (int i = 0; i < length; i++)
             {
                 sserr += Math.Pow(y[i] - regression.GetY(x[i]), 2);
             }
-            regression.RSquared = 1 - (sserr/syy);
+            regression.RSquared = 1 - (sserr / syy);
             return regression;
         }
 
-        #endregion
+        #endregion Static
     }
 }

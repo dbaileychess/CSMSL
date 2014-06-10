@@ -1,17 +1,17 @@
 ﻿// Copyright 2012, 2013, 2014 Derek J. Bailey
-// 
+//
 // This file (Tolerance.cs) is part of CSMSL.
-// 
+//
 // CSMSL is free software: you can redistribute it and/or modify it
 // under the terms of the GNU Lesser General Public License as published
 // by the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
-// 
+//
 // CSMSL is distributed in the hope that it will be useful, but WITHOUT
 // ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
 // FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public
 // License for more details.
-// 
+//
 // You should have received a copy of the GNU Lesser General Public
 // License along with CSMSL. If not, see <http://www.gnu.org/licenses/>.
 
@@ -81,19 +81,21 @@ namespace CSMSL
 
         public DoubleRange GetRange(double mean)
         {
-            double value = Value*((Type == ToleranceType.PlusAndMinus) ? 2 : 1);
+            double value = Value * ((Type == ToleranceType.PlusAndMinus) ? 2 : 1);
 
             double tol;
             switch (Unit)
             {
                 case ToleranceUnit.MMU:
-                    tol = value/2000.0;
+                    tol = value / 2000.0;
                     break;
+
                 case ToleranceUnit.PPM:
-                    tol = value*mean/2e6;
+                    tol = value * mean / 2e6;
                     break;
+
                 default:
-                    tol = value/2.0;
+                    tol = value / 2.0;
                     break;
             }
             return new DoubleRange(mean - tol, mean + tol);
@@ -106,16 +108,18 @@ namespace CSMSL
         /// <returns></returns>
         public double GetMinimumValue(double mean)
         {
-            double value = Value*((Type == ToleranceType.PlusAndMinus) ? 2 : 1);
+            double value = Value * ((Type == ToleranceType.PlusAndMinus) ? 2 : 1);
 
             switch (Unit)
             {
                 case ToleranceUnit.MMU:
-                    return mean - value/2000.0;
+                    return mean - value / 2000.0;
+
                 case ToleranceUnit.PPM:
-                    return mean*(1 - (value/2e6));
+                    return mean * (1 - (value / 2e6));
+
                 default:
-                    return mean - value/2.0;
+                    return mean - value / 2.0;
             }
         }
 
@@ -126,16 +130,18 @@ namespace CSMSL
         /// <returns></returns>
         public double GetMaximumValue(double mean)
         {
-            double value = Value*((Type == ToleranceType.PlusAndMinus) ? 2 : 1);
+            double value = Value * ((Type == ToleranceType.PlusAndMinus) ? 2 : 1);
 
             switch (Unit)
             {
                 case ToleranceUnit.MMU:
-                    return mean + value/2000.0;
+                    return mean + value / 2000.0;
+
                 case ToleranceUnit.PPM:
-                    return mean*(1 + (value/2e6));
+                    return mean * (1 + (value / 2e6));
+
                 default:
-                    return mean + value/2.0;
+                    return mean + value / 2.0;
             }
         }
 
@@ -148,12 +154,13 @@ namespace CSMSL
         public bool Within(double experimental, double theoretical)
         {
             double tolerance = Math.Abs(GetTolerance(experimental, theoretical, Unit));
-            return tolerance <= Value;
+            double value = (Type == ToleranceType.PlusAndMinus) ? Value : Value / 2;
+            return tolerance <= value;
         }
 
         public override string ToString()
         {
-            return string.Format("{0}{1:f4} {2}", (Type == ToleranceType.PlusAndMinus) ? "±" : "", Value, Enum.GetName(typeof (ToleranceUnit), Unit));
+            return string.Format("{0}{1:f4} {2}", (Type == ToleranceType.PlusAndMinus) ? "±" : "", Value, Enum.GetName(typeof(ToleranceUnit), Unit));
         }
 
         #region Static
@@ -163,9 +170,11 @@ namespace CSMSL
             switch (type)
             {
                 case ToleranceUnit.MMU:
-                    return (experimental - theoretical)*1000.0;
+                    return (experimental - theoretical) * 1000.0;
+
                 case ToleranceUnit.PPM:
-                    return (experimental - theoretical)/theoretical*1e6;
+                    return (experimental - theoretical) / theoretical * 1e6;
+
                 default:
                     return experimental - theoretical;
             }
@@ -190,12 +199,12 @@ namespace CSMSL
             ToleranceUnit type = ToleranceUnit.PPM)
         {
             double massError = observedMass - theoreticalMass;
-            nominalMassOffset = (int) Math.Round(massError/difference);
-            double massOffset = nominalMassOffset*difference;
+            nominalMassOffset = (int)Math.Round(massError / difference);
+            double massOffset = nominalMassOffset * difference;
             adjustedObservedMass = observedMass - massOffset;
             return new Tolerance(type, adjustedObservedMass, theoreticalMass);
         }
 
-        #endregion
+        #endregion Static
     }
 }

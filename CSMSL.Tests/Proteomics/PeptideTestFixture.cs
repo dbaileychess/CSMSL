@@ -1,17 +1,17 @@
 ﻿// Copyright 2012, 2013, 2014 Derek J. Bailey
-// 
+//
 // This file (PeptideTestFixture.cs) is part of CSMSL.Tests.
-// 
+//
 // CSMSL.Tests is free software: you can redistribute it and/or modify it
 // under the terms of the GNU Lesser General Public License as published
 // by the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
-// 
+//
 // CSMSL.Tests is distributed in the hope that it will be useful, but WITHOUT
 // ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
 // FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public
 // License for more details.
-// 
+//
 // You should have received a copy of the GNU Lesser General Public
 // License along with CSMSL.Tests. If not, see <http://www.gnu.org/licenses/>.
 
@@ -60,7 +60,6 @@ namespace CSMSL.Tests.Proteomics
             _mockTrypticPeptide.TryGetChemicalFormula(out formula2);
             Assert.AreEqual(formula, formula2);
         }
-
 
         [Test]
         public void PeptideAminoAcidCount()
@@ -247,7 +246,7 @@ namespace CSMSL.Tests.Proteomics
         }
 
         [Test]
-        [ExpectedException(typeof (ArgumentException), ExpectedMessage = "Unable to correctly parse the following modification: TMT 7-plex")]
+        [ExpectedException(typeof(ArgumentException), ExpectedMessage = "Unable to correctly parse the following modification: TMT 7-plex")]
         public void ParseNamedChemicalModificationInvalidName()
         {
             Peptide peptide = new Peptide("T[TMT 7-plex]HGEAK[Acetyl]K");
@@ -307,7 +306,6 @@ namespace CSMSL.Tests.Proteomics
             Assert.AreEqual("ACDEFGHIKLMNPQRSTVWY", _mockPeptideEveryAminoAcid.ToString());
         }
 
-
         [Test]
         public void SetAminoAcidModificationStronglyTypedTermini()
         {
@@ -332,12 +330,11 @@ namespace CSMSL.Tests.Proteomics
             ChemicalFormula formula = new ChemicalFormula("Fe");
             _mockPeptideEveryAminoAcid.SetModification(formula, 5);
 
-
             Assert.AreEqual("ACDEF[Fe]GHIKLMNPQRSTVWY", _mockPeptideEveryAminoAcid.ToString());
         }
 
         [Test]
-        [ExpectedException(typeof (IndexOutOfRangeException), ExpectedMessage = "Residue number not in the correct range: [1-20] you specified: 25")]
+        [ExpectedException(typeof(IndexOutOfRangeException), ExpectedMessage = "Residue number not in the correct range: [1-20] you specified: 25")]
         public void SetResiduePositionModificationOutOfRangeUpper()
         {
             ChemicalFormula formula = new ChemicalFormula("Fe");
@@ -345,7 +342,7 @@ namespace CSMSL.Tests.Proteomics
         }
 
         [Test]
-        [ExpectedException(typeof (IndexOutOfRangeException), ExpectedMessage = "Residue number not in the correct range: [1-20] you specified: 0")]
+        [ExpectedException(typeof(IndexOutOfRangeException), ExpectedMessage = "Residue number not in the correct range: [1-20] you specified: 0")]
         public void SetResiduePositionModificationOutOfRangeLower()
         {
             ChemicalFormula formula = new ChemicalFormula("Fe");
@@ -378,7 +375,6 @@ namespace CSMSL.Tests.Proteomics
 
             Assert.AreEqual("[H2NO]-ACDEFGHIKLMNPQRSTVWY-[Fe]", _mockPeptideEveryAminoAcid.ToString());
         }
-
 
         [Test]
         public void SetSameNAndCTerminusMod()

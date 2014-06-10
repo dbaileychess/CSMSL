@@ -1,17 +1,17 @@
 ﻿// Copyright 2012, 2013, 2014 Derek J. Bailey
-// 
+//
 // This file (AminoAcidPolymer.cs) is part of CSMSL.
-// 
+//
 // CSMSL is free software: you can redistribute it and/or modify it
 // under the terms of the GNU Lesser General Public License as published
 // by the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
-// 
+//
 // CSMSL is distributed in the hope that it will be useful, but WITHOUT
 // ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
 // FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public
 // License for more details.
-// 
+//
 // You should have received a copy of the GNU Lesser General Public
 // License along with CSMSL. If not, see <http://www.gnu.org/licenses/>.
 
@@ -47,7 +47,7 @@ namespace CSMSL.Proteomics
         /// </summary>
         public static bool StoreSequenceString;
 
-        #endregion
+        #endregion Static Properties
 
         #region Instance Variables
 
@@ -87,7 +87,7 @@ namespace CSMSL.Proteomics
         /// </summary>
         internal bool IsDirty { get; set; }
 
-        #endregion
+        #endregion Instance Variables
 
         #region Constructors
 
@@ -181,17 +181,16 @@ namespace CSMSL.Proteomics
                     CTerminusModification = aminoAcidPolymer.CTerminusModification;
             }
 
-
             IsDirty = true;
         }
 
-        #endregion
+        #endregion Constructors
 
         #region Public Properties
 
         /// <summary>
         /// Gets or sets the C terminus of this amino acid polymer
-        /// </summary>        
+        /// </summary>
         public IChemicalFormula CTerminus
         {
             get { return _cTerminus; }
@@ -217,7 +216,7 @@ namespace CSMSL.Proteomics
         /// </summary>
         public double MonoisotopicMass { get; private set; }
 
-        #endregion
+        #endregion Public Properties
 
         #region Internal Properties
 
@@ -237,7 +236,7 @@ namespace CSMSL.Proteomics
             get { return _aminoAcids; }
         }
 
-        #endregion
+        #endregion Internal Properties
 
         #region Amino Acid Sequence
 
@@ -428,7 +427,7 @@ namespace CSMSL.Proteomics
             return Sequence.Contains(sequence);
         }
 
-        #endregion
+        #endregion Amino Acid Sequence
 
         #region Fragmentation
 
@@ -561,7 +560,7 @@ namespace CSMSL.Proteomics
             }
         }
 
-        #endregion
+        #endregion Fragmentation
 
         #region Modifications
 
@@ -588,14 +587,14 @@ namespace CSMSL.Proteomics
             foreach (IMass mod in _modifications)
             {
                 if (mod is T)
-                    uniqueMods.Add((T) mod);
+                    uniqueMods.Add((T)mod);
             }
             return uniqueMods;
         }
 
         /// <summary>
         /// Gets or sets the modification of the C terminus on this amino acid polymer
-        /// </summary>        
+        /// </summary>
         public IMass CTerminusModification
         {
             get { return GetModification(Length + 1); }
@@ -604,7 +603,7 @@ namespace CSMSL.Proteomics
 
         /// <summary>
         /// Gets or sets the modification of the C terminus on this amino acid polymer
-        /// </summary>        
+        /// </summary>
         public IMass NTerminusModification
         {
             get { return GetModification(0); }
@@ -796,7 +795,7 @@ namespace CSMSL.Proteomics
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="mod"></param>
         /// <param name="residueNumbers">(1-based) residue number</param>
@@ -971,7 +970,7 @@ namespace CSMSL.Proteomics
         /// <summary>
         /// Clear all modifications from this amino acid polymer.
         /// Includes N and C terminus modifications.
-        /// </summary>       
+        /// </summary>
         public void ClearModifications()
         {
             if (!ContainsModifications())
@@ -1008,7 +1007,7 @@ namespace CSMSL.Proteomics
             }
         }
 
-        #endregion
+        #endregion Modifications
 
         #region ChemicalFormula
 
@@ -1096,7 +1095,7 @@ namespace CSMSL.Proteomics
             return true;
         }
 
-        #endregion
+        #endregion ChemicalFormula
 
         #region Isoelectric point
 
@@ -1105,7 +1104,7 @@ namespace CSMSL.Proteomics
             return CalculateIsoelectricPoint(Sequence, precision);
         }
 
-        #endregion
+        #endregion Isoelectric point
 
         #region Object
 
@@ -1130,7 +1129,7 @@ namespace CSMSL.Proteomics
             return aap != null && Equals(aap);
         }
 
-        #endregion
+        #endregion Object
 
         #region IEquatable
 
@@ -1161,7 +1160,7 @@ namespace CSMSL.Proteomics
             return true;
         }
 
-        #endregion
+        #endregion IEquatable
 
         #region Private Methods
 
@@ -1252,6 +1251,7 @@ namespace CSMSL.Proteomics
                             case "#": // Make the modification unverisally heavy (all C12 and N14s are promoted to C13 and N15s)
                                 modification = _aminoAcids[index - 1].ToHeavyModification(true, true);
                                 break;
+
                             default:
                                 double mass;
                                 Modification mod;
@@ -1313,13 +1313,17 @@ namespace CSMSL.Proteomics
                             case '[': // start of a modification
                                 inMod = true;
                                 break;
+
                             case '-': // start of a c-teriminal modification
                                 cterminalMod = (index > 0);
                                 break;
+
                             case ' ': // ignore spaces
                                 break;
+
                             case '*': // ignore *
                                 break;
+
                             default:
                                 throw new ArgumentException(string.Format("Amino Acid Letter {0} does not exist in the Amino Acid Dictionary. {0} is also not a valid character", letter));
                         }
@@ -1345,7 +1349,7 @@ namespace CSMSL.Proteomics
             return true;
         }
 
-        #endregion
+        #endregion Private Methods
 
         #region Statics Methods
 
@@ -1362,21 +1366,27 @@ namespace CSMSL.Proteomics
                     case 'D':
                         d++;
                         break;
+
                     case 'E':
                         e++;
                         break;
+
                     case 'C':
                         c++;
                         break;
+
                     case 'Y':
                         y++;
                         break;
+
                     case 'H':
                         h++;
                         break;
+
                     case 'K':
                         k++;
                         break;
+
                     case 'R':
                         r++;
                         break;
@@ -1389,27 +1399,27 @@ namespace CSMSL.Proteomics
 
             while (true)
             {
-                double QN1 = -1/(1 + Math.Pow(10, (3.65 - pH)));
-                double QN2 = -d/(1 + Math.Pow(10, (3.90 - pH)));
-                double QN3 = -e/(1 + Math.Pow(10, (4.07 - pH)));
-                double QN4 = -c/(1 + Math.Pow(10, (8.37 - pH)));
-                double QN5 = -y/(1 + Math.Pow(10, (10.46 - pH)));
-                double QP1 = h/(1 + Math.Pow(10, (pH - 6.04)));
-                double QP2 = 1/(1 + Math.Pow(10, (pH - 8.2)));
-                double QP3 = k/(1 + Math.Pow(10, (pH - 10.54)));
-                double QP4 = r/(1 + Math.Pow(10, (pH - 12.48)));
+                double QN1 = -1 / (1 + Math.Pow(10, (3.65 - pH)));
+                double QN2 = -d / (1 + Math.Pow(10, (3.90 - pH)));
+                double QN3 = -e / (1 + Math.Pow(10, (4.07 - pH)));
+                double QN4 = -c / (1 + Math.Pow(10, (8.37 - pH)));
+                double QN5 = -y / (1 + Math.Pow(10, (10.46 - pH)));
+                double QP1 = h / (1 + Math.Pow(10, (pH - 6.04)));
+                double QP2 = 1 / (1 + Math.Pow(10, (pH - 8.2)));
+                double QP3 = k / (1 + Math.Pow(10, (pH - 10.54)));
+                double QP4 = r / (1 + Math.Pow(10, (pH - 12.48)));
 
                 double NQ = QN1 + QN2 + QN3 + QN4 + QN5 + QP1 + QP2 + QP3 + QP4;
 
                 if (NQ < 0)
                 {
                     maxpH = pH;
-                    pH = pH - ((pH - minpH)/2);
+                    pH = pH - ((pH - minpH) / 2);
                 }
                 else
                 {
                     minpH = pH;
-                    pH = pH + ((maxpH - pH)/2);
+                    pH = pH + ((maxpH - pH) / 2);
                 }
 
                 if ((pH - minpH < precision) && (maxpH - pH < precision))
@@ -1424,7 +1434,7 @@ namespace CSMSL.Proteomics
             return CalculateIsoelectricPoint(sequence.Sequence, precision);
         }
 
-        #endregion
+        #endregion Isoelectric Point
 
         #region Fragmentation
 
@@ -1451,13 +1461,13 @@ namespace CSMSL.Proteomics
             return aFrags;
         }
 
-        #endregion
+        #endregion Fragmentation
 
         #region Digestion
 
         public static IEnumerable<Tuple<int, int>> GetDigestionPoints(string sequence, IProtease protease, int maxMissedCleavages = 3, int minLength = 1, int maxLength = int.MaxValue, bool methionineInitiator = true, bool semiDigestion = false)
         {
-            return GetDigestionPoints(sequence, new[] {protease}, maxMissedCleavages, minLength, maxLength, methionineInitiator, semiDigestion);
+            return GetDigestionPoints(sequence, new[] { protease }, maxMissedCleavages, minLength, maxLength, methionineInitiator, semiDigestion);
         }
 
         /// <summary>
@@ -1558,7 +1568,7 @@ namespace CSMSL.Proteomics
 
         public static IEnumerable<string> Digest(string sequence, Protease protease, int maxMissedCleavages = 0, int minLength = 1, int maxLength = int.MaxValue, bool methionineInitiator = true, bool semiDigestion = false)
         {
-            return Digest(sequence, new[] {protease}, maxMissedCleavages, minLength, maxLength, methionineInitiator, semiDigestion);
+            return Digest(sequence, new[] { protease }, maxMissedCleavages, minLength, maxLength, methionineInitiator, semiDigestion);
         }
 
         public static IEnumerable<string> Digest(string sequence, IEnumerable<IProtease> proteases, int maxMissedCleavages = 3, int minLength = 1, int maxLength = int.MaxValue, bool methionineInitiator = true, bool semiDigestion = false)
@@ -1568,10 +1578,10 @@ namespace CSMSL.Proteomics
 
         public static IEnumerable<string> Digest(IAminoAcidSequence sequence, IProtease protease, int maxMissedCleavages = 3, int minLength = 1, int maxLength = int.MaxValue, bool methionineInitiator = true, bool semiDigestion = false)
         {
-            return Digest(sequence.Sequence, new[] {protease}, maxMissedCleavages, minLength, maxLength, methionineInitiator, semiDigestion);
+            return Digest(sequence.Sequence, new[] { protease }, maxMissedCleavages, minLength, maxLength, methionineInitiator, semiDigestion);
         }
 
-        #endregion
+        #endregion Digestion
 
         public static double GetMass(string sequence)
         {
@@ -1587,6 +1597,6 @@ namespace CSMSL.Proteomics
             return mass;
         }
 
-        #endregion
+        #endregion Statics Methods
     }
 }

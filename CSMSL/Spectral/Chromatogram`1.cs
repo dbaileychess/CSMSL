@@ -1,24 +1,22 @@
 ﻿// Copyright 2012, 2013, 2014 Derek J. Bailey
-// 
+//
 // This file (Chromatogram`1.cs) is part of CSMSL.
-// 
+//
 // CSMSL is free software: you can redistribute it and/or modify it
 // under the terms of the GNU Lesser General Public License as published
 // by the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
-// 
+//
 // CSMSL is distributed in the hope that it will be useful, but WITHOUT
 // ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
 // FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public
 // License for more details.
-// 
+//
 // You should have received a copy of the GNU Lesser General Public
 // License along with CSMSL. If not, see <http://www.gnu.org/licenses/>.
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace CSMSL.Spectral
 {
@@ -153,13 +151,12 @@ namespace CSMSL.Spectral
     //    //        chrom.AddPoint(new ChromatographicPeak(x, y));
     //    //    }
 
-
     //    //    return chrom;
     //    //}
     //}
 
     //public class Chromatogram<T> : IEnumerable<T> where T: IPeak
-    //{    
+    //{
     //    public T this[int index]
     //    {
     //        get
@@ -197,12 +194,12 @@ namespace CSMSL.Spectral
 
     //    public T GetMinPeak(T peak, double percentOfApex = 0.1)
     //    {
-    //        int index = _curve.IndexOfValue(peak);           
+    //        int index = _curve.IndexOfValue(peak);
 
     //        double threshold = _curve.Values[index].Y * percentOfApex;
 
     //        while (index >= 0)
-    //        {                
+    //        {
     //            T tempPeak = _curve.Values[index];
     //            if (tempPeak.Y < threshold)
     //            {
@@ -214,7 +211,7 @@ namespace CSMSL.Spectral
     //    }
 
     //    public double[] GetRetentionTimes()
-    //    {           
+    //    {
     //        return _curve.Keys.ToArray();
     //    }
 
@@ -225,7 +222,7 @@ namespace CSMSL.Spectral
 
     //    public T GetMaxPeak(T peak, double percentOfApex = 0.1)
     //    {
-    //        int index = _curve.IndexOfValue(peak);          
+    //        int index = _curve.IndexOfValue(peak);
 
     //        double threshold = _curve.Values[index].Y * percentOfApex;
 
@@ -246,7 +243,7 @@ namespace CSMSL.Spectral
     //        _curve.Add(point.X, point);
 
     //        if (BasePeak.Equals(null))
-    //        {                
+    //        {
     //            BasePeak = point;
     //        }
     //        else
@@ -296,7 +293,7 @@ namespace CSMSL.Spectral
     //            }
     //        }
     //        return apex;
-    //    }      
+    //    }
     //}
 
     public static class Extension
@@ -350,7 +347,7 @@ namespace CSMSL.Spectral
         //            //    double intensity = 0;
         //            //    ISpectrum spectrum = scan.GetReadOnlySpectrum();
         //            //    if (spectrum.TryGetIntensities(range, out intensity))
-        //            //    {                    
+        //            //    {
         //            //        chrom.AddPoint(new ChromatographicPeak(scan.RetentionTime, intensity));
         //            //    }
         //            //    else if (zeroFillMissingValues)

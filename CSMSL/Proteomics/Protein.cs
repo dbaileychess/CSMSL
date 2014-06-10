@@ -1,17 +1,17 @@
 ﻿// Copyright 2012, 2013, 2014 Derek J. Bailey
-// 
+//
 // This file (Protein.cs) is part of CSMSL.
-// 
+//
 // CSMSL is free software: you can redistribute it and/or modify it
 // under the terms of the GNU Lesser General Public License as published
 // by the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
-// 
+//
 // CSMSL is distributed in the hope that it will be useful, but WITHOUT
 // ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
 // FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public
 // License for more details.
-// 
+//
 // You should have received a copy of the GNU Lesser General Public
 // License along with CSMSL. If not, see <http://www.gnu.org/licenses/>.
 
@@ -59,7 +59,7 @@ namespace CSMSL.Proteomics
         /// <returns>A list of digested peptides</returns>
         public virtual IEnumerable<Peptide> Digest(IProtease protease, int maxMissedCleavages = 3, int minLength = 1, int maxLength = int.MaxValue, bool initiatorMethonine = true, bool includeModifications = false, bool semiDigestion = false)
         {
-            return Digest(new[] {protease}, maxMissedCleavages, minLength, maxLength, initiatorMethonine, includeModifications, semiDigestion);
+            return Digest(new[] { protease }, maxMissedCleavages, minLength, maxLength, initiatorMethonine, includeModifications, semiDigestion);
         }
 
         /// <summary>
@@ -78,6 +78,6 @@ namespace CSMSL.Proteomics
             return GetDigestionPoints(Sequence, proteases, maxMissedCleavages, minLength, maxLength, initiatorMethonine, semiDigestion).Select(points => new Peptide(this, points.Item1, points.Item2, includeModifications));
         }
 
-        #endregion
+        #endregion Digestion
     }
 }

@@ -1,25 +1,25 @@
 ﻿// Copyright 2012, 2013, 2014 Derek J. Bailey
-// 
+//
 // This file (ClassExtensions.cs) is part of CSMSL.
-// 
+//
 // CSMSL is free software: you can redistribute it and/or modify it
 // under the terms of the GNU Lesser General Public License as published
 // by the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
-// 
+//
 // CSMSL is distributed in the hope that it will be useful, but WITHOUT
 // ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
 // FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public
 // License for more details.
-// 
+//
 // You should have received a copy of the GNU Lesser General Public
 // License along with CSMSL. If not, see <http://www.gnu.org/licenses/>.
 
 using System;
-using System.Linq;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
+using System.Linq;
 
 namespace CSMSL
 {
@@ -92,7 +92,6 @@ namespace CSMSL
             return result;
         }
 
-
         public static double Median(this List<double> values)
         {
             int length = values.Count;
@@ -102,13 +101,13 @@ namespace CSMSL
 
             values.Sort();
 
-            int mid = length/2;
-            if (length%2 != 0)
+            int mid = length / 2;
+            if (length % 2 != 0)
             {
                 return values[mid];
             }
 
-            return (values[mid] + values[mid - 1])/2.0;
+            return (values[mid] + values[mid - 1]) / 2.0;
         }
 
         public static double StdDev(this IList<double> values)
@@ -119,8 +118,8 @@ namespace CSMSL
                 return 0;
 
             double mean = values.Average();
-            double stdDev = values.Sum(value => (value - mean)*(value - mean));
-            return Math.Sqrt(stdDev/values.Count);
+            double stdDev = values.Sum(value => (value - mean) * (value - mean));
+            return Math.Sqrt(stdDev / values.Count);
         }
 
         public static int[] Histogram(this IList<double> values, int numberOfBins, out double min, out double max, out double binSize)
@@ -128,12 +127,12 @@ namespace CSMSL
             max = values.Max();
             min = values.Min();
             double range = max - min;
-            binSize = range/numberOfBins;
+            binSize = range / numberOfBins;
             int[] bins = new int[numberOfBins];
 
             foreach (double value in values)
             {
-                int binnedValue = (int) ((value - min)/binSize); // (int)Math.Floor((value - min) / binSize);
+                int binnedValue = (int)((value - min) / binSize); // (int)Math.Floor((value - min) / binSize);
                 if (binnedValue == numberOfBins)
                     binnedValue--;
                 bins[binnedValue]++;
@@ -144,14 +143,14 @@ namespace CSMSL
         public static int[] Histogram(this IList<double> values, int numberOfBins, double min, double max, out double binSize)
         {
             double range = max - min;
-            binSize = range/numberOfBins;
+            binSize = range / numberOfBins;
             int[] bins = new int[numberOfBins];
 
             foreach (double value in values)
             {
                 if (value < min || value > max)
                     continue;
-                int binnedValue = (int) ((value - min)/binSize);
+                int binnedValue = (int)((value - min) / binSize);
                 if (binnedValue == numberOfBins)
                     binnedValue--;
                 bins[binnedValue]++;
@@ -236,7 +235,7 @@ namespace CSMSL
         }
 
         /// <summary>
-        /// Checks if the byte array is gzipped. 
+        /// Checks if the byte array is gzipped.
         /// </summary>
         /// <param name="bytes"></param>
         /// <returns></returns>
@@ -288,15 +287,15 @@ namespace CSMSL
                 if (big.FussyEquals(0.0))
                     throw new Exception("singular matrix");
 
-                vv[i] = 1.0/big; //calculate scaling and save
+                vv[i] = 1.0 / big; //calculate scaling and save
             }
             //k is for columns start with the left look for the columns under the diagonal for the biggest value want to move the largest over diagonal
-            for (k = 0; k < n; k++) //find the largest pivot element 
+            for (k = 0; k < n; k++) //find the largest pivot element
             {
                 big = 0.0;
                 for (i = k; i < n; i++)
                 {
-                    temp = vv[i]*Math.Abs(m[i, k]);
+                    temp = vv[i] * Math.Abs(m[i, k]);
                     if (temp > big)
                     {
                         big = temp;
@@ -304,7 +303,7 @@ namespace CSMSL
                     }
                 }
 
-                if (k != imax) //do we need a row change 
+                if (k != imax) //do we need a row change
                 {
                     for (j = 0; j < n; j++) // counter for the colums
                     {
@@ -320,7 +319,7 @@ namespace CSMSL
                 {
                     temp = m[i, k] /= m[k, k]; //divide pilot element
                     for (j = k + 1; j < n; j++)
-                        m[i, j] -= temp*m[k, j];
+                        m[i, j] -= temp * m[k, j];
                 }
             }
             return m;
@@ -344,7 +343,7 @@ namespace CSMSL
                 sum = result[ip];
                 result[ip] = result[i];
                 if (ii != 0)
-                    for (j = ii - 1; j < i; j++) sum -= luMatrix[i, j]*result[j];
+                    for (j = ii - 1; j < i; j++) sum -= luMatrix[i, j] * result[j];
                 else if (sum.Equals(0.0))
                     ii = i + 1;
                 result[i] = sum;
@@ -352,8 +351,8 @@ namespace CSMSL
             for (i = n - 1; i >= 0; i--)
             {
                 sum = result[i];
-                for (j = i + 1; j < n; j++) sum -= luMatrix[i, j]*result[j];
-                result[i] = sum/luMatrix[i, i];
+                for (j = i + 1; j < n; j++) sum -= luMatrix[i, j] * result[j];
+                result[i] = sum / luMatrix[i, i];
             }
 
             return result;

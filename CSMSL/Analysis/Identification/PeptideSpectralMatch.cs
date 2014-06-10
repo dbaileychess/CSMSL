@@ -1,17 +1,17 @@
 ﻿// Copyright 2012, 2013, 2014 Derek J. Bailey
-// 
+//
 // This file (PeptideSpectralMatch.cs) is part of CSMSL.
-// 
+//
 // CSMSL is free software: you can redistribute it and/or modify it
 // under the terms of the GNU Lesser General Public License as published
 // by the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
-// 
+//
 // CSMSL is distributed in the hope that it will be useful, but WITHOUT
 // ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
 // FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public
 // License for more details.
-// 
+//
 // You should have received a copy of the GNU Lesser General Public
 // License along with CSMSL. If not, see <http://www.gnu.org/licenses/>.
 
@@ -100,7 +100,7 @@ namespace CSMSL.Analysis.Identification
         public override string ToString()
         {
             return string.Format("{0} (SN: {1} Score: {2:G3} {3})", Peptide, SpectrumNumber, Score,
-                Enum.GetName(typeof (PeptideSpectralMatchScoreType), ScoreType));
+                Enum.GetName(typeof(PeptideSpectralMatchScoreType), ScoreType));
         }
 
         public bool Equals(MSDataScan other)
@@ -109,7 +109,7 @@ namespace CSMSL.Analysis.Identification
         }
 
         /// <summary>
-        /// Compares two PSM based on their score. 
+        /// Compares two PSM based on their score.
         /// </summary>
         /// <param name="other"></param>
         /// <returns></returns>
@@ -124,7 +124,7 @@ namespace CSMSL.Analysis.Identification
             }
 
             // The sign of the scoretype enum indicates how they should be compared
-            return Score.CompareTo(other.Score)*Math.Sign((int) ScoreType);
+            return Score.CompareTo(other.Score) * Math.Sign((int)ScoreType);
         }
 
         public string this[string name]

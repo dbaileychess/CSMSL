@@ -1,17 +1,17 @@
 ﻿// Copyright 2012, 2013, 2014 Derek J. Bailey
-// 
+//
 // This file (DoubleRange.cs) is part of CSMSL.
-// 
+//
 // CSMSL is free software: you can redistribute it and/or modify it
 // under the terms of the GNU Lesser General Public License as published
 // by the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
-// 
+//
 // CSMSL is distributed in the hope that it will be useful, but WITHOUT
 // ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
 // FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public
 // License for more details.
-// 
+//
 // You should have received a copy of the GNU Lesser General Public
 // License along with CSMSL. If not, see <http://www.gnu.org/licenses/>.
 
@@ -50,10 +50,10 @@ namespace CSMSL
         }
 
         /// <summary>
-        /// Creates a range around some mean value with a specified tolerance. 
+        /// Creates a range around some mean value with a specified tolerance.
         /// <para>
         /// i.e. 10 ppm at 500 would give you 499.9975 - 500.0025
-        /// which has a width of 0.005. Converting back to ppm 
+        /// which has a width of 0.005. Converting back to ppm
         /// (1e6) *0.005 / 500 = 10 ppm.
         /// </para>
         /// <para>
@@ -62,7 +62,7 @@ namespace CSMSL
         /// </para>
         /// </summary>
         /// <param name="mean">The mean value for the range</param>
-        /// <param name="toleranceWidth">The full width of the range</param>
+        /// <param name="tolerance">The tolerance range</param>
         public DoubleRange(double mean, Tolerance tolerance)
         {
             SetTolerance(mean, tolerance);
@@ -84,18 +84,18 @@ namespace CSMSL
             switch (tolerance.Unit)
             {
                 default:
-                    Minimum = mean - value/2.0;
-                    Maximum = mean + value/2.0;
+                    Minimum = mean - value / 2.0;
+                    Maximum = mean + value / 2.0;
                     break;
 
                 case ToleranceUnit.MMU:
-                    Minimum = mean - value/2000.0;
-                    Maximum = mean + value/2000.0;
+                    Minimum = mean - value / 2000.0;
+                    Maximum = mean + value / 2000.0;
                     break;
 
                 case ToleranceUnit.PPM:
-                    Minimum = mean*(1 - (value/2e6));
-                    Maximum = mean*(1 + (value/2e6));
+                    Minimum = mean * (1 - (value / 2e6));
+                    Maximum = mean * (1 + (value / 2e6));
                     break;
             }
         }
@@ -106,7 +106,7 @@ namespace CSMSL
         /// </summary>
         public double Mean
         {
-            get { return (Maximum + Minimum)/2.0; }
+            get { return (Maximum + Minimum) / 2.0; }
         }
 
         /// <summary>
@@ -125,7 +125,7 @@ namespace CSMSL
         /// <returns>The ppm</returns>
         public double ToPPM()
         {
-            return 1e6*Width/Mean;
+            return 1e6 * Width / Mean;
         }
 
         /// <summary>
@@ -150,6 +150,6 @@ namespace CSMSL
             return new DoubleRange(mean, new Tolerance(ToleranceUnit.DA, daTolerance));
         }
 
-        #endregion
+        #endregion Static
     }
 }

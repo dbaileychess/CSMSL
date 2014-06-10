@@ -1,17 +1,17 @@
 ﻿// Copyright 2012, 2013, 2014 Derek J. Bailey
-// 
+//
 // This file (AminoAcid.cs) is part of CSMSL.
-// 
+//
 // CSMSL is free software: you can redistribute it and/or modify it
 // under the terms of the GNU Lesser General Public License as published
 // by the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
-// 
+//
 // CSMSL is distributed in the hope that it will be useful, but WITHOUT
 // ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
 // FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public
 // License for more details.
-// 
+//
 // You should have received a copy of the GNU Lesser General Public
 // License along with CSMSL. If not, see <http://www.gnu.org/licenses/>.
 
@@ -27,28 +27,48 @@ namespace CSMSL.Proteomics
         #region The Twenty Common Amino Acids
 
         public static AminoAcid Alanine { get; private set; }
+
         public static AminoAcid Arginine { get; private set; }
+
         public static AminoAcid Asparagine { get; private set; }
+
         public static AminoAcid AsparticAcid { get; private set; }
+
         public static AminoAcid Cysteine { get; private set; }
+
         public static AminoAcid GlutamicAcid { get; private set; }
+
         public static AminoAcid Glutamine { get; private set; }
+
         public static AminoAcid Glycine { get; private set; }
+
         public static AminoAcid Histidine { get; private set; }
+
         public static AminoAcid Isoleucine { get; private set; }
+
         public static AminoAcid Leucine { get; private set; }
+
         public static AminoAcid Lysine { get; private set; }
+
         public static AminoAcid Methionine { get; private set; }
+
         public static AminoAcid Phenylalanine { get; private set; }
+
         public static AminoAcid Proline { get; private set; }
+
         public static AminoAcid Selenocysteine { get; private set; }
+
         public static AminoAcid Serine { get; private set; }
+
         public static AminoAcid Threonine { get; private set; }
+
         public static AminoAcid Tryptophan { get; private set; }
+
         public static AminoAcid Tyrosine { get; private set; }
+
         public static AminoAcid Valine { get; private set; }
 
-        #endregion
+        #endregion The Twenty Common Amino Acids
 
         private static readonly Dictionary<string, AminoAcid> Residues;
 
@@ -101,7 +121,7 @@ namespace CSMSL.Proteomics
         static AminoAcid()
         {
             Residues = new Dictionary<string, AminoAcid>(66);
-            ResiduesByLetter = new AminoAcid['z' + 1]; //Make it big enough for all the Upper and Lower characters          
+            ResiduesByLetter = new AminoAcid['z' + 1]; //Make it big enough for all the Upper and Lower characters
             Alanine = AddResidue("Alanine", 'A', "Ala", "C3H5NO", ModificationSites.A);
             Arginine = AddResidue("Arginine", 'R', "Arg", "C6H12N4O", ModificationSites.R);
             Asparagine = AddResidue("Asparagine", 'N', "Asn", "C4H6N2O2", ModificationSites.N);

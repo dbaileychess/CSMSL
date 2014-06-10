@@ -1,23 +1,23 @@
 ﻿// Copyright 2012, 2013, 2014 Derek J. Bailey
-// 
+//
 // This file (ProteinGroup.cs) is part of CSMSL.
-// 
+//
 // CSMSL is free software: you can redistribute it and/or modify it
 // under the terms of the GNU Lesser General Public License as published
 // by the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
-// 
+//
 // CSMSL is distributed in the hope that it will be useful, but WITHOUT
 // ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
 // FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public
 // License for more details.
-// 
+//
 // You should have received a copy of the GNU Lesser General Public
 // License along with CSMSL. If not, see <http://www.gnu.org/licenses/>.
 
-using System.Collections;
 using CSMSL.IO;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -26,6 +26,7 @@ namespace CSMSL.Proteomics
     public class ProteinGroup : IEnumerable<Protein>, IEquatable<ProteinGroup>
     {
         public HashSet<Protein> Proteins { get; set; }
+
         public HashSet<IAminoAcidSequence> Peptides { get; set; }
 
         public Protein RepresentativeProtein { get; private set; }
@@ -157,7 +158,7 @@ namespace CSMSL.Proteomics
 
             int observedAminoAcids = bits.Count(bit => bit > 0);
 
-            return (double) observedAminoAcids/Length*100.0;
+            return (double)observedAminoAcids / Length * 100.0;
         }
 
         #region Statics
@@ -166,7 +167,7 @@ namespace CSMSL.Proteomics
         {
             using (FastaReader fasta = new FastaReader(fastaFile))
             {
-                return GroupProteins(fasta.ReadNextProtein(), new[] {protease}, observeredSequences, peptideComparer, MaxMissedCleavages);
+                return GroupProteins(fasta.ReadNextProtein(), new[] { protease }, observeredSequences, peptideComparer, MaxMissedCleavages);
             }
         }
 
@@ -235,7 +236,7 @@ namespace CSMSL.Proteomics
 
         public static IEnumerable<ProteinGroup> GroupProteins(IEnumerable<Protein> proteins, IProtease protease, IEnumerable<IAminoAcidSequence> observeredSequences, IEqualityComparer<IAminoAcidSequence> peptideComparer, int MaxMissedCleavages = 3, int minPepPerProtein = 1)
         {
-            return GroupProteins(proteins, new[] {protease}, observeredSequences, peptideComparer, MaxMissedCleavages);
+            return GroupProteins(proteins, new[] { protease }, observeredSequences, peptideComparer, MaxMissedCleavages);
         }
 
         private static IEnumerable<ProteinGroup> CombinedProteins(IList<ProteinGroup> proteins, Dictionary<IAminoAcidSequence, int> sharedPeptides, int minPeptidesPerProtein = 1)
@@ -380,7 +381,7 @@ namespace CSMSL.Proteomics
                 }
             }
 
-            #endregion
+            #endregion MinimumGroupSize
 
             //// 4) Apply false discovery filtering at the protein level
 
@@ -400,6 +401,6 @@ namespace CSMSL.Proteomics
             return proteinGroups;
         }
 
-        #endregion
+        #endregion Statics
     }
 }

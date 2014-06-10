@@ -1,24 +1,24 @@
 ﻿// Copyright 2012, 2013, 2014 Derek J. Bailey
-// 
+//
 // This file (Peptide.cs) is part of CSMSL.
-// 
+//
 // CSMSL is free software: you can redistribute it and/or modify it
 // under the terms of the GNU Lesser General Public License as published
 // by the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
-// 
+//
 // CSMSL is distributed in the hope that it will be useful, but WITHOUT
 // ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
 // FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public
 // License for more details.
-// 
+//
 // You should have received a copy of the GNU Lesser General Public
 // License along with CSMSL. If not, see <http://www.gnu.org/licenses/>.
 
+using CSMSL.Util;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using CSMSL.Util;
 
 namespace CSMSL.Proteomics
 {
@@ -33,6 +33,7 @@ namespace CSMSL.Proteomics
         public AminoAcidPolymer Parent { get; set; }
 
         public AminoAcid PreviousAminoAcid { get; set; }
+
         public AminoAcid NextAminoAcid { get; set; }
 
         public Peptide()
@@ -163,7 +164,7 @@ namespace CSMSL.Proteomics
 
             if (numberOfModifications < 1)
             {
-                // No modifications, return the base peptide               
+                // No modifications, return the base peptide
                 yield return peptide;
             }
             else if (numberOfModifications == 1)
@@ -274,14 +275,14 @@ namespace CSMSL.Proteomics
                     else
                     {
                         // Completed all the mods, add the configuration to the saved list, if possible
-                        results.Add((Modification[]) modArray.Clone());
+                        results.Add((Modification[])modArray.Clone());
 
                         // Remove the last mod added
                         modArray[index] = null;
                     }
                 }
 
-                // Go to the next site for this mod  
+                // Go to the next site for this mod
                 siteIndex++;
             }
 
@@ -314,7 +315,7 @@ namespace CSMSL.Proteomics
                 for (int i = 0; i < ptms; i++)
                 {
                     long ans = Combinatorics.LargestV(a, b, x);
-                    int index = sites[(int) (ptmsites - ans - 1)];
+                    int index = sites[(int)(ptmsites - ans - 1)];
                     if (index == 0)
                     {
                         pep.AddModification(modification, Terminus.N);
@@ -367,7 +368,7 @@ namespace CSMSL.Proteomics
             unchecked
             {
                 const int p = 16777619;
-                int hash = obj.Where(t => t != null).Aggregate((int) 2166136261, (current, t) => (current ^ t.GetHashCode())*p);
+                int hash = obj.Where(t => t != null).Aggregate((int)2166136261, (current, t) => (current ^ t.GetHashCode()) * p);
                 hash += hash << 13;
                 hash ^= hash >> 7;
                 hash += hash << 3;

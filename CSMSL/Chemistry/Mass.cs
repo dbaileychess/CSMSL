@@ -1,17 +1,17 @@
 ﻿// Copyright 2012, 2013, 2014 Derek J. Bailey
-// 
+//
 // This file (Mass.cs) is part of CSMSL.
-// 
+//
 // CSMSL is free software: you can redistribute it and/or modify it
 // under the terms of the GNU Lesser General Public License as published
 // by the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
-// 
+//
 // CSMSL is distributed in the hope that it will be useful, but WITHOUT
 // ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
 // FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public
 // License for more details.
-// 
+//
 // You should have received a copy of the GNU Lesser General Public
 // License along with CSMSL. If not, see <http://www.gnu.org/licenses/>.
 
@@ -127,35 +127,35 @@ namespace CSMSL.Chemistry
 
         public static Mass operator /(Mass left, int right)
         {
-            return new Mass(left.MonoisotopicMass/right);
+            return new Mass(left.MonoisotopicMass / right);
         }
 
         public static Mass operator /(Mass left, double right)
         {
-            return new Mass(left.MonoisotopicMass/right);
+            return new Mass(left.MonoisotopicMass / right);
         }
 
         public static Mass operator *(Mass left, int right)
         {
-            return new Mass(left.MonoisotopicMass*right);
+            return new Mass(left.MonoisotopicMass * right);
         }
 
         public static Mass operator *(Mass left, double right)
         {
-            return new Mass(left.MonoisotopicMass*right);
+            return new Mass(left.MonoisotopicMass * right);
         }
 
         /// <summary>
         /// Calculates the mass of a given m/z and charge, assuming a proton is the charge donator
         /// </summary>
         /// <param name="mz">The given m/z</param>
-        /// <param name="charge">The given charge</param>    
+        /// <param name="charge">The given charge</param>
         /// <returns>The mass</returns>
         public static double MassFromMz(double mz, int charge)
         {
             if (charge == 0)
                 throw new DivideByZeroException("Charge cannot be zero");
-            return Math.Abs(charge)*mz - charge*Constants.Proton;
+            return Math.Abs(charge) * mz - charge * Constants.Proton;
         }
 
         /// <summary>
@@ -168,7 +168,7 @@ namespace CSMSL.Chemistry
         {
             if (charge == 0)
                 throw new DivideByZeroException("Charge cannot be zero");
-            return mass/Math.Abs(charge) + Math.Sign(charge)*Constants.Proton;
+            return mass / Math.Abs(charge) + Math.Sign(charge) * Constants.Proton;
         }
 
         #endregion Static Methods

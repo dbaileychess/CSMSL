@@ -1,22 +1,22 @@
 ﻿// Copyright 2012, 2013, 2014 Derek J. Bailey
-// 
+//
 // This file (Fragment.cs) is part of CSMSL.
-// 
+//
 // CSMSL is free software: you can redistribute it and/or modify it
 // under the terms of the GNU Lesser General Public License as published
 // by the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
-// 
+//
 // CSMSL is distributed in the hope that it will be useful, but WITHOUT
 // ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
 // FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public
 // License for more details.
-// 
+//
 // You should have received a copy of the GNU Lesser General Public
 // License along with CSMSL. If not, see <http://www.gnu.org/licenses/>.
 
-using System;
 using CSMSL.Chemistry;
+using System;
 using System.Collections.Generic;
 
 namespace CSMSL.Proteomics
@@ -86,7 +86,7 @@ namespace CSMSL.Proteomics
 
         public override string ToString()
         {
-            return string.Format("{0}{1}", Enum.GetName(typeof (FragmentTypes), Type), Number);
+            return string.Format("{0}{1}", Enum.GetName(typeof(FragmentTypes), Type), Number);
         }
 
         public override int GetHashCode()
@@ -94,9 +94,9 @@ namespace CSMSL.Proteomics
             unchecked
             {
                 int hCode = 23;
-                hCode = hCode*31 + Number;
-                hCode = hCode*31 + (int) Type;
-                hCode = hCode*31 + Math.Round(MonoisotopicMass).GetHashCode();
+                hCode = hCode * 31 + Number;
+                hCode = hCode * 31 + (int)Type;
+                hCode = hCode * 31 + Math.Round(MonoisotopicMass).GetHashCode();
                 return hCode;
             }
         }
