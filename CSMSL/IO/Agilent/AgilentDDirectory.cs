@@ -43,14 +43,17 @@ namespace CSMSL.IO.Agilent
             base.Open();
         }
 
-        public override void Dispose()
+        protected override void Dispose(bool disposing)
         {
-            if (_msdr != null)
+            if (disposing)
             {
-                _msdr.CloseDataFile();
-                _msdr = null;
+                if (_msdr != null)
+                { 
+                    _msdr.CloseDataFile();
+                    _msdr = null;
+                }
             }
-            base.Dispose();
+            base.Dispose(disposing);
         }
 
         protected override int GetFirstSpectrumNumber()

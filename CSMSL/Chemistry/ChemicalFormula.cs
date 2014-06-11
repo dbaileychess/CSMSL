@@ -1256,7 +1256,7 @@ namespace CSMSL.Chemistry
         #endregion Statics
 
         #region IChemicalFormula
-
+        
         ChemicalFormula IChemicalFormula.ChemicalFormula
         {
             get { return this; }

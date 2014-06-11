@@ -24,7 +24,7 @@ using System.Text;
 
 namespace CSMSL.IO
 {
-    public class FastaReader : IDisposable
+    public sealed class FastaReader : IDisposable
     {
         private readonly StreamReader _reader;
 
@@ -39,16 +39,12 @@ namespace CSMSL.IO
 
         public string FileName { get; set; }
 
-        public void Close()
+        public void Dispose()
         {
-            _reader.Close();
+            if (_reader != null)
+                _reader.Dispose();
         }
-
-        void IDisposable.Dispose()
-        {
-            Close();
-        }
-
+        
         public IEnumerable<Fasta> ReadNextFasta()
         {
             StringBuilder sequenceSb = new StringBuilder(500);

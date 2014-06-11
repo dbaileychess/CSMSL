@@ -134,7 +134,7 @@ namespace CSMSL.Spectral
         public Spectrum Filter(double minIntensity, double maxIntensity = double.MaxValue)
         {
             if (Count == 0)
-                return Empty;
+                return new Spectrum();
 
             int count = Count;
             double[] mz = new double[count];
@@ -152,17 +152,21 @@ namespace CSMSL.Spectral
             }
 
             if (j == 0)
-                return Empty;
+                return new Spectrum();
 
-            Array.Resize(ref mz, j);
-            Array.Resize(ref intensities, j);
+            if (j != count)
+            {
+                Array.Resize(ref mz, j);
+                Array.Resize(ref intensities, j);
+            }
+
             return new Spectrum(mz, intensities, false);
         }
 
         public Spectrum Filter(IEnumerable<IRange<double>> rangesToRemove)
         {
             if (Count == 0)
-                return Empty;
+                return new Spectrum();
 
             int count = Count;
 
@@ -190,7 +194,7 @@ namespace CSMSL.Spectral
             int cleanCount = count - indiciesToRemove.Count;
 
             if (cleanCount == 0)
-                return Empty;
+                return new Spectrum();
 
             // Create the storage for the cleaned spectrum
             double[] mz = new double[cleanCount];

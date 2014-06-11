@@ -21,7 +21,7 @@ using System.IO;
 
 namespace CSMSL.IO
 {
-    public class DtaWriter : IDisposable
+    public sealed class DtaWriter : IDisposable
     {
         public string FilePath { get; private set; }
 
@@ -30,18 +30,13 @@ namespace CSMSL.IO
         public DtaWriter(string filename)
         {
             FilePath = filename;
-            _writer = new StreamWriter(filename);
+            _writer = new StreamWriter(filename) { AutoFlush = true };
         }
 
-        public void Close()
+        public void Dispose()
         {
-            _writer.Flush();
-            _writer.Close();
-        }
-
-        void IDisposable.Dispose()
-        {
-            Close();
+            if (_writer != null)
+                _writer.Dispose();
         }
 
         public void Write(Dta dta)

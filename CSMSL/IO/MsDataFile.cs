@@ -115,14 +115,30 @@ namespace CSMSL.IO
             return GetEnumerator();
         }
 
-        public virtual void Dispose()
+        protected bool _isDisposed;
+
+        public void Dispose()
         {
-            if (Scans != null)
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if(_isDisposed)
+                return;
+
+            if (disposing)
             {
-                ClearCachedScans();
-                Scans = null;
+                if (Scans != null)
+                {
+                    ClearCachedScans();
+                    Scans = null;
+                }
             }
+
             _isOpen = false;
+            _isDisposed = true;
         }
 
         public bool Equals(MSDataFile other)

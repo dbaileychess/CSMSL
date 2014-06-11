@@ -311,8 +311,6 @@ namespace CSMSL.Util.Collections
         {
             get
             {
-                if (index < 0 || index > Count)
-                    throw new IndexOutOfRangeException();
                 return _items[index];
             }
         }

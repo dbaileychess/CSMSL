@@ -99,11 +99,14 @@ namespace CSMSL.IO.MzML
             get { return _indexedmzMLConnection != null; }
         }
 
-        public override void Dispose()
+        protected override void Dispose(bool disposing)
         {
-            _mzMLConnection = null;
-            _indexedmzMLConnection = null;
-            base.Dispose();
+            if (disposing)
+            {
+                _mzMLConnection = null;
+                _indexedmzMLConnection = null;
+            }
+            base.Dispose(disposing);
         }
 
         public override DissociationType GetDissociationType(int spectrumNumber, int msnOrder = 2)

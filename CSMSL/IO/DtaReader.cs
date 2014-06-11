@@ -23,7 +23,7 @@ using System.Text.RegularExpressions;
 
 namespace CSMSL.IO
 {
-    public class DtaReader : IDisposable
+    public sealed class DtaReader : IDisposable
     {
         private static Regex dtaheaderRegex = new Regex(@"id=""(\d+)""\s*name=""(.+)""", RegexOptions.Compiled);
 
@@ -37,17 +37,13 @@ namespace CSMSL.IO
         }
 
         public string FilePath { get; set; }
-
-        public void Close()
+        
+        public void Dispose()
         {
-            _reader.Close();
+            if (_reader != null)
+                _reader.Dispose();
         }
-
-        void IDisposable.Dispose()
-        {
-            Close();
-        }
-
+        
         public IEnumerable<Dta> ReadNextDta()
         {
             List<double> mz = new List<double>();

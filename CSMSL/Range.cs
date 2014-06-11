@@ -78,7 +78,7 @@ namespace CSMSL
             if (other == null)
                 return false;
 
-            return (Maximum.CompareTo(other.Maximum) >= 0 && Minimum.CompareTo(other.Minimum) <= 0);
+            return Maximum.CompareTo(other.Maximum) >= 0 && Minimum.CompareTo(other.Minimum) <= 0;
         }
 
         /// <summary>
@@ -91,7 +91,7 @@ namespace CSMSL
             if (other == null)
                 return false;
 
-            return (Maximum.CompareTo(other.Maximum) <= 0 && Minimum.CompareTo(other.Minimum) >= 0);
+            return Maximum.CompareTo(other.Maximum) <= 0 && Minimum.CompareTo(other.Minimum) >= 0;
         }
 
         /// <summary>

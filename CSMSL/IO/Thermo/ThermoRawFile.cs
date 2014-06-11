@@ -93,14 +93,17 @@ namespace CSMSL.IO.Thermo
             base.Open();
         }
 
-        public override void Dispose()
+        protected override void Dispose(bool disposing)
         {
-            if (_rawConnection != null)
+            if (disposing)
             {
-                _rawConnection.Close();
-                _rawConnection = null;
+                if (_rawConnection != null)
+                {
+                    _rawConnection.Close();
+                    _rawConnection = null;
+                }
             }
-            base.Dispose();
+            base.Dispose(disposing);
         }
 
         protected override int GetFirstSpectrumNumber()
@@ -249,7 +252,7 @@ namespace CSMSL.IO.Thermo
             object massList = null;
             object peakFlags = null;
             int arraySize = -1;
-            double centroidPeakWidth = double.NaN;
+            double centroidPeakWidth = 0.001;
             _rawConnection.GetMassListFromScanNum(ref spectrumNumber, null, 0, 0, 0, Convert.ToInt32(useCentroid), ref centroidPeakWidth, ref massList, ref peakFlags, ref arraySize);
             return (double[,]) massList;
         }

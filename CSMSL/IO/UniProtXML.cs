@@ -21,7 +21,7 @@ using System.Xml.Serialization;
 
 namespace CSMSL.IO
 {
-    public class UniProtXml : IDisposable
+    public sealed class UniProtXml : IDisposable
     {
         public string FilePath { get; set; }
 
@@ -43,7 +43,8 @@ namespace CSMSL.IO
 
         public void Dispose()
         {
-            _baseStream.Dispose();
+            if(_baseStream != null)
+                _baseStream.Dispose();
             _baseUniprot = null;
         }
     }

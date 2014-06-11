@@ -22,7 +22,7 @@ using System.IO;
 
 namespace CSMSL.IO
 {
-    public class FastaWriter : IDisposable
+    public sealed class FastaWriter : IDisposable
     {
         public int CharactersPerLine { get; private set; }
 
@@ -37,18 +37,13 @@ namespace CSMSL.IO
             FilePath = filename;
             Delimiter = delimiter;
             CharactersPerLine = charperline;
-            _writer = new StreamWriter(filename);
+            _writer = new StreamWriter(filename) { AutoFlush = true };
         }
 
-        public void Close()
+        public void Dispose()
         {
-            _writer.Flush();
-            _writer.Close();
-        }
-
-        void IDisposable.Dispose()
-        {
-            Close();
+            if(_writer != null)
+                _writer.Dispose();
         }
 
         public void Write(IEnumerable<Protein> proteins)

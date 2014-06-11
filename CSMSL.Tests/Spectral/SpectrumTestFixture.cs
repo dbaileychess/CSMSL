@@ -200,7 +200,7 @@ namespace CSMSL.Tests.Spectral
         {
             Spectrum filteredSpectrum = SpectrumA.Filter(0, 50);
 
-            Assert.AreSame(Spectrum.Empty, filteredSpectrum);
+            Assert.AreEqual(Spectrum.Empty, filteredSpectrum);
         }
 
         [Test]
