@@ -172,7 +172,9 @@
     <Compile Include="Proteomics\IIsotopologue.cs" />
     <Compile Include="Proteomics\Isotopologue.cs" />
     <Compile Include="Proteomics\ModificationDictionary.cs" />
+    <Compile Include="Spectral\ChromatogramType.cs" />
     <Compile Include="Spectral\ISpectrumTime.cs" />
+    <Compile Include="Spectral\SmoothingType.cs" />
     <Compile Include="ToleranceType.cs" />
     <Compile Include="ToleranceUnit.cs" />
     <Compile Include="Proteomics\DissociationType.cs" />

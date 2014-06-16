@@ -27,14 +27,27 @@ namespace CSMSL
     public static class UtilExtension
     {
         /// <summary>
-        /// Compares to doubles for equality based on their absolute difference being less
-        /// than some specified tolerace.
+        /// Compares two doubles for equality based on their absolute difference being less
+        /// than some specified tolerance.
         /// </summary>
         /// <param name="item1"></param>
         /// <param name="item2"></param>
         /// <param name="tolerance"></param>
         /// <returns></returns>
         public static bool FussyEquals(this double item1, double item2, double tolerance = 1e-10)
+        {
+            return Math.Abs(item1 - item2) < tolerance;
+        }
+
+        /// <summary>
+        /// Compares two doubles for equality based on their absolute difference being less
+        /// than some specified tolerance.
+        /// </summary>
+        /// <param name="item1"></param>
+        /// <param name="item2"></param>
+        /// <param name="tolerance"></param>
+        /// <returns></returns>
+        public static bool FussyEquals(this float item1, float item2, double tolerance = 1e-10)
         {
             return Math.Abs(item1 - item2) < tolerance;
         }
@@ -92,6 +105,11 @@ namespace CSMSL
             return result;
         }
 
+        /// <summary>
+        /// Calculates the median value of a list of numerical values
+        /// </summary>
+        /// <param name="values">A list of double values</param>
+        /// <returns></returns>
         public static double Median(this List<double> values)
         {
             int length = values.Count;
@@ -110,6 +128,11 @@ namespace CSMSL
             return (values[mid] + values[mid - 1]) / 2.0;
         }
 
+        /// <summary>
+        /// Calculates the standard deviation of a list of numerical values
+        /// </summary>
+        /// <param name="values"></param>
+        /// <returns></returns>
         public static double StdDev(this IList<double> values)
         {
             int length = values.Count;
@@ -158,14 +181,33 @@ namespace CSMSL
             return bins;
         }
 
-        public static int MaxIndex<T>(this IEnumerable<T> sequence) where T : IComparable<T>
+        /// <summary>
+        /// Finds the index of the maximum value in a collection
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="items">The collection of items</param>
+        /// <returns>An index to the place of the maximum value in the collection</returns>
+        public static int MaxIndex<T>(this IEnumerable<T> items) where T : IComparable<T>
+        {
+            T maxValue;
+            return MaxIndex(items, out maxValue);
+        }
+        
+        /// <summary>
+        /// Finds the index of the maximum value in a collection
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="items">The collection of items</param>
+        /// <param name="maxValue">The maximum value in the collection</param>
+        /// <returns>An index to the place of the maximum value in the collection</returns>
+        public static int MaxIndex<T>(this IEnumerable<T> items, out T maxValue) where T : IComparable<T>
         {
             // From: http://stackoverflow.com/questions/462699/how-do-i-get-the-index-of-the-highest-value-in-an-array-using-linq
             int maxIndex = -1;
-            T maxValue = default(T);
+            maxValue = default(T);
 
             int index = 0;
-            foreach (T value in sequence)
+            foreach (T value in items)
             {
                 if (value.CompareTo(maxValue) > 0 || maxIndex == -1)
                 {
@@ -217,6 +259,11 @@ namespace CSMSL
 
     public static class ByteArrayExtension
     {
+        /// <summary>
+        /// Compresses a byte array using Gzip compression
+        /// </summary>
+        /// <param name="bytes">The byte array to compress</param>
+        /// <returns>The compressed byte array</returns>
         public static byte[] Compress(this byte[] bytes)
         {
             var compressedStream = new MemoryStream();
@@ -227,6 +274,11 @@ namespace CSMSL
             return compressedStream.ToArray();
         }
 
+        /// <summary>
+        /// Decompresses a byte array using Gzip decompression
+        /// </summary>
+        /// <param name="bytes">The byte array to decompress</param>
+        /// <returns>The decompressed byte array</returns>
         public static byte[] Decompress(this byte[] bytes)
         {
             var bigStreamOut = new MemoryStream();
@@ -235,9 +287,9 @@ namespace CSMSL
         }
 
         /// <summary>
-        /// Checks if the byte array is gzipped.
+        /// Checks if the byte array is compressed using Gzip compression.
         /// </summary>
-        /// <param name="bytes"></param>
+        /// <param name="bytes">The byte array to check for compression</param>
         /// <returns></returns>
         public static bool IsCompressed(this byte[] bytes)
         {

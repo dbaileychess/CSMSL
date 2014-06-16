@@ -20,7 +20,7 @@ using System;
 namespace CSMSL
 {
     /// <summary>
-    /// A continuous, inclusive range of values
+    /// A continuous, inclusive range of values, with a well defined minimum and maximum value
     /// </summary>
     public class Range<T> : IRange<T>
         where T : IComparable<T>, IEquatable<T>

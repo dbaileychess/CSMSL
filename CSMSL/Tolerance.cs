@@ -25,14 +25,20 @@ namespace CSMSL
     /// </summary>
     public class Tolerance
     {
+        /// <summary>
+        /// A regex for parsing a string representation of a tolerance
+        /// <para>
+        /// i.e., "10 PPM", "-+10 PPM", "5 DA", "±10 MMU", etc...
+        /// </para>
+        /// </summary>
         private static readonly Regex StringRegex = new Regex(@"(\+-|-\+|±)?\s*([\d.]+)\s*(PPM|DA|MMU)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
         /// <summary>
-        /// Creates a new tolerance given a type, value, and whether the tolerance is ±
+        /// Creates a new tolerance given a unit, value, and whether the tolerance is ±
         /// </summary>
-        /// <param name="unit"></param>
-        /// <param name="value"></param>
-        /// <param name="type"></param>
+        /// <param name="unit">The units for this tolerance</param>
+        /// <param name="value">The numerical value of the tolerance</param>
+        /// <param name="type">Whether the tolerance is full or half width</param>
         public Tolerance(ToleranceUnit unit, double value, ToleranceType type = ToleranceType.PlusAndMinus)
         {
             Unit = unit;
@@ -40,11 +46,16 @@ namespace CSMSL
             Type = type;
         }
 
-        public Tolerance(ToleranceUnit unit, double experimental, double theoretical, ToleranceType toleranceType = ToleranceType.PlusAndMinus)
-            : this(unit, GetTolerance(experimental, theoretical, unit), toleranceType)
-        {
-        }
-
+        /// <summary>
+        /// Creates a new tolerance given a unit, two points (one experimental and one theoretical), and whether the tolerance is ±
+        /// </summary>
+        /// <param name="unit">The units for this tolerance</param>
+        /// <param name="experimental">The experimental value</param>
+        /// <param name="theoretical">The theoretical value</param>
+        /// <param name="type">Whether the tolerance is full or half width</param>
+        public Tolerance(ToleranceUnit unit, double experimental, double theoretical, ToleranceType type = ToleranceType.PlusAndMinus)
+            : this(unit, GetTolerance(experimental, theoretical, unit), type) { }
+ 
         /// <summary>
         /// Calculates a tolerance from the string representation
         /// <para>
@@ -79,6 +90,11 @@ namespace CSMSL
         /// </summary>
         public ToleranceType Type { get; set; }
 
+        /// <summary>
+        /// Gets the range of values encompassed by this tolerance
+        /// </summary>
+        /// <param name="mean">The mean value</param>
+        /// <returns></returns>
         public DoubleRange GetRange(double mean)
         {
             double value = Value * ((Type == ToleranceType.PlusAndMinus) ? 2 : 1);

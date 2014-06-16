@@ -20,20 +20,8 @@ using System.Collections.Generic;
 
 namespace CSMSL.Spectral
 {
-    public enum ChromatogramType
-    {
-        BasePeak = 1,
-        MzRange = 2,
-        TotalIonCurrent = 3
-    }
 
-    public enum SmoothingType
-    {
-        None = 0,
-        BoxCar = 1,
-        SavitzkyGolay = 2
-    }
-
+    
     //public class MzRangeChromatogram : Chromatogram
     //{
     //    public MassRange MzRange { get; private set; }

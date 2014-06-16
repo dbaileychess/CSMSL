@@ -111,7 +111,7 @@ namespace CSMSL.Examples
             Application.SetCompatibleTextRenderingDefault(false);
 
             // Peptide Calculator GUI Example
-            //Application.Run(new PeptideCalculatorForm());
+            Application.Run(new PeptideCalculatorForm());
         }
 
         private static void IsotopologueExample()

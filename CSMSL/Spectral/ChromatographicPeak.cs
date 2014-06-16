@@ -31,15 +31,6 @@ namespace CSMSL.Spectral
             Intensity = intensity;
         }
 
-        public void CombinePoints(ChromatographicPeak otherPoint)
-        {
-            if (!Time.Equals(otherPoint.Time))
-            {
-                throw new ArgumentException("The two chromatogram points don't have the same time");
-            }
-            Intensity += otherPoint.Intensity;
-        }
-
         public override string ToString()
         {
             return string.Format("({0:G4}, {1:G4})", Time, Intensity);

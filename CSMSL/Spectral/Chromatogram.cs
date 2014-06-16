@@ -49,8 +49,10 @@ namespace CSMSL.Spectral
             switch (smoothing)
             {
                 case SmoothingType.BoxCar:
-                    return BoxCar(points);
-
+                    double[] newTimes;
+                    double[] newIntensities;
+                    BoxCarSmooth(points, _times, _intensities, out newTimes, out newIntensities);
+                    return new Chromatogram(newTimes, newIntensities, false);
                 case SmoothingType.SavitzkyGolay:
                     return SavitzkyGolay();
 
@@ -63,38 +65,7 @@ namespace CSMSL.Spectral
         {
             throw new NotImplementedException();
         }
-
-        private Chromatogram BoxCar(int points)
-        {
-            // Force to be odd
-            points = points - (1 - points % 2);
-
-            if (points <= 0 || points > Count)
-                return new Chromatogram(this); // no smoothing
-
-            int newCount = Count - points + 1;
-
-            double[] times = new double[newCount];
-            double[] intensities = new double[newCount];
-
-            for (int i = 0; i < newCount; i++)
-            {
-                double time = 0;
-                double intensity = 0;
-
-                for (int j = i; j < i + points; j++)
-                {
-                    time += _times[j];
-                    intensity += _intensities[j];
-                }
-
-                times[i] = time / points;
-                intensities[i] = intensity / points;
-            }
-
-            return new Chromatogram(times, intensities, false);
-        }
-
+        
         public override ChromatographicPeak GetPeak(int index)
         {
             return new ChromatographicPeak(_times[index], _intensities[index]);
@@ -391,5 +362,48 @@ namespace CSMSL.Spectral
         {
             return GetEnumerator();
         }
+
+        #region Static
+
+        public static void BoxCarSmooth(int points, double[] x, double[] y, out double[] xOut, out double[] yOut)
+        {
+            // Force to be odd
+            points = points - (1 - points % 2);
+
+            int count = x.Length;
+            if (y.Length != count)
+            {
+                throw new ArgumentException("Arrays X and Y must be the same length");
+            }
+
+            if (points <= 0 || points > count)
+            {
+                xOut = (double[])x.Clone();
+                yOut = (double[])y.Clone();
+                return;
+            }
+
+            int newCount = count - points + 1;
+
+            xOut = new double[newCount];
+            yOut = new double[newCount];
+
+            for (int i = 0; i < newCount; i++)
+            {
+                double xValue = 0;
+                double yValue = 0;
+
+                for (int j = i; j < i + points; j++)
+                {
+                    xValue += x[j];
+                    yValue += y[j];
+                }
+
+                xOut[i] = xValue / points;
+                yOut[i] = yValue / points;
+            }
+        }
+
+        #endregion
     }
 }
