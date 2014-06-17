@@ -201,7 +201,6 @@
     <Compile Include="Range.cs" />
     <Compile Include="Tolerance.cs" />
     <Compile Include="Spectral\Chromatogram.cs" />
-    <Compile Include="Spectral\Chromatogram`1.cs" />
     <Compile Include="Spectral\ChromatographicPeak.cs" />
     <Compile Include="Spectral\ISpectrum.cs" />
     <Compile Include="Spectral\MassRangeChromatogram.cs" />

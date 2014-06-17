@@ -195,7 +195,7 @@ namespace CSMSL.Spectral
                 return GetPeak(Count - 1);
             }
 
-            double maxvalue = -1; // double.negative infinitiy?
+            double maxvalue = -1; // double.negative infinity?
             int apexIndex = index;
             while (index < Count && _times[index] <= maxTime)
             {

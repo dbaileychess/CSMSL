@@ -24,35 +24,44 @@ namespace CSMSL.Proteomics
 {
     public class Peptide : AminoAcidPolymer
     {
-        public static Peptide Empty = new Peptide();
-
+        /// <summary>
+        /// The amino acid number this peptide is located in its parent
+        /// </summary>
         public int StartResidue { get; set; }
 
+        /// <summary>
+        /// The amino acid number this peptide is located in its parent
+        /// </summary>
         public int EndResidue { get; set; }
 
+        /// <summary>
+        /// The amino acid polymer this peptide came from
+        /// </summary>
         public AminoAcidPolymer Parent { get; set; }
 
+        /// <summary>
+        /// The preceding amino acid in its parent
+        /// </summary>
         public AminoAcid PreviousAminoAcid { get; set; }
-
+        
+        /// <summary>
+        /// The next amino acid in its parent
+        /// </summary>
         public AminoAcid NextAminoAcid { get; set; }
 
-        public Peptide()
-        {
-            Parent = null;
-            StartResidue = 0;
-            EndResidue = 0;
-            PreviousAminoAcid = null;
-            NextAminoAcid = null;
-        }
-
+        public Peptide() { }
+    
+        /// <summary>
+        /// Create a new peptide based on another amino acid polymer
+        /// </summary>
+        /// <param name="aminoAcidPolymer">The other amino acid polymer to copy</param>
+        /// <param name="includeModifications">Whether to copy the modifications to the new peptide</param>
         public Peptide(AminoAcidPolymer aminoAcidPolymer, bool includeModifications = true)
             : base(aminoAcidPolymer, includeModifications)
         {
             Parent = aminoAcidPolymer;
             StartResidue = 0;
-            EndResidue = StartResidue + Length - 1;
-            PreviousAminoAcid = null;
-            NextAminoAcid = aminoAcidPolymer.GetResidue(EndResidue + 1);
+            EndResidue = Length - 1;
         }
 
         public Peptide(AminoAcidPolymer aminoAcidPolymer, int firstResidue, int length, bool includeModifications = true)
@@ -65,22 +74,17 @@ namespace CSMSL.Proteomics
             NextAminoAcid = aminoAcidPolymer.GetResidue(EndResidue + 1);
         }
 
-        public Peptide(AminoAcidPolymer aminoAcidPolymer)
-            : this(aminoAcidPolymer, 0, aminoAcidPolymer.Length)
-        {
-        }
-
         public Peptide(string sequence)
             : this(sequence, null, 0)
         {
         }
 
-        public Peptide(string sequence, Protein parent)
+        public Peptide(string sequence, AminoAcidPolymer parent)
             : this(sequence, parent, 0)
         {
         }
 
-        public Peptide(string sequence, Protein parent, int startResidue)
+        public Peptide(string sequence, AminoAcidPolymer parent, int startResidue)
             : base(sequence)
         {
             Parent = parent;

@@ -21,24 +21,30 @@ using System.Linq;
 
 namespace CSMSL.Proteomics
 {
+    
     public class Protein : AminoAcidPolymer
     {
-        public Protein(string sequence)
-            : this(sequence, string.Empty)
-        {
-        }
-
-        public Protein(string sequence, string description, bool isDecoy = false)
+        public Protein(string sequence, string description = "", bool isDecoy = false)
             : base(sequence)
         {
             Description = description;
             IsDecoy = isDecoy;
         }
 
+        /// <summary>
+        /// The description for the protein
+        /// </summary>
         public string Description { get; set; }
 
+        /// <summary>
+        /// Indicates whether this is a decoy protein or not
+        /// </summary>
         public bool IsDecoy { get; set; }
 
+        /// <summary>
+        /// Converts this protein into the fasta format
+        /// </summary>
+        /// <returns></returns>
         public Fasta ToFasta()
         {
             return new Fasta(Sequence, Description);

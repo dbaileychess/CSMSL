@@ -18,6 +18,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
+
 namespace CSMSL.Analysis.ExperimentalDesign
 {
     public class Sample : IEnumerable<ExperimentalCondition>
