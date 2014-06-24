@@ -395,7 +395,7 @@ namespace CSMSL.Spectral
         /// <summary>
         /// Calculates the total ion current of this spectrum
         /// </summary>
-        /// <returns>The total ion current of ths spectrum</returns>
+        /// <returns>The total ion current of this spectrum</returns>
         public virtual double GetTotalIonCurrent()
         {
             return Count == 0 ? 0 : _intensities.Sum();

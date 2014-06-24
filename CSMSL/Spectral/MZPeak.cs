@@ -16,6 +16,7 @@
 // License along with CSMSL. If not, see <http://www.gnu.org/licenses/>.
 
 using System;
+using System.Security.Cryptography.X509Certificates;
 
 namespace CSMSL.Spectral
 {
@@ -67,14 +68,24 @@ namespace CSMSL.Spectral
             throw new InvalidOperationException("Unable to compare types");
         }
 
-        double IPeak.X
+        protected double X
         {
             get { return MZ; }
         }
 
-        double IPeak.Y
+        protected double Y
         {
             get { return Intensity; }
+        }
+
+        double IPeak.X
+        {
+            get { return X; }
+        }
+    
+        double IPeak.Y
+        {
+            get { return Y; }
         }
 
         public override bool Equals(object obj)

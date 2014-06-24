@@ -15,17 +15,69 @@
 // You should have received a copy of the GNU Lesser General Public
 // License along with CSMSL. If not, see <http://www.gnu.org/licenses/>.
 
+using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace CSMSL.Proteomics
 {
     public interface IAminoAcidSequence
     {
+        /// <summary>
+        /// The amino acid sequence
+        /// </summary>
         string Sequence { get; }
 
+        /// <summary>
+        /// The amino acid sequence with all 'I' replaced with 'L'
+        /// </summary>
+        /// <returns></returns>
         string GetLeucineSequence();
 
+        /// <summary>
+        /// The length of the amino acid sequence
+        /// </summary>
         int Length { get; }
+    }
+
+    public static class IAminoAcidSequenceExtensions
+    {
+        public static double GetSequenceCoverageFraction(this IAminoAcidSequence baseSequence, IEnumerable<IAminoAcidSequence> sequences, bool useLeucineSequence = true)
+        {
+            int[] counts = baseSequence.GetSequenceCoverage(sequences, useLeucineSequence);
+            return ((double)counts.Count(x => x > 0)) / baseSequence.Length;
+        }
+
+        public static int[] GetSequenceCoverage(this IAminoAcidSequence baseSequence, IEnumerable<IAminoAcidSequence> sequences, bool useLeucineSequence = true)
+        {
+            int[] bits = new int[baseSequence.Length];
+
+            string masterSequence = useLeucineSequence ? baseSequence.GetLeucineSequence() : baseSequence.Sequence;
+
+            foreach (IAminoAcidSequence sequence in sequences)
+            {
+                string seq = useLeucineSequence ? sequence.GetLeucineSequence() : sequence.Sequence;
+
+                int startIndex = 0;
+                while (true)
+                {
+                    int index = masterSequence.IndexOf(seq, startIndex, StringComparison.InvariantCulture);
+
+                    if (index < 0)
+                    {
+                        break;
+                    }
+
+                    for (int aa = index; aa < index + sequence.Length; aa++)
+                    {
+                        bits[aa]++;
+                    }
+
+                    startIndex = index + 1;
+                }
+            }
+            return bits;
+        }
     }
 
     public class AminoAcidSequenceComparer : IEqualityComparer<IAminoAcidSequence>

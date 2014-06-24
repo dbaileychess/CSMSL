@@ -34,90 +34,74 @@ namespace CSMSL.Spectral
 
         private double _precursorMz = double.NaN;
 
-        public double PrecursorMz
+        public double GetPrecursorMz()
         {
-            get
+            if (double.IsNaN(_precursorMz))
             {
-                if (double.IsNaN(_precursorMz))
+                if (ParentFile.IsOpen)
                 {
-                    if (ParentFile.IsOpen)
-                    {
-                        _precursorMz = ParentFile.GetPrecusorMz(SpectrumNumber, MsnOrder);
-                    }
-                    else
-                    {
-                        throw new ArgumentException("The parent data file is closed");
-                    }
+                    _precursorMz = ParentFile.GetPrecusorMz(SpectrumNumber, MsnOrder);
                 }
-                return _precursorMz;
+                else
+                {
+                    throw new ArgumentException("The parent data file is closed");
+                }
             }
-            internal set { _precursorMz = value; }
+            return _precursorMz;
         }
 
         private DoubleRange _isolationRange;
 
-        public DoubleRange IsolationRange
+        public DoubleRange GetIsolationRange()
         {
-            get
+            if (_isolationRange == null)
             {
-                if (_isolationRange == null)
+                if (ParentFile.IsOpen)
                 {
-                    if (ParentFile.IsOpen)
-                    {
-                        _isolationRange = ParentFile.GetIsolationRange(SpectrumNumber);
-                    }
-                    else
-                    {
-                        throw new ArgumentException("The parent data file is closed");
-                    }
+                    _isolationRange = ParentFile.GetIsolationRange(SpectrumNumber);
                 }
-                return _isolationRange;
+                else
+                {
+                    throw new ArgumentException("The parent data file is closed");
+                }
             }
-            internal set { _isolationRange = value; }
+            return _isolationRange;
         }
 
         private int _precursorCharge;
 
-        public virtual int PrecursorCharge
+        public virtual int GetPrecursorCharge()
         {
-            get
+            if (_precursorCharge == 0)
             {
-                if (_precursorCharge == 0)
+                if (ParentFile.IsOpen)
                 {
-                    if (ParentFile.IsOpen)
-                    {
-                        _precursorCharge = ParentFile.GetPrecusorCharge(SpectrumNumber, MsnOrder);
-                    }
-                    else
-                    {
-                        throw new ArgumentException("The parent data file is closed");
-                    }
+                    _precursorCharge = ParentFile.GetPrecusorCharge(SpectrumNumber, MsnOrder);
                 }
-                return _precursorCharge;
+                else
+                {
+                    throw new ArgumentException("The parent data file is closed");
+                }
             }
-            internal set { _precursorCharge = value; }
+            return _precursorCharge;
         }
 
         private DissociationType _dissociationType = DissociationType.UnKnown;
 
-        public DissociationType DissociationType
+        public DissociationType GetDissociationType()
         {
-            get
+            if (_dissociationType == DissociationType.UnKnown)
             {
-                if (_dissociationType == DissociationType.UnKnown)
+                if (ParentFile.IsOpen)
                 {
-                    if (ParentFile.IsOpen)
-                    {
-                        _dissociationType = ParentFile.GetDissociationType(SpectrumNumber);
-                    }
-                    else
-                    {
-                        throw new ArgumentException("The parent data file is closed");
-                    }
+                    _dissociationType = ParentFile.GetDissociationType(SpectrumNumber);
                 }
-                return _dissociationType;
+                else
+                {
+                    throw new ArgumentException("The parent data file is closed");
+                }
             }
-            internal set { _dissociationType = value; }
+            return _dissociationType;
         }
     }
 }

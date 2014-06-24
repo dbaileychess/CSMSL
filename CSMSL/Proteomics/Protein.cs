@@ -49,7 +49,7 @@ namespace CSMSL.Proteomics
         {
             return new Fasta(Sequence, Description);
         }
-
+        
         #region Digestion
 
         /// <summary>

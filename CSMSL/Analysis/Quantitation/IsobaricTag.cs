@@ -20,7 +20,7 @@ using CSMSL.Proteomics;
 
 namespace CSMSL.Analysis.Quantitation
 {
-    public class IsobaricTag : ChemicalFormulaModification, IQuantitationChannel
+    public sealed class IsobaricTag : ChemicalFormulaModification, IQuantitationChannel
     {
         private readonly ChemicalFormula _reporterFormula;
 

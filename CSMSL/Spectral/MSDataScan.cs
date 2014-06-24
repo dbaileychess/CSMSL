@@ -33,16 +33,12 @@ namespace CSMSL.Spectral
         {
             get
             {
-                if (_massSpectrum == null)
+                if (_massSpectrum != null || ParentFile == null) 
+                    return _massSpectrum;
+
+                if (ParentFile.IsOpen)
                 {
-                    if (ParentFile.IsOpen)
-                    {
-                        _massSpectrum = ParentFile.GetSpectrum(SpectrumNumber);
-                    }
-                    else
-                    {
-                        throw new ArgumentException("The parent data file is closed");
-                    }
+                    _massSpectrum = ParentFile.GetSpectrum(SpectrumNumber);
                 }
                 return _massSpectrum;
             }
@@ -57,29 +53,19 @@ namespace CSMSL.Spectral
         {
             get
             {
-                if (double.IsNaN(_resolution))
+                if (!double.IsNaN(_resolution) || ParentFile == null) 
+                    return _resolution;
+
+                if (ParentFile.IsOpen)
                 {
-                    if (ParentFile.IsOpen)
-                    {
-                        _resolution = ParentFile.GetResolution(SpectrumNumber);
-                    }
-                    else
-                    {
-                        throw new ArgumentException("The parent data file is closed");
-                    }
+                    _resolution = ParentFile.GetResolution(SpectrumNumber);
                 }
                 return _resolution;
             }
             internal set { _resolution = value; }
         }
 
-        private int _msnOrder = -1;
-
-        public int MsnOrder
-        {
-            get { return _msnOrder; }
-            protected set { _msnOrder = value; }
-        }
+        public int MsnOrder { get; protected set; }
 
         private double _injectionTime = double.NaN;
 
@@ -92,10 +78,6 @@ namespace CSMSL.Spectral
                     if (ParentFile.IsOpen)
                     {
                         _injectionTime = ParentFile.GetInjectionTime(SpectrumNumber);
-                    }
-                    else
-                    {
-                        throw new ArgumentException("The parent data file is closed");
                     }
                 }
                 return _injectionTime;
@@ -115,10 +97,6 @@ namespace CSMSL.Spectral
                     {
                         _retentionTime = ParentFile.GetRetentionTime(SpectrumNumber);
                     }
-                    else
-                    {
-                        throw new ArgumentException("The parent data file is closed");
-                    }
                 }
                 return _retentionTime;
             }
@@ -136,10 +114,6 @@ namespace CSMSL.Spectral
                     if (ParentFile.IsOpen)
                     {
                         _polarity = ParentFile.GetPolarity(SpectrumNumber);
-                    }
-                    else
-                    {
-                        throw new ArgumentException("The parent data file is closed");
                     }
                 }
                 return _polarity;
@@ -159,10 +133,6 @@ namespace CSMSL.Spectral
                     {
                         _mzAnalyzer = ParentFile.GetMzAnalyzer(SpectrumNumber);
                     }
-                    else
-                    {
-                        throw new ArgumentException("The parent data file is closed");
-                    }
                 }
                 return _mzAnalyzer;
             }
@@ -181,10 +151,6 @@ namespace CSMSL.Spectral
                     {
                         _mzRange = ParentFile.GetMzRange(SpectrumNumber);
                     }
-                    else
-                    {
-                        throw new ArgumentException("The parent data file is closed");
-                    }
                 }
                 return _mzRange;
             }
@@ -201,10 +167,6 @@ namespace CSMSL.Spectral
                 {
                     _parentScanNumber = ParentFile.GetParentSpectrumNumber(SpectrumNumber);
                 }
-                else
-                {
-                    throw new ArgumentException("The parent data file is closed");
-                }
                 return _parentScanNumber;
             }
             internal set { _parentScanNumber = value; }
@@ -212,6 +174,7 @@ namespace CSMSL.Spectral
 
         public MSDataScan()
         {
+            MsnOrder = -1;
         }
 
         public MSDataScan(int spectrumNumber, int msnOrder = 1, MSDataFile parentFile = null)

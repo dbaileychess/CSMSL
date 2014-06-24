@@ -19,11 +19,11 @@ using System;
 
 namespace CSMSL.Spectral
 {
-    public class ChromatographicPeak : IPeak
+    public sealed class ChromatographicPeak : IPeak
     {
-        public double Time { get; protected set; }
+        public double Time { get; private set; }
 
-        public double Intensity { get; protected set; }
+        public double Intensity { get; private set; }
 
         public ChromatographicPeak(double time, double intensity)
         {

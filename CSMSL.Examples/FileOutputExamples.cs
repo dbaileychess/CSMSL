@@ -127,7 +127,7 @@ namespace CSMSL.Examples
                         {
                             // It is a MS2 scan
 
-                            sb.Append(msnScan.PrecursorMz);
+                            sb.Append(msnScan.GetPrecursorMz());
                         }
                         else
                         {

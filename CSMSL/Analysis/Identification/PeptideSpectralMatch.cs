@@ -15,6 +15,7 @@
 // You should have received a copy of the GNU Lesser General Public
 // License along with CSMSL. If not, see <http://www.gnu.org/licenses/>.
 
+using System.ComponentModel;
 using CSMSL.Chemistry;
 using CSMSL.Proteomics;
 using CSMSL.Spectral;
@@ -28,7 +29,7 @@ namespace CSMSL.Analysis.Identification
     {
         public virtual Peptide Peptide { get; set; }
 
-        public virtual MsnDataScan Spectrum { get; set; }
+        public virtual MsnDataScan Scan { get; set; }
 
         public virtual int Charge { get; set; }
 
@@ -82,18 +83,18 @@ namespace CSMSL.Analysis.Identification
 
         public virtual bool IsDecoy { get; set; }
 
-        double IFalseDiscovery<double>.FdrScoreMetric
+        public virtual double FdrScoreMetric
         {
-            get { return Score; }
+            get { return Score;}
         }
-
-        Spectrum IMassSpectrum.MassSpectrum
+        
+        public Spectrum MassSpectrum
         {
             get
             {
-                if (Spectrum == null)
+                if (Scan == null)
                     return null;
-                return Spectrum.MassSpectrum;
+                return Scan.MassSpectrum;
             }
         }
 
@@ -105,7 +106,7 @@ namespace CSMSL.Analysis.Identification
 
         public bool Equals(MSDataScan other)
         {
-            return Spectrum.Equals(other);
+            return Scan.Equals(other);
         }
 
         /// <summary>

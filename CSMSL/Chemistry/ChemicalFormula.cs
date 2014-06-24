@@ -26,7 +26,7 @@ namespace CSMSL.Chemistry
     /// <summary>
     /// A chemical / molecule consisting of multiple atoms.
     /// </summary>
-    public class ChemicalFormula : IEquatable<ChemicalFormula>, IChemicalFormula
+    public sealed class ChemicalFormula : IEquatable<ChemicalFormula>, IChemicalFormula
     {
         /// <summary>
         /// A regular expression for matching chemical formulas such as: C2C{13}3H5NO5
@@ -754,7 +754,7 @@ namespace CSMSL.Chemistry
             return formula != null && Equals(formula);
         }
 
-        public virtual bool Equals(ChemicalFormula other)
+        public bool Equals(ChemicalFormula other)
         {
             if (ReferenceEquals(this, other)) return true;
             if (_largestIsotopeId != other._largestIsotopeId) return false;

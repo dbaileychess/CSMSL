@@ -34,6 +34,7 @@ namespace CSMSL.Examples
     {
         public static string BASE_DIRECTORY = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "CSMSL Examples");
 
+        [STAThread]
         private static void Main()
         {
             DirectoryInfo info = Directory.CreateDirectory(BASE_DIRECTORY);
