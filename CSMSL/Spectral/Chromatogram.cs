@@ -49,21 +49,14 @@ namespace CSMSL.Spectral
             switch (smoothing)
             {
                 case SmoothingType.BoxCar:
-                    double[] newTimes;
-                    double[] newIntensities;
-                    BoxCarSmooth(points, _times, _intensities, out newTimes, out newIntensities);
+                    double[] newTimes = _times.BoxCarSmooth(points);
+                    double[] newIntensities = _intensities.BoxCarSmooth(points);
                     return new Chromatogram(newTimes, newIntensities, false);
                 case SmoothingType.SavitzkyGolay:
-                    return SavitzkyGolay();
-
+                    throw new NotImplementedException();
                 default:
                     return new Chromatogram(this);
             }
-        }
-
-        private Chromatogram SavitzkyGolay()
-        {
-            throw new NotImplementedException();
         }
         
         public override ChromatographicPeak GetPeak(int index)
@@ -362,48 +355,6 @@ namespace CSMSL.Spectral
         {
             return GetEnumerator();
         }
-
-        #region Static
-
-        public static void BoxCarSmooth(int points, double[] x, double[] y, out double[] xOut, out double[] yOut)
-        {
-            // Force to be odd
-            points = points - (1 - points % 2);
-
-            int count = x.Length;
-            if (y.Length != count)
-            {
-                throw new ArgumentException("Arrays X and Y must be the same length");
-            }
-
-            if (points <= 0 || points > count)
-            {
-                xOut = (double[])x.Clone();
-                yOut = (double[])y.Clone();
-                return;
-            }
-
-            int newCount = count - points + 1;
-
-            xOut = new double[newCount];
-            yOut = new double[newCount];
-
-            for (int i = 0; i < newCount; i++)
-            {
-                double xValue = 0;
-                double yValue = 0;
-
-                for (int j = i; j < i + points; j++)
-                {
-                    xValue += x[j];
-                    yValue += y[j];
-                }
-
-                xOut[i] = xValue / points;
-                yOut[i] = yValue / points;
-            }
-        }
-
-        #endregion
+       
     }
 }

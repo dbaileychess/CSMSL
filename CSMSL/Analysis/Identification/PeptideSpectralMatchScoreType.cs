@@ -24,6 +24,7 @@ namespace CSMSL.Analysis.Identification
         LowerIsBetter = 2,
         HigherIsBetter = -3,
         XCorr = -1,
-        Morpheus = -2
+        Morpheus = -2,
+        MSAmanda = -4
     }
 }

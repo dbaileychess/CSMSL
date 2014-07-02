@@ -237,16 +237,16 @@ namespace CSMSL.Analysis.Identification
 
         public static int Count(IList<TSource> items, double maxFdr = 0.01, bool removeDecoys = false, bool uniqueItems = false)
         {
-            return Count(items, Comparer<TSource>.Default, maxFdr, removeDecoys, uniqueItems);
+            return Count(items, Comparer<TSource>.Default, Comparer<TMetric>.Default, maxFdr,  removeDecoys, uniqueItems);
         }
 
-        public static int Count(IList<TSource> items, Comparer<TSource> comparer, double maxFdr = 0.01, bool removeDecoys = false, bool uniqueItems = false)
+        public static int Count(IList<TSource> items, Comparer<TSource> comparer, Comparer<TMetric> metricComparer, double maxFdr = 0.01, bool removeDecoys = false, bool uniqueItems = false)
         {
             TMetric threshold = CalculateThreshold(items, comparer, maxFdr, uniqueItems);
-
+            
             if (removeDecoys)
-                return items.Count(item => item.FdrScoreMetric.CompareTo(threshold) <= 0 && !item.IsDecoy);
-            return items.Count(item => item.FdrScoreMetric.CompareTo(threshold) <= 0);
+                return items.Count(item =>  metricComparer.Compare(item.FdrScoreMetric, threshold) <= 0 && !item.IsDecoy);
+            return items.Count(item => metricComparer.Compare(item.FdrScoreMetric, threshold) <= 0);
         }
 
         public static TMetric CalculateThreshold(IEnumerable<TSource> items, double maxFdr = 0.01,

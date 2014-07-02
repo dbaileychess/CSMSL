@@ -29,8 +29,7 @@ namespace CSMSL.IO.PepXML
         private XmlDocument _document;
         private XmlNode _root;
         private XmlNamespaceManager _nsmgr;
-
-
+        
         public PepXmlReader(string filePath)
         {
             FilePath = filePath;

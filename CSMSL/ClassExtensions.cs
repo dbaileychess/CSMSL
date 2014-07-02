@@ -55,6 +55,37 @@ namespace CSMSL
 
     public static class CollectionExtension
     {
+        public static double[] BoxCarSmooth(this double[] data, int points)
+        {
+            // Force to be odd
+            points = points - (1 - points % 2);
+
+            int count = data.Length;
+         
+            if (points <= 0 || points > count)
+            {
+                return null;
+            }
+
+            int newCount = count - points + 1;
+
+            double[] smoothedData = new double[newCount];
+           
+            for (int i = 0; i < newCount; i++)
+            {
+                double value = 0;
+
+                for (int j = i; j < i + points; j++)
+                {
+                    value += data[j];
+                }
+
+                smoothedData[i] = value / points;
+            }
+            return smoothedData;
+        }
+
+
         /// <summary>
         /// Checks if two collections are equivalent, regardless of the order of their contents
         /// </summary>

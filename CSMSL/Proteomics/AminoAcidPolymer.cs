@@ -45,7 +45,7 @@ namespace CSMSL.Proteomics
         /// or generate the string dynamically. If true, certain operations will be quicker at the cost of
         /// increased memory consumption. Default value is True.
         /// </summary>
-        public static bool StoreSequenceString;
+        public static bool StoreSequenceString { get; set; }
 
         #endregion Static Properties
 
@@ -783,6 +783,8 @@ namespace CSMSL.Proteomics
 
         public void SetModifications(IEnumerable<Modification> modifications)
         {
+            if (modifications == null)
+                return;
             foreach (Modification mod in modifications)
             {
                 SetModification(mod, mod.Sites);
@@ -838,9 +840,9 @@ namespace CSMSL.Proteomics
         /// <summary>
         /// Adds the modification at the terminus of this amino acid polymer, combining modifications if a modification is already present
         /// </summary>
-        /// <param name="mod">The modification to set</param>
+        /// <param name="modification">The modification to set</param>
         /// <param name="terminus">The termini to set the mod at</param>
-        public virtual int AddModification(IMass mod, Terminus terminus)
+        public virtual int AddModification(IMass modification, Terminus terminus)
         {
             IMass currentMod;
             int count = 0;
@@ -848,14 +850,14 @@ namespace CSMSL.Proteomics
             if ((terminus & Terminus.N) == Terminus.N)
             {
                 currentMod = NTerminusModification;
-                NTerminusModification = currentMod == null ? mod : new ModificationCollection(currentMod, mod);
+                NTerminusModification = currentMod == null ? modification : new ModificationCollection(currentMod, modification);
                 count++;
             }
 
             if ((terminus & Terminus.C) == Terminus.C)
             {
                 currentMod = CTerminusModification;
-                CTerminusModification = currentMod == null ? mod : new ModificationCollection(currentMod, mod);
+                CTerminusModification = currentMod == null ? modification : new ModificationCollection(currentMod, modification);
                 count++;
             }
             return count;
@@ -866,7 +868,7 @@ namespace CSMSL.Proteomics
             return AddModification(modification, modification.Sites);
         }
 
-        public virtual int AddModification(IMass mod, ModificationSites sites)
+        public virtual int AddModification(IMass modification, ModificationSites sites)
         {
             if (_modifications == null)
                 _modifications = new IMass[Length + 2];
@@ -876,7 +878,7 @@ namespace CSMSL.Proteomics
             if ((sites & ModificationSites.NPep) == ModificationSites.NPep)
             {
                 currentMod = NTerminusModification;
-                NTerminusModification = currentMod == null ? mod : new ModificationCollection(currentMod, mod);
+                NTerminusModification = currentMod == null ? modification : new ModificationCollection(currentMod, modification);
                 count++;
             }
 
@@ -886,7 +888,7 @@ namespace CSMSL.Proteomics
                 if ((sites & site) == site)
                 {
                     currentMod = _modifications[i + 1];
-                    ReplaceMod(i + 1, currentMod == null ? mod : new ModificationCollection(currentMod, mod));
+                    ReplaceMod(i + 1, currentMod == null ? modification : new ModificationCollection(currentMod, modification));
                     count++;
                 }
             }
@@ -894,7 +896,7 @@ namespace CSMSL.Proteomics
             if ((sites & ModificationSites.PepC) == ModificationSites.PepC)
             {
                 currentMod = CTerminusModification;
-                CTerminusModification = currentMod == null ? mod : new ModificationCollection(currentMod, mod);
+                CTerminusModification = currentMod == null ? modification : new ModificationCollection(currentMod, modification);
                 count++;
             }
 
@@ -904,15 +906,15 @@ namespace CSMSL.Proteomics
         /// <summary>
         /// Adds the modification at specific sites on this amino acid polymer, combining modifications if a modification is already present
         /// </summary>
-        /// <param name="mod">The modification to set</param>
+        /// <param name="modification">The modification to set</param>
         /// <param name="residueNumber">The residue number to set the modification at</param>
-        public virtual void AddModification(IMass mod, int residueNumber)
+        public virtual void AddModification(IMass modification, int residueNumber)
         {
             if (residueNumber > Length || residueNumber < 1)
                 throw new IndexOutOfRangeException(string.Format("Residue number not in the correct range: [{0}-{1}] you specified: {2}", 1, Length, residueNumber));
 
             IMass currentMod = GetModification(residueNumber);
-            ReplaceMod(residueNumber, currentMod == null ? mod : new ModificationCollection(currentMod, mod));
+            ReplaceMod(residueNumber, currentMod == null ? modification : new ModificationCollection(currentMod, modification));
         }
 
         /// <summary>

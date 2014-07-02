@@ -21,6 +21,8 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using CSMSL.Chemistry;
+using CSMSL.IO;
+using CSMSL.IO.MzTab;
 using CSMSL.IO.Thermo;
 using CSMSL.Proteomics;
 using CSMSL.Spectral;
@@ -62,10 +64,26 @@ namespace CSMSL.Examples
 
         private static void StartExamples()
         {
-            IsotopicDistribution ID = new IsotopicDistribution(0.01);
+            List<MzTabPSM> psms;
+            using (MzTabReader reader = new MzTabReader(@"C:\Users\Derek\Downloads\examples\examples\PSM_SQ.mzTab"))
+            {
+                reader.Open();
+              
+                for (int i = 0; i < reader.NumberOfPsms; i++)
+                {
+                    string value = reader.GetPSMValue(MzTab.PSMSequenceField, i);
+                }
+             
+                psms = reader.GetPsms().ToList();
+            }
 
-            Spectrum spectrum = ID.CalculateDistribuition(new ChemicalFormula("C100"));
+            using (MzTabWriter writer = new MzTabWriter(@"C:\Users\Derek\Downloads\examples\examples\dereksTest.mzTab"))
+            {
+                writer.Open();
 
+                writer.WriteLine();
+                writer.WritePsmData(psms);
+            }
 
             // Examples coding  
 

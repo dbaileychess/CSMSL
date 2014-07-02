@@ -22,8 +22,7 @@ namespace CSMSL
     /// <summary>
     /// A continuous, inclusive range of values, with a well defined minimum and maximum value
     /// </summary>
-    public class Range<T> : IRange<T>
-        where T : IComparable<T>, IEquatable<T>
+    public class Range<T> : IRange<T> where T : IComparable<T>, IEquatable<T>
     {
         public Range()
             : this(default(T), default(T))
