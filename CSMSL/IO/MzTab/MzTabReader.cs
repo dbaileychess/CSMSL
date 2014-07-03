@@ -1,33 +1,22 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Data;
-using System.Data.Linq;
 using System.IO;
 using System.Linq;
-using System.Runtime.Serialization.Formatters;
-using System.Text;
-using System.Text.RegularExpressions;
 
 namespace CSMSL.IO.MzTab
 {
     public sealed class MzTabReader : IDisposable
     {
+        #region Public Properties
+
         public string FilePath { get; private set; }
         public bool IsOpen { get; private set; }
-
-        #region Comment Section
-
-        private DataTable _commentsDataTable;
-        private readonly bool _ignoreComments;
-        public bool ContainsComments { get { return _commentsDataTable != null; } }
-
-        #endregion
-
-        #region PSM Section
-
-        private DataTable _psmDataTable;
-        public bool ContainsPsms { get { return _psmDataTable != null; } }
-        public int NumberOfPsms { get { return (ContainsPsms) ? _psmDataTable.Rows.Count : 0; } }
+        public MzTab.MzTabMode Mode { get; private set; }
+        public MzTab.MzTabType Type { get; private set; }
+        public string Version { get; private set; }
+        public string Description { get; private set; }
 
         #endregion
 
@@ -37,16 +26,17 @@ namespace CSMSL.IO.MzTab
 
         #endregion
 
-        private StreamReader _reader;
-       
-        private Dictionary<int, string> _msRunLocations;
-        private Dictionary<int, string> _fixedModifications;
-        private Dictionary<int, string> _variableModifications; 
+        #region ExperimentalSetup
+
+        private DataTable _msRunLocationDataTable;
+
+        #endregion
         
-        public MzTab.MzTabMode Mode { get; private set; }
-        public MzTab.MzTabType Type { get; private set; }
-        public string Version { get; private set; }
-        public string Description { get; private set; }
+        private StreamReader _reader;
+        private MzTab.States _currentState;
+        private readonly DataSet _dataSet;
+     
+        #region Constructors
 
         public MzTabReader(string filePath, bool ignoreComments = true)
         {
@@ -60,9 +50,19 @@ namespace CSMSL.IO.MzTab
             _modDataTable = _dataSet.Tables.Add("Modifications");
             _modDataTable.Columns.Add("key");
             _modDataTable.Columns.Add("value");
-            _modDataTable.Columns.Add("isFixed");
+            _modDataTable.Columns.Add("isFixed", typeof(bool));
+            _msRunLocationDataTable = _dataSet.Tables.Add("MS Runs");
+            _msRunLocationDataTable.Columns.Add("key");
+            _msRunLocationDataTable.Columns.Add("value");
         }
 
+        #endregion
+
+        #region Public Methods
+
+        /// <summary>
+        /// Opens up the mzTab file and parses all the information into memory
+        /// </summary>
         public void Open()
         {
             var stream = new FileStream(FilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
@@ -78,12 +78,93 @@ namespace CSMSL.IO.MzTab
             IsOpen = false;
         }
 
-        private MzTab.States _currentState;
+        public string[] GetColumns(MzTabSection section)
+        {
+            switch (section)
+            {
+                case MzTabSection.PSM:
+                    return _psmDataTable != null ? _psmDataTable.Columns.Cast<DataColumn>().Select(x => x.ColumnName).ToArray() : null;
+                case MzTabSection.Peptide:
+                    return _peptideDataTable != null ? _peptideDataTable.Columns.Cast<DataColumn>().Select(x => x.ColumnName).ToArray() : null;
+                case MzTabSection.Protein:
+                    return _proteinDataTable != null ? _proteinDataTable.Columns.Cast<DataColumn>().Select(x => x.ColumnName).ToArray() : null;
+                case MzTabSection.SmallMolecule:
+                    return _smallMoleculeDataTable != null ? _smallMoleculeDataTable.Columns.Cast<DataColumn>().Select(x => x.ColumnName).ToArray() : null;
+                default:
+                    return null;
+            }
+        }
 
-        private readonly DataSet _dataSet;
-     
-        private readonly DataTable _metaDataTable;
-     
+        public bool ContainsColumn(MzTabSection section, string columnName)
+        {
+            switch (section)
+            {
+                case MzTabSection.PSM:
+                    return _psmDataTable != null && _psmDataTable.Columns.Contains(columnName);
+                case MzTabSection.Peptide:
+                    return _peptideDataTable != null && _peptideDataTable.Columns.Contains(columnName);
+                case MzTabSection.Protein:
+                    return _proteinDataTable != null && _proteinDataTable.Columns.Contains(columnName);
+                case MzTabSection.SmallMolecule:
+                    return _smallMoleculeDataTable != null && _smallMoleculeDataTable.Columns.Contains(columnName);
+                default:
+                    return false;
+            }
+        }
+
+        public string GetData(MzTabSection section, int index, string columnName)
+        {
+            switch (section)
+            {
+                case MzTabSection.PSM:
+                    return _psmDataTable != null ? (string)_psmDataTable.Rows[index][columnName] : null;
+                case MzTabSection.Peptide:
+                    return _peptideDataTable != null ? (string)_peptideDataTable.Rows[index][columnName] : null;
+                case MzTabSection.Protein:
+                    return _proteinDataTable != null ? (string)_proteinDataTable.Rows[index][columnName] : null;
+                case MzTabSection.SmallMolecule:
+                    return _smallMoleculeDataTable != null ? (string)_smallMoleculeDataTable.Rows[index][columnName] : null;
+                default:
+                    return null;
+            }
+        }
+
+        public string[] GetData(MzTabSection section, int index)
+        {
+            switch (section)
+            {
+                case MzTabSection.PSM:
+                    return _psmDataTable != null ? (string[])_psmDataTable.Rows[index].ItemArray : null;
+                case MzTabSection.Peptide:
+                    return _peptideDataTable != null ? (string[])_peptideDataTable.Rows[index].ItemArray : null;
+                case MzTabSection.Protein:
+                    return _proteinDataTable != null ? (string[])_proteinDataTable.Rows[index].ItemArray : null;
+                case MzTabSection.SmallMolecule:
+                    return _smallMoleculeDataTable != null ? (string[])_smallMoleculeDataTable.Rows[index].ItemArray : null;
+                default:
+                    return null;
+            }
+        }
+
+        public string this[MzTabSection section, int index, string columnName]
+        {
+            get
+            {
+                return GetData(section, index, columnName);
+            }
+        }
+
+        public string[] this[MzTabSection section, int index]
+        {
+            get
+            {
+                return GetData(section, index);
+            }
+        }
+        
+        #endregion
+
+        #region Private Methods
 
         private void Read()
         {
@@ -108,36 +189,48 @@ namespace CSMSL.IO.MzTab
                 // Jump to the method that handles each of the different line prefixes
                 switch (linePrefix)
                 {
+                    // Comments
                     case MzTab.CommentLinePrefix:
                         ReadComment(data, lineNumber);
                         break;
+
+                    // MetaData
                     case MzTab.MetaDataLinePrefix:
                         ReadMetaData(data, lineNumber);
                         break;
+
+                    // Table Headers
                     case MzTab.ProteinTableLinePrefix:
-                        ReadProteinTable(data, lineNumber);
-                        break;
-                    case MzTab.ProteinDataLinePrefix:
-                        ReadProteinData(data, lineNumber);
-                        break;
-                    case MzTab.PeptideDataLinePrefix:
-                        ReadPeptideData(data, lineNumber);
+                        _proteinDataTable = _dataSet.Tables.Add(MzTab.ProteinSection);
+                        ReadTableDefinition(MzTab.States.ProteinHeader, data, _proteinDataTable);
                         break;
                     case MzTab.PeptideTableLinePrefix:
-                        ReadPeptideTable(data, lineNumber);
+                        _peptideDataTable = _dataSet.Tables.Add(MzTab.PeptideSection);
+                        ReadTableDefinition(MzTab.States.PeptideHeader, data, _peptideDataTable);
                         break;
                     case MzTab.PsmTableLinePrefix:
-                        ReadPSMHeader(data, lineNumber);
-                        break;
-                    case MzTab.PsmDataLinePrefix:
-                        ReadPSMData(data, lineNumber);
+                        _psmDataTable = _dataSet.Tables.Add(MzTab.PsmSection);
+                        ReadTableDefinition(MzTab.States.PsmHeader, data, _psmDataTable);
                         break;
                     case MzTab.SmallMoleculeTableLinePrefix:
-                        ReadSmallMoleculeTable(data, lineNumber);
+                        _smallMoleculeDataTable = _dataSet.Tables.Add(MzTab.SmallMoleculeSection);
+                        ReadTableDefinition(MzTab.States.SmallMoleculeHeader, data, _smallMoleculeDataTable);
+                        break;
+                   
+                    // Table Data
+                    case MzTab.ProteinDataLinePrefix:
+                        ReadDataTable(MzTab.States.ProteinData, data, _proteinDataTable);
+                        break;
+                    case MzTab.PeptideDataLinePrefix:
+                        ReadDataTable(MzTab.States.PeptideData, data, _peptideDataTable);
+                        break;
+                    case MzTab.PsmDataLinePrefix:
+                        ReadDataTable(MzTab.States.PsmData, data, _psmDataTable);
                         break;
                     case MzTab.SmallMoleculeDataLinePrefix:
-                        ReadSmallMoleculeData(data, lineNumber);
+                        ReadDataTable(MzTab.States.SmallMoleculeData, data, _smallMoleculeDataTable);
                         break;
+
                     // If we got here, the line prefix is not valid
                     default:
                         CheckError(line, lineNumber);
@@ -145,176 +238,119 @@ namespace CSMSL.IO.MzTab
                 }
             }
         }
-
-        private void ReadPeptideTable(string[] data, int lineNumber)
+        
+        private void CheckError(string line, int lineNumber)
         {
-            throw new NotImplementedException();
+            throw new ArgumentException("Unable to correctly parse line #" + lineNumber);
         }
 
-        private void ReadPeptideData(string[] data, int lineNumber)
+        private void ReadTableDefinition(MzTab.States headerState, string[] data, DataTable table)
         {
-            throw new NotImplementedException();
-        }
-
-        private void ReadSmallMoleculeData(string[] data, int lineNumber)
-        {
-            throw new NotImplementedException();
-        }
-
-        private void ReadSmallMoleculeTable(string[] data, int lineNumber)
-        {
-            throw new NotImplementedException();
-        }
-
-        private Dictionary<string, int> _psmHeaderIndices;
-
-        private void ReadPSMHeader(string[] data, int lineNumber)
-        {
-            if ((_currentState & MzTab.States.PsmHeader) == MzTab.States.PsmHeader)
+            if ((_currentState & MzTab.States.MetaData) != MzTab.States.MetaData)
             {
-                throw new ArgumentException("Already parsed one PSM header line, mzTab files only support one PSM section per file");
+                throw new ArgumentException("The MetaData section MUST occur before the " + table.TableName + " Section. Invalid input file");
             }
 
-            // set that we enter in PSM Header section
-            _currentState |= MzTab.States.PsmHeader;
-            
-            // Add the PSM table to the dataset
-            _psmDataTable = _dataSet.Tables.Add("PSM");
-            
+            if ((_currentState & headerState) == headerState)
+            {
+                throw new ArgumentException("The " + table.TableName + " Table Header has already been parsed once, only one  " + table.TableName + " section is allowed per mzTab file.");
+            }
+
+            // Set the we have entered the current state
+            _currentState |= headerState;
+
             int i = 1;
             while (i < data.Length && !string.IsNullOrWhiteSpace(data[i]))
             {
-                _psmDataTable.Columns.Add(data[i].Trim());
+                table.Columns.Add(data[i].Trim());
                 i++;
             }
-
-            // Add validation?
-        }
-   
-        private void ReadPSMData(string[] data, int lineNumber)
-        {
-            if ((_currentState & MzTab.States.PsmHeader) != MzTab.States.PsmHeader)
-            {
-                throw new ArgumentException("No PSM header information loaded, unable to parse PSM data");
-            }
-            
-            // Set that we have entered the PSM data section
-            _currentState |= MzTab.States.PsmData;
-            
-            // Add the row to the PSM data table
-            _psmDataTable.Rows.Add(data.SubArray(1, data.Length - 1));
-
-            // Loop over each column up to the maximum defined by the PSM header
-            //for (int i = 1; i < _maxPSMIndex; i++)
-            //{
-            //    string key = _psmHeader[i].Trim();
-            //    string value = data[i];
-
-
-            //    row[key] = value;
-            //    continue;
-            //    switch (key)
-            //    {
-            //        case MzTab.PSMSequenceField:
-            //            psm.Sequence = value.ToUpper();
-            //            break;
-            //        case MzTab.PSMIdField:
-            //            psm.ID = int.Parse(value);
-            //            break;
-            //        case MzTab.PSMAcessionField:
-            //            psm.Accession = value;
-            //            break;
-            //        case MzTab.PSMUniqueField:
-            //            psm.Unique = value == "1";
-            //            break;
-            //        case MzTab.PSMDatabaseField:
-            //            psm.Database = value;
-            //            break;
-            //        case MzTab.PSMDatabaseVersionField:
-            //            psm.DatabaseVersion = value;
-            //            break;
-            //        case MzTab.PSMSearchEngineField:
-            //            psm.SearchEngines = value;
-            //            break;
-            //        case MzTab.PSMRelibailityField:
-            //            psm.Reliability = int.Parse(value);
-            //            break;
-            //        case MzTab.PSMModificationsField:
-            //            psm.Modifications = value;
-            //            break;
-            //        case MzTab.PSMRetentionTimeField:
-            //            psm.RetentionTime = double.Parse(value);
-            //            break;
-            //        case MzTab.PSMChargeField:
-            //            psm.Charge = int.Parse(value);
-            //            break;
-            //        case MzTab.PSMExperimentalMZField:
-            //            psm.ExperimentalMZ = double.Parse(value);
-            //            break;
-            //        case MzTab.PSMTheoreticalMZField:
-            //            psm.TheoreticalMZ = double.Parse(value);
-            //            break;
-            //        case MzTab.PSMUriField:
-            //            psm.URI = value;
-            //            break;
-            //        case MzTab.PSMSpectraReferenceField:
-            //            psm.SpectraReference = value;
-            //            break;
-            //        case MzTab.PSMPreviousAminoAcidField:
-            //            psm.PreviousAminoAcid = value[0];
-            //            break;
-            //        case MzTab.PSMFollowingAminoAcidField:
-            //            psm.FollowingAminoAcid = value[0];
-            //            break;
-            //        case MzTab.PSMStartResidueField:
-            //            psm.StartResiduePosition = int.Parse(value);
-            //            break;
-            //        case MzTab.PSMEndResidueField:
-            //            psm.EndResiduePosition = int.Parse(value);
-            //            break;
-            //        default:
-            //            if (key.StartsWith("opt_"))
-            //            {
-            //                psm.AddOptionalField(key, value);
-            //            }
-            //            else if (key.StartsWith(MzTab.PSMSearchEngineScoreField))
-            //            {
-            //                int index = key.Contains('[') ? MzTab.GetIndex(key) : 1;
-            //                psm.SetEngineScore(index, value);
-            //            }
-            //            else
-            //            {
-            //                throw new Exception("The PSM header " + key + " is not a valid header");
-            //            }
-            //            break;
-            //    }
-            //}
-
-            //if (_psms == null)
-            //    _psms = new List<MzTabPSM>();
-
-            //_psms.Add(psm);
         }
 
-        //private List<MzTabPSM> _psms; 
-
-        private void ReadProteinData(string[] data, int lineNumber)
+        private void ReadDataTable(MzTab.States dataState, string[] data, DataTable table)
         {
-            if ((_currentState & MzTab.States.ProteinHeader) != MzTab.States.ProteinHeader)
+            if (table == null)
             {
-                throw new ArgumentException("No protein header information loaded, unable to parse protein data");
+                throw new ArgumentException("No header information loaded for " + dataState + ", unable to parse data");
             }
 
-            // set that we enter in Protein Data section
-            _currentState |= MzTab.States.ProteinData;
-        }
+            // Set the we have entered the current state
+            _currentState |= dataState;
 
-        private void ReadProteinTable(string[] data, int lineNumber)
-        {
-            // set that we enter in Protein Header section
-            _currentState |= MzTab.States.ProteinHeader;
+            // Add the row to the Protein data table
+            table.Rows.Add(data.SubArray(1, table.Columns.Count));
         }
         
+        #endregion
+
+        #region Peptide Section
+        
+        private DataTable _peptideDataTable;
+
+        public bool ContainsPeptides { get { return _peptideDataTable != null && _peptideDataTable.Rows.Count > 0; } }
+        public int NumberOfPeptides { get { return (ContainsPeptides) ? _peptideDataTable.Rows.Count : 0; } }
+        
+        #endregion
+
+        #region Small Molecule Section
+
+        private DataTable _smallMoleculeDataTable;
+
+        public bool ContainsSmallMolecules { get { return _smallMoleculeDataTable != null && _smallMoleculeDataTable.Rows.Count > 0; } }
+        public int NumberOfSmallMolecules { get { return (ContainsSmallMolecules) ? _smallMoleculeDataTable.Rows.Count : 0; } }
+        
+        #endregion
+
+        #region PSM Section
+
+        private DataTable _psmDataTable;
+
+        public bool ContainsPsms { get { return _psmDataTable != null && _psmDataTable.Rows.Count > 0; } }
+        public int NumberOfPsms { get { return (ContainsPsms) ? _psmDataTable.Rows.Count : 0; } }
+
+        #endregion
+
+        #region Protein Section
+
+        private DataTable _proteinDataTable;
+        
+        public bool ContainsProteins { get { return _proteinDataTable != null && _proteinDataTable.Rows.Count > 0; } }
+        public int NumberOfProteins { get { return (ContainsProteins) ? _proteinDataTable.Rows.Count : 0; } }
+        
+        #endregion
+
+        #region Comment Section
+
+        private DataTable _commentsDataTable;
+        private readonly bool _ignoreComments;
+        public bool ContainsComments { get { return _commentsDataTable != null; } }
+
+        private void ReadComment(string[] data, int lineNumber)
+        {
+            // Do nothing with the comment if we aren't storing them
+            if (_ignoreComments)
+                return;
+
+            // Create the comment table if it doesn't exist
+            if (_commentsDataTable == null)
+            {
+                _commentsDataTable = _dataSet.Tables.Add("Comments");
+                _commentsDataTable.Columns.Add("lineNumber", typeof(int));
+                _commentsDataTable.Columns.Add("comment");
+            }
+
+            // The comment should be the second thing in the data array
+            string comment = data[1];
+
+            _commentsDataTable.Rows.Add(lineNumber, comment);
+        }
+
+        #endregion
+
+        #region MetaData Section
+
+        private readonly DataTable _metaDataTable;
+
         private void ReadMetaData(string[] data, int lineNumber)
         {
             // Set that we have enter in Metadata section
@@ -345,19 +381,13 @@ namespace CSMSL.IO.MzTab
                     Description = value;
                     break;
                 case MzTab.MDMsRunLocationField:
-                    if (_msRunLocations == null)
-                        _msRunLocations = new Dictionary<int, string>();
-                    _msRunLocations.Add(1, value);
+                    _msRunLocationDataTable.Rows.Add(key, value);
                     break;
                 case MzTab.MDFixedModField:
-                    if (_fixedModifications == null)
-                        _fixedModifications = new Dictionary<int, string>();
-                    _fixedModifications.Add(1, value);
+                    _modDataTable.Rows.Add(key, value, true);
                     break;
                 case MzTab.MDVariableModField:
-                     if (_variableModifications == null)
-                         _variableModifications = new Dictionary<int, string>();
-                     _variableModifications.Add(1, value);
+                    _modDataTable.Rows.Add(key, value, false);
                     break;
             }
 
@@ -365,40 +395,8 @@ namespace CSMSL.IO.MzTab
             _metaDataTable.Rows.Add(key, value);
         }
 
-        private void ReadComment(string[] data, int lineNumber)
-        {
-            // Do nothing with the comment if we aren't storing them
-            if (_ignoreComments)
-                return;
-
-            if (_commentsDataTable == null)
-            {
-                _commentsDataTable = _dataSet.Tables.Add("Comments");
-                _commentsDataTable.Columns.Add("lineNumber", typeof(int));
-                _commentsDataTable.Columns.Add("comment");
-            }
-
-            // The comment should be the second thing in the data array
-            string comment = data[1];
-
-            _commentsDataTable.Rows.Add(lineNumber, comment);
-        }
-
-        private void CheckError(string line, int lineNumber)
-        {
-            throw new ArgumentException("Unable to correctly parse line #" + lineNumber);
-        }
+        #endregion
         
-        public bool ContainsPsmField(string field)
-        {
-            return _psmDataTable.Columns.Contains(field);
-        }
-
-        public string GetPSMValue(string key, int psmIndex)
-        {
-            return _psmDataTable.Rows[psmIndex][key] as string;
-        }
-
         //public string this[MzTab.LinePrefix prefix, int index, string field]
         //{
         //    get

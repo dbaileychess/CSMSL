@@ -65,14 +65,15 @@ namespace CSMSL.Examples
         private static void StartExamples()
         {
             List<MzTabPSM> psms;
-            using (MzTabReader reader = new MzTabReader(@"C:\Users\Derek\Downloads\examples\examples\PSM_SQ.mzTab"))
+            using (MzTabReader reader = new MzTabReader(@"C:\Users\Derek\Downloads\examples\examples\protein_and_PSM_SI.mzTab"))
             {
                 reader.Open();
               
                 for (int i = 0; i < reader.NumberOfPsms; i++)
                 {
-                    string value = reader.GetPSMValue(MzTab.PSMSequenceField, i);
+                    string value = reader.GetData(MzTabSection.PSM, i , "sequence");
                 }
+                string[] columns = reader.GetColumns(MzTabSection.Protein);
              
                 psms = reader.GetPsms().ToList();
             }

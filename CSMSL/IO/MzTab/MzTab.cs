@@ -36,6 +36,8 @@ namespace CSMSL.IO.MzTab
         /// </summary>
         public const bool CaseSensitive = true;
 
+        public const string OptionalColumnPrefix = "opt_";
+
         /// <summary>
         /// Version of the mzTab specification 
         /// <para>
@@ -70,6 +72,30 @@ namespace CSMSL.IO.MzTab
             SmallMoleculeTable,
             SmallMoleculeData
         }
+
+        public enum ReliabilityScore
+        {
+            High = 1,
+            Medium = 2,
+            Poor = 3
+        }
+
+        public enum MetabolomicsReliabilityScore
+        {
+            IdentifiedMetabolite = 1,
+            PutativelyAnnotatedCompound = 2,
+            PutativelyCharacterizedCompoundClass = 3,
+            UnkownCompound = 4
+        }
+
+        #endregion
+
+        #region Table Sections
+
+        public const string PeptideSection = "Peptides";
+        public const string ProteinSection = "Proteins";
+        public const string PsmSection = "PSMs";
+        public const string SmallMoleculeSection = "SmallMolecules";
 
         #endregion
 
@@ -107,8 +133,7 @@ namespace CSMSL.IO.MzTab
         public const string PSMFollowingAminoAcidField = "post";
         public const string PSMStartResidueField = "start";
         public const string PSMEndResidueField = "end";
-
-
+        
         #endregion
 
         #region Date/time Format

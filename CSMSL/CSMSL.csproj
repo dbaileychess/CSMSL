@@ -168,6 +168,7 @@
     <Compile Include="IO\MzTab\MzTab.cs" />
     <Compile Include="IO\MzTab\MzTabPSM.cs" />
     <Compile Include="IO\MzTab\MzTabReader.cs" />
+    <Compile Include="IO\MzTab\MzTabSection.cs" />
     <Compile Include="IO\MzTab\MzTabWriter.cs" />
     <Compile Include="IO\PsmReader.cs" />
     <Compile Include="IO\uniprot.cs">
