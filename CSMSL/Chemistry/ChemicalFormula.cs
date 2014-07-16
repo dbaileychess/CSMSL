@@ -769,8 +769,8 @@ namespace CSMSL.Chemistry
 
         public double[,] GetIsotopicDistribution(double resolution = 0.01, int numberOfIsotopes = int.MaxValue)
         {
-            IsotopicDistribution id = new IsotopicDistribution(resolution, numberOfIsotopes);
-            var spectrum = id.CalculateDistribuition(this);
+            IsotopicDistribution id = new IsotopicDistribution(resolution);
+            var spectrum = id.CalculateDistribuition(this, numberOfIsotopes, IsotopicDistribution.Normalization.BasePeak);
             return spectrum.ToArray();
         }
 

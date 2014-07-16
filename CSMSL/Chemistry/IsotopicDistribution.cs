@@ -607,6 +607,9 @@ namespace CSMSL.Chemistry
             int i = tPolynomial.Count;
             int j = fPolynomial.Count;
 
+            if (i == 0 || j == 0)
+                return;
+
             double deltaMass = (_fineResolution / _mwResolution);
             double minProbability = _fineMinProb;
 

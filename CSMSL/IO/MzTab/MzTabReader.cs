@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.IO;
@@ -13,22 +12,24 @@ namespace CSMSL.IO.MzTab
 
         public string FilePath { get; private set; }
         public bool IsOpen { get; private set; }
-        public MzTab.MzTabMode Mode { get; private set; }
-        public MzTab.MzTabType Type { get; private set; }
-        public string Version { get; private set; }
-        public string Description { get; private set; }
+        //public MzTab.MzTabMode Mode { get; private set; }
+        //public MzTab.MzTabType Type { get; private set; }
+        //public string Version { get; private set; }
+        //public string Description { get; private set; }
+
+        public MzTabMetaData MetaData { get; private set; }
 
         #endregion
 
         #region Modifications
 
-        private DataTable _modDataTable;
+        private readonly DataTable _modDataTable;
 
         #endregion
 
         #region ExperimentalSetup
 
-        private DataTable _msRunLocationDataTable;
+        private readonly DataTable _msRunLocationDataTable;
 
         #endregion
         
@@ -42,6 +43,7 @@ namespace CSMSL.IO.MzTab
         {
             IsOpen = false;
             FilePath = filePath;
+            MetaData = new MzTabMetaData();
             _ignoreComments = ignoreComments;
             _dataSet = new DataSet(FilePath) {CaseSensitive = MzTab.CaseSensitive};
             _metaDataTable = _dataSet.Tables.Add("MetaData");
@@ -67,8 +69,7 @@ namespace CSMSL.IO.MzTab
         {
             var stream = new FileStream(FilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
             _reader = new StreamReader(stream, MzTab.DefaultEncoding, true);
-            IsOpen = true;
-            Read();
+            LoadData();
         }
         
         public void Dispose()
@@ -166,7 +167,7 @@ namespace CSMSL.IO.MzTab
 
         #region Private Methods
 
-        private void Read()
+        private void LoadData()
         {
             int lineNumber = 0;
             while (!_reader.EndOfStream)
@@ -237,10 +238,12 @@ namespace CSMSL.IO.MzTab
                         break;
                 }
             }
+            IsOpen = true;
         }
         
         private void CheckError(string line, int lineNumber)
         {
+            Console.Error.WriteLine(line);
             throw new ArgumentException("Unable to correctly parse line #" + lineNumber);
         }
 
@@ -308,6 +311,25 @@ namespace CSMSL.IO.MzTab
         public bool ContainsPsms { get { return _psmDataTable != null && _psmDataTable.Rows.Count > 0; } }
         public int NumberOfPsms { get { return (ContainsPsms) ? _psmDataTable.Rows.Count : 0; } }
 
+        public IEnumerable<MzTabPSM> GetPsms()
+        {
+            if (!ContainsPsms)
+                yield break;
+
+            string[] columns = GetColumns(MzTabSection.PSM);
+            int count = columns.Length;
+
+            foreach (DataRow row in _psmDataTable.Rows)
+            {
+                MzTabPSM psm = new MzTabPSM(count);
+                for (int i = 0; i < count; i++)
+                {
+                    psm.SetValue(columns[i], (string)row.ItemArray[i]);
+                }
+                yield return psm;
+            }
+        }
+
         #endregion
 
         #region Protein Section
@@ -339,6 +361,7 @@ namespace CSMSL.IO.MzTab
                 _commentsDataTable.Columns.Add("comment");
             }
 
+            // TODO comments can contain tabs, so figure out how to read all the fields
             // The comment should be the second thing in the data array
             string comment = data[1];
 
@@ -365,79 +388,46 @@ namespace CSMSL.IO.MzTab
                 throw new Exception("No key was specified in the metadata section at line #" + lineNumber);
             }
 
-            // Handle mandatory metadata keys
-            switch (key)
-            {
-                case MzTab.MDVersionField:
-                    Version = value;
-                    break;
-                case MzTab.MDModeField:
-                    Mode = (MzTab.MzTabMode)Enum.Parse(typeof(MzTab.MzTabMode), value, true);
-                    break;
-                case MzTab.MDTypeField:
-                    Type = (MzTab.MzTabType)Enum.Parse(typeof(MzTab.MzTabType), value, true);
-                    break;
-                case MzTab.MDDescriptionField:
-                    Description = value;
-                    break;
-                case MzTab.MDMsRunLocationField:
-                    _msRunLocationDataTable.Rows.Add(key, value);
-                    break;
-                case MzTab.MDFixedModField:
-                    _modDataTable.Rows.Add(key, value, true);
-                    break;
-                case MzTab.MDVariableModField:
-                    _modDataTable.Rows.Add(key, value, false);
-                    break;
-            }
+            MetaData.SetValue(key, value);
+
+            //// Handle mandatory metadata keys
+            //switch (key)
+            //{
+            //    case MzTab.MDVersionField:
+            //        Version = value;
+            //        break;
+            //    case MzTab.MDModeField:
+            //        Mode = (MzTab.MzTabMode)Enum.Parse(typeof(MzTab.MzTabMode), value, true);
+            //        break;
+            //    case MzTab.MDTypeField:
+            //        Type = (MzTab.MzTabType)Enum.Parse(typeof(MzTab.MzTabType), value, true);
+            //        break;
+            //    case MzTab.MDDescriptionField:
+            //        Description = value;
+            //        break;
+            //    case MzTab.MDMsRunLocationField:
+            //        _msRunLocationDataTable.Rows.Add(key, value);
+            //        break;
+            //    case MzTab.MDFixedModField:
+            //        _modDataTable.Rows.Add(key, value, true);
+            //        break;
+            //    case MzTab.MDVariableModField:
+            //        _modDataTable.Rows.Add(key, value, false);
+            //        break;
+            //}
 
             // Add the data to the MetaData table
             _metaDataTable.Rows.Add(key, value);
         }
 
+        public IEnumerable<string> GetMetaDataValue(string key)
+        {
+            string expression = "key='"+key+"'";
+            DataRow[] rows = _metaDataTable.Select(expression);
+            return rows.Select(row => row["value"]).Cast<string>();
+        }
+
         #endregion
         
-        //public string this[MzTab.LinePrefix prefix, int index, string field]
-        //{
-        //    get
-        //    {
-        //        return _psmDataTable.Rows[index][field] as string;
-        //    }
-        //}
-
-        //public object[] this[MzTab.LinePrefix prefix, int index]
-        //{
-        //    get
-        //    {
-        //        return _psmDataTable.Rows[index].ItemArray;
-        //    }
-        //}
-       
-        public IEnumerable<MzTabPSM> GetPsms()
-        {
-            if (_psmDataTable == null)
-                yield break;
-
-            bool containsReliability = _psmDataTable.Columns.Contains(MzTab.PSMRelibailityField);
-            bool containsUri = _psmDataTable.Columns.Contains(MzTab.PSMUriField);
-
-        
-            foreach (DataRow row in _psmDataTable.Rows)
-            {
-                MzTabPSM psm = new MzTabPSM
-                {
-                    Sequence = (string)row[MzTab.PSMSequenceField],
-                    ID = int.Parse((string)row[MzTab.PSMIdField])
-                };
-
-                if(containsReliability)
-                    psm.Reliability = int.Parse((string)row[MzTab.PSMRelibailityField]);
-
-                if(containsUri)
-                    psm.URI = (string)row[MzTab.PSMUriField];
-                
-                yield return psm;
-            }
-        }
     }
 }

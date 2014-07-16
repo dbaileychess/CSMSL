@@ -36,6 +36,11 @@ namespace CSMSL.IO.MzTab
         /// </summary>
         public const bool CaseSensitive = true;
 
+        /// <summary>
+        /// Arrays are 1-based
+        /// </summary>
+        public const int IndexBased = 1;
+
         public const string OptionalColumnPrefix = "opt_";
 
         /// <summary>
@@ -99,16 +104,22 @@ namespace CSMSL.IO.MzTab
 
         #endregion
 
-        #region MetaData Mandatory Fields
+        #region MetaData Fields
 
         public const string MDVersionField = "mzTab-version";
         public const string MDModeField = "mzTab-mode";
         public const string MDTypeField = "mzTab-type";
         public const string MDDescriptionField = "description";
-        public const string MDMsRunLocationField = "ms_run[1]-location";
-        public const string MDFixedModField = "fixed_mod[1]";
-        public const string MDVariableModField = "variable_mod[1]";
-        
+        public const string MDProteinQuantificationUnit = "protein-quantification_unit";
+        public const string MDIDField = "mzTab-ID";
+        public const string MDTitleField = "title";
+        public const string MDMsRunLocationField = "ms_run[]-location";
+        public const string MDFixedModField = "fixed_mod[]";
+        public const string MDVariableModField = "variable_mod[]";
+        public const string MDStudyVariableDescriptionField = "study_variable[]-description";
+        public const string MDPsmSearchEngineScoreField = "psm_search_engine_score[]";
+        public const string MDProteinSearchEngineScoreField = "protein_search_engine_score[]";
+
         #endregion
 
         #region PSM Section Mandatory Fields
@@ -151,7 +162,7 @@ namespace CSMSL.IO.MzTab
         #endregion
 
         public enum MzTabMode { Summary, Complete };
-        public enum MzTabType { Identification, Quantitation };
+        public enum MzTabType { Identification, Quantification };
 
         [Flags]
         internal enum States

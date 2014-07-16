@@ -166,6 +166,8 @@
     <Compile Include="IO\MSDataFile.cs" />
     <Compile Include="IO\MsDataFileType.cs" />
     <Compile Include="IO\MzTab\MzTab.cs" />
+    <Compile Include="IO\MzTab\MzTabEntity.cs" />
+    <Compile Include="IO\MzTab\MzTabMetaData.cs" />
     <Compile Include="IO\MzTab\MzTabPSM.cs" />
     <Compile Include="IO\MzTab\MzTabReader.cs" />
     <Compile Include="IO\MzTab\MzTabSection.cs" />

@@ -65,27 +65,34 @@ namespace CSMSL.Examples
         private static void StartExamples()
         {
             List<MzTabPSM> psms;
-            using (MzTabReader reader = new MzTabReader(@"C:\Users\Derek\Downloads\examples\examples\protein_and_PSM_SI.mzTab"))
+            MzTabMetaData metaData;
+            using (MzTabReader reader = new MzTabReader(@"E:\Desktop\mzTab Examples\iTRAQ_SQI.mzTab", false))
             {
                 reader.Open();
-              
+
+                List<string> values = reader.GetMetaDataValue("fixed_mod[1]").ToList();
+
+                metaData = reader.MetaData;
+
                 for (int i = 0; i < reader.NumberOfPsms; i++)
                 {
-                    string value = reader.GetData(MzTabSection.PSM, i , "sequence");
+                    string value = reader.GetData(MzTabSection.PSM, i, MzTab.PSMSequenceField);
                 }
                 string[] columns = reader.GetColumns(MzTabSection.Protein);
-             
+
                 psms = reader.GetPsms().ToList();
             }
 
-            using (MzTabWriter writer = new MzTabWriter(@"C:\Users\Derek\Downloads\examples\examples\dereksTest.mzTab"))
+            metaData.Title = "Test Title";
+   
+            using (MzTabWriter writer = new MzTabWriter(@"E:\Desktop\mzTab Examples\dereksTest.mzTab"))
             {
-                writer.Open();
-
+                writer.WriteComment("Test Comment");
+                writer.WriteMetaData(metaData);
                 writer.WriteLine();
                 writer.WritePsmData(psms);
             }
-
+            
             // Examples coding  
 
             //ChemicalFormulaExamples();

@@ -20,17 +20,21 @@ using System.Collections.Generic;
 
 namespace CSMSL.Spectral
 {
-    public interface ISpectrumTime : ISpectrumTime<MZPeak>
-    {
-    }
-
-    public interface ISpectrumTime<out T> : ISpectrum<T> where T : IPeak
+    public interface ISpectrumTime : ISpectrum
     {
         /// <summary>
         /// The time associated with this spectrum
         /// </summary>
         double Time { get; }
     }
+
+    //public interface ISpectrumTime<out T> : ISpectrum<T> where T : IPeak
+    //{
+    //    /// <summary>
+    //    /// The time associated with this spectrum
+    //    /// </summary>
+    //    double Time { get; }
+    //}
 
     public static class ISpectrumTimeExtension
     {
