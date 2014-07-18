@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -30,6 +32,8 @@ namespace CSMSL.IO.MzTab
         /// </para>
         /// </summary>
         public static Regex MultipleEntryRegex = new Regex(@"\[([1-9][0-9]*)\]", RegexOptions.Compiled);
+
+       // public static Regex OptionalColumnName= new Regex(@"[A-Za-z0-9_-:\]\[]+", RegexOptions.Compiled);
 
         /// <summary>
         /// All column labels and field names are case-sensitive
@@ -80,6 +84,7 @@ namespace CSMSL.IO.MzTab
 
         public enum ReliabilityScore
         {
+            None = 0,
             High = 1,
             Medium = 2,
             Poor = 3
@@ -87,6 +92,7 @@ namespace CSMSL.IO.MzTab
 
         public enum MetabolomicsReliabilityScore
         {
+            None = 0,
             IdentifiedMetabolite = 1,
             PutativelyAnnotatedCompound = 2,
             PutativelyCharacterizedCompoundClass = 3,
@@ -122,28 +128,43 @@ namespace CSMSL.IO.MzTab
 
         #endregion
 
-        #region PSM Section Mandatory Fields
+        #region Protein Fields
 
-        public const string PSMSequenceField = "sequence";
-        public const string PSMIdField = "PSM_ID";
-        public const string PSMAcessionField = "accession";
-        public const string PSMUniqueField = "unique";
-        public const string PSMDatabaseField = "database";
-        public const string PSMDatabaseVersionField = "database_version";
-        public const string PSMSearchEngineField = "search_engine";
-        public const string PSMSearchEngineScoreField = "search_engine_score";
-        public const string PSMRelibailityField = "reliability";
-        public const string PSMModificationsField = "modifications";
-        public const string PSMRetentionTimeField = "retention_time";
-        public const string PSMChargeField = "charge";
-        public const string PSMExperimentalMZField = "exp_mass_to_charge";
-        public const string PSMTheoreticalMZField = "calc_mass_to_charge";
-        public const string PSMUriField = "uri";
-        public const string PSMSpectraReferenceField = "spectra_ref";
-        public const string PSMPreviousAminoAcidField = "pre";
-        public const string PSMFollowingAminoAcidField = "post";
-        public const string PSMStartResidueField = "start";
-        public const string PSMEndResidueField = "end";
+        public const string ProteinAccessionField = "accession";
+        public const string ProteinDescriptionField = "description";
+        public const string ProteinTaxIDField = "taxid";
+        public const string ProteinSpeciesField = "species";
+        public const string ProteinDatabaseField = "database";
+        public const string ProteinDatabaseVersionField = "database_version";
+        public const string ProteinSearchEngineField = "search_engine";
+        public const string ProteinBestSearchEngineScoreField = "best_search_engine_score[]";
+        public const string ProteinSearchEngineScoreMsRunField = "search_engine_score[]_ms_run[]";
+        public const string ProteinReliability = "reliability";
+
+        #endregion
+
+        #region PSM Fields
+        
+        public const string Sequence = "sequence";
+        public const string ID = "PSM_ID";
+        public const string PsmAccession = "accession";
+        public const string PsmUnique = "unique";
+        public const string PsmDatabase = "database";
+        public const string PsmDatabaseVersion = "database_version";
+        public const string PsmSearchEngine = "search_engine";
+        public const string PsmSearchEngineScore = "search_engine_score[]";
+        public const string PsmRelibaility = "reliability";
+        public const string PsmModifications = "modifications";
+        public const string PsmRetentionTime = "retention_time";
+        public const string PsmCharge = "charge";
+        public const string PsmExperimentalMZ = "exp_mass_to_charge";
+        public const string PsmTheoreticalMZ = "calc_mass_to_charge";
+        public const string PsmUri = "uri";
+        public const string PsmSpectraReference = "spectra_ref";
+        public const string PsmPreviousAminoAcid = "pre";
+        public const string PsmFollowingAminoAcid = "post";
+        public const string PsmStartResidue = "start";
+        public const string PsmEndResidue = "end";
         
         #endregion
 
@@ -178,15 +199,20 @@ namespace CSMSL.IO.MzTab
             SmallMoleculeHeader = 1 << 7,
             SmallMoleculeData = 1 << 8
         }
-
-        public static string ParamsToString(string cvLabel = "", string accession = "", string name = "", string value = "")
+        
+        public static List<int> GetFieldIndicies(string fieldName, out string condensedFieldName)
         {
-            // According to specs, the name field needs to be quoted if it contains an internal comma
-            if (name.Contains(","))
+            condensedFieldName = fieldName;
+            List<int> indices = new List<int>();
+            Match match;
+            int index = 0;
+            while ((match = MultipleEntryRegex.Match(condensedFieldName, index)).Success)
             {
-                name = "\"" + name + "\"";
+                indices.Add(int.Parse(match.Groups[1].Value));
+                condensedFieldName = condensedFieldName.Remove(match.Index + 1, match.Length - 2); // ± 1 for ignoring the [ ] 
+                index = match.Index + 1;
             }
-            return string.Format("[{0},{1},{2},{3}]", cvLabel, accession, name, value);
+            return indices;
         }
 
         public static int GetIndex(string value)

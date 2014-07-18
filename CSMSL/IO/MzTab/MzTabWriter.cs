@@ -24,6 +24,48 @@ namespace CSMSL.IO.MzTab
             IsOpen = true;
             _currentState = MzTab.States.None;
         }
+        
+        private void WriteData<T>(MzTabSection section, IList<T> objects) where T : MzTabEntity
+        {
+            if (objects == null || objects.Count == 0)
+                return;
+
+            MzTab.LinePrefix headerPrefix = MzTab.LinePrefix.Comment;
+            MzTab.LinePrefix prefix = MzTab.LinePrefix.Comment;
+
+            switch (section)
+            {
+                case MzTabSection.SmallMolecule:
+                    headerPrefix = MzTab.LinePrefix.SmallMoleculeTable;
+                    prefix = MzTab.LinePrefix.SmallMoleculeData;
+                    break;
+                case MzTabSection.Peptide:
+                    headerPrefix = MzTab.LinePrefix.PeptideTable;
+                    prefix = MzTab.LinePrefix.PeptideData;
+                    break;
+                case MzTabSection.PSM:
+                    headerPrefix = MzTab.LinePrefix.PsmTable;
+                    prefix = MzTab.LinePrefix.PsmData;
+                    break;
+                case MzTabSection.Protein:
+                    headerPrefix = MzTab.LinePrefix.ProteinTable;
+                    prefix = MzTab.LinePrefix.ProteinData;
+                    break;
+            }
+
+            // Write Header
+            string[] header = MzTabEntity.GetHeader(objects).ToArray();
+            WriteLine(headerPrefix, header);
+
+            // Write table
+            foreach (T datum in objects)
+            {
+                object[] values = datum.GetValues(header).ToArray();
+                WriteLine(prefix, values);
+            }
+
+        }
+
 
         #region Comment Section
 
@@ -96,122 +138,20 @@ namespace CSMSL.IO.MzTab
 
         #endregion
 
+        #region Protein Section
+
+        public void WriteProteinData(IList<MzTabProtein> proteins)
+        {
+            WriteData(MzTabSection.Protein, proteins);
+        }
+
+        #endregion
+
         #region PSM Section
-
-        private void WritePsmHeader(int numberOfEngines, bool includeRelibaility = false, bool includeURI = false, IEnumerable<string> optionalFields = null)
-        {
-            List<string> headers = new List<string>();
-
-            headers.Add(MzTab.PSMSequenceField);
-            headers.Add(MzTab.PSMIdField);
-            headers.Add(MzTab.PSMAcessionField);
-            headers.Add(MzTab.PSMUniqueField);
-            headers.Add(MzTab.PSMDatabaseField);
-            headers.Add(MzTab.PSMDatabaseVersionField);
-            headers.Add(MzTab.PSMSearchEngineField);
-            
-            for (int i = 1; i <= numberOfEngines; i++)
-            {
-                headers.Add(MzTab.PSMSearchEngineScoreField + "[" + i + "]");
-            }
-
-            if (includeRelibaility)
-                headers.Add(MzTab.PSMRelibailityField);
-
-            headers.Add(MzTab.PSMModificationsField);
-          
-            headers.Add(MzTab.PSMRetentionTimeField);
-            headers.Add(MzTab.PSMChargeField);
-            headers.Add(MzTab.PSMExperimentalMZField);
-            headers.Add(MzTab.PSMTheoreticalMZField);
-
-            if (includeURI)
-                headers.Add(MzTab.PSMRelibailityField);
-
-            headers.Add(MzTab.PSMSpectraReferenceField);
-            headers.Add(MzTab.PSMPreviousAminoAcidField);
-            headers.Add(MzTab.PSMFollowingAminoAcidField);
-            headers.Add(MzTab.PSMStartResidueField);
-            headers.Add(MzTab.PSMEndResidueField);
-
-            if(optionalFields != null)
-                headers.AddRange(optionalFields);
-         
-            WritePsmHeader(headers.ToArray());
-        }
-
-        private void WritePsmHeader(params object[] data)
-        {
-            if ((_currentState & MzTab.States.PsmHeader) == MzTab.States.PsmHeader)
-            {
-                throw new ArgumentException("Unable to write more than one PSM table to a single mzTab file");
-            }
-
-            _currentState |= MzTab.States.PsmHeader;
-
-            WriteLine(MzTab.LinePrefix.PsmTable, data);
-        }
 
         public void WritePsmData(IList<MzTabPSM> psms)
         {
-            bool includeRelibaility = psms.Any(psm => psm.Reliability.HasValue);
-            bool includeURI = psms.Any(psm => psm.Uri != null);
-            int maxSearchEngine = psms.Max(psm => psm.NumberOfSearchEngines);
-            string[] optionalParameters = psms.Where(psm => psm.GetOptionalFields() != null).SelectMany(psm => psm.GetOptionalFields()).ToArray();
-
-            WritePsmHeader(maxSearchEngine, includeRelibaility, includeURI, optionalParameters);
-
-            foreach (MzTabPSM psm in psms)
-            {
-                List<object> data = new List<object>();
-                data.Add(psm.Sequence);
-                data.Add(psm.ID);
-                data.Add(psm.Accession);
-                data.Add((psm.Unique) ? 1 : 0);
-                data.Add(psm.Database);
-                data.Add(psm.DatabaseVersion);
-                data.Add(psm.SearchEngines);
-
-                for (int i = 1; i <= maxSearchEngine; i++)
-                {
-                    data.Add(psm.GetEngineScore(i));
-                }
-
-                if (includeRelibaility)
-                {
-                    int? reliability = psm.Reliability;
-                    if (reliability.HasValue)
-                    {
-                        data.Add(reliability.Value);
-                    }
-                    else
-                    {
-                        data.Add("null");
-                    }
-                }
-
-                data.Add(psm.Modifications);
-                data.Add(psm.RetentionTime);
-                data.Add(psm.Charge);
-                data.Add(psm.ExperimentalMZ);
-                data.Add(psm.TheoreticalMZ);
-
-                if (includeURI)
-                    data.Add(psm.Uri);
-
-                data.Add(psm.SpectraReference);
-                data.Add(psm.PreviousAminoAcid);
-                data.Add(psm.FollowingAminoAcid);
-                data.Add(psm.StartResiduePosition);
-                data.Add(psm.EndResiduePosition);
-
-                if (optionalParameters != null)
-                {
-                    data.AddRange(optionalParameters.Select(optionalParameter => psm.GetOptionalData(optionalParameter)));
-                }
-
-                WriteLine(MzTab.LinePrefix.PsmData, data.ToArray());
-            }
+            WriteData(MzTabSection.PSM, psms);
         }
 
         #endregion
@@ -242,6 +182,11 @@ namespace CSMSL.IO.MzTab
         }
 
         public void WriteLine(MzTab.LinePrefix prefix, params object[] data)
+        {
+            WriteLine(prefix, string.Join(MzTab.FieldSeparator.ToString(), data));
+        }
+
+        public void WriteLine(MzTab.LinePrefix prefix, params string[] data)
         {
             WriteLine(prefix, string.Join(MzTab.FieldSeparator.ToString(), data));
         }

@@ -283,7 +283,44 @@ namespace CSMSL.IO.MzTab
             // Add the row to the Protein data table
             table.Rows.Add(data.SubArray(1, table.Columns.Count));
         }
-        
+
+        private IEnumerable<T> GetObjects<T>(MzTabSection section) where T : MzTabEntity, new()
+        {
+            DataTable table = null;
+
+            switch (section)
+            {
+                case MzTabSection.PSM:
+                    table = _psmDataTable;
+                    break;
+                case MzTabSection.Peptide:
+                    table = _peptideDataTable;
+                    break;
+                case MzTabSection.SmallMolecule:
+                    table = _smallMoleculeDataTable;
+                    break;
+                case MzTabSection.Protein:
+                    table = _proteinDataTable;
+                    break;
+            }
+
+            if (table == null || table.Rows.Count == 0)
+                yield break;
+
+            string[] columns = GetColumns(section);
+            int count = columns.Length;
+
+            foreach (DataRow row in table.Rows)
+            {
+                var item = new T();
+                for (int i = 0; i < count; i++)
+                {
+                    item.SetValue(columns[i], (string)row.ItemArray[i]);
+                }
+                yield return item;
+            }
+        }
+
         #endregion
 
         #region Peptide Section
@@ -313,21 +350,7 @@ namespace CSMSL.IO.MzTab
 
         public IEnumerable<MzTabPSM> GetPsms()
         {
-            if (!ContainsPsms)
-                yield break;
-
-            string[] columns = GetColumns(MzTabSection.PSM);
-            int count = columns.Length;
-
-            foreach (DataRow row in _psmDataTable.Rows)
-            {
-                MzTabPSM psm = new MzTabPSM(count);
-                for (int i = 0; i < count; i++)
-                {
-                    psm.SetValue(columns[i], (string)row.ItemArray[i]);
-                }
-                yield return psm;
-            }
+            return GetObjects<MzTabPSM>(MzTabSection.PSM);
         }
 
         #endregion
@@ -338,7 +361,12 @@ namespace CSMSL.IO.MzTab
         
         public bool ContainsProteins { get { return _proteinDataTable != null && _proteinDataTable.Rows.Count > 0; } }
         public int NumberOfProteins { get { return (ContainsProteins) ? _proteinDataTable.Rows.Count : 0; } }
-        
+
+        public IEnumerable<MzTabProtein> GetProteins()
+        {
+            return GetObjects<MzTabProtein>(MzTabSection.Protein);
+        }
+
         #endregion
 
         #region Comment Section
@@ -418,13 +446,6 @@ namespace CSMSL.IO.MzTab
 
             // Add the data to the MetaData table
             _metaDataTable.Rows.Add(key, value);
-        }
-
-        public IEnumerable<string> GetMetaDataValue(string key)
-        {
-            string expression = "key='"+key+"'";
-            DataRow[] rows = _metaDataTable.Select(expression);
-            return rows.Select(row => row["value"]).Cast<string>();
         }
 
         #endregion

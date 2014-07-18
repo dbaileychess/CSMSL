@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.NetworkInformation;
 using System.Text.RegularExpressions;
 
 namespace CSMSL.IO.MzTab
@@ -97,16 +98,8 @@ namespace CSMSL.IO.MzTab
             if (fieldName.Contains("["))
             {
                 string condensedFieldName = fieldName;
-                List<int> indices = new List<int>();
-                Match match;
-                int index = 0;
-                while ((match = MzTab.MultipleEntryRegex.Match(condensedFieldName, index)).Success)
-                {
-                    indices.Add(int.Parse(match.Groups[1].Value));
-                    condensedFieldName = condensedFieldName.Remove(match.Index + 1, match.Length - 2); // ± 1 for ignoring the [ ] 
-                    index = match.Index + 1;
-                }
-
+                List<int> indices = MzTab.GetFieldIndicies(fieldName, out condensedFieldName);
+                
                 switch (condensedFieldName)
                 {
                     // String Versions
@@ -148,27 +141,6 @@ namespace CSMSL.IO.MzTab
                         Data[fieldName] = (MzTab.MzTabType) Enum.Parse(typeof (MzTab.MzTabType), value, true);
                         break;
                 }
-            }
-        }
-
-        public IEnumerable<KeyValuePair<string, object>> GetListValues(string fieldName)
-        {
-            object o;
-            if (!Data.TryGetValue(fieldName, out o))
-            {
-                yield break;
-            }
-
-            var list = o as System.Collections.IEnumerable;
-            if (list == null)
-                yield break;
-
-            int i = 1;
-            foreach(var item in list)
-            {
-                string expandedName = fieldName.Replace("[]", "[" + i + "]");
-                yield return new KeyValuePair<string, object>(expandedName, item);
-                i++;
             }
         }
 

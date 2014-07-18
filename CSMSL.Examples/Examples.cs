@@ -65,30 +65,25 @@ namespace CSMSL.Examples
         private static void StartExamples()
         {
             List<MzTabPSM> psms;
+            List<MzTabProtein> proteins;
             MzTabMetaData metaData;
             using (MzTabReader reader = new MzTabReader(@"E:\Desktop\mzTab Examples\iTRAQ_SQI.mzTab", false))
             {
                 reader.Open();
-
-                List<string> values = reader.GetMetaDataValue("fixed_mod[1]").ToList();
-
+                
                 metaData = reader.MetaData;
-
-                for (int i = 0; i < reader.NumberOfPsms; i++)
-                {
-                    string value = reader.GetData(MzTabSection.PSM, i, MzTab.PSMSequenceField);
-                }
-                string[] columns = reader.GetColumns(MzTabSection.Protein);
-
                 psms = reader.GetPsms().ToList();
+                proteins = reader.GetProteins().ToList();
+                psms[2].SearchEngineScores.Add(152);
+                psms[2].Reliability = MzTab.ReliabilityScore.Medium;
             }
-
-            metaData.Title = "Test Title";
-   
+            
             using (MzTabWriter writer = new MzTabWriter(@"E:\Desktop\mzTab Examples\dereksTest.mzTab"))
             {
                 writer.WriteComment("Test Comment");
                 writer.WriteMetaData(metaData);
+                writer.WriteLine();
+                writer.WriteProteinData(proteins);
                 writer.WriteLine();
                 writer.WritePsmData(psms);
             }
@@ -138,7 +133,7 @@ namespace CSMSL.Examples
             Application.SetCompatibleTextRenderingDefault(false);
 
             // Peptide Calculator GUI Example
-            Application.Run(new PeptideCalculatorForm());
+            //Application.Run(new PeptideCalculatorForm());
         }
 
         private static void IsotopologueExample()
