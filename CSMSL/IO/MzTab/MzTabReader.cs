@@ -12,24 +12,8 @@ namespace CSMSL.IO.MzTab
 
         public string FilePath { get; private set; }
         public bool IsOpen { get; private set; }
-        //public MzTab.MzTabMode Mode { get; private set; }
-        //public MzTab.MzTabType Type { get; private set; }
-        //public string Version { get; private set; }
-        //public string Description { get; private set; }
 
         public MzTabMetaData MetaData { get; private set; }
-
-        #endregion
-
-        #region Modifications
-
-        private readonly DataTable _modDataTable;
-
-        #endregion
-
-        #region ExperimentalSetup
-
-        private readonly DataTable _msRunLocationDataTable;
 
         #endregion
         
@@ -46,16 +30,6 @@ namespace CSMSL.IO.MzTab
             MetaData = new MzTabMetaData();
             _ignoreComments = ignoreComments;
             _dataSet = new DataSet(FilePath) {CaseSensitive = MzTab.CaseSensitive};
-            _metaDataTable = _dataSet.Tables.Add("MetaData");
-            _metaDataTable.Columns.Add("key");
-            _metaDataTable.Columns.Add("value");
-            _modDataTable = _dataSet.Tables.Add("Modifications");
-            _modDataTable.Columns.Add("key");
-            _modDataTable.Columns.Add("value");
-            _modDataTable.Columns.Add("isFixed", typeof(bool));
-            _msRunLocationDataTable = _dataSet.Tables.Add("MS Runs");
-            _msRunLocationDataTable.Columns.Add("key");
-            _msRunLocationDataTable.Columns.Add("value");
         }
 
         #endregion
@@ -399,9 +373,7 @@ namespace CSMSL.IO.MzTab
         #endregion
 
         #region MetaData Section
-
-        private readonly DataTable _metaDataTable;
-
+   
         private void ReadMetaData(string[] data, int lineNumber)
         {
             // Set that we have enter in Metadata section
@@ -413,39 +385,10 @@ namespace CSMSL.IO.MzTab
 
             if (string.IsNullOrWhiteSpace(key))
             {
-                throw new Exception("No key was specified in the metadata section at line #" + lineNumber);
+                throw new ArgumentException("No key was specified in the metadata section at line #" + lineNumber);
             }
 
             MetaData.SetValue(key, value);
-
-            //// Handle mandatory metadata keys
-            //switch (key)
-            //{
-            //    case MzTab.MDVersionField:
-            //        Version = value;
-            //        break;
-            //    case MzTab.MDModeField:
-            //        Mode = (MzTab.MzTabMode)Enum.Parse(typeof(MzTab.MzTabMode), value, true);
-            //        break;
-            //    case MzTab.MDTypeField:
-            //        Type = (MzTab.MzTabType)Enum.Parse(typeof(MzTab.MzTabType), value, true);
-            //        break;
-            //    case MzTab.MDDescriptionField:
-            //        Description = value;
-            //        break;
-            //    case MzTab.MDMsRunLocationField:
-            //        _msRunLocationDataTable.Rows.Add(key, value);
-            //        break;
-            //    case MzTab.MDFixedModField:
-            //        _modDataTable.Rows.Add(key, value, true);
-            //        break;
-            //    case MzTab.MDVariableModField:
-            //        _modDataTable.Rows.Add(key, value, false);
-            //        break;
-            //}
-
-            // Add the data to the MetaData table
-            _metaDataTable.Rows.Add(key, value);
         }
 
         #endregion

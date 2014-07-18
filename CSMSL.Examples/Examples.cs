@@ -74,8 +74,12 @@ namespace CSMSL.Examples
                 metaData = reader.MetaData;
                 psms = reader.GetPsms().ToList();
                 proteins = reader.GetProteins().ToList();
-                psms[2].SearchEngineScores.Add(152);
+
+                //psms[2].SearchEngineScores.Add(152);
                 psms[2].Reliability = MzTab.ReliabilityScore.Medium;
+                //psms[3][MzTabPSM.Fields.Reliability] = "1";
+                //psms[5].SetOptionalData("opt_Derek", "Test");
+                //proteins[2].SetOptionalData("opt_Bailey", "complete");
             }
 
             using (MzTabWriter writer = new MzTabWriter(@"E:\Desktop\mzTab Examples\dereksTest.mzTab"))

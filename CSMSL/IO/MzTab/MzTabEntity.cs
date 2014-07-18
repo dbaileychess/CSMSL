@@ -7,12 +7,7 @@ namespace CSMSL.IO.MzTab
 {
     public abstract class MzTabEntity
     {
-        public int FieldCount
-        {
-            get { return Data.Count; }
-        }
-
-        protected Dictionary<string, object> Data;
+        public Dictionary<string, object> OptionalData;
 
         public string this[string fieldName]
         {
@@ -23,19 +18,6 @@ namespace CSMSL.IO.MzTab
         public abstract string GetValue(string fieldName);
         public abstract void SetValue(string fieldName, string value);
 
-        public virtual T GetValue<T>(string fieldName)
-        {
-            object o;
-            if (!Data.TryGetValue(fieldName, out o))
-                return default(T);
-            return (T) o;
-        }
-        
-        protected void SetRawValue(string fieldName, object value)
-        {
-            Data[fieldName] = value;
-        }
-
         protected void SetRawValue<T>(ref List<T> container, int index, T value)
         {
             if (container == null)
@@ -45,20 +27,7 @@ namespace CSMSL.IO.MzTab
 
             container.Insert(index - MzTab.IndexBased, value);
         }
-
-        protected void SetRawValue<T>(string fieldName, int index, int index2, T value)
-        {
-            var list = GetValue<List<T>>(fieldName);
-
-            if (list == null)
-            {
-                list = new List<T>();
-                SetRawValue(fieldName, list);
-            }
-
-            list.Insert(index - MzTab.IndexBased, value);
-        }
-
+        
         protected string GetListValue<T>(List<T> list, int index)
         {
             if (list == null)
@@ -68,21 +37,11 @@ namespace CSMSL.IO.MzTab
                 return MzTab.NullFieldText;
             return list[index].ToString();
         }
-
-        public virtual string[] GetOptionalFields()
-        {
-            return Data.Keys.Where(k => k.StartsWith(MzTab.OptionalColumnPrefix)).ToArray();
-        }
-
-        public virtual bool ContainsField(string fieldName)
-        {
-            return Data.ContainsKey(fieldName);
-        }
-
+        
         public IEnumerable<KeyValuePair<string, object>> GetListValues(string fieldName)
         {
             object o;
-            if (!Data.TryGetValue(fieldName, out o))
+            if (!OptionalData.TryGetValue(fieldName, out o))
             {
                 yield break;
             }
@@ -100,27 +59,27 @@ namespace CSMSL.IO.MzTab
             }
         }
 
-        public string GetOptionalData(string optionalParameter)
+        public void SetOptionalData(string optionalField, string value)
         {
+            if (OptionalData == null)
+                OptionalData = new Dictionary<string, object>();
+
+            OptionalData[optionalField] = value;
+        }
+
+        public string GetOptionalData(string optionalField)
+        {
+            if(OptionalData == null)
+                return MzTab.NullFieldText;
             object data;
-            if (!Data.TryGetValue(optionalParameter, out data))
-                return null;
-            return (string)data;
+            if (!OptionalData.TryGetValue(optionalField, out data))
+                return MzTab.NullFieldText;
+            return data.ToString();
         }
 
         public virtual IEnumerable<string> GetStringValues(IEnumerable<string> headers)
         {
             return headers.Select(GetValue);
-        }
-
-        protected MzTabEntity(int capacity)
-        {
-            Data = new Dictionary<string, object>(capacity);
-        }
-
-        protected MzTabEntity()
-        {
-            Data = new Dictionary<string, object>();
         }
 
         protected static IEnumerable<string> GetHeaders<T,T2>(IList<T> data, string fieldName, Func<T, T2> selector) where T : MzTabEntity where T2 : IList
@@ -155,17 +114,26 @@ namespace CSMSL.IO.MzTab
         {
             Type tType = typeof(T);
 
+            List<string> headers = new List<string>();
+
             if (typeof(MzTabPSM) == tType)
             {
-                return MzTabPSM.Fields.GetHeader(data.Cast<MzTabPSM>().ToList());
-            }
-
-            if (typeof(MzTabProtein) == tType)
+                headers.AddRange(MzTabPSM.Fields.GetHeader(data.Cast<MzTabPSM>().ToList()));
+            } else if (typeof(MzTabProtein) == tType)
             {
-                return MzTabProtein.Fields.GetHeader(data.Cast<MzTabProtein>().ToList());
+                headers.AddRange(MzTabProtein.Fields.GetHeader(data.Cast<MzTabProtein>().ToList()));
             }
 
-            return null;
+            // Optional Parameters
+            HashSet<string> optionalFields = new HashSet<string>();
+            foreach (string field in data.Where(d => d.OptionalData != null).SelectMany(d => d.OptionalData.Keys))
+            {
+                optionalFields.Add(field);
+            }
+            headers.AddRange(optionalFields);
+
+
+            return headers;
         }
     }
 }

@@ -60,10 +60,7 @@ namespace CSMSL.IO.MzTab
                 headers.Add(FollowingAminoAcid);
                 headers.Add(StartResidue);
                 headers.Add(EndResidue);
-
-                // Optional Parameters
-                headers.AddRange(psms.Where(psm => psm.GetOptionalFields() != null).SelectMany(psm => psm.GetOptionalFields()));
-
+                
                 return headers;
             }
         }
@@ -115,10 +112,7 @@ namespace CSMSL.IO.MzTab
         public int EndResiduePosition { get; set; }
 
         public int StartResiduePosition { get; set; }
-       
-        public MzTabPSM()
-            : base(18) { }
-
+      
         public override string ToString()
         {
             return string.Format("(#{0}) {1}", ID, Sequence);
@@ -181,7 +175,7 @@ namespace CSMSL.IO.MzTab
                     }
                     else if (fieldName.StartsWith(MzTab.OptionalColumnPrefix))
                     {
-                        // handle optional parameters
+                        return GetOptionalData(fieldName);
                     } 
                     return MzTab.NullFieldText;
             }
@@ -240,8 +234,11 @@ namespace CSMSL.IO.MzTab
                             SetRawValue(ref _searchEngineScores, indices[0], double.Parse(value));
                             return;
                         }
-                    } else if (fieldName.StartsWith(MzTab.OptionalColumnPrefix)) {
-                        // handle optional parameters
+                    } 
+                    
+                    if (fieldName.StartsWith(MzTab.OptionalColumnPrefix)) {
+                        SetOptionalData(fieldName, value);
+                        return;
                     } 
 
                     throw new ArgumentException("Unexpected field name: "+ fieldName);

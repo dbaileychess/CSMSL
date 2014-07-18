@@ -33,7 +33,6 @@ namespace CSMSL.IO.MzTab
         }
 
         public MzTabMetaData(MzTab.MzTabMode mode = MzTab.MzTabMode.Summary, MzTab.MzTabType type = MzTab.MzTabType.Identification, string description = null, string version = MzTab.Version)
-            : base(4)
         {
             Mode = mode;
             Type = type;

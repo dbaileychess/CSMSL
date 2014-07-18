@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data;
 using System.IO;
 using System.Linq;
-using System.Net;
-using System.Text;
 
 namespace CSMSL.IO.MzTab
 {
@@ -24,10 +21,12 @@ namespace CSMSL.IO.MzTab
             IsOpen = true;
             _currentState = MzTab.States.None;
         }
-        
-        private void WriteData<T>(MzTabSection section, IList<T> objects) where T : MzTabEntity
+
+        private void WriteData<T>(MzTabSection section, IEnumerable<T> data, bool includeCommentLine = false) where T : MzTabEntity
         {
-            if (objects == null || objects.Count == 0)
+            List<T> objects = data.ToList();
+
+            if (objects.Count == 0)
                 return;
 
             MzTab.LinePrefix headerPrefix = MzTab.LinePrefix.Comment;
@@ -56,6 +55,11 @@ namespace CSMSL.IO.MzTab
             // Write Header
             string[] header = MzTabEntity.GetHeader(objects).ToArray();
             WriteLine(headerPrefix, header);
+
+            if (includeCommentLine)
+            {
+                WriteComment(string.Join("\t", header));
+            }
 
             // Write table
             foreach (string[] values in objects.Select(datum => datum.GetStringValues(header).ToArray()))
@@ -106,15 +110,15 @@ namespace CSMSL.IO.MzTab
         }
 
         #endregion
-        
-        public void WriteProteinData(IList<MzTabProtein> proteins)
+
+        public void WriteProteinData(IEnumerable<MzTabProtein> proteins)
         {
             WriteData(MzTabSection.Protein, proteins);
         }
 
-        public void WritePsmData(IList<MzTabPSM> psms)
+        public void WritePsmData(IEnumerable<MzTabPSM> psms, bool includeCommentLine = false)
         {
-            WriteData(MzTabSection.PSM, psms);
+            WriteData(MzTabSection.PSM, psms, includeCommentLine);
         }
 
         /// <summary>

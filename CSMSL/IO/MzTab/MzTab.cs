@@ -60,7 +60,7 @@ namespace CSMSL.IO.MzTab
         /// 20 June 2014
         /// </para>
         /// </summary>
-        public const string Version = "1.0.0 rc 5";
+        public const string Version = "1.0.0";
 
         #region Line Prefixes
 

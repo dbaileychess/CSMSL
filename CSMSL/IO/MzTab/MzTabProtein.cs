@@ -49,10 +49,7 @@ namespace CSMSL.IO.MzTab
                 return headers;
             }
         }
-
-        public MzTabProtein()
-            : base(15) { }
-
+    
         public string Accession { get; set; }
 
         public string Description { get; set; }
@@ -148,13 +145,13 @@ namespace CSMSL.IO.MzTab
                                 SetRawValue(ref _abundanceStdevStudyVariables, indices[0], double.Parse(value)); return;
                             case Fields.AbundanceStandardErrorStudyVariables:
                                 SetRawValue(ref _abundanceStandardErrorStudyVariables, indices[0], double.Parse(value)); return;
-                            default:
-                                return;
                         }
                     }
-                    else if (fieldName.StartsWith(MzTab.OptionalColumnPrefix))
+                    
+                    if (fieldName.StartsWith(MzTab.OptionalColumnPrefix))
                     {
-                        // handle optional parameters
+                        SetOptionalData(fieldName, value);
+                        return;
                     }
 
                     throw new ArgumentException("Unexpected field name: " + fieldName);
@@ -211,7 +208,7 @@ namespace CSMSL.IO.MzTab
                     }
                     else if (fieldName.StartsWith(MzTab.OptionalColumnPrefix))
                     {
-                        // handle optional parameters
+                        return GetOptionalData(fieldName);
                     }
 
                     throw new ArgumentException("Unexpected field name: " + fieldName);
