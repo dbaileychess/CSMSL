@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -45,6 +44,14 @@ namespace CSMSL.IO.MzTab
         /// </summary>
         public const int IndexBased = 1;
 
+        /// <summary>
+        /// Missing Field Null Text
+        /// </summary>
+        public const string NullFieldText = "null";
+
+        /// <summary>
+        /// Optional Field Prefix
+        /// </summary>
         public const string OptionalColumnPrefix = "opt_";
 
         /// <summary>
@@ -84,7 +91,7 @@ namespace CSMSL.IO.MzTab
 
         public enum ReliabilityScore
         {
-            None = 0,
+            NotSet = 0,
             High = 1,
             Medium = 2,
             Poor = 3
@@ -92,7 +99,7 @@ namespace CSMSL.IO.MzTab
 
         public enum MetabolomicsReliabilityScore
         {
-            None = 0,
+            NotSet = 0,
             IdentifiedMetabolite = 1,
             PutativelyAnnotatedCompound = 2,
             PutativelyCharacterizedCompoundClass = 3,
@@ -100,74 +107,7 @@ namespace CSMSL.IO.MzTab
         }
 
         #endregion
-
-        #region Table Sections
-
-        public const string PeptideSection = "Peptides";
-        public const string ProteinSection = "Proteins";
-        public const string PsmSection = "PSMs";
-        public const string SmallMoleculeSection = "SmallMolecules";
-
-        #endregion
-
-        #region MetaData Fields
-
-        public const string MDVersionField = "mzTab-version";
-        public const string MDModeField = "mzTab-mode";
-        public const string MDTypeField = "mzTab-type";
-        public const string MDDescriptionField = "description";
-        public const string MDProteinQuantificationUnit = "protein-quantification_unit";
-        public const string MDIDField = "mzTab-ID";
-        public const string MDTitleField = "title";
-        public const string MDMsRunLocationField = "ms_run[]-location";
-        public const string MDFixedModField = "fixed_mod[]";
-        public const string MDVariableModField = "variable_mod[]";
-        public const string MDStudyVariableDescriptionField = "study_variable[]-description";
-        public const string MDPsmSearchEngineScoreField = "psm_search_engine_score[]";
-        public const string MDProteinSearchEngineScoreField = "protein_search_engine_score[]";
-
-        #endregion
-
-        #region Protein Fields
-
-        public const string ProteinAccessionField = "accession";
-        public const string ProteinDescriptionField = "description";
-        public const string ProteinTaxIDField = "taxid";
-        public const string ProteinSpeciesField = "species";
-        public const string ProteinDatabaseField = "database";
-        public const string ProteinDatabaseVersionField = "database_version";
-        public const string ProteinSearchEngineField = "search_engine";
-        public const string ProteinBestSearchEngineScoreField = "best_search_engine_score[]";
-        public const string ProteinSearchEngineScoreMsRunField = "search_engine_score[]_ms_run[]";
-        public const string ProteinReliability = "reliability";
-
-        #endregion
-
-        #region PSM Fields
         
-        public const string Sequence = "sequence";
-        public const string ID = "PSM_ID";
-        public const string PsmAccession = "accession";
-        public const string PsmUnique = "unique";
-        public const string PsmDatabase = "database";
-        public const string PsmDatabaseVersion = "database_version";
-        public const string PsmSearchEngine = "search_engine";
-        public const string PsmSearchEngineScore = "search_engine_score[]";
-        public const string PsmRelibaility = "reliability";
-        public const string PsmModifications = "modifications";
-        public const string PsmRetentionTime = "retention_time";
-        public const string PsmCharge = "charge";
-        public const string PsmExperimentalMZ = "exp_mass_to_charge";
-        public const string PsmTheoreticalMZ = "calc_mass_to_charge";
-        public const string PsmUri = "uri";
-        public const string PsmSpectraReference = "spectra_ref";
-        public const string PsmPreviousAminoAcid = "pre";
-        public const string PsmFollowingAminoAcid = "post";
-        public const string PsmStartResidue = "start";
-        public const string PsmEndResidue = "end";
-        
-        #endregion
-
         #region Date/time Format
 
         /// <summary>
@@ -213,17 +153,6 @@ namespace CSMSL.IO.MzTab
                 index = match.Index + 1;
             }
             return indices;
-        }
-
-        public static int GetIndex(string value)
-        {
-            Match m = MultipleEntryRegex.Match(value);
-            if (!m.Success)
-            {
-                throw new Exception("The value " + value + " is in a incorrect format for extracting an index");
-            }
-            int index = int.Parse(m.Groups[1].Value);
-            return index;
         }
 
         public static string GetLinePrefixText(LinePrefix prefix)

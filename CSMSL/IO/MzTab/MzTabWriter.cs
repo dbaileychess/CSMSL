@@ -58,14 +58,12 @@ namespace CSMSL.IO.MzTab
             WriteLine(headerPrefix, header);
 
             // Write table
-            foreach (T datum in objects)
+            foreach (string[] values in objects.Select(datum => datum.GetStringValues(header).ToArray()))
             {
-                object[] values = datum.GetValues(header).ToArray();
                 WriteLine(prefix, values);
             }
 
         }
-
 
         #region Comment Section
 
@@ -86,43 +84,14 @@ namespace CSMSL.IO.MzTab
             }
             _currentState |= MzTab.States.MetaData;
 
-            _writeMetaData(MzTab.MDVersionField, metaData.Version);
-            _writeMetaData(MzTab.MDModeField, metaData.Mode);
-            _writeMetaData(MzTab.MDTypeField, metaData.Type);
-            _writeMetaData(MzTab.MDIDField, metaData.ID); 
-            _writeMetaData(MzTab.MDTitleField, metaData.Title);
-            _writeMetaData(MzTab.MDDescriptionField, metaData.Description);
-            _writeMetaData(metaData.GetListValues(MzTab.MDProteinSearchEngineScoreField));
-            _writeMetaData(metaData.GetListValues(MzTab.MDPsmSearchEngineScoreField));
-            _writeMetaData(metaData.GetListValues(MzTab.MDFixedModField));
-            _writeMetaData(metaData.GetListValues(MzTab.MDVariableModField));
-            _writeMetaData(MzTab.MDProteinQuantificationUnit, metaData.ProteinQuantificationUnit);
-            _writeMetaData(metaData.GetListValues(MzTab.MDMsRunLocationField));
-            _writeMetaData(metaData.GetListValues(MzTab.MDStudyVariableDescriptionField));
-
-        }
-
-        private void _writeMetaData(IEnumerable<KeyValuePair<string, object>> data)
-        {
-            foreach (var datum in data)
+            foreach (KeyValuePair<string, string> kvp in metaData.GetKeyValuePairs())
             {
                 _writer.Write(MzTab.MetaDataLinePrefix);
                 _writer.Write(MzTab.FieldSeparator);
-                _writer.Write(datum.Key);
+                _writer.Write(kvp.Key);
                 _writer.Write(MzTab.FieldSeparator);
-                _writer.WriteLine(datum.Value);
+                _writer.WriteLine(kvp.Value);
             }
-        }
-
-        private void _writeMetaData(string key, object value)
-        {
-            if (value == null)
-                return;
-            _writer.Write(MzTab.MetaDataLinePrefix);
-            _writer.Write(MzTab.FieldSeparator);
-            _writer.Write(key);
-            _writer.Write(MzTab.FieldSeparator);
-            _writer.WriteLine(value);
         }
 
         public void WriteMetaData(string key, object value)
@@ -137,24 +106,16 @@ namespace CSMSL.IO.MzTab
         }
 
         #endregion
-
-        #region Protein Section
-
+        
         public void WriteProteinData(IList<MzTabProtein> proteins)
         {
             WriteData(MzTabSection.Protein, proteins);
         }
 
-        #endregion
-
-        #region PSM Section
-
         public void WritePsmData(IList<MzTabPSM> psms)
         {
             WriteData(MzTabSection.PSM, psms);
         }
-
-        #endregion
 
         /// <summary>
         /// Writes a blank line to the file, parsers should skip these lines

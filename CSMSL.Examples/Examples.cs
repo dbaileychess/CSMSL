@@ -63,7 +63,7 @@ namespace CSMSL.Examples
         }
 
         private static void StartExamples()
-        {
+        { 
             List<MzTabPSM> psms;
             List<MzTabProtein> proteins;
             MzTabMetaData metaData;
@@ -77,7 +77,7 @@ namespace CSMSL.Examples
                 psms[2].SearchEngineScores.Add(152);
                 psms[2].Reliability = MzTab.ReliabilityScore.Medium;
             }
-            
+
             using (MzTabWriter writer = new MzTabWriter(@"E:\Desktop\mzTab Examples\dereksTest.mzTab"))
             {
                 writer.WriteComment("Test Comment");

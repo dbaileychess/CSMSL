@@ -10,133 +10,112 @@ namespace CSMSL.IO.MzTab
         {
             public const string Sequence = "sequence";
             public const string ID = "PSM_ID";
+            public const string Accession = "accession";
+            public const string Unique = "unique";
+            public const string Database = "database";
+            public const string DatabaseVersion = "database_version";
+            public const string SearchEngine = "search_engine";
+            public const string SearchEngineScore = "search_engine_score[]";
+            public const string Reliability = "reliability";
+            public const string Modifications = "modifications";
+            public const string RetentionTime = "retention_time";
+            public const string Charge = "charge";
+            public const string ExperimentalMZ = "exp_mass_to_charge";
+            public const string TheoreticalMZ = "calc_mass_to_charge";
+            public const string Uri = "uri";
+            public const string SpectraReference = "spectra_ref";
+            public const string PreviousAminoAcid = "pre";
+            public const string FollowingAminoAcid = "post";
+            public const string StartResidue = "start";
+            public const string EndResidue = "end";
+
+            internal static IEnumerable<string> GetHeader(IList<MzTabPSM> psms)
+            {
+                List<string> headers = new List<string>();
+                headers.Add(Sequence);
+                headers.Add(ID);
+                headers.Add(Accession);
+                headers.Add(Unique);
+                headers.Add(Database);
+                headers.Add(DatabaseVersion);
+                headers.Add(SearchEngine);
+
+                headers.AddRange(GetHeaders(psms, SearchEngineScore, (psm => psm.SearchEngineScores)));
+
+                // Only report reliability if one psm has a non-null reliability score
+                if (psms.Any(psm => psm.Reliability != MzTab.ReliabilityScore.NotSet))
+                    headers.Add(Reliability);
+
+                headers.Add(Modifications);
+                headers.Add(RetentionTime);
+                headers.Add(Charge);
+                headers.Add(ExperimentalMZ);
+                headers.Add(TheoreticalMZ);
+
+                if (psms.Any(psm => psm.Uri != null))
+                    headers.Add(Uri);
+
+                headers.Add(SpectraReference);
+                headers.Add(PreviousAminoAcid);
+                headers.Add(FollowingAminoAcid);
+                headers.Add(StartResidue);
+                headers.Add(EndResidue);
+
+                // Optional Parameters
+                headers.AddRange(psms.Where(psm => psm.GetOptionalFields() != null).SelectMany(psm => psm.GetOptionalFields()));
+
+                return headers;
+            }
         }
-
-        public int NumberOfOptionalData { get; private set; }
-
+        
         /// <summary>
         /// The peptide's sequence corresponding to the PSM
         /// </summary>
-        public string Sequence
-        {
-            get { return GetValue<string>(Fields.Sequence); }
-            set { SetValue(Fields.Sequence, value); }
-        }
+        public string Sequence { get; set; }
 
-        public int ID
-        {
-            get { return GetValue<int>(MzTab.ID); }
-            set { SetRawValue(MzTab.ID, value); }
-        }
+        public int ID { get; set; }
 
-        public string Accession
-        {
-            get { return GetValue<string>(MzTab.PsmAccession); }
-            set { SetValue(MzTab.PsmAccession, value); }
-        }
+        public string Accession{ get; set; }
+    
+        public bool Unique{ get; set; }
+  
+        public string Database{ get; set; }
+   
+        public string DatabaseVersion{ get; set; }
+     
+        public List<CVParamater> SearchEngines{ get; set; }
 
-        public bool Unique
-        {
-            get { return GetValue<int>(MzTab.PsmUnique) == 1; }
-            set { SetRawValue(MzTab.PsmUnique, value ? 1 : 0); }
-        }
-
-        public string Database
-        {
-            get { return GetValue<string>(MzTab.PsmDatabase); }
-            set { SetValue(MzTab.PsmDatabase, value); }
-        }
-
-        public string DatabaseVersion
-        {
-            get { return GetValue<string>(MzTab.PsmDatabaseVersion); }
-            set { SetValue(MzTab.PsmDatabaseVersion, value); }
-        }
-
-        public List<CVParamater> SearchEngines
-        {
-            get { return GetValue<List<CVParamater>>(MzTab.PsmSearchEngine); }
-            set { SetRawValue(MzTab.PsmSearchEngine, value); }
-        }
-
+        private List<double> _searchEngineScores;
         public List<double> SearchEngineScores
         {
-            get { return GetValue<List<double>>(MzTab.PsmSearchEngineScore); }
-            set { SetRawValue(MzTab.PsmSearchEngineScore, value); }
+            get { return _searchEngineScores; }
+            set { _searchEngineScores = value; }
         }
 
-        public MzTab.ReliabilityScore Reliability
-        {
-            get { return GetValue<MzTab.ReliabilityScore>(MzTab.PsmRelibaility); }
-            set { SetRawValue(MzTab.PsmRelibaility, value); }
-        }
+        public MzTab.ReliabilityScore Reliability{ get; set; }
+            
+        public string Modifications { get; set; }
+     
+        public List<double> RetentionTime { get; set; }
+    
+        public int Charge { get; set; }
+     
+        public double ExperimentalMZ { get; set; }
+     
+        public double TheoreticalMZ { get; set; }
+      
+        public Uri Uri { get; set; }
+      
+        public string SpectraReference { get; set; }
+     
+        public char PreviousAminoAcid { get; set; }
+    
+        public char FollowingAminoAcid { get; set; }
+      
+        public int EndResiduePosition { get; set; }
 
-        public string Modifications
-        {
-            get { return GetValue<string>(MzTab.PsmModifications); }
-            set { SetRawValue(MzTab.PsmModifications, value); }
-        }
-
-        public List<double> RetentionTime
-        {
-            get { return GetValue<List<double>>(MzTab.PsmRetentionTime); }
-            set { SetRawValue(MzTab.PsmRetentionTime, value); }
-        }
-
-        public int Charge     
-        {
-            get { return GetValue<int>(MzTab.PsmCharge); }
-            set { SetRawValue(MzTab.PsmCharge, value); }
-        }
-
-        public double ExperimentalMZ
-        {
-            get { return GetValue<double>(MzTab.PsmExperimentalMZ); }
-            set { SetRawValue(MzTab.PsmExperimentalMZ, value); }
-        }
-
-        public double TheoreticalMZ
-        {
-            get { return GetValue<double>(MzTab.PsmTheoreticalMZ); }
-            set { SetRawValue(MzTab.PsmTheoreticalMZ, value); }
-        }
-
-        public Uri Uri
-        {
-            get { return GetValue<Uri>(MzTab.PsmUri); }
-            set { SetRawValue(MzTab.PsmUri, value); }
-        }
-
-        public string SpectraReference
-        {
-            get { return GetValue<string>(MzTab.PsmSpectraReference); }
-            set { SetRawValue(MzTab.PsmSpectraReference, value); }
-        }
-
-        public char PreviousAminoAcid
-        {
-            get { return GetValue<char>(MzTab.PsmPreviousAminoAcid); }
-            set { SetRawValue(MzTab.PsmPreviousAminoAcid, value); }
-        }
-
-        public char FollowingAminoAcid
-        {
-            get { return GetValue<char>(MzTab.PsmFollowingAminoAcid); }
-            set { SetRawValue(MzTab.PsmFollowingAminoAcid, value); }
-        }
-        
-        public int EndResiduePosition
-        {
-            get { return GetValue<int>(MzTab.PsmEndResidue);}
-            set { SetRawValue(MzTab.PsmEndResidue, value); }
-        }
-
-        public int StartResiduePosition
-        {
-            get { return GetValue<int>(MzTab.PsmStartResidue); }
-            set { SetRawValue(MzTab.PsmStartResidue, value); }
-        }
-
+        public int StartResiduePosition { get; set; }
+       
         public MzTabPSM()
             : base(18) { }
 
@@ -145,96 +124,129 @@ namespace CSMSL.IO.MzTab
             return string.Format("(#{0}) {1}", ID, Sequence);
         }
 
-        public override void SetValue(string fieldName, string value)
+        public override string GetValue(string fieldName)
         {
-            if (fieldName.Contains("["))
-            {
-                string condensedFieldName;
-                List<int> indices = MzTab.GetFieldIndicies(fieldName, out condensedFieldName);
-
-                if (condensedFieldName == MzTab.PsmSearchEngineScore)
-                {
-                    SetRawValue(condensedFieldName, indices[0], double.Parse(value));
-                    return;
-                }
-            }
-            
-            if (fieldName.StartsWith(MzTab.OptionalColumnPrefix))
-            {
-                NumberOfOptionalData++;
-                Data[fieldName] = value;
-                return;
-            }
-          
             switch (fieldName)
             {
+                case Fields.Sequence:
+                    return Sequence;
+                case Fields.ID:
+                    return ID.ToString();
+                case Fields.Accession:
+                    return Accession;
+                case Fields.Unique:
+                    return Unique ? "1" : "0";
+                case Fields.Database:
+                    return Database;
+                case Fields.DatabaseVersion:
+                    return DatabaseVersion;
+                case Fields.SearchEngine:
+                    return string.Join("|", SearchEngines);
+                case Fields.Reliability:
+                    if (Reliability == MzTab.ReliabilityScore.NotSet)
+                        return MzTab.NullFieldText;
+                    return ((int)Reliability).ToString();
+                case Fields.Modifications:
+                    return Modifications;
+                case Fields.RetentionTime:
+                    return string.Join("|", RetentionTime);
+                case Fields.Charge:
+                    return Charge.ToString();
+                case Fields.ExperimentalMZ:
+                    return ExperimentalMZ.ToString();
+                case Fields.TheoreticalMZ:
+                    return TheoreticalMZ.ToString();
+                case Fields.Uri:
+                    return Uri.ToString();
+                case Fields.SpectraReference:
+                    return SpectraReference;
+                case Fields.PreviousAminoAcid:
+                    return PreviousAminoAcid.ToString();
+                case Fields.FollowingAminoAcid:
+                    return FollowingAminoAcid.ToString();
+                case Fields.StartResidue:
+                    return StartResiduePosition.ToString();
+                case Fields.EndResidue:
+                    return EndResiduePosition.ToString();
                 default:
-                    Data[fieldName] = value;
-                    break;
-                case MzTab.PsmUri:
-                    Data[fieldName] = new Uri(value);
-                    break;
-                case MzTab.PsmSearchEngine:
-                    Data[fieldName] = value.Split('|').Select(datum => (CVParamater)datum).ToList();
-                    break;
-                case MzTab.PsmPreviousAminoAcid:
-                case MzTab.PsmFollowingAminoAcid:
-                    Data[fieldName] = value[0];
-                    break;
-                case MzTab.PsmUnique:
-                case MzTab.PsmStartResidue:
-                case MzTab.PsmEndResidue:
-                case MzTab.PsmCharge:
-                case MzTab.ID:
-                case MzTab.PsmRelibaility:
-                    Data[fieldName] = int.Parse(value);
-                    break;
-                case MzTab.PsmRetentionTime:
-                    Data[fieldName] = value.Split('|').Select(double.Parse).ToList();
-                    break;
-                case MzTab.PsmExperimentalMZ:
-                case MzTab.PsmTheoreticalMZ:
-                    Data[fieldName] = double.Parse(value);
-                    break;
+                    if (fieldName.Contains("["))
+                    {
+                        string condensedFieldName;
+                        List<int> indices = MzTab.GetFieldIndicies(fieldName, out condensedFieldName);
+
+                        if (condensedFieldName == Fields.SearchEngineScore)
+                        {
+                            return GetListValue(_searchEngineScores, indices[0]);
+                        }
+                    }
+                    else if (fieldName.StartsWith(MzTab.OptionalColumnPrefix))
+                    {
+                        // handle optional parameters
+                    } 
+                    return MzTab.NullFieldText;
             }
         }
         
-        internal static IEnumerable<string> GetHeader(IList<MzTabPSM> psms)
+        public override void SetValue(string fieldName, string value)
         {
-            List<string> headers = new List<string>();
-            headers.Add(MzTab.Sequence);
-            headers.Add(MzTab.ID);
-            headers.Add(MzTab.PsmAccession);
-            headers.Add(MzTab.PsmUnique);
-            headers.Add(MzTab.PsmDatabase);
-            headers.Add(MzTab.PsmDatabaseVersion);
-            headers.Add(MzTab.PsmSearchEngine);
+            switch (fieldName)
+            {
+                case Fields.Sequence:
+                    Sequence = value; return;
+                case Fields.ID:
+                    ID = int.Parse(value); return;
+                case Fields.Accession:
+                    Accession = value; return;
+                case Fields.Unique:
+                    Unique = value.Equals("1"); return;
+                case Fields.Database:
+                    Database = value; return;
+                case Fields.DatabaseVersion:
+                    DatabaseVersion = value; return;
+                case Fields.SearchEngine:
+                    SearchEngines = value.Split('|').Select(datum => (CVParamater)datum).ToList(); return;
+                case Fields.Reliability:
+                    Reliability = (MzTab.ReliabilityScore)int.Parse(value); return;
+                case Fields.Modifications:
+                    Modifications = value; return;
+                case Fields.RetentionTime:
+                    RetentionTime = value.Split('|').Select(double.Parse).ToList(); return;
+                case Fields.Charge:
+                    Charge = int.Parse(value); return;
+                case Fields.ExperimentalMZ:
+                    ExperimentalMZ = double.Parse(value); return;
+                case Fields.TheoreticalMZ:
+                    TheoreticalMZ = double.Parse(value); return;
+                case Fields.Uri:
+                    Uri = new Uri(value); return;
+                case Fields.SpectraReference:
+                    SpectraReference = value; return;
+                case Fields.PreviousAminoAcid:
+                    PreviousAminoAcid = value[0]; return;
+                case Fields.FollowingAminoAcid:
+                    FollowingAminoAcid = value[0]; return;
+                case Fields.StartResidue:
+                    StartResiduePosition = int.Parse(value); return;
+                case Fields.EndResidue:
+                    EndResiduePosition = int.Parse(value); return;
+                default:
+                    if (fieldName.Contains("["))
+                    {
+                        string condensedFieldName;
+                        List<int> indices = MzTab.GetFieldIndicies(fieldName, out condensedFieldName);
 
-            headers.AddRange(GetHeaders(psms, MzTab.PsmSearchEngineScore));
-            
-            // Only report reliability if one psm has a non-null reliability score
-            if (psms.Any(psm => psm.Reliability != MzTab.ReliabilityScore.None))
-                headers.Add(MzTab.PsmRelibaility);
+                        if (condensedFieldName == Fields.SearchEngineScore)
+                        {
+                            SetRawValue(ref _searchEngineScores, indices[0], double.Parse(value));
+                            return;
+                        }
+                    } else if (fieldName.StartsWith(MzTab.OptionalColumnPrefix)) {
+                        // handle optional parameters
+                    } 
 
-            headers.Add(MzTab.PsmModifications);
-            headers.Add(MzTab.PsmRetentionTime);
-            headers.Add(MzTab.PsmCharge);
-            headers.Add(MzTab.PsmExperimentalMZ);
-            headers.Add(MzTab.PsmTheoreticalMZ);
-
-            if (psms.Any(psm => psm.Uri != null))
-                headers.Add(MzTab.PsmUri);
-
-            headers.Add(MzTab.PsmSpectraReference);
-            headers.Add(MzTab.PsmPreviousAminoAcid);
-            headers.Add(MzTab.PsmFollowingAminoAcid);
-            headers.Add(MzTab.PsmStartResidue);
-            headers.Add(MzTab.PsmEndResidue);
-
-            // Optional Parameters
-            headers.AddRange(psms.Where(psm => psm.GetOptionalFields() != null).SelectMany(psm => psm.GetOptionalFields()));
-
-            return headers;
+                    throw new ArgumentException("Unexpected field name: "+ fieldName);
+            }
         }
+        
     }
 }

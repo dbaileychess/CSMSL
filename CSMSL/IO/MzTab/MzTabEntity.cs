@@ -2,7 +2,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace CSMSL.IO.MzTab
 {
@@ -15,47 +14,36 @@ namespace CSMSL.IO.MzTab
 
         protected Dictionary<string, object> Data;
 
-        public object this[string fieldName]
+        public string this[string fieldName]
         {
             get { return GetValue(fieldName); }
-            set { SetRawValue(fieldName, value); }
+            set { SetValue(fieldName, value); }
         }
 
-        public object GetValue(string fieldName)
-        {
-            object o;
-            return !Data.TryGetValue(fieldName, out o) ? null : o;
-        }
+        public abstract string GetValue(string fieldName);
+        public abstract void SetValue(string fieldName, string value);
 
-        public T GetValue<T>(string fieldName)
+        public virtual T GetValue<T>(string fieldName)
         {
             object o;
             if (!Data.TryGetValue(fieldName, out o))
                 return default(T);
             return (T) o;
         }
-
-        public virtual void SetValue(string fieldName, string value)
-        {
-            Data[fieldName] = value;
-        }
-
+        
         protected void SetRawValue(string fieldName, object value)
         {
             Data[fieldName] = value;
         }
 
-        protected void SetRawValue<T>(string fieldName, int index, T value)
+        protected void SetRawValue<T>(ref List<T> container, int index, T value)
         {
-            var list = GetValue<List<T>>(fieldName);
-
-            if (list == null)
+            if (container == null)
             {
-                list = new List<T>();
-                SetRawValue(fieldName, list);
+                container = new List<T>();
             }
 
-            list.Insert(index - MzTab.IndexBased, value);
+            container.Insert(index - MzTab.IndexBased, value);
         }
 
         protected void SetRawValue<T>(string fieldName, int index, int index2, T value)
@@ -69,6 +57,16 @@ namespace CSMSL.IO.MzTab
             }
 
             list.Insert(index - MzTab.IndexBased, value);
+        }
+
+        protected string GetListValue<T>(List<T> list, int index)
+        {
+            if (list == null)
+                return MzTab.NullFieldText;
+            index -= MzTab.IndexBased;
+            if (index >= list.Count)
+                return MzTab.NullFieldText;
+            return list[index].ToString();
         }
 
         public virtual string[] GetOptionalFields()
@@ -110,80 +108,22 @@ namespace CSMSL.IO.MzTab
             return (string)data;
         }
 
-        public virtual IEnumerable<object> GetValues(IEnumerable<string> headers)
+        public virtual IEnumerable<string> GetStringValues(IEnumerable<string> headers)
         {
-            foreach (string header in headers)
-            {
-                if (header.Contains("["))
-                {
-                    string condensedFieldName;
-                    List<int> indices = MzTab.GetFieldIndicies(header, out condensedFieldName);
-
-                    if (indices.Count > 0)
-                    {
-                        var list = Data[condensedFieldName] as IList;
-                        if (list != null)
-                        {
-                            int index = indices[0] - MzTab.IndexBased;
-                            if (index < list.Count)
-                            {
-                                yield return list[index];
-                                continue;
-                            }
-                        }
-                    }
-                   
-                    yield return "null";
-                    continue;
-                }
-
-                object value;
-                if (!Data.TryGetValue(header, out value))
-                {
-                    yield return "null";
-                }
-                else
-                {
-
-                    if (value is Enum)
-                    {
-                        yield return (int)value;
-                        continue;
-                    }
-
-                    var list = value as IList;
-                    if (list == null)
-                    {
-                        yield return value;
-                    }
-                    else
-                    {
-                        StringBuilder sb = new StringBuilder();
-                        bool first = true;
-                        foreach (var item in list)
-                        {
-                            if (first)
-                            {
-                                first = false;
-                            }
-                            else
-                            {
-                                sb.Append('|');
-                            }
-                            sb.Append(item);
-                        }
-                        yield return sb.ToString();
-                    }
-                }
-            }
+            return headers.Select(GetValue);
         }
 
         protected MzTabEntity(int capacity)
         {
             Data = new Dictionary<string, object>(capacity);
         }
-        
-        protected static IEnumerable<string> GetHeaders<T>(IList<T> data, string fieldName) where T : MzTabEntity
+
+        protected MzTabEntity()
+        {
+            Data = new Dictionary<string, object>();
+        }
+
+        protected static IEnumerable<string> GetHeaders<T,T2>(IList<T> data, string fieldName, Func<T, T2> selector) where T : MzTabEntity where T2 : IList
         {
             int indexers = fieldName.Count(c => c.Equals('['));
 
@@ -191,7 +131,7 @@ namespace CSMSL.IO.MzTab
             {
                 case 1:
                 {
-                    int maxIndex = data.Max(d => ((IList) d.GetValue(fieldName)).Count);
+                    int maxIndex = data.Max(d => selector(d).Count);
                     for (int i = 1; i <= maxIndex; i++)
                     {
                         yield return fieldName.Replace("[]", "[" + i + "]");
@@ -217,12 +157,12 @@ namespace CSMSL.IO.MzTab
 
             if (typeof(MzTabPSM) == tType)
             {
-                return MzTabPSM.GetHeader(data.Cast<MzTabPSM>().ToList());
+                return MzTabPSM.Fields.GetHeader(data.Cast<MzTabPSM>().ToList());
             }
 
             if (typeof(MzTabProtein) == tType)
             {
-                return MzTabProtein.GetHeader(data.Cast<MzTabProtein>().ToList());
+                return MzTabProtein.Fields.GetHeader(data.Cast<MzTabProtein>().ToList());
             }
 
             return null;

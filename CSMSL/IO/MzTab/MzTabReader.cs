@@ -202,19 +202,19 @@ namespace CSMSL.IO.MzTab
 
                     // Table Headers
                     case MzTab.ProteinTableLinePrefix:
-                        _proteinDataTable = _dataSet.Tables.Add(MzTab.ProteinSection);
+                        _proteinDataTable = _dataSet.Tables.Add(Enum.GetName(typeof(MzTabSection), MzTabSection.Protein));
                         ReadTableDefinition(MzTab.States.ProteinHeader, data, _proteinDataTable);
                         break;
                     case MzTab.PeptideTableLinePrefix:
-                        _peptideDataTable = _dataSet.Tables.Add(MzTab.PeptideSection);
+                        _peptideDataTable = _dataSet.Tables.Add(Enum.GetName(typeof(MzTabSection), MzTabSection.Peptide));
                         ReadTableDefinition(MzTab.States.PeptideHeader, data, _peptideDataTable);
                         break;
                     case MzTab.PsmTableLinePrefix:
-                        _psmDataTable = _dataSet.Tables.Add(MzTab.PsmSection);
+                        _psmDataTable = _dataSet.Tables.Add(Enum.GetName(typeof(MzTabSection), MzTabSection.PSM));
                         ReadTableDefinition(MzTab.States.PsmHeader, data, _psmDataTable);
                         break;
                     case MzTab.SmallMoleculeTableLinePrefix:
-                        _smallMoleculeDataTable = _dataSet.Tables.Add(MzTab.SmallMoleculeSection);
+                        _smallMoleculeDataTable = _dataSet.Tables.Add(Enum.GetName(typeof(MzTabSection), MzTabSection.SmallMolecule));
                         ReadTableDefinition(MzTab.States.SmallMoleculeHeader, data, _smallMoleculeDataTable);
                         break;
                    
