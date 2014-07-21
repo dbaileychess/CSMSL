@@ -51,6 +51,7 @@ namespace CSMSL
         {
             return Math.Abs(item1 - item2) < tolerance;
         }
+       
     }
 
     public static class CollectionExtension

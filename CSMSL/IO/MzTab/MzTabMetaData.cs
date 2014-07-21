@@ -18,17 +18,23 @@ namespace CSMSL.IO.MzTab
             public const string Title = "title";
             public const string MsRunLocation = "ms_run[]-location";
             public const string FixedMod = "fixed_mod[]";
+            public const string FixedModSite = "fixed_mod[]-site";
+            public const string FixedModPosition = "fixed_mod[]-position";
             public const string VariableMod = "variable_mod[]";
+            public const string VariableModSite = "variable_mod[]-site";
+            public const string VariableModPosition = "variable_mod[]-position";
             public const string StudyVariableDescription = "study_variable[]-description";
             public const string PsmSearchEngineScore = "psm_search_engine_score[]";
             public const string ProteinSearchEngineScore = "protein_search_engine_score[]";
+            public const string Software = "software[]";
+
 
             public static readonly List<string> FieldOrder = new List<string>
             {
                 Version, Mode, Type, ID,
                 Title, Description, ProteinSearchEngineScore, PsmSearchEngineScore,
-                FixedMod, VariableMod, ProteinQuantificationUnit, MsRunLocation,
-                StudyVariableDescription
+                FixedMod, FixedModSite, FixedModPosition, VariableMod, ProteinQuantificationUnit, MsRunLocation,
+                StudyVariableDescription, Software
             };
         }
 
@@ -54,6 +60,13 @@ namespace CSMSL.IO.MzTab
       
         public CVParamater ProteinQuantificationUnit { get; set; }
 
+        private List<CVParamater> _software;
+        public List<CVParamater> Software
+        {
+            get { return _software; }
+            set { _software = value; }
+        }
+
         private List<string> _msRunLocations;
         public List<string> MsRunLocations
         {
@@ -73,6 +86,13 @@ namespace CSMSL.IO.MzTab
         {
             get { return _fixedModifications; }
             set { _fixedModifications = value; }
+        }
+
+        private List<string> _fixedModificationSites;
+        public List<string> FixedModificationSites
+        {
+            get { return _fixedModificationSites; }
+            set { _fixedModificationSites = value; }
         }
 
         private List<CVParamater> _variableModifications;
@@ -123,6 +143,8 @@ namespace CSMSL.IO.MzTab
                         {
                             case Fields.FixedMod:
                                 return GetListValue(_fixedModifications, indices[0]);
+                             case Fields.FixedModSite:
+                                return GetListValue(_fixedModificationSites, indices[0]);
                             case Fields.VariableMod:
                                 return GetListValue(_variableModifications, indices[0]);
                             case Fields.PsmSearchEngineScore:
@@ -133,6 +155,8 @@ namespace CSMSL.IO.MzTab
                                 return GetListValue(_studyVariableDescriptions, indices[0]);
                             case Fields.MsRunLocation:
                                 return GetListValue(_msRunLocations, indices[0]);
+                            case Fields.Software:
+                                return GetListValue(_software, indices[0]);
                             default:
                                 break;
                         }
@@ -168,6 +192,8 @@ namespace CSMSL.IO.MzTab
                         {
                             case Fields.FixedMod:
                                 SetRawValue(ref _fixedModifications, indices[0], new CVParamater(value)); return;
+                            case Fields.FixedModSite:
+                                SetRawValue(ref _fixedModificationSites, indices[0], value); return;
                             case Fields.VariableMod:
                                 SetRawValue(ref _variableModifications, indices[0], new CVParamater(value)); return;
                             case Fields.PsmSearchEngineScore:
@@ -178,11 +204,14 @@ namespace CSMSL.IO.MzTab
                                 SetRawValue(ref _studyVariableDescriptions, indices[0], value); return;
                             case Fields.MsRunLocation:
                                 SetRawValue(ref _msRunLocations, indices[0], value); return;
+                            case Fields.Software:
+                                SetRawValue(ref _software, indices[0], new CVParamater(value)); return;
                             default:
                                 break;
                         }
                     }
-                    throw new ArgumentException("Unexpected field name: " + fieldName);
+                    return;
+                    //throw new ArgumentException("Unexpected field name: " + fieldName);
             }
         }
         
@@ -201,8 +230,12 @@ namespace CSMSL.IO.MzTab
                     list = _msRunLocations; break;
                 case Fields.FixedMod:
                     list = _fixedModifications; break;
+                case Fields.FixedModSite:
+                    list = _fixedModificationSites; break;
                 case Fields.VariableMod:
-                    list = _variableModifications; break;
+                    list = _variableModifications; break;     
+                case Fields.Software:
+                    list = _software; break;
                 default:
                     string value = GetValue(fieldName);
                     if (string.IsNullOrEmpty(value))

@@ -27,15 +27,43 @@ namespace CSMSL.IO.MzTab
 
             container.Insert(index - MzTab.IndexBased, value);
         }
+
+        protected void SetRawValue<T>(ref MzTabMultipleSet<T> container, int index1, int index2, T value)
+        {
+            if (container == null)
+            {
+                container = new MzTabMultipleSet<T>();
+            }
+            container.SetValue(index1, index2, value);
+        }
         
         protected string GetListValue<T>(List<T> list, int index)
         {
             if (list == null)
                 return MzTab.NullFieldText;
             index -= MzTab.IndexBased;
+
             if (index >= list.Count)
                 return MzTab.NullFieldText;
-            return list[index].ToString();
+
+            T item = list[index];
+            if(item == null)
+                return MzTab.NullFieldText;
+            return item.ToString();
+        }
+
+        protected string GetListValue<T>(MzTabMultipleSet<T> list, int index1, int index2)
+        {
+            if (list == null)
+                return MzTab.NullFieldText;
+     
+            T value;
+            if (!list.TryGetValue(index1, index2, out value))
+                return MzTab.NullFieldText;
+
+            if(value == null)
+                return MzTab.NullFieldText;
+            return value.ToString();
         }
         
         public IEnumerable<KeyValuePair<string, object>> GetListValues(string fieldName)
@@ -82,25 +110,33 @@ namespace CSMSL.IO.MzTab
             return headers.Select(GetValue);
         }
 
-        protected static IEnumerable<string> GetHeaders<T,T2>(IList<T> data, string fieldName, Func<T, T2> selector) where T : MzTabEntity where T2 : IList
+        protected static IEnumerable<string> GetHeaders<T, T2>(IList<T> data, string fieldName, Func<T, MzTabMultipleSet<T2>> selector) 
+            where T : MzTabEntity 
         {
-            int indexers = fieldName.Count(c => c.Equals('['));
+            int maxIndex1 = data.Max(d => selector(d).MaxIndex1);
+            int maxIndex2 = data.Max(d => selector(d).MaxIndex2);
 
-            switch (indexers)
+            int index1 = fieldName.IndexOf('[',0);
+            int index2 = fieldName.IndexOf('[', index1+1);
+
+            for (int i = 1; i <= maxIndex1; i++)
             {
-                case 1:
+                for (int j = 1; j <= maxIndex2; j++)
                 {
-                    int maxIndex = data.Max(d => selector(d).Count);
-                    for (int i = 1; i <= maxIndex; i++)
-                    {
-                        yield return fieldName.Replace("[]", "[" + i + "]");
-                    }
+                    string iStr = i.ToString();
+                    string temp = fieldName.Insert(index1 + 1, i.ToString());
+                    yield return temp.Insert(index2 + 1 + iStr.Length, j.ToString());
                 }
-                    break;
-                case 2:
-                    break;
-                default:
-                    throw new ArgumentException("Cannot handle more than 2 indexers");
+            }
+        }
+
+        protected static IEnumerable<string> GetHeaders<T, T2>(IList<T> data, string fieldName, Func<T, IList<T2>> selector)
+            where T : MzTabEntity
+        {
+            int maxIndex = data.Max(d => selector(d).Count);
+            for (int i = 1; i <= maxIndex; i++)
+            {
+                yield return fieldName.Replace("[]", "[" + i + "]");
             }
         }
 

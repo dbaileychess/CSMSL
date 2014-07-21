@@ -168,6 +168,7 @@
     <Compile Include="IO\MzTab\MzTab.cs" />
     <Compile Include="IO\MzTab\MzTabEntity.cs" />
     <Compile Include="IO\MzTab\MzTabMetaData.cs" />
+    <Compile Include="IO\MzTab\MzTabMultipleSet.cs" />
     <Compile Include="IO\MzTab\MzTabProtein.cs" />
     <Compile Include="IO\MzTab\MzTabPSM.cs" />
     <Compile Include="IO\MzTab\MzTabReader.cs" />

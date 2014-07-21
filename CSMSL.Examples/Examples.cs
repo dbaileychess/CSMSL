@@ -76,7 +76,7 @@ namespace CSMSL.Examples
                 proteins = reader.GetProteins().ToList();
 
                 //psms[2].SearchEngineScores.Add(152);
-                psms[2].Reliability = MzTab.ReliabilityScore.Medium;
+                //psms[2].Reliability = MzTab.ReliabilityScore.Medium;
                 //psms[3][MzTabPSM.Fields.Reliability] = "1";
                 //psms[5].SetOptionalData("opt_Derek", "Test");
                 //proteins[2].SetOptionalData("opt_Bailey", "complete");
