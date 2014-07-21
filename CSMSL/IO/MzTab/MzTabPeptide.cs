@@ -4,63 +4,63 @@ using System.Linq;
 
 namespace CSMSL.IO.MzTab
 {
-    public class MzTabPSM : MzTabEntity
+    public class MzTabPeptide : MzTabEntity
     {
         public static class Fields
         {
             public const string Sequence = "sequence";
-            public const string ID = "PSM_ID";
             public const string Accession = "accession";
             public const string Unique = "unique";
             public const string Database = "database";
             public const string DatabaseVersion = "database_version";
             public const string SearchEngine = "search_engine";
-            public const string SearchEngineScore = "search_engine_score[]";
+            public const string BestSearchEngineScore = "best_search_engine_score[]";
+            public const string SearchEngineScorePerMsRun = "search_engine_score[]_ms_run[]";
             public const string Reliability = "reliability";
             public const string Modifications = "modifications";
             public const string RetentionTime = "retention_time";
+            public const string RetentionTimeWindow = "retention_time_window";
             public const string Charge = "charge";
-            public const string ExperimentalMZ = "exp_mass_to_charge";
-            public const string TheoreticalMZ = "calc_mass_to_charge";
+            public const string MZ = "mass_to_charge";
             public const string Uri = "uri";
             public const string SpectraReference = "spectra_ref";
-            public const string PreviousAminoAcid = "pre";
-            public const string FollowingAminoAcid = "post";
-            public const string StartResidue = "start";
-            public const string EndResidue = "end";
+            public const string AbundanceAssay = "peptide_abundance_assary[]";
+            public const string AbundanceStudyVariable = "peptide_abudance_study_variable[]";
+            public const string AbundanceStDevStudyVariable = "peptide_abundance_stdev_study_variable[]";
+            public const string AbudnanceStdErrorStudyVariable = "peptide_abundance_std_error_study_variable[]";
 
-            internal static IEnumerable<string> GetHeader(IList<MzTabPSM> psms)
+            internal static IEnumerable<string> GetHeader(IList<MzTabPeptide> peptides)
             {
                 List<string> headers = new List<string>();
                 headers.Add(Sequence);
-                headers.Add(ID);
                 headers.Add(Accession);
                 headers.Add(Unique);
                 headers.Add(Database);
                 headers.Add(DatabaseVersion);
                 headers.Add(SearchEngine);
 
-                headers.AddRange(GetHeaders(psms, SearchEngineScore, (psm => psm.SearchEngineScores)));
+                headers.AddRange(GetHeaders(peptides, BestSearchEngineScore, (peptide => peptide.BestSearchEngineScores)));
+                headers.AddRange(GetHeaders(peptides, SearchEngineScorePerMsRun, (peptide => peptide.BestSearchEngineScores)));
 
                 // Only report reliability if one psm has a non-null reliability score
-                if (psms.Any(psm => psm.Reliability != MzTab.ReliabilityScore.NotSet))
+                if (peptides.Any(peptide => peptide.Reliability != MzTab.ReliabilityScore.NotSet))
                     headers.Add(Reliability);
 
                 headers.Add(Modifications);
                 headers.Add(RetentionTime);
+                headers.Add(RetentionTimeWindow);
                 headers.Add(Charge);
-                headers.Add(ExperimentalMZ);
-                headers.Add(TheoreticalMZ);
-
-                if (psms.Any(psm => psm.Uri != null))
+                headers.Add(MZ);
+         
+                if (peptides.Any(psm => psm.Uri != null))
                     headers.Add(Uri);
 
                 headers.Add(SpectraReference);
-                headers.Add(PreviousAminoAcid);
-                headers.Add(FollowingAminoAcid);
-                headers.Add(StartResidue);
-                headers.Add(EndResidue);
-                
+                headers.AddRange(GetHeaders(peptides, AbundanceAssay, (peptide => peptide.AbundanceAssays)));
+                headers.AddRange(GetHeaders(peptides, AbundanceStudyVariable, (peptide => peptide.AbundanceStudyVariables)));
+                headers.AddRange(GetHeaders(peptides, AbundanceStDevStudyVariable, (peptide => peptide.AbundanceStdevStudyVariables)));
+                headers.AddRange(GetHeaders(peptides, AbudnanceStdErrorStudyVariable, (peptide => peptide.AbundanceStandardErrorStudyVariables)));
+
                 return headers;
             }
         }
@@ -82,11 +82,11 @@ namespace CSMSL.IO.MzTab
      
         public List<CVParamater> SearchEngines{ get; set; }
 
-        private List<double> _searchEngineScores;
-        public List<double> SearchEngineScores
+        private List<double> _bestSearchEngineScores;
+        public List<double> BestSearchEngineScores
         {
-            get { return _searchEngineScores; }
-            set { _searchEngineScores = value; }
+            get { return _bestSearchEngineScores; }
+            set { _bestSearchEngineScores = value; }
         }
 
         public MzTab.ReliabilityScore Reliability{ get; set; }
@@ -94,38 +94,52 @@ namespace CSMSL.IO.MzTab
         public string Modifications { get; set; }
      
         public List<double> RetentionTime { get; set; }
-    
+        public List<double> RetentionTimeWindows { get; set; }
+
         public int Charge { get; set; }
      
-        public double ExperimentalMZ { get; set; }
+        public double MZ { get; set; }
      
         public double TheoreticalMZ { get; set; }
       
         public Uri Uri { get; set; }
       
         public string SpectraReference { get; set; }
-     
-        public char PreviousAminoAcid { get; set; }
-    
-        public char FollowingAminoAcid { get; set; }
-      
-        public int EndResiduePosition { get; set; }
 
-        public int StartResiduePosition { get; set; }
-      
-        public override string ToString()
+        private List<double> _abundanceAssays;
+        public List<double> AbundanceAssays
         {
-            return string.Format("(#{0}) {1}", ID, Sequence);
+            get { return _abundanceAssays; }
+            set { _abundanceAssays = value; }
         }
 
+        private List<double> _abundanceStudyVariables;
+        public List<double> AbundanceStudyVariables
+        {
+            get { return _abundanceStudyVariables; }
+            set { _abundanceStudyVariables = value; }
+        }
+
+        private List<double> _abundanceStdevStudyVariables;
+        public List<double> AbundanceStdevStudyVariables
+        {
+            get { return _abundanceStdevStudyVariables; }
+            set { _abundanceStdevStudyVariables = value; }
+        }
+
+        private List<double> _abundanceStandardErrorStudyVariables;
+        public List<double> AbundanceStandardErrorStudyVariables
+        {
+            get { return _abundanceStandardErrorStudyVariables; }
+            set { _abundanceStandardErrorStudyVariables = value; }
+        }
+        
         public override string GetValue(string fieldName)
         {
             switch (fieldName)
             {
                 case Fields.Sequence:
                     return Sequence;
-                case Fields.ID:
-                    return ID.ToString();
                 case Fields.Accession:
                     return Accession;
                 case Fields.Unique:
@@ -146,22 +160,14 @@ namespace CSMSL.IO.MzTab
                     return string.Join("|", RetentionTime);
                 case Fields.Charge:
                     return Charge.ToString();
-                case Fields.ExperimentalMZ:
-                    return ExperimentalMZ.ToString();
-                case Fields.TheoreticalMZ:
-                    return TheoreticalMZ.ToString();
+                case Fields.MZ:
+                    return MZ.ToString();
                 case Fields.Uri:
                     return Uri.ToString();
                 case Fields.SpectraReference:
                     return SpectraReference;
-                case Fields.PreviousAminoAcid:
-                    return PreviousAminoAcid.ToString();
-                case Fields.FollowingAminoAcid:
-                    return FollowingAminoAcid.ToString();
-                case Fields.StartResidue:
-                    return StartResiduePosition.ToString();
-                case Fields.EndResidue:
-                    return EndResiduePosition.ToString();
+                case Fields.RetentionTimeWindow:
+                    return string.Join("|", RetentionTimeWindows);
             }
 
             if (fieldName.Contains("["))
@@ -169,9 +175,18 @@ namespace CSMSL.IO.MzTab
                 string condensedFieldName;
                 List<int> indices = MzTab.GetFieldIndicies(fieldName, out condensedFieldName);
 
-                if (condensedFieldName == Fields.SearchEngineScore)
+                switch (condensedFieldName)
                 {
-                    return GetListValue(_searchEngineScores, indices[0]);
+                    case Fields.AbundanceAssay:
+                        return GetListValue(_abundanceAssays, indices[0]);
+                    case Fields.AbundanceStudyVariable:
+                        return GetListValue(_abundanceStudyVariables, indices[0]);
+                    case Fields.AbundanceStDevStudyVariable:
+                        return GetListValue(_abundanceStdevStudyVariables, indices[0]);
+                    case Fields.AbudnanceStdErrorStudyVariable:
+                        return GetListValue(_abundanceStandardErrorStudyVariables, indices[0]);
+                    case Fields.BestSearchEngineScore:
+                        return GetListValue(_bestSearchEngineScores, indices[0]);
                 }
             }
 
@@ -185,12 +200,13 @@ namespace CSMSL.IO.MzTab
         
         public override void SetValue(string fieldName, string value)
         {
+            if (MzTab.NullFieldText.Equals(value))
+                return;
+
             switch (fieldName)
             {
                 case Fields.Sequence:
                     Sequence = value; return;
-                case Fields.ID:
-                    ID = int.Parse(value); return;
                 case Fields.Accession:
                     Accession = value; return;
                 case Fields.Unique:
@@ -207,24 +223,16 @@ namespace CSMSL.IO.MzTab
                     Modifications = value; return;
                 case Fields.RetentionTime:
                     RetentionTime = value.Split('|').Select(double.Parse).ToList(); return;
+                case Fields.RetentionTimeWindow:
+                    RetentionTimeWindows = value.Split('|').Select(double.Parse).ToList(); return;
                 case Fields.Charge:
                     Charge = int.Parse(value); return;
-                case Fields.ExperimentalMZ:
-                    ExperimentalMZ = double.Parse(value); return;
-                case Fields.TheoreticalMZ:
-                    TheoreticalMZ = double.Parse(value); return;
+                case Fields.MZ:
+                    MZ = double.Parse(value); return;
                 case Fields.Uri:
                     Uri = new Uri(value); return;
                 case Fields.SpectraReference:
                     SpectraReference = value; return;
-                case Fields.PreviousAminoAcid:
-                    PreviousAminoAcid = value[0]; return;
-                case Fields.FollowingAminoAcid:
-                    FollowingAminoAcid = value[0]; return;
-                case Fields.StartResidue:
-                    StartResiduePosition = int.Parse(value); return;
-                case Fields.EndResidue:
-                    EndResiduePosition = int.Parse(value); return;
             }
 
             if (fieldName.Contains("["))
@@ -232,10 +240,18 @@ namespace CSMSL.IO.MzTab
                 string condensedFieldName;
                 List<int> indices = MzTab.GetFieldIndicies(fieldName, out condensedFieldName);
 
-                if (condensedFieldName == Fields.SearchEngineScore)
+                switch (condensedFieldName)
                 {
-                    SetListValue(ref _searchEngineScores, indices[0], double.Parse(value));
-                    return;
+                    case Fields.AbundanceAssay:
+                        SetListValue(ref _abundanceAssays, indices[0], double.Parse(value)); return;
+                    case Fields.AbundanceStudyVariable:
+                        SetListValue(ref _abundanceStudyVariables, indices[0], double.Parse(value)); return;
+                    case Fields.AbundanceStDevStudyVariable:
+                        SetListValue(ref _abundanceStdevStudyVariables, indices[0], double.Parse(value)); return;
+                    case Fields.AbudnanceStdErrorStudyVariable:
+                        SetListValue(ref _abundanceStandardErrorStudyVariables, indices[0], double.Parse(value)); return;
+                    case Fields.BestSearchEngineScore:
+                        SetListValue(ref _bestSearchEngineScores, indices[0], double.Parse(value)); return;
                 }
             }
 
@@ -247,6 +263,10 @@ namespace CSMSL.IO.MzTab
 
             throw new ArgumentException("Unexpected field name: " + fieldName);
         }
-        
+
+        public override string ToString()
+        {
+            return Sequence;
+        }
     }
 }

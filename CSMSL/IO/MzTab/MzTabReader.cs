@@ -244,7 +244,7 @@ namespace CSMSL.IO.MzTab
             }
         }
 
-        private void ReadDataTable(MzTab.States dataState, string[] data, DataTable table)
+        private void ReadDataTable(MzTab.States dataState, object[] data, DataTable table)
         {
             if (table == null)
             {
@@ -303,7 +303,12 @@ namespace CSMSL.IO.MzTab
 
         public bool ContainsPeptides { get { return _peptideDataTable != null && _peptideDataTable.Rows.Count > 0; } }
         public int NumberOfPeptides { get { return (ContainsPeptides) ? _peptideDataTable.Rows.Count : 0; } }
-        
+
+        public IEnumerable<MzTabPeptide> GetPeptides()
+        {
+            return GetObjects<MzTabPeptide>(MzTabSection.Peptide);
+        }
+
         #endregion
 
         #region Small Molecule Section
@@ -312,7 +317,12 @@ namespace CSMSL.IO.MzTab
 
         public bool ContainsSmallMolecules { get { return _smallMoleculeDataTable != null && _smallMoleculeDataTable.Rows.Count > 0; } }
         public int NumberOfSmallMolecules { get { return (ContainsSmallMolecules) ? _smallMoleculeDataTable.Rows.Count : 0; } }
-        
+
+        public IEnumerable<MzTabSmallMolecule> GetSmallMolecules()
+        {
+            return GetObjects<MzTabSmallMolecule>(MzTabSection.SmallMolecule);
+        }
+
         #endregion
 
         #region PSM Section

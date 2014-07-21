@@ -13,6 +13,7 @@ namespace CSMSL.IO.MzTab
         public bool IsOpen { get; private set; }
         
         private MzTab.States _currentState;
+        private MzTabMetaData _metaData;
    
         public MzTabWriter(string filePath)
         {
@@ -24,6 +25,11 @@ namespace CSMSL.IO.MzTab
 
         private void WriteData<T>(MzTabSection section, IEnumerable<T> data, bool includeCommentLine = false) where T : MzTabEntity
         {
+            if ((_currentState & MzTab.States.MetaData) != MzTab.States.MetaData)
+            {
+                throw new ArgumentException("Unable to write the "+section+" section, incorrect location. The Meta Data section must come first.");
+            }
+          
             List<T> objects = data.ToList();
 
             if (objects.Count == 0)
@@ -37,18 +43,26 @@ namespace CSMSL.IO.MzTab
                 case MzTabSection.SmallMolecule:
                     headerPrefix = MzTab.LinePrefix.SmallMoleculeTable;
                     prefix = MzTab.LinePrefix.SmallMoleculeData;
+                    _currentState |= MzTab.States.SmallMoleculeData;
+                    _currentState |= MzTab.States.SmallMoleculeHeader;
                     break;
                 case MzTabSection.Peptide:
                     headerPrefix = MzTab.LinePrefix.PeptideTable;
                     prefix = MzTab.LinePrefix.PeptideData;
+                    _currentState |= MzTab.States.PeptideData;
+                    _currentState |= MzTab.States.PeptideHeader;
                     break;
                 case MzTabSection.PSM:
                     headerPrefix = MzTab.LinePrefix.PsmTable;
                     prefix = MzTab.LinePrefix.PsmData;
+                    _currentState |= MzTab.States.PsmData;
+                    _currentState |= MzTab.States.PsmHeader;
                     break;
                 case MzTabSection.Protein:
                     headerPrefix = MzTab.LinePrefix.ProteinTable;
                     prefix = MzTab.LinePrefix.ProteinData;
+                    _currentState |= MzTab.States.ProteinData;
+                    _currentState |= MzTab.States.ProteinHeader;
                     break;
             }
 
@@ -96,6 +110,9 @@ namespace CSMSL.IO.MzTab
                 _writer.Write(MzTab.FieldSeparator);
                 _writer.WriteLine(kvp.Value);
             }
+
+            // Save meta data
+            _metaData = metaData;
         }
 
         public void WriteMetaData(string key, object value)
@@ -111,14 +128,24 @@ namespace CSMSL.IO.MzTab
 
         #endregion
 
-        public void WriteProteinData(IEnumerable<MzTabProtein> proteins)
+        public void WriteProteinData(IEnumerable<MzTabProtein> proteins, bool includeCommentLine = false)
         {
-            WriteData(MzTabSection.Protein, proteins);
+            WriteData(MzTabSection.Protein, proteins, includeCommentLine);
         }
 
         public void WritePsmData(IEnumerable<MzTabPSM> psms, bool includeCommentLine = false)
         {
             WriteData(MzTabSection.PSM, psms, includeCommentLine);
+        }
+
+        public void WritePeptideData(IEnumerable<MzTabPeptide> peptides, bool includeCommentLine = false)
+        {
+            WriteData(MzTabSection.Peptide, peptides, includeCommentLine);
+        }
+
+        public void WriteSmallMoleculeData(IEnumerable<MzTabSmallMolecule> smallMolecules, bool includeCommentLine = false)
+        {
+            WriteData(MzTabSection.SmallMolecule, smallMolecules, includeCommentLine);
         }
 
         /// <summary>

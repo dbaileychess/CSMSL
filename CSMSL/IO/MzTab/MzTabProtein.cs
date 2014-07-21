@@ -30,6 +30,8 @@ namespace CSMSL.IO.MzTab
             public const string NumberOfUniquePeptidesPerMsRun = "num_peptides_unique_ms_run[]";
             public const string Coverage = "protein_coverage";
             public const string AbundancePerAssay = "protein_abundance_assay[]";
+            public const string Uri = "uri";
+            public const string GoTerms = "go_terms";
 
             internal static IEnumerable<string> GetHeader(IList<MzTabProtein> proteins)
             {
@@ -42,31 +44,40 @@ namespace CSMSL.IO.MzTab
                 headers.Add(DatabaseVersion);
                 headers.Add(SearchEngine);
 
+                headers.AddRange(GetHeaders(proteins, BestSearchEngineScore, (prot => prot.BestSearchEngineScores)));
                 headers.AddRange(GetHeaders(proteins, SearchEngineScoreMsRun, (prot => prot.SearchEngineScoreMsRun)));
-
-                headers.AddRange(GetHeaders(proteins, NumberOfPsmsPerMsRun, (prot => prot.NumberOfPsmsPerMsRun)));
-                headers.AddRange(GetHeaders(proteins, NumberOfDistinctPeptidesPerMsRun, (prot => prot.NumberOfDistinctPeptidesPerMsRun)));
-                headers.AddRange(GetHeaders(proteins, NumberOfUniquePeptidesPerMsRun, (prot => prot.NumberOfUniquePeptidesPerMsRun)));
 
                 // Only report reliability if one psm has a non-null reliability score
                 if (proteins.Any(protein => protein.Reliability != MzTab.ReliabilityScore.NotSet))
                     headers.Add(Reliability);
-                
-                headers.Add(Coverage);
 
+                headers.AddRange(GetHeaders(proteins, NumberOfPsmsPerMsRun, (prot => prot.NumberOfPsmsPerMsRun)));
+                headers.AddRange(GetHeaders(proteins, NumberOfDistinctPeptidesPerMsRun, (prot => prot.NumberOfDistinctPeptidesPerMsRun)));
+                headers.AddRange(GetHeaders(proteins, NumberOfUniquePeptidesPerMsRun, (prot => prot.NumberOfUniquePeptidesPerMsRun)));
+                
                 headers.Add(AmbiguityMembers);
                 headers.Add(Modifications);
 
+                if (proteins.Any(protein => protein.Uri != null))
+                    headers.Add(Uri);
+
+                if (proteins.Any(protein => protein.GoTerms != null))
+                    headers.Add(GoTerms);
+
+                if(proteins.Any(protein => protein.Coverage.HasValue))
+                    headers.Add(Coverage);
+              
                 headers.AddRange(GetHeaders(proteins, AbundancePerAssay, (prot => prot.AbundanceAssays)));
                 headers.AddRange(GetHeaders(proteins, AbundanceStudyVariables, (prot => prot.AbundanceStudyVariables)));
                 headers.AddRange(GetHeaders(proteins, AbundanceStdevStudyVariables, (prot => prot.AbundanceStdevStudyVariables)));
                 headers.AddRange(GetHeaders(proteins, AbundanceStandardErrorStudyVariables, (prot => prot.AbundanceStandardErrorStudyVariables)));
                 
-
                 return headers;
             }
         }
-    
+
+        public Uri Uri { get; set; }
+
         public string Accession { get; set; }
 
         public string Description { get; set; }
@@ -81,7 +92,7 @@ namespace CSMSL.IO.MzTab
 
         public string Modificiations { get; set; }
 
-        public double ProteinCoverage { get; set; }
+        public double? Coverage { get; set; }
 
         private List<CVParamater> _searchEngines; 
         public List<CVParamater> SearchEngines
@@ -98,6 +109,8 @@ namespace CSMSL.IO.MzTab
         }
 
         public List<string> AmbiguityMembers { get; set; }
+
+        public List<string> GoTerms { get; set; }
 
         private List<double> _abundanceAssays;
         public List<double> AbundanceAssays
@@ -157,8 +170,83 @@ namespace CSMSL.IO.MzTab
 
         public MzTab.ReliabilityScore Reliability { get; set; }
 
+        public override string GetValue(string fieldName)
+        {
+            switch (fieldName)
+            {
+                case Fields.Accession:
+                    return Accession;
+                case Fields.Description:
+                    return Description;
+                case Fields.Database:
+                    return Database;
+                case Fields.DatabaseVersion:
+                    return DatabaseVersion;
+                case Fields.SearchEngine:
+                    return SearchEngines == null ? MzTab.NullFieldText : string.Join("|", SearchEngines);
+                case Fields.TaxID:
+                    return TaxID.ToString();
+                case Fields.Species:
+                    return Species;
+                case Fields.Modifications:
+                    return Modificiations;
+                case Fields.AmbiguityMembers:
+                    return AmbiguityMembers == null ? MzTab.NullFieldText : string.Join(",", AmbiguityMembers);
+                case Fields.Reliability:
+                    if (Reliability == MzTab.ReliabilityScore.NotSet)
+                        return MzTab.NullFieldText;
+                    return ((int)Reliability).ToString();
+                case Fields.Coverage:
+                    return Coverage.ToString();
+                case Fields.Uri:
+                    return Uri != null ? Uri.ToString() : MzTab.NullFieldText;
+                case Fields.GoTerms:
+                    return GoTerms == null ? MzTab.NullFieldText : string.Join("|", GoTerms);
+            }
+
+            if (fieldName.Contains("["))
+            {
+                string condensedFieldName;
+                List<int> indices = MzTab.GetFieldIndicies(fieldName, out condensedFieldName);
+
+                switch (condensedFieldName)
+                {
+                    case Fields.SearchEngine:
+                        return GetListValue(_searchEngines, indices[0]);
+                    case Fields.BestSearchEngineScore:
+                        return GetListValue(_bestSearchEngineScores, indices[0]);
+                    case Fields.AbundancePerAssay:
+                        return GetListValue(_abundanceAssays, indices[0]);
+                    case Fields.AbundanceStudyVariables:
+                        return GetListValue(_abundanceStudyVariables, indices[0]);
+                    case Fields.AbundanceStdevStudyVariables:
+                        return GetListValue(_abundanceStdevStudyVariables, indices[0]);
+                    case Fields.AbundanceStandardErrorStudyVariables:
+                        return GetListValue(_abundanceStandardErrorStudyVariables, indices[0]);
+                    case Fields.SearchEngineScoreMsRun:
+                        return GetListValue(_searchEngineScoreMsRun, indices[0], indices[1]);
+                    case Fields.NumberOfPsmsPerMsRun:
+                        return GetListValue(_numberOfPsmsPerMsRun, indices[0]);
+                    case Fields.NumberOfDistinctPeptidesPerMsRun:
+                        return GetListValue(_numberOfDistinctPeptidesPerMsRun, indices[0]);
+                    case Fields.NumberOfUniquePeptidesPerMsRun:
+                        return GetListValue(_numberOfUniquePeptidesPerMsRun, indices[0]);
+                }
+            }
+
+            if (fieldName.StartsWith(MzTab.OptionalColumnPrefix))
+            {
+                return GetOptionalData(fieldName);
+            }
+
+            throw new ArgumentException("Unexpected field name: " + fieldName);
+        }
+
         public override void SetValue(string fieldName, string value)
         {
+            if (MzTab.NullFieldText.Equals(value))
+                return;
+
             switch (fieldName)
             {
                 case Fields.Accession:
@@ -182,116 +270,56 @@ namespace CSMSL.IO.MzTab
                 case Fields.AmbiguityMembers:
                     AmbiguityMembers = value.Split(',').ToList(); return;
                 case Fields.Coverage:
-                    ProteinCoverage = double.Parse(value); return;
-                default:
-                    if (fieldName.Contains("["))
-                    {
-                        string condensedFieldName;
-                        List<int> indices = MzTab.GetFieldIndicies(fieldName, out condensedFieldName);
-
-                        double tempDbl;
-                        switch (condensedFieldName)
-                        {
-                            case Fields.SearchEngine:
-                                SetRawValue(ref _searchEngines, indices[0], new CVParamater(value)); return;
-                            case Fields.BestSearchEngineScore:
-                                SetRawValue(ref _bestSearchEngineScores, indices[0], double.Parse(value)); return;
-                            case Fields.AbundancePerAssay:
-                                SetRawValue(ref _abundanceAssays, indices[0], double.Parse(value)); return;
-                            case Fields.AbundanceStudyVariables:
-                                SetRawValue(ref _abundanceStudyVariables, indices[0], double.Parse(value)); return;
-                            case Fields.AbundanceStdevStudyVariables:
-                                SetRawValue(ref _abundanceStdevStudyVariables, indices[0], double.Parse(value)); return;
-                            case Fields.AbundanceStandardErrorStudyVariables:
-                                SetRawValue(ref _abundanceStandardErrorStudyVariables, indices[0], double.Parse(value)); return;
-                            case Fields.SearchEngineScoreMsRun:
-                                SetRawValue(ref _searchEngineScoreMsRun, indices[0], indices[1], double.TryParse(value, out tempDbl) ? tempDbl : default(double?)); return;
-                            case Fields.NumberOfPsmsPerMsRun:
-                                SetRawValue(ref _numberOfPsmsPerMsRun, indices[0], int.Parse(value)); return;
-                            case Fields.NumberOfDistinctPeptidesPerMsRun:
-                                SetRawValue(ref _numberOfDistinctPeptidesPerMsRun, indices[0], int.Parse(value)); return;
-                            case Fields.NumberOfUniquePeptidesPerMsRun:
-                                SetRawValue(ref _numberOfUniquePeptidesPerMsRun, indices[0], int.Parse(value)); return;
-                        }
-                    }
-                    
-                    if (fieldName.StartsWith(MzTab.OptionalColumnPrefix))
-                    {
-                        SetOptionalData(fieldName, value);
-                        return;
-                    }
-
-                    throw new ArgumentException("Unexpected field name: " + fieldName);
+                    Coverage = double.Parse(value); return;
+                case Fields.Uri:
+                    Uri = new Uri(value); return;
+                case Fields.GoTerms:
+                    GoTerms = value.Split('|').Select(datum => datum).ToList(); return;
             }
-        }
 
-        public override string GetValue(string fieldName)
-        {
-            switch (fieldName)
+            if (fieldName.Contains("["))
             {
-                case Fields.Accession:
-                    return Accession;
-                case Fields.Description:
-                    return Description;
-                case Fields.Database:
-                    return Database;
-                case Fields.DatabaseVersion:
-                    return DatabaseVersion;
-                case Fields.SearchEngine:
-                    return string.Join("|", SearchEngines);
-                case Fields.TaxID:
-                    return TaxID.ToString();
-                case Fields.Species:
-                    return Species;
-                case Fields.Modifications:
-                    return Modificiations;
-                case Fields.AmbiguityMembers:
-                    return string.Join(",", AmbiguityMembers);
-                case Fields.Reliability:
-                    if (Reliability == MzTab.ReliabilityScore.NotSet)
-                        return MzTab.NullFieldText;
-                    return ((int) Reliability).ToString();
-                case Fields.Coverage:
-                    return ProteinCoverage.ToString();
-                default:
-                    if (fieldName.Contains("["))
-                    {
-                        string condensedFieldName;
-                        List<int> indices = MzTab.GetFieldIndicies(fieldName, out condensedFieldName);
+                string condensedFieldName;
+                List<int> indices = MzTab.GetFieldIndicies(fieldName, out condensedFieldName);
 
-                        switch (condensedFieldName)
-                        {
-                            case Fields.SearchEngine:
-                                return GetListValue(_searchEngines, indices[0]);
-                            case Fields.BestSearchEngineScore:
-                                return GetListValue(_bestSearchEngineScores, indices[0]);
-                            case Fields.AbundancePerAssay:
-                                return GetListValue(_abundanceAssays, indices[0]);
-                            case Fields.AbundanceStudyVariables:
-                                return GetListValue(_abundanceStudyVariables, indices[0]);
-                            case Fields.AbundanceStdevStudyVariables:
-                                return GetListValue(_abundanceStdevStudyVariables, indices[0]);
-                            case Fields.AbundanceStandardErrorStudyVariables:
-                                return GetListValue(_abundanceStandardErrorStudyVariables, indices[0]);
-                            case Fields.SearchEngineScoreMsRun:
-                                return GetListValue(_searchEngineScoreMsRun, indices[0], indices[1]);
-                            case Fields.NumberOfPsmsPerMsRun:
-                                return GetListValue(_numberOfPsmsPerMsRun, indices[0]);
-                            case Fields.NumberOfDistinctPeptidesPerMsRun:
-                                return GetListValue(_numberOfDistinctPeptidesPerMsRun, indices[0]);
-                            case Fields.NumberOfUniquePeptidesPerMsRun:
-                                return GetListValue(_numberOfUniquePeptidesPerMsRun, indices[0]);
-                            default:
-                                return MzTab.NullFieldText;
-                        }
-                    }
-                    else if (fieldName.StartsWith(MzTab.OptionalColumnPrefix))
-                    {
-                        return GetOptionalData(fieldName);
-                    }
-
-                    throw new ArgumentException("Unexpected field name: " + fieldName);
+                double tempDbl;
+                switch (condensedFieldName)
+                {
+                    case Fields.SearchEngine:
+                        SetListValue(ref _searchEngines, indices[0], new CVParamater(value)); return;
+                    case Fields.BestSearchEngineScore:
+                        SetListValue(ref _bestSearchEngineScores, indices[0], double.Parse(value)); return;
+                    case Fields.AbundancePerAssay:
+                        SetListValue(ref _abundanceAssays, indices[0], double.Parse(value)); return;
+                    case Fields.AbundanceStudyVariables:
+                        SetListValue(ref _abundanceStudyVariables, indices[0], double.Parse(value)); return;
+                    case Fields.AbundanceStdevStudyVariables:
+                        SetListValue(ref _abundanceStdevStudyVariables, indices[0], double.Parse(value)); return;
+                    case Fields.AbundanceStandardErrorStudyVariables:
+                        SetListValue(ref _abundanceStandardErrorStudyVariables, indices[0], double.Parse(value)); return;
+                    case Fields.SearchEngineScoreMsRun:
+                        SetListValue(ref _searchEngineScoreMsRun, indices[0], indices[1], double.TryParse(value, out tempDbl) ? tempDbl : default(double?)); return;
+                    case Fields.NumberOfPsmsPerMsRun:
+                        SetListValue(ref _numberOfPsmsPerMsRun, indices[0], int.Parse(value)); return;
+                    case Fields.NumberOfDistinctPeptidesPerMsRun:
+                        SetListValue(ref _numberOfDistinctPeptidesPerMsRun, indices[0], int.Parse(value)); return;
+                    case Fields.NumberOfUniquePeptidesPerMsRun:
+                        SetListValue(ref _numberOfUniquePeptidesPerMsRun, indices[0], int.Parse(value)); return;
+                }
             }
+
+            if (fieldName.StartsWith(MzTab.OptionalColumnPrefix))
+            {
+                SetOptionalData(fieldName, value);
+                return;
+            }
+
+            throw new ArgumentException("Unexpected field name: " + fieldName);
+        }
+        
+        public override string ToString()
+        {
+            return Description;
         }
     }
 }

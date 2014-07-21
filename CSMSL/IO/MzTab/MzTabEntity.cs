@@ -18,7 +18,7 @@ namespace CSMSL.IO.MzTab
         public abstract string GetValue(string fieldName);
         public abstract void SetValue(string fieldName, string value);
 
-        protected void SetRawValue<T>(ref List<T> container, int index, T value)
+        protected void SetListValue<T>(ref List<T> container, int index, T value)
         {
             if (container == null)
             {
@@ -28,7 +28,7 @@ namespace CSMSL.IO.MzTab
             container.Insert(index - MzTab.IndexBased, value);
         }
 
-        protected void SetRawValue<T>(ref MzTabMultipleSet<T> container, int index1, int index2, T value)
+        protected void SetListValue<T>(ref MzTabMultipleSet<T> container, int index1, int index2, T value)
         {
             if (container == null)
             {
@@ -113,8 +113,9 @@ namespace CSMSL.IO.MzTab
         protected static IEnumerable<string> GetHeaders<T, T2>(IList<T> data, string fieldName, Func<T, MzTabMultipleSet<T2>> selector) 
             where T : MzTabEntity 
         {
-            int maxIndex1 = data.Max(d => selector(d).MaxIndex1);
-            int maxIndex2 = data.Max(d => selector(d).MaxIndex2);
+            MzTabMultipleSet<T2> set;
+            int maxIndex1 = data.Max(d => (set = selector(d)) == null ? 0 : set.MaxIndex1);
+            int maxIndex2 = data.Max(d => (set = selector(d)) == null ? 0 : set.MaxIndex2);
 
             int index1 = fieldName.IndexOf('[',0);
             int index2 = fieldName.IndexOf('[', index1+1);
@@ -133,7 +134,8 @@ namespace CSMSL.IO.MzTab
         protected static IEnumerable<string> GetHeaders<T, T2>(IList<T> data, string fieldName, Func<T, IList<T2>> selector)
             where T : MzTabEntity
         {
-            int maxIndex = data.Max(d => selector(d).Count);
+            IList<T2> list;
+            int maxIndex = data.Max(d => (list = selector(d)) == null ? 0 : list.Count);
             for (int i = 1; i <= maxIndex; i++)
             {
                 yield return fieldName.Replace("[]", "[" + i + "]");
@@ -158,6 +160,14 @@ namespace CSMSL.IO.MzTab
             } else if (typeof(MzTabProtein) == tType)
             {
                 headers.AddRange(MzTabProtein.Fields.GetHeader(data.Cast<MzTabProtein>().ToList()));
+            }
+            else if (typeof(MzTabPeptide) == tType)
+            {
+                headers.AddRange(MzTabPeptide.Fields.GetHeader(data.Cast<MzTabPeptide>().ToList()));
+            }
+            else if (typeof(MzTabSmallMolecule) == tType)
+            {
+                headers.AddRange(MzTabSmallMolecule.Fields.GetHeader(data.Cast<MzTabSmallMolecule>().ToList()));
             }
 
             // Optional Parameters

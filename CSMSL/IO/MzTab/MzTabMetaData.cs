@@ -28,7 +28,6 @@ namespace CSMSL.IO.MzTab
             public const string ProteinSearchEngineScore = "protein_search_engine_score[]";
             public const string Software = "software[]";
 
-
             public static readonly List<string> FieldOrder = new List<string>
             {
                 Version, Mode, Type, ID,
@@ -133,36 +132,35 @@ namespace CSMSL.IO.MzTab
                 case Fields.ID:
                    return ID;
                 case Fields.ProteinQuantificationUnit:
-                   return ProteinQuantificationUnit.ToString();
-                default:
-                    if (fieldName.Contains("["))
-                    {
-                        string condensedFieldName;
-                        List<int> indices = MzTab.GetFieldIndicies(fieldName, out condensedFieldName);
-                        switch (condensedFieldName)
-                        {
-                            case Fields.FixedMod:
-                                return GetListValue(_fixedModifications, indices[0]);
-                             case Fields.FixedModSite:
-                                return GetListValue(_fixedModificationSites, indices[0]);
-                            case Fields.VariableMod:
-                                return GetListValue(_variableModifications, indices[0]);
-                            case Fields.PsmSearchEngineScore:
-                                return GetListValue(_psmSearchEngineScores, indices[0]);
-                            case Fields.ProteinSearchEngineScore:
-                                return GetListValue(_proteinSearchEngineScores, indices[0]);
-                            case Fields.StudyVariableDescription:
-                                return GetListValue(_studyVariableDescriptions, indices[0]);
-                            case Fields.MsRunLocation:
-                                return GetListValue(_msRunLocations, indices[0]);
-                            case Fields.Software:
-                                return GetListValue(_software, indices[0]);
-                            default:
-                                break;
-                        }
-                    }
-                    throw new ArgumentException("Unexpected field name: " + fieldName);
+                   return ProteinQuantificationUnit == null ? MzTab.NullFieldText : ProteinQuantificationUnit.ToString();
             }
+
+            if (fieldName.Contains("["))
+            {
+                string condensedFieldName;
+                List<int> indices = MzTab.GetFieldIndicies(fieldName, out condensedFieldName);
+                switch (condensedFieldName)
+                {
+                    case Fields.FixedMod:
+                        return GetListValue(_fixedModifications, indices[0]);
+                    case Fields.FixedModSite:
+                        return GetListValue(_fixedModificationSites, indices[0]);
+                    case Fields.VariableMod:
+                        return GetListValue(_variableModifications, indices[0]);
+                    case Fields.PsmSearchEngineScore:
+                        return GetListValue(_psmSearchEngineScores, indices[0]);
+                    case Fields.ProteinSearchEngineScore:
+                        return GetListValue(_proteinSearchEngineScores, indices[0]);
+                    case Fields.StudyVariableDescription:
+                        return GetListValue(_studyVariableDescriptions, indices[0]);
+                    case Fields.MsRunLocation:
+                        return GetListValue(_msRunLocations, indices[0]);
+                    case Fields.Software:
+                        return GetListValue(_software, indices[0]);
+                }
+            }
+
+            throw new ArgumentException("Unexpected field name: " + fieldName);
         }
 
         public override void SetValue(string fieldName, string value)
@@ -183,36 +181,33 @@ namespace CSMSL.IO.MzTab
                     ID = value; return;
                 case Fields.ProteinQuantificationUnit:
                     ProteinQuantificationUnit = new CVParamater(value); return;
-                default:
-                    if (fieldName.Contains("["))
-                    {
-                        string condensedFieldName;
-                        List<int> indices = MzTab.GetFieldIndicies(fieldName, out condensedFieldName);
-                        switch (condensedFieldName)
-                        {
-                            case Fields.FixedMod:
-                                SetRawValue(ref _fixedModifications, indices[0], new CVParamater(value)); return;
-                            case Fields.FixedModSite:
-                                SetRawValue(ref _fixedModificationSites, indices[0], value); return;
-                            case Fields.VariableMod:
-                                SetRawValue(ref _variableModifications, indices[0], new CVParamater(value)); return;
-                            case Fields.PsmSearchEngineScore:
-                                SetRawValue(ref _psmSearchEngineScores, indices[0], new CVParamater(value)); return;
-                            case Fields.ProteinSearchEngineScore:
-                                SetRawValue(ref _proteinSearchEngineScores, indices[0], new CVParamater(value)); return;
-                            case Fields.StudyVariableDescription:
-                                SetRawValue(ref _studyVariableDescriptions, indices[0], value); return;
-                            case Fields.MsRunLocation:
-                                SetRawValue(ref _msRunLocations, indices[0], value); return;
-                            case Fields.Software:
-                                SetRawValue(ref _software, indices[0], new CVParamater(value)); return;
-                            default:
-                                break;
-                        }
-                    }
-                    return;
-                    //throw new ArgumentException("Unexpected field name: " + fieldName);
             }
+
+            if (fieldName.Contains("["))
+            {
+                string condensedFieldName;
+                List<int> indices = MzTab.GetFieldIndicies(fieldName, out condensedFieldName);
+                switch (condensedFieldName)
+                {
+                    case Fields.FixedMod:
+                        SetListValue(ref _fixedModifications, indices[0], new CVParamater(value)); return;
+                    case Fields.FixedModSite:
+                        SetListValue(ref _fixedModificationSites, indices[0], value); return;
+                    case Fields.VariableMod:
+                        SetListValue(ref _variableModifications, indices[0], new CVParamater(value)); return;
+                    case Fields.PsmSearchEngineScore:
+                        SetListValue(ref _psmSearchEngineScores, indices[0], new CVParamater(value)); return;
+                    case Fields.ProteinSearchEngineScore:
+                        SetListValue(ref _proteinSearchEngineScores, indices[0], new CVParamater(value)); return;
+                    case Fields.StudyVariableDescription:
+                        SetListValue(ref _studyVariableDescriptions, indices[0], value); return;
+                    case Fields.MsRunLocation:
+                        SetListValue(ref _msRunLocations, indices[0], value); return;
+                    case Fields.Software:
+                        SetListValue(ref _software, indices[0], new CVParamater(value)); return;
+                }
+            }
+            //throw new ArgumentException("Unexpected field name: " + fieldName);
         }
         
         private IEnumerable<KeyValuePair<string, string>> _getKeyValuePairs(string fieldName)
@@ -230,6 +225,8 @@ namespace CSMSL.IO.MzTab
                     list = _msRunLocations; break;
                 case Fields.FixedMod:
                     list = _fixedModifications; break;
+                case Fields.FixedModPosition:
+                    list = null; break;
                 case Fields.FixedModSite:
                     list = _fixedModificationSites; break;
                 case Fields.VariableMod:
@@ -238,7 +235,7 @@ namespace CSMSL.IO.MzTab
                     list = _software; break;
                 default:
                     string value = GetValue(fieldName);
-                    if (string.IsNullOrEmpty(value))
+                    if (string.IsNullOrEmpty(value) || value == MzTab.NullFieldText)
                     {
                         yield break;
                     }

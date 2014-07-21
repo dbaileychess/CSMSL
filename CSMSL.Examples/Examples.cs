@@ -66,22 +66,22 @@ namespace CSMSL.Examples
         { 
             List<MzTabPSM> psms;
             List<MzTabProtein> proteins;
+            List<MzTabPeptide> peptides;
+            List<MzTabSmallMolecule> smallMolecules;
             MzTabMetaData metaData;
-            using (MzTabReader reader = new MzTabReader(@"E:\Desktop\mzTab Examples\iTRAQ_SQI.mzTab", false))
+
+            using (MzTabReader reader = new MzTabReader(@"E:\Desktop\mzTab Examples\MTBLS2.mzTab", false))
             {
                 reader.Open();
                 
                 metaData = reader.MetaData;
+
                 psms = reader.GetPsms().ToList();
                 proteins = reader.GetProteins().ToList();
-
-                //psms[2].SearchEngineScores.Add(152);
-                //psms[2].Reliability = MzTab.ReliabilityScore.Medium;
-                //psms[3][MzTabPSM.Fields.Reliability] = "1";
-                //psms[5].SetOptionalData("opt_Derek", "Test");
-                //proteins[2].SetOptionalData("opt_Bailey", "complete");
+                peptides = reader.GetPeptides().ToList();
+                smallMolecules = reader.GetSmallMolecules().ToList();
             }
-
+   
             using (MzTabWriter writer = new MzTabWriter(@"E:\Desktop\mzTab Examples\dereksTest.mzTab"))
             {
                 writer.WriteComment("Test Comment");
@@ -90,6 +90,10 @@ namespace CSMSL.Examples
                 writer.WriteProteinData(proteins);
                 writer.WriteLine();
                 writer.WritePsmData(psms);
+                writer.WriteLine();
+                writer.WritePeptideData(peptides);
+                writer.WriteLine();
+                writer.WriteSmallMoleculeData(smallMolecules);
             }
             
             // Examples coding  
