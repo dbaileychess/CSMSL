@@ -240,9 +240,9 @@ namespace CSMSL.Analysis.Identification
             return Count(items, Comparer<TSource>.Default, Comparer<TMetric>.Default, maxFdr,  removeDecoys, uniqueItems);
         }
 
-        public static int Count(IList<TSource> items, Comparer<TSource> comparer, Comparer<TMetric> metricComparer, double maxFdr = 0.01, bool removeDecoys = false, bool uniqueItems = false)
+        public static int Count(IList<TSource> items, Comparer<TSource> comparer, Comparer<TMetric> metricComparer, double maxFdr = 0.01, bool removeDecoys = false, bool uniqueItems = false, bool preSorted = false)
         {
-            TMetric threshold = CalculateThreshold(items, comparer, maxFdr, uniqueItems);
+            TMetric threshold = CalculateThreshold(items, comparer, maxFdr, uniqueItems, preSorted);
             
             if (removeDecoys)
                 return items.Count(item =>  metricComparer.Compare(item.FdrScoreMetric, threshold) <= 0 && !item.IsDecoy);
@@ -256,14 +256,16 @@ namespace CSMSL.Analysis.Identification
         }
 
         public static TMetric CalculateThreshold(IEnumerable<TSource> items, Comparer<TSource> comparer,
-            double maxFdr = 0.01, bool keepUniqueItemsOnly = false)
+            double maxFdr = 0.01, bool keepUniqueItemsOnly = false, bool preSorted = false)
         {
             // Set the cutoff metrics to the default
             TMetric storedCutoff = default(TMetric);
 
             // Sort the input data based on the comparer given
             List<TSource> sorteditems = items.ToList();
-            sorteditems.Sort(comparer);
+
+            if(!preSorted)
+                sorteditems.Sort(comparer);
 
             int count = sorteditems.Count;
 

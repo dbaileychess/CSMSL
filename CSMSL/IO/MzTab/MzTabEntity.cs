@@ -28,6 +28,14 @@ namespace CSMSL.IO.MzTab
             container.Insert(index - MzTab.IndexBased, value);
         }
 
+        protected void SetFieldValue<T, T2>(ref List<T> container, int index1, Func<T, List<T2>> selector, T2 value)
+        {
+            T item = container[index1 - MzTab.IndexBased];
+            List<T2> list = selector(item);
+            list.Add(value);
+            //SetFieldValue(ref _software, indices[0], (sw => sw.Settings), value); return;
+        }
+
         protected void SetListValue<T>(ref MzTabMultipleSet<T> container, int index1, int index2, T value)
         {
             if (container == null)
@@ -35,6 +43,33 @@ namespace CSMSL.IO.MzTab
                 container = new MzTabMultipleSet<T>();
             }
             container.SetValue(index1, index2, value);
+        }
+
+        protected string GetFieldValue<T, T2>(List<T> list, int index, Func<T, List<T2>> selector, int index2)
+        {
+            if (list == null)
+                return MzTab.NullFieldText;
+            index -= MzTab.IndexBased;
+
+            if (index >= list.Count)
+                return MzTab.NullFieldText;
+
+            T item = list[index];
+            if (item == null)
+                return MzTab.NullFieldText;
+
+            List<T2> list2 = selector(item);
+
+            index2 -= MzTab.IndexBased;
+
+            if(index2 >= list2.Count)
+                return MzTab.NullFieldText;
+
+            T2 item2 = list2[index2];
+            if (item2 == null)
+                return MzTab.NullFieldText;
+
+            return item2.ToString();
         }
         
         protected string GetListValue<T>(List<T> list, int index)

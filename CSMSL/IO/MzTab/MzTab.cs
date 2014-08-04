@@ -139,7 +139,21 @@ namespace CSMSL.IO.MzTab
             SmallMoleculeHeader = 1 << 7,
             SmallMoleculeData = 1 << 8
         }
-        
+
+        internal static string GetArrayName(string fieldName, int index)
+        {
+            return fieldName.Replace("[]", "[" + index + "]");
+        }
+
+        internal static string GetArrayName(string fieldName, int index, int index2)
+        {
+            int i1 = fieldName.IndexOf('[', 0);
+            int i2 = fieldName.IndexOf('[', i1 + 1);
+            string iStr = index.ToString();
+            string temp = fieldName.Insert(i1 + 1, index.ToString());
+            return temp.Insert(i2 + 1 + iStr.Length, index2.ToString());
+        }
+
         public static List<int> GetFieldIndicies(string fieldName, out string condensedFieldName)
         {
             condensedFieldName = fieldName;

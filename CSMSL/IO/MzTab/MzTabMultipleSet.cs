@@ -7,21 +7,27 @@ namespace CSMSL.IO.MzTab
 {
     public class MzTabMultipleSet<T>
     {
-        private readonly Dictionary<int,Dictionary<int,T>> _data;
+        private readonly Dictionary<int, List<T>> _data;
 
-        public int MaxIndex1 { get { return _data.Keys.Max(); } }
-        public int MaxIndex2 { get { return _data.Values.SelectMany(i => i.Keys).Max(); } }
+        public int MaxIndex1
+        {
+            get { return _data.Keys.Max(); }
+        }
+
+        public int MaxIndex2
+        {
+            get { return _data.Values.Max(i => i.Count); }
+        }
 
         public MzTabMultipleSet()
         {
-            _data = new Dictionary<int, Dictionary<int, T>>();
+            _data = new Dictionary<int, List<T>>();
         }
 
-        public MzTabMultipleSet(int index1, int index2, T value)
+        public MzTabMultipleSet(int index1, T value)
         {
-            _data = new Dictionary<int,Dictionary<int,T>>();
-            var temp = new Dictionary<int,T>();
-            temp.Add(index2, value);
+            _data = new Dictionary<int,List<T>>();
+            var temp = new List<T> { value };
             _data.Add(index1, temp);
         }
 
@@ -33,28 +39,39 @@ namespace CSMSL.IO.MzTab
 
         public T GetValue(int index1, int index2)
         {
-            Dictionary<int, T> temp;
+            index2 = index2 - MzTab.IndexBased;
+            List<T> temp;
             if (_data.TryGetValue(index1, out temp))
             {
-                T value;
-                if (temp.TryGetValue(index2, out value))
-                {
-                    return value;
-                }
+                return temp[index2];
             }
             return default(T);
         }
 
+        public int AddValue(int index1, T value)
+        {
+            List<T> temp;
+            if (!_data.TryGetValue(index1, out temp))
+            {
+                temp = new List<T>();
+                _data.Add(index1, temp);
+            }
+
+            temp.Add(value);
+            return temp.Count - 1 + MzTab.IndexBased;
+        }
+
         public void SetValue(int index1, int index2, T value)
         {
-            Dictionary<int, T> temp;
+            index2 = index2 - MzTab.IndexBased;
+            List<T> temp;
             if (_data.TryGetValue(index1, out temp))
             {
                 temp[index2] = value;
             }
             else
             {
-                temp = new Dictionary<int, T>();
+                temp = new List<T>(index2+1);
                 temp[index2] = value;
                 _data.Add(index1, temp);
             }
@@ -62,18 +79,32 @@ namespace CSMSL.IO.MzTab
 
         public bool TryGetValue(int index1, int index2, out T value)
         {
+            index2 = index2 - MzTab.IndexBased;
             value = default(T);
-            Dictionary<int, T> temp;
+            List<T> temp;
             if (_data.TryGetValue(index1, out temp))
             {
-                if (temp.TryGetValue(index2, out value))
-                {
-                    return true;
-                }
+                if (temp.Count >= index2)
+                    return false;
+                value = temp[index2];
+                return true;
             }
             return false;
         }
 
+        public IEnumerable<KeyValuePair<string, string>> GetKeyValuePairs(string baseName)
+        {
+            foreach (KeyValuePair<int, List<T>> values in _data)
+            {
+                int index1 = values.Key;
+                for (int index2 = 0; index2 < values.Value.Count; index2++)
+                {
+                    string name = MzTab.GetArrayName(baseName, index1, index2 + MzTab.IndexBased);
+                    string value = values.Value[index2].ToString();
+                    yield return new KeyValuePair<string, string>(name, value);
+                }
+            }
+        }  
         
     }
 }

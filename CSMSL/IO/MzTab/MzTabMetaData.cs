@@ -16,6 +16,7 @@ namespace CSMSL.IO.MzTab
             public const string ProteinQuantificationUnit = "protein-quantification_unit";
             public const string ID = "mzTab-ID";
             public const string Title = "title";
+            public const string MsRun = "ms_run[]";
             public const string MsRunLocation = "ms_run[]-location";
             public const string FixedMod = "fixed_mod[]";
             public const string FixedModSite = "fixed_mod[]-site";
@@ -27,14 +28,7 @@ namespace CSMSL.IO.MzTab
             public const string PsmSearchEngineScore = "psm_search_engine_score[]";
             public const string ProteinSearchEngineScore = "protein_search_engine_score[]";
             public const string Software = "software[]";
-
-            public static readonly List<string> FieldOrder = new List<string>
-            {
-                Version, Mode, Type, ID,
-                Title, Description, ProteinSearchEngineScore, PsmSearchEngineScore,
-                FixedMod, FixedModSite, FixedModPosition, VariableMod, ProteinQuantificationUnit, MsRunLocation,
-                StudyVariableDescription, Software
-            };
+            public const string SoftwareSettings = "software[]-setting[]";
         }
 
         public MzTabMetaData(MzTab.MzTabMode mode = MzTab.MzTabMode.Summary, MzTab.MzTabType type = MzTab.MzTabType.Identification, string description = null, string version = MzTab.Version)
@@ -59,8 +53,8 @@ namespace CSMSL.IO.MzTab
       
         public CVParamater ProteinQuantificationUnit { get; set; }
 
-        private List<CVParamater> _software;
-        public List<CVParamater> Software
+        private List<MzTabSoftware> _software;
+        public List<MzTabSoftware> Software
         {
             get { return _software; }
             set { _software = value; }
@@ -157,6 +151,8 @@ namespace CSMSL.IO.MzTab
                         return GetListValue(_msRunLocations, indices[0]);
                     case Fields.Software:
                         return GetListValue(_software, indices[0]);
+                    case Fields.SoftwareSettings:
+                        return GetFieldValue(_software, indices[0], sw => sw.Settings, indices[1]);
                 }
             }
 
@@ -204,64 +200,74 @@ namespace CSMSL.IO.MzTab
                     case Fields.MsRunLocation:
                         SetListValue(ref _msRunLocations, indices[0], value); return;
                     case Fields.Software:
-                        SetListValue(ref _software, indices[0], new CVParamater(value)); return;
+                        SetListValue(ref _software, indices[0], new MzTabSoftware(new CVParamater(value))); return;
+                    case Fields.SoftwareSettings:
+                        SetFieldValue(ref _software, indices[0], sw => sw.Settings, value); return;
                 }
             }
             //throw new ArgumentException("Unexpected field name: " + fieldName);
         }
         
-        private IEnumerable<KeyValuePair<string, string>> _getKeyValuePairs(string fieldName)
-        {
-            IList list;
-            switch (fieldName)
-            {
-                case Fields.PsmSearchEngineScore:
-                    list = _psmSearchEngineScores; break;
-                case Fields.ProteinSearchEngineScore:
-                    list = _proteinSearchEngineScores; break;
-                case Fields.StudyVariableDescription:
-                    list = _studyVariableDescriptions; break;
-                case Fields.MsRunLocation:
-                    list = _msRunLocations; break;
-                case Fields.FixedMod:
-                    list = _fixedModifications; break;
-                case Fields.FixedModPosition:
-                    list = null; break;
-                case Fields.FixedModSite:
-                    list = _fixedModificationSites; break;
-                case Fields.VariableMod:
-                    list = _variableModifications; break;     
-                case Fields.Software:
-                    list = _software; break;
-                default:
-                    string value = GetValue(fieldName);
-                    if (string.IsNullOrEmpty(value) || value == MzTab.NullFieldText)
-                    {
-                        yield break;
-                    }
-                    yield return new KeyValuePair<string, string>(fieldName, value);
-                    yield break;
-            }
-
-            int count = list == null ? 0 : list.Count;
-            if (count <= 0)
-                yield break;
-
-            for (int i = 1; i <= count; i++)
-            {
-                string value = list[i - MzTab.IndexBased].ToString();
-                string expandedFieldName = fieldName.Replace("[]", "[" + i + "]");
-                //string value = GetValue(expandedFieldName);
-                if (!string.IsNullOrEmpty(value))
-                {
-                    yield return new KeyValuePair<string, string>(expandedFieldName, value);
-                }
-            }
-        }
-        
         public IEnumerable<KeyValuePair<string, string>> GetKeyValuePairs()
         {
-            return Fields.FieldOrder.SelectMany(_getKeyValuePairs);
+            int i, j;
+            string name;
+
+            yield return new KeyValuePair<string, string>(Fields.Version, Version);
+            yield return new KeyValuePair<string, string>(Fields.Mode, Mode.ToString());
+            yield return new KeyValuePair<string, string>(Fields.Type, Type.ToString());
+            yield return new KeyValuePair<string, string>(Fields.Description, Description);
+
+            i = MzTab.IndexBased;
+            foreach (string msrunlocation in MsRunLocations)
+            {
+                name = MzTab.GetArrayName(Fields.MsRunLocation, i);
+                yield return new KeyValuePair<string, string>(name, msrunlocation);
+                i++;
+            }
+
+            i = MzTab.IndexBased;
+            foreach (MzTabSoftware software in Software)
+            {
+                name = MzTab.GetArrayName(Fields.Software, i);
+                yield return new KeyValuePair<string, string>(name, software.ToString());
+                j = MzTab.IndexBased; 
+                foreach (string setting in software.Settings)
+                {
+                    name = MzTab.GetArrayName(Fields.SoftwareSettings, i, j);
+                    yield return new KeyValuePair<string, string>(name, setting);
+                    j++;
+                }
+                i++;
+            }
         }
+
+        #region Helper Methods
+
+        public string AddMsRun(string filePath)
+        {
+            if (MsRunLocations == null)
+            {
+                MsRunLocations = new List<string>();
+            }
+
+            MsRunLocations.Add(filePath);
+
+            return MzTab.GetArrayName(Fields.MsRun, MsRunLocations.Count - 1 + MzTab.IndexBased);
+        }
+
+        public int AddSoftware(MzTabSoftware software)
+        {
+            if (Software == null)
+            {
+                Software = new List<MzTabSoftware>();
+            }
+
+            Software.Add(software);
+
+            return Software.Count - 1 + MzTab.IndexBased;
+        }
+        
+        #endregion
     }
 }

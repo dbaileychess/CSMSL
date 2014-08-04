@@ -175,6 +175,7 @@
     <Compile Include="IO\MzTab\MzTabReader.cs" />
     <Compile Include="IO\MzTab\MzTabSection.cs" />
     <Compile Include="IO\MzTab\MzTabSmallMolecule.cs" />
+    <Compile Include="IO\MzTab\MzTabSoftware.cs" />
     <Compile Include="IO\MzTab\MzTabWriter.cs" />
     <Compile Include="IO\PsmReader.cs" />
     <Compile Include="IO\uniprot.cs">

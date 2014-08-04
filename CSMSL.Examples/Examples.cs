@@ -63,14 +63,16 @@ namespace CSMSL.Examples
         }
 
         private static void StartExamples()
-        { 
+        {
+            
+            
             List<MzTabPSM> psms;
             List<MzTabProtein> proteins;
             List<MzTabPeptide> peptides;
             List<MzTabSmallMolecule> smallMolecules;
             MzTabMetaData metaData;
-
-            using (MzTabReader reader = new MzTabReader(@"E:\Desktop\mzTab Examples\MTBLS2.mzTab", false))
+            
+            using (MzTabReader reader = new MzTabReader(@"E:\Desktop\mzTab Examples\iTRAQ_SQI.mzTab", false))
             {
                 reader.Open();
                 

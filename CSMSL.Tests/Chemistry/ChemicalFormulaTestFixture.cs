@@ -847,7 +847,7 @@ namespace CSMSL.Tests.Chemistry
         {
             ChemicalFormula formulaA = new ChemicalFormula("C2H3NO");
 
-            Assert.AreEqual(19, formulaA.GetNeutronCount());
+            Assert.AreEqual(27, formulaA.GetNeutronCount());
         }
 
         [Test]
@@ -855,7 +855,7 @@ namespace CSMSL.Tests.Chemistry
         {
             ChemicalFormula formulaA = new ChemicalFormula("C2H3NO");
 
-            Assert.AreEqual(22, formulaA.GetProtonCount());
+            Assert.AreEqual(30, formulaA.GetProtonCount());
         }
 
         [Test]

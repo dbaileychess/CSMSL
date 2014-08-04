@@ -683,7 +683,7 @@ namespace CSMSL.Chemistry
         public int GetNeutronCount()
         {
             int neutrons = 0;
-            for (int i = 0; i < _largestIsotopeId; i++)
+            for (int i = 0; i <= _largestIsotopeId; i++)
             {
                 if (_isotopes[i] == 0)
                     continue;
@@ -700,7 +700,7 @@ namespace CSMSL.Chemistry
         public int GetProtonCount()
         {
             int protons = 0;
-            for (int i = 0; i < _largestIsotopeId; i++)
+            for (int i = 0; i <= _largestIsotopeId; i++)
             {
                 if (_isotopes[i] == 0)
                     continue;
@@ -750,16 +750,16 @@ namespace CSMSL.Chemistry
 
         public override bool Equals(object obj)
         {
-            ChemicalFormula formula = obj as ChemicalFormula;
-            return formula != null && Equals(formula);
+            return Equals(obj as ChemicalFormula);
         }
 
         public bool Equals(ChemicalFormula other)
         {
+            if (ReferenceEquals(null, other)) return false;
             if (ReferenceEquals(this, other)) return true;
             if (_largestIsotopeId != other._largestIsotopeId) return false;
 
-            for (int i = 0; i < _largestIsotopeId; i++)
+            for (int i = 0; i <= _largestIsotopeId; i++)
             {
                 if (_isotopes[i] != other._isotopes[i])
                     return false;

@@ -123,7 +123,7 @@ namespace CSMSL.IO.MzTab
             switch (fieldName)
             {
                 case Fields.Sequence:
-                    return Sequence;
+                    return string.IsNullOrEmpty(Sequence) ? MzTab.NullFieldText : Sequence;
                 case Fields.ID:
                     return ID.ToString();
                 case Fields.Accession:
@@ -131,19 +131,19 @@ namespace CSMSL.IO.MzTab
                 case Fields.Unique:
                     return Unique ? "1" : "0";
                 case Fields.Database:
-                    return Database;
+                    return string.IsNullOrEmpty(Database) ? MzTab.NullFieldText : Database;
                 case Fields.DatabaseVersion:
-                    return DatabaseVersion;
+                    return string.IsNullOrEmpty(DatabaseVersion) ? MzTab.NullFieldText : DatabaseVersion;
                 case Fields.SearchEngine:
-                    return string.Join("|", SearchEngines);
+                    return SearchEngines == null ? MzTab.NullFieldText : string.Join("|", SearchEngines);
                 case Fields.Reliability:
                     if (Reliability == MzTab.ReliabilityScore.NotSet)
                         return MzTab.NullFieldText;
                     return ((int)Reliability).ToString();
                 case Fields.Modifications:
-                    return Modifications;
+                    return string.IsNullOrEmpty(Modifications) ? MzTab.NullFieldText : Modifications;
                 case Fields.RetentionTime:
-                    return string.Join("|", RetentionTime);
+                    return RetentionTime == null ? MzTab.NullFieldText : string.Join("|", RetentionTime);
                 case Fields.Charge:
                     return Charge.ToString();
                 case Fields.ExperimentalMZ:
@@ -151,13 +151,13 @@ namespace CSMSL.IO.MzTab
                 case Fields.TheoreticalMZ:
                     return TheoreticalMZ.ToString();
                 case Fields.Uri:
-                    return Uri.ToString();
+                    return Uri == null ? MzTab.NullFieldText : Uri.ToString();
                 case Fields.SpectraReference:
-                    return SpectraReference;
+                    return string.IsNullOrEmpty(SpectraReference) ? MzTab.NullFieldText : SpectraReference;
                 case Fields.PreviousAminoAcid:
-                    return PreviousAminoAcid.ToString();
+                    return default(char).Equals(PreviousAminoAcid) ? "-" :  PreviousAminoAcid.ToString();
                 case Fields.FollowingAminoAcid:
-                    return FollowingAminoAcid.ToString();
+                    return default(char).Equals(FollowingAminoAcid) ? "-" : FollowingAminoAcid.ToString();
                 case Fields.StartResidue:
                     return StartResiduePosition.ToString();
                 case Fields.EndResidue:

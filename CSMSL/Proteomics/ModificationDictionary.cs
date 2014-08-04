@@ -34,6 +34,7 @@ namespace CSMSL.Proteomics
         static ModificationDictionary()
         {
             UserModificationPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), @"CSMSL\Modifications.xml");
+      
             Modifications = new Dictionary<string, Modification>();
 
             // Load the default modification file

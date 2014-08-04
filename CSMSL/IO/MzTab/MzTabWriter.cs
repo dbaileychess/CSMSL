@@ -29,7 +29,7 @@ namespace CSMSL.IO.MzTab
             {
                 throw new ArgumentException("Unable to write the "+section+" section, incorrect location. The Meta Data section must come first.");
             }
-          
+            
             List<T> objects = data.ToList();
 
             if (objects.Count == 0)
