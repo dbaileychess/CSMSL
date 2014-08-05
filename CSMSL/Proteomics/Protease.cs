@@ -15,61 +15,86 @@
 // You should have received a copy of the GNU Lesser General Public
 // License along with CSMSL. If not, see <http://www.gnu.org/licenses/>.
 
+using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Xml;
 
 namespace CSMSL.Proteomics
 {
     public class Protease : IProtease
     {
-        #region Common Proteases
-
-        public static Protease Trypsin { get; private set; }
-
-        public static Protease TrypsinNoProlineRule { get; private set; }
-
-        public static Protease GluC { get; private set; }
-
-        public static Protease LysN { get; private set; }
-
-        public static Protease ArgC { get; private set; }
-
-        public static Protease Chymotrypsin { get; private set; }
-
-        public static Protease ChymotrypsinNoProlineRule { get; private set; }
-
-        public static Protease LysC { get; private set; }
-
-        public static Protease CNBr { get; private set; }
-
-        public static Protease AspN { get; private set; }
-
-        public static Protease Thermolysin { get; private set; }
-
-        public static Protease None { get; private set; }
-
-        #endregion Common Proteases
-
+        public static readonly string UserProteasePath;
+   
         private static readonly Dictionary<string, Protease> Proteases;
 
         static Protease()
         {
-            Proteases = new Dictionary<string, Protease>(14);
+            UserProteasePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), @"CSMSL\Proteases.xml");
 
-            Trypsin = AddProtease("Trypsin", Terminus.C, "KR", "P");
-            TrypsinNoProlineRule = AddProtease("Trypsin No Proline Rule", Terminus.C, "KR");
-            GluC = AddProtease("GluC", Terminus.C, "E");
-            LysN = AddProtease("LysN", Terminus.N, "K");
-            ArgC = AddProtease("ArgC", Terminus.C, "R");
-            Chymotrypsin = AddProtease("Chymotrypsin", Terminus.C, "YWFL", "P");
-            ChymotrypsinNoProlineRule = AddProtease("Chymotrypsin No Proline Rule", Terminus.C, "YWFL");
-            LysC = AddProtease("LysC", Terminus.C, "K");
-            CNBr = AddProtease("CNBr", Terminus.C, "M");
-            AspN = AddProtease("AspN", Terminus.N, "BD");
-            Thermolysin = AddProtease("Thermolysin", Terminus.N, "AFILMV", "DE");
-            None = AddProtease("None", Terminus.C, "ACDEFGHIKLMNPQRSTVWY");
+            Proteases = new Dictionary<string, Protease>();
+
+            // Load the default modification file
+            Load();
+        }
+
+        /// <summary>
+        /// Load the default modification file
+        /// If the default modification is missing or corrupted, it will auto generate it
+        /// </summary>
+        public static void Load()
+        {
+            // Create file if it doesn't exist
+            if (!File.Exists(UserProteasePath))
+            {
+                RestoreDefaults();
+            }
+
+            Load(UserProteasePath);
+        }
+
+        public static void RestoreDefaults()
+        {
+            Proteases.Clear();
+
+            var assembly = Assembly.GetExecutingAssembly();
+            Stream defaultModsStream = assembly.GetManifestResourceStream("CSMSL.Resources.Proteases.xml");
+
+            Directory.CreateDirectory(Path.GetDirectoryName(UserProteasePath));
+            using (var fileStream = File.Create(UserProteasePath))
+            {
+                if (defaultModsStream != null) defaultModsStream.CopyTo(fileStream);
+            }
+
+            Load();
+        }
+
+        /// <summary>
+        /// Load a protease file
+        /// </summary>
+        /// <param name="filePath">The path to the protase file</param>
+        public static void Load(string filePath)
+        {
+            var proteasesXml = new XmlDocument();
+            proteasesXml.Load(filePath);
+
+            foreach (XmlNode proteaseNode in proteasesXml.SelectNodes("//Proteases/Protease"))
+            {
+                string name = proteaseNode.Attributes["name"].Value;
+                Terminus terminus = proteaseNode.Attributes["terminus"].Value == "N" ? Terminus.N : Terminus.C;
+                string cut = proteaseNode.Attributes["cut"] != null ? proteaseNode.Attributes["cut"].Value : "";
+                string nocut = proteaseNode.Attributes["nocut"] != null ? proteaseNode.Attributes["nocut"].Value : "";
+                Proteases.Add(name, new Protease(name, terminus, cut, nocut));
+            }
+        }
+
+        public Protease this[string name]
+        {
+            get { return GetProtease(name); }
         }
 
         public static IEnumerable<Protease> GetAllProteases()
@@ -90,9 +115,69 @@ namespace CSMSL.Proteomics
         public static Protease AddProtease(string name, Terminus terminus, string cut, string noCut = "")
         {
             Protease protease = new Protease(name, terminus, cut, noCut);
-            Proteases.Add(protease.Name, protease);
+            Proteases[name] = protease;
+
+            OnProteasesChanged();
+
             return protease;
         }
+
+        public static bool RemoveProtease(Protease protease)
+        {
+            return RemoveProtease(protease.Name);
+        }
+
+        public static bool RemoveProtease(string name)
+        {
+            if (Proteases.Remove(name))
+            {
+                OnProteasesChanged();
+                return true;
+            }
+            return false;
+        }
+        
+        private static void OnProteasesChanged()
+        {
+            var handler = ProteasesChanged;
+            if (handler != null)
+            {
+                handler(null, EventArgs.Empty);
+            }
+        }
+
+        public static void Save()
+        {
+            SaveTo(UserProteasePath);
+        }
+
+        public static void SaveTo(string filePath)
+        {
+            using (XmlWriter writer = XmlWriter.Create(filePath, new XmlWriterSettings { Indent = true }))
+            {
+                writer.WriteStartDocument();
+
+                writer.WriteStartElement("Proteases");
+
+                foreach (var protease in Proteases.Values.Distinct())
+                {
+                    writer.WriteStartElement("Protease");
+                    writer.WriteAttributeString("name", protease.Name);
+                    writer.WriteAttributeString("terminus", protease.Terminal.ToString());
+                    writer.WriteAttributeString("cut", protease.Cut);
+                    if (!string.IsNullOrEmpty(protease.NoCut))
+                    {
+                        writer.WriteAttributeString("nocut", protease.NoCut);
+                    }
+                    writer.WriteEndElement();
+                }
+                writer.WriteEndElement(); // end Proteases
+
+                writer.WriteEndDocument();
+            }
+        }
+
+        public static event EventHandler ProteasesChanged;
 
         private readonly Regex _cleavageRegex;
 

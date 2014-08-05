@@ -33,13 +33,13 @@ namespace CSMSL.Examples
             Console.WriteLine("Writting to " + filePath);
             using (PepXmlWriter writer = new PepXmlWriter(filePath))
             {
-                writer.WriteSampleProtease(Protease.Trypsin);
+                writer.WriteSampleProtease(Protease.GetProtease("Trypsin"));
 
                 writer.StartSearchSummary("OMSSA", true, true);
 
                 writer.WriteProteinDatabase("Resources/yeast_uniprot_120226.fasta");
 
-                writer.WriteSearchProtease(Protease.Trypsin, 3);
+                writer.WriteSearchProtease(Protease.GetProtease("Trypsin"), 3);
 
                 writer.WriteModification(ModificationDictionary.GetModification("Acetyl"), ModificationSites.K | ModificationSites.NPep);
                 writer.WriteModification(ModificationDictionary.GetModification("CAM"), ModificationSites.C);

@@ -43,7 +43,7 @@ namespace CSMSL.Proteomics
 
         /// <summary>
         /// Load the default modification file
-        /// If the default modification is missing or corrupted, it will autogenerate it
+        /// If the default modification is missing or corrupted, it will auto generate it
         /// </summary>
         public static void Load()
         {

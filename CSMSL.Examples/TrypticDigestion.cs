@@ -58,7 +58,7 @@ namespace CSMSL.Examples
         public static void ExampleDigestion()
         {
             const string fastaFilePath = "Resources/yeast_uniprot_120226.fasta";
-            IProtease trypsin = Protease.Trypsin;
+            IProtease trypsin = Protease.GetProtease("Trypsin");
             const int maxMissedCleavages = 3;
             const int minPeptideLength = 5;
             const int maxPeptideLength = 50;

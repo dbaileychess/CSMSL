@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Proteases>
+  <Protease name="Trypsin" terminus="C" cut="KR" nocut="P" />
+  <Protease name="Trypsin No Proline Rule" terminus="C" cut="KR" />
+  <Protease name="GluC" terminus="C" cut="E" />
+  <Protease name="LysN" terminus="N" cut="K" />
+  <Protease name="ArgC" terminus="C" cut="R" />
+  <Protease name="Chymotrypsin" terminus="C" cut="YWFL" nocut="P" />
+  <Protease name="Chymotrypsin No Proline Rule" terminus="C" cut="YWFL"/>
+  <Protease name="LysC" terminus="C" cut="K"/>
+  <Protease name="CNBr" terminus="C" cut="M"/>
+  <Protease name="AspN" terminus="N" cut="BD"/>
+  <Protease name="Thermolysin" terminus="N" cut="AFILMV" nocut="DE"/>
+  <Protease name="No Cleave" terminus="C" />
+  <Protease name="None" terminus="C" cut="ACDEFGHIKLMNPQRSTVWY" />
+</Proteases>

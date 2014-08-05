@@ -64,30 +64,12 @@ namespace CSMSL.Examples
 
         private static void StartExamples()
         {
-            HashSet<ChemicalFormula> formulas = new HashSet<ChemicalFormula>();
+            Protease.AddProtease("Derek", Terminus.C, "DEREK", "");
+            Protease.Save();
+            Protease.RemoveProtease("Derek");
+            Protease.Save();
+           
 
-            // Create two references of water
-            ChemicalFormula water = new ChemicalFormula("H2O"); 
-            ChemicalFormula water2 = new ChemicalFormula("H2O");
-
-            // true
-            bool areEqual = water.Equals(water2);
-
-            formulas.Add(water);
-
-            // Add an oxygen to the first water (now H2O2)
-            water.Add("O");
-
-            // Both false
-            bool containsH2O = formulas.Contains(water);
-            bool containsH2O2 = formulas.Contains(water2);
-
-          
-
-            HashSet<string> formulas2 = new HashSet<string>();
-            formulas2.Add(new ChemicalFormula("H20"));
-            containsH2O = formulas2.Contains("H20");
-            
             List<MzTabPSM> psms;
             List<MzTabProtein> proteins;
             List<MzTabPeptide> peptides;

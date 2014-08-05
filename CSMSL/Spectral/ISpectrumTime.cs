@@ -30,7 +30,7 @@ namespace CSMSL.Spectral
 
     public static class ISpectrumTimeExtension
     {
-        public static Chromatogram GetExtractedIonChromatogram(this IEnumerable<ISpectrumTime> spectra, MzRange range)
+        public static Chromatogram GetExtractedIonChromatogram(this IEnumerable<ISpectrumTime> spectra, DoubleRange range)
         {
             if (range == null)
             {
@@ -43,7 +43,6 @@ namespace CSMSL.Spectral
             foreach (ISpectrumTime spectrum in spectra)
             {
                 double intensity;
-
                 spectrum.TryGetIntensities(range, out intensity);
                 times.Add(spectrum.Time);
                 intensities.Add(intensity);
@@ -52,7 +51,7 @@ namespace CSMSL.Spectral
             return new MassRangeChromatogram(times.ToArray(), intensities.ToArray(), range);
         }
 
-        public static Chromatogram GetClosetsPeakChromatogram(this IEnumerable<ISpectrumTime> spectra, MzRange range)
+        public static Chromatogram GetClosetsPeakChromatogram(this IEnumerable<ISpectrumTime> spectra, DoubleRange range)
         {
             if (range == null)
             {

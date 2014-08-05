@@ -15,15 +15,26 @@
 // You should have received a copy of the GNU Lesser General Public
 // License along with CSMSL. If not, see <http://www.gnu.org/licenses/>.
 
-namespace CSMSL.Spectral
+namespace CSMSL
 {
     /// <summary>
     /// The polarity of a charge particle
     /// </summary>
     public enum Polarity
     {
-        Positive = 1,
+        /// <summary>
+        /// Negative charge
+        /// </summary>
         Negative = -1,
-        Neutral = 0
+
+        /// <summary>
+        /// Neutral charge
+        /// </summary>
+        Neutral = 0,
+
+        /// <summary>
+        /// Positive charge
+        /// </summary>
+        Positive = 1
     }
 }

@@ -25,7 +25,14 @@ namespace CSMSL.Proteomics
     [Flags]
     public enum Terminus
     {
+        /// <summary>
+        /// The N-terminus (amino-terminus)
+        /// </summary>
         N = 1,
+
+        /// <summary>
+        /// The C-terminus (carboxyl-terminus)
+        /// </summary>
         C = 2
     }
 }

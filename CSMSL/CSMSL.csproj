@@ -230,7 +230,7 @@
     <Compile Include="Spectral\MsnDataScan.cs" />
     <Compile Include="Spectral\MZAnalyzerType.cs" />
     <Compile Include="Spectral\MZPeak.cs" />
-    <Compile Include="Spectral\Polarity.cs" />
+    <Compile Include="Polarity.cs" />
     <Compile Include="Util\Collections\SortedMaxSizedContainer.cs" />
     <Compile Include="Util\Combinatorics.cs" />
     <Compile Include="Util\LinearRegression.cs" />
@@ -249,6 +249,9 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\Modifications.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\Proteases.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

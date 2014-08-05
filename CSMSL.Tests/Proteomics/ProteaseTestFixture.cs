@@ -45,7 +45,7 @@ namespace CSMSL.Tests.Proteomics
         [Test]
         public void TrypsinDigestion()
         {
-            List<Peptide> peptides = _proteinA.Digest(Protease.Trypsin).ToList();
+            List<Peptide> peptides = _proteinA.Digest(Protease.GetProtease("Trypsin")).ToList();
             Peptide pepA = new Peptide("TTGSSSSSSSK");
 
             Assert.Contains(pepA, peptides);
@@ -54,7 +54,7 @@ namespace CSMSL.Tests.Proteomics
         [Test]
         public void MissedClevageNoneCTerminus()
         {
-            int missedClevages = Protease.Trypsin.MissedCleavages("DEFEK");
+            int missedClevages = Protease.GetProtease("Trypsin").MissedCleavages("DEFEK");
 
             Assert.AreEqual(0, missedClevages);
         }
@@ -62,7 +62,7 @@ namespace CSMSL.Tests.Proteomics
         [Test]
         public void MissedClevageNoneNTerminus()
         {
-            int missedClevages = Protease.LysN.MissedCleavages("KERED");
+            int missedClevages = Protease.GetProtease("LysN").MissedCleavages("KERED");
 
             Assert.AreEqual(0, missedClevages);
         }
@@ -70,7 +70,7 @@ namespace CSMSL.Tests.Proteomics
         [Test]
         public void MissedClevageOneInternalNTerminus()
         {
-            int missedClevages = Protease.LysN.MissedCleavages("KEKED");
+            int missedClevages = Protease.GetProtease("LysN").MissedCleavages("KEKED");
 
             Assert.AreEqual(1, missedClevages);
         }
@@ -78,7 +78,7 @@ namespace CSMSL.Tests.Proteomics
         [Test]
         public void MissedClevageOneInternalCTerminus()
         {
-            int missedClevages = Protease.Trypsin.MissedCleavages("DEKEK");
+            int missedClevages = Protease.GetProtease("Trypsin").MissedCleavages("DEKEK");
 
             Assert.AreEqual(1, missedClevages);
         }
@@ -86,7 +86,7 @@ namespace CSMSL.Tests.Proteomics
         [Test]
         public void MissedClevageTwoInternalCTerminus()
         {
-            int missedClevages = Protease.Trypsin.MissedCleavages("DEKAAKEK");
+            int missedClevages = Protease.GetProtease("Trypsin").MissedCleavages("DEKAAKEK");
 
             Assert.AreEqual(2, missedClevages);
         }
@@ -94,7 +94,7 @@ namespace CSMSL.Tests.Proteomics
         [Test]
         public void MissedClevageTwoInternalNTerminus()
         {
-            int missedClevages = Protease.LysN.MissedCleavages("KEDEKEKED");
+            int missedClevages = Protease.GetProtease("LysN").MissedCleavages("KEDEKEKED");
 
             Assert.AreEqual(2, missedClevages);
         }
@@ -102,7 +102,7 @@ namespace CSMSL.Tests.Proteomics
         [Test]
         public void MissedClevageOneCTerminalProteinCTerminus()
         {
-            int missedClevages = Protease.Trypsin.MissedCleavages("KEEEEEE");
+            int missedClevages = Protease.GetProtease("Trypsin").MissedCleavages("KEEEEEE");
 
             Assert.AreEqual(1, missedClevages);
         }
@@ -110,7 +110,7 @@ namespace CSMSL.Tests.Proteomics
         [Test]
         public void MissedClevageOneNTerminalProteinNTerminus()
         {
-            int missedClevages = Protease.LysN.MissedCleavages("EEEEEEEK");
+            int missedClevages = Protease.GetProtease("LysN").MissedCleavages("EEEEEEEK");
 
             Assert.AreEqual(1, missedClevages);
         }
@@ -118,7 +118,7 @@ namespace CSMSL.Tests.Proteomics
         [Test]
         public void TryspinNoProlineRuleDigestion()
         {
-            List<Peptide> peptides = _proteinA.Digest(Protease.TrypsinNoProlineRule).ToList();
+            List<Peptide> peptides = _proteinA.Digest(Protease.GetProtease("Trypsin No Proline Rule")).ToList();
 
             Assert.Contains(new Peptide("INLFR"), peptides);
         }
@@ -134,14 +134,14 @@ namespace CSMSL.Tests.Proteomics
         [Test]
         public void NoEnzymeDigestion()
         {
-            List<Peptide> peptides = _proteinA.Digest(Protease.None, maxMissedCleavages: 8, minLength: 5).ToList();
+            List<Peptide> peptides = _proteinA.Digest(Protease.GetProtease("None"), maxMissedCleavages: 8, minLength: 5).ToList();
             Assert.Contains(new Peptide("SLYHPQ"), peptides);
         }
 
         [Test]
         public void MultipleProteaseDigestion()
         {
-            List<IProtease> proteases = new List<IProtease> { Protease.Trypsin, Protease.GluC };
+            List<IProtease> proteases = new List<IProtease> { Protease.GetProtease("Trypsin"), Protease.GetProtease("GluC") };
 
             List<Peptide> peptides = _proteinA.Digest(proteases, maxMissedCleavages: 1, maxLength: 5).ToList();
             Assert.Contains(new Peptide("NWSK"), peptides);
@@ -151,7 +151,7 @@ namespace CSMSL.Tests.Proteomics
         [Test]
         public void InitiatorMethonineCleaved()
         {
-            List<Peptide> peptides = _proteinA.Digest(Protease.LysC, 1, initiatorMethonine: true).ToList();
+            List<Peptide> peptides = _proteinA.Digest(Protease.GetProtease("LysC"), 1, initiatorMethonine: true).ToList();
             Assert.Contains(new Peptide("MRGFK"), peptides);
             Assert.Contains(new Peptide("MMRGFK"), peptides);
         }
@@ -161,7 +161,7 @@ namespace CSMSL.Tests.Proteomics
         {
             Protein prot = new Protein("MMRGFKQRLIKKTTGSSSSSSSKKKDKEKEKEKSSTTSSTSKKPASASSSSHGTTHSSASSTGSKSTTEKGKQSGSVPSQ");
 
-            var peptides = prot.Digest(Protease.Trypsin, 0, 5, 10, semiDigestion: true).ToList();
+            var peptides = prot.Digest(Protease.GetProtease("Trypsin"), 0, 5, 10, semiDigestion: true).ToList();
 
             Assert.AreEqual(17, peptides.Count);
         }
@@ -171,7 +171,7 @@ namespace CSMSL.Tests.Proteomics
         {
             Protein prot = new Protein("DEREKDEREK");
 
-            var peptides = prot.Digest(Protease.LysC, 0).ToList();
+            var peptides = prot.Digest(Protease.GetProtease("LysC"), 0).ToList();
             Assert.AreEqual(peptides.Count, 2);
         }
 
@@ -180,7 +180,7 @@ namespace CSMSL.Tests.Proteomics
         {
             Protein prot = new Protein("DEREKDEREK");
 
-            var peptides = prot.Digest(Protease.LysC, 0).ToList();
+            var peptides = prot.Digest(Protease.GetProtease("LysC"), 0).ToList();
             Assert.AreNotSame(peptides[0], peptides[1]);
         }
 
@@ -189,7 +189,7 @@ namespace CSMSL.Tests.Proteomics
         {
             Protein prot = new Protein("DEREKDEREK");
 
-            var peptides = prot.Digest(Protease.LysC, 0).ToList();
+            var peptides = prot.Digest(Protease.GetProtease("LysC"), 0).ToList();
             Assert.AreEqual(peptides[0], peptides[1]);
         }
     }
