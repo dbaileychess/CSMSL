@@ -77,7 +77,7 @@ namespace CSMSL.IO
 
         public void AddVariableModification(string chemicalFormula, string name)
         {
-            AddVariableModification(new ChemicalFormula(chemicalFormula), name);
+            AddVariableModification((IMass)new ChemicalFormula(chemicalFormula), name);
         }
 
         public void AddVariableModification(IMass modification, string name)

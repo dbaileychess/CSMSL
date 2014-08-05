@@ -74,7 +74,7 @@ namespace CSMSL.Spectral
             {
                 times.Add(spectrum.Time);
                 var peak = spectrum.GetClosestPeak(range);
-                intensities.Add((peak != null) ? peak.Intensity : 0);
+                intensities.Add((peak != null) ? peak.Y : 0);
             }
 
             return new MassRangeChromatogram(times.ToArray(), intensities.ToArray(), range);

@@ -22,7 +22,7 @@ using System.Linq;
 
 namespace CSMSL.Spectral
 {
-    public class Spectrum : Spectrum<MZPeak, Spectrum>, ISpectrum
+    public class Spectrum : Spectrum<MZPeak, Spectrum>, ISpectrum<MZPeak>
     {
         /// <summary>
         /// Initializes a new spectrum
@@ -502,6 +502,16 @@ namespace CSMSL.Spectral
             return index >= 0 ? GetPeak(index) : default(T);
         }
 
+        IPeak ISpectrum.GetClosestPeak(IRange<double> massRange)
+        {
+            return GetClosestPeak(massRange);
+        }
+
+        IPeak ISpectrum.GetClosestPeak(double mean, double tolerance)
+        {
+            return GetClosestPeak(mean, tolerance);
+        }
+
         public virtual bool TryGetPeaks(IRange<double> rangeMZ, out List<T> peaks)
         {
             return TryGetPeaks(rangeMZ.Minimum, rangeMZ.Maximum, out peaks);
@@ -626,5 +636,7 @@ namespace CSMSL.Spectral
         {
             return GetEnumerator();
         }
+
+    
     }
 }

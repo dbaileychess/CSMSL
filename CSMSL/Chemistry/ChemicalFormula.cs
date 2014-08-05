@@ -25,6 +25,7 @@ namespace CSMSL.Chemistry
 {
     /// <summary>
     /// A chemical / molecule consisting of multiple atoms.
+    /// <remarks>This class is mutable</remarks>
     /// </summary>
     public sealed class ChemicalFormula : IEquatable<ChemicalFormula>, IChemicalFormula
     {
@@ -1146,6 +1147,11 @@ namespace CSMSL.Chemistry
         public static implicit operator ChemicalFormula(string sequence)
         {
             return new ChemicalFormula(sequence);
+        }
+
+        public static implicit operator String(ChemicalFormula sequence)
+        {
+            return sequence.ToString();
         }
 
         public static bool IsValidChemicalFormula(string chemicalFormula)

@@ -72,11 +72,11 @@ namespace CSMSL.Analysis.Identification
                 {
                     double mz = fragment.ToMz(chargeState);
                     var peak = Spectrum.GetClosestPeak(tolerance.GetRange(mz));
-                    if (peak != null && peak.Intensity >= lowThreshold)
+                    if (peak != null && peak.Y >= lowThreshold)
                     {
                         Add(new FragmentSpectralMatch(Spectrum, fragment, tolerance, chargeState));
                         yield return fragment;
-                        summedIntensity += peak.Intensity;
+                        summedIntensity += peak.Y;
                     }
                 }
             }
