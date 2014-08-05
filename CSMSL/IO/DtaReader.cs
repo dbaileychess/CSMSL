@@ -65,7 +65,7 @@ namespace CSMSL.IO
                 {
                     if (!first)
                     {
-                        yield return new Dta(name, id, precursorMass, precursorCharge, new Spectrum(mz.ToArray(), intensities.ToArray(), false));
+                        yield return new Dta(name, id, precursorMass, precursorCharge, new MZSpectrum(mz.ToArray(), intensities.ToArray(), false));
                     }
 
                     first = false;
@@ -94,7 +94,7 @@ namespace CSMSL.IO
                 }
             }
 
-            yield return new Dta(name, id, precursorMass, precursorCharge, new Spectrum(mz.ToArray(), intensities.ToArray(), false));
+            yield return new Dta(name, id, precursorMass, precursorCharge, new MZSpectrum(mz.ToArray(), intensities.ToArray(), false));
         }
     }
 }

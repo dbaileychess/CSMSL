@@ -186,12 +186,12 @@ namespace CSMSL.IO.Thermo
             return PolarityRegex.IsMatch(filter) ? Polarity.Positive : Polarity.Negative;
         }
 
-        public override Spectrum GetSpectrum(int spectrumNumber)
+        public override MZSpectrum GetSpectrum(int spectrumNumber)
         {
             return GetSpectrum(spectrumNumber);
         }
 
-        public Spectrum GetSpectrum(int spectrumNumber, bool profileIfAvailable = false)
+        public MZSpectrum GetSpectrum(int spectrumNumber, bool profileIfAvailable = false)
         {
             bool useProfile = false;
 
@@ -203,10 +203,10 @@ namespace CSMSL.IO.Thermo
             }
 
             var peakData = GetUnlabeledData(spectrumNumber, !useProfile);
-            return new Spectrum(peakData);
+            return new MZSpectrum(peakData);
         }
 
-        public Spectrum GetAveragedSpectrum(int firstSpectrumNumber, int lastSpectrumNumber, string scanFilter = "", IntensityCutoffType type = IntensityCutoffType.None, int intensityCutoff = 0)
+        public MZSpectrum GetAveragedSpectrum(int firstSpectrumNumber, int lastSpectrumNumber, string scanFilter = "", IntensityCutoffType type = IntensityCutoffType.None, int intensityCutoff = 0)
         {
             object labels = null;
             object flags = null;
@@ -216,7 +216,7 @@ namespace CSMSL.IO.Thermo
             c = d = e = f = 0;
             _rawConnection.GetAverageMassList(ref firstSpectrumNumber, ref lastSpectrumNumber, ref c, ref d, ref e, ref f, scanFilter, (int) type, intensityCutoff, 0, 0, ref peakWidth, ref labels, ref flags, ref arraySize);
             double[,] spectrum = (double[,]) labels;
-            return new Spectrum(spectrum, arraySize);
+            return new MZSpectrum(spectrum, arraySize);
         }
 
         public ThermoSpectrum GetLabeledSpectrum(int spectrumNumber)
@@ -225,7 +225,7 @@ namespace CSMSL.IO.Thermo
             return new ThermoSpectrum(labelData);
         }
 
-        public Spectrum GetSNSpectrum(int spectrumNumber, double minSN = 3)
+        public MZSpectrum GetSNSpectrum(int spectrumNumber, double minSN = 3)
         {
             var labelData = GetLabeledData(spectrumNumber);
             int count = labelData.GetLength(1);
@@ -244,7 +244,7 @@ namespace CSMSL.IO.Thermo
             }
             Array.Resize(ref mz, j);
             Array.Resize(ref sns, j);
-            return new Spectrum(mz, sns, false);
+            return new MZSpectrum(mz, sns, false);
         }
 
         private double[,] GetUnlabeledData(int spectrumNumber, bool useCentroid)

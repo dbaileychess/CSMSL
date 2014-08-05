@@ -55,7 +55,7 @@ namespace CSMSL.Examples
                         scan.MsnOrder,
                         scan.RetentionTime,
                         scan.Polarity,
-                        scan.MassSpectrum.Count,
+                        scan.MassMzSpectrum.Count,
                         scan.MzAnalyzer,
                         scan.MzRange.ToString());
                 }
@@ -85,10 +85,10 @@ namespace CSMSL.Examples
                 Stopwatch watch = new Stopwatch();
                 watch.Start();
 
-                foreach (MSDataScan scan in dataFile.Where(s => s.MassSpectrum.Count > 1).Take(4))
+                foreach (MSDataScan scan in dataFile.Where(s => s.MassMzSpectrum.Count > 1).Take(4))
                 {
                     Console.WriteLine("{0,-4} {1,3} {2,-6:F4} {3,-5} {4,7} {5,-10} {6}", scan.SpectrumNumber, scan.MsnOrder, scan.RetentionTime,
-                        scan.Polarity, scan.MassSpectrum.Count, scan.MzAnalyzer, scan.MzRange.ToString());
+                        scan.Polarity, scan.MassMzSpectrum.Count, scan.MzAnalyzer, scan.MzRange.ToString());
                 }
                 watch.Stop();
                 Console.WriteLine("File: {0}", dataFile);

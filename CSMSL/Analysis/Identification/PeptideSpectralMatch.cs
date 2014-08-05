@@ -88,13 +88,13 @@ namespace CSMSL.Analysis.Identification
             get { return Score;}
         }
         
-        public Spectrum MassSpectrum
+        public MZSpectrum MassMzSpectrum
         {
             get
             {
                 if (Scan == null)
                     return null;
-                return Scan.MassSpectrum;
+                return Scan.MassMzSpectrum;
             }
         }
 

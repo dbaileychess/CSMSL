@@ -282,7 +282,7 @@ namespace CSMSL.IO
 
         public abstract MZAnalyzerType GetMzAnalyzer(int spectrumNumber);
 
-        public abstract Spectrum GetSpectrum(int spectrumNumber);
+        public abstract MZSpectrum GetSpectrum(int spectrumNumber);
 
         public abstract Polarity GetPolarity(int spectrumNumber);
 

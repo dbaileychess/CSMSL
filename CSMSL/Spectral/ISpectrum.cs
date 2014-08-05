@@ -19,6 +19,9 @@ namespace CSMSL.Spectral
 {
     public interface ISpectrum
     {
+        /// <summary>
+        /// The number of peaks in the spectrum
+        /// </summary>
         int Count { get; }
 
         double[] GetMasses();

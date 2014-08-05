@@ -30,15 +30,15 @@ namespace CSMSL.IO
 
         public int PrecursorCharge { get; set; }
 
-        public Spectrum Spectrum { get; set; }
+        public MZSpectrum MzSpectrum { get; set; }
 
-        public Dta(string name, int id, double precursorMass, int precursorCharge, Spectrum spectrum)
+        public Dta(string name, int id, double precursorMass, int precursorCharge, MZSpectrum mzSpectrum)
         {
             Name = name;
             ID = id;
             PrecursorMass = precursorMass;
             PrecursorCharge = precursorCharge;
-            Spectrum = spectrum;
+            MzSpectrum = mzSpectrum;
         }
 
         public string ToOutput(string precursormassFormat = "F5", string massFormat = "F4", string intensityFormat = "F2")
@@ -48,7 +48,7 @@ namespace CSMSL.IO
             sb.AppendLine();
             sb.AppendFormat("{0} {1}", PrecursorMass.ToString(precursormassFormat), PrecursorCharge);
             sb.AppendLine();
-            foreach (var peak in Spectrum)
+            foreach (var peak in MzSpectrum)
             {
                 sb.AppendFormat(" {0} {1}", peak.MZ.ToString(massFormat), peak.Intensity.ToString(intensityFormat));
                 sb.AppendLine();

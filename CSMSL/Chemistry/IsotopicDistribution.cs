@@ -57,17 +57,17 @@ namespace CSMSL.Chemistry
             _mwResolution = molecularWeightResolution;
         }
 
-        public Spectrum CalculateDistribuition(string chemicalFormula, int topNPeaks = int.MaxValue, Normalization normalization = Normalization.Sum)
+        public MZSpectrum CalculateDistribuition(string chemicalFormula, int topNPeaks = int.MaxValue, Normalization normalization = Normalization.Sum)
         {
             return CalculateDistribuition(new ChemicalFormula(chemicalFormula), topNPeaks, normalization);
         }
 
-        public Spectrum CalculateDistribuition(IChemicalFormula obj, int topNPeaks = int.MaxValue, Normalization normalization = Normalization.Sum)
+        public MZSpectrum CalculateDistribuition(IChemicalFormula obj, int topNPeaks = int.MaxValue, Normalization normalization = Normalization.Sum)
         {
             return CalculateDistribuition(obj.ChemicalFormula, topNPeaks, normalization);
         }
 
-        public Spectrum CalculateDistribuition(ChemicalFormula formula, int topNPeaks = int.MaxValue, Normalization normalization = Normalization.Sum)
+        public MZSpectrum CalculateDistribuition(ChemicalFormula formula, int topNPeaks = int.MaxValue, Normalization normalization = Normalization.Sum)
         {
             double monoisotopicMass = formula.MonoisotopicMass;
             SetResolution(monoisotopicMass);
@@ -145,7 +145,7 @@ namespace CSMSL.Chemistry
             _fineResolution = fineResolution / 2.0;
         }
 
-        private Spectrum CalculateFineGrain(List<List<Composition>> elementalComposition, Normalization normalization)
+        private MZSpectrum CalculateFineGrain(List<List<Composition>> elementalComposition, Normalization normalization)
         {
             List<Polynomial> fPolynomial = MultiplyFinePolynomial(elementalComposition);
             fPolynomial = MergeFinePolynomial(fPolynomial);
@@ -177,7 +177,7 @@ namespace CSMSL.Chemistry
                 intensities[i] /= normalizedValue;
             }
 
-            return new Spectrum(mz, intensities, false);
+            return new MZSpectrum(mz, intensities, false);
         }
 
         private List<Polynomial> MergeFinePolynomial(List<Polynomial> tPolynomial)

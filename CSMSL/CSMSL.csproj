@@ -193,6 +193,7 @@
     <Compile Include="Spectral\ChromatogramType.cs" />
     <Compile Include="Spectral\ISpectrumTime.cs" />
     <Compile Include="Spectral\SmoothingType.cs" />
+    <Compile Include="Spectral\Spectrum.cs" />
     <Compile Include="ToleranceType.cs" />
     <Compile Include="ToleranceUnit.cs" />
     <Compile Include="Proteomics\DissociationType.cs" />
@@ -222,7 +223,7 @@
     <Compile Include="Spectral\ChromatographicPeak.cs" />
     <Compile Include="Spectral\ISpectrum.cs" />
     <Compile Include="Spectral\MassRangeChromatogram.cs" />
-    <Compile Include="Spectral\Spectrum.cs" />
+    <Compile Include="Spectral\MZSpectrum.cs" />
     <Compile Include="Spectral\IMassSpectrum.cs" />
     <Compile Include="Spectral\IPeak.cs" />
     <Compile Include="Spectral\MSDataScan.cs" />

@@ -24,25 +24,25 @@ namespace CSMSL.Spectral
     {
         public MSDataFile ParentFile { get; private set; }
 
-        private Spectrum _massSpectrum;
+        private MZSpectrum _massMzSpectrum;
 
         /// <summary>
         /// The mass spectrum associated with the scan
         /// </summary>
-        public Spectrum MassSpectrum
+        public MZSpectrum MassMzSpectrum
         {
             get
             {
-                if (_massSpectrum != null || ParentFile == null) 
-                    return _massSpectrum;
+                if (_massMzSpectrum != null || ParentFile == null) 
+                    return _massMzSpectrum;
 
                 if (ParentFile.IsOpen)
                 {
-                    _massSpectrum = ParentFile.GetSpectrum(SpectrumNumber);
+                    _massMzSpectrum = ParentFile.GetSpectrum(SpectrumNumber);
                 }
-                return _massSpectrum;
+                return _massMzSpectrum;
             }
-            internal set { _massSpectrum = value; }
+            internal set { _massMzSpectrum = value; }
         }
 
         public int SpectrumNumber { get; protected set; }

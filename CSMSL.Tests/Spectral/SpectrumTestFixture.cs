@@ -23,7 +23,7 @@ namespace CSMSL.Tests.Spectral
     [TestFixture, Category("Spectral")]
     public sealed class SpectrumTestFixture
     {
-        private Spectrum SpectrumA;
+        private MZSpectrum _mzSpectrumA;
 
         [SetUp]
         public void Setup()
@@ -31,13 +31,13 @@ namespace CSMSL.Tests.Spectral
             double[] mz = { 328.73795, 329.23935, 447.73849, 448.23987, 482.23792, 482.57089, 482.90393, 500.95358, 501.28732, 501.62131, 611.99377, 612.32806, 612.66187, 722.85217, 723.35345 };
             double[] intensities = { 81007096.0, 28604418.0, 78353512.0, 39291696.0, 122781408.0, 94147520.0, 44238040.0, 71198680.0, 54184096.0, 21975364.0, 44514172.0, 43061628.0, 23599424.0, 56022696.0, 41019144.0 };
 
-            SpectrumA = new Spectrum(mz, intensities);
+            _mzSpectrumA = new MZSpectrum(mz, intensities);
         }
 
         [Test]
         public void EmptySpectrumCountIsZero()
         {
-            Assert.AreEqual(0, Spectrum.Empty.Count);
+            Assert.AreEqual(0, MZSpectrum.Empty.Count);
         }
 
         #region Properties
@@ -45,19 +45,19 @@ namespace CSMSL.Tests.Spectral
         [Test]
         public void SpectrumCount()
         {
-            Assert.AreEqual(15, SpectrumA.Count);
+            Assert.AreEqual(15, _mzSpectrumA.Count);
         }
 
         [Test]
         public void SpectrumFirstMZ()
         {
-            Assert.AreEqual(328.73795, SpectrumA.FirstMz);
+            Assert.AreEqual(328.73795, _mzSpectrumA.FirstMz);
         }
 
         [Test]
         public void SpectrumLastMZ()
         {
-            Assert.AreEqual(723.35345, SpectrumA.LastMZ);
+            Assert.AreEqual(723.35345, _mzSpectrumA.LastMZ);
         }
 
         #endregion Properties
@@ -65,7 +65,7 @@ namespace CSMSL.Tests.Spectral
         [Test]
         public void SpectrumBasePeakIntensity()
         {
-            double basePeakIntensity = SpectrumA.GetBasePeakIntensity();
+            double basePeakIntensity = _mzSpectrumA.GetBasePeakIntensity();
 
             Assert.AreEqual(122781408.0, basePeakIntensity);
         }
@@ -73,7 +73,7 @@ namespace CSMSL.Tests.Spectral
         [Test]
         public void SpectrumTIC()
         {
-            double tic = SpectrumA.GetTotalIonCurrent();
+            double tic = _mzSpectrumA.GetTotalIonCurrent();
 
             Assert.AreEqual(843998894.0, tic);
         }
@@ -82,7 +82,7 @@ namespace CSMSL.Tests.Spectral
         public void SpectrumGetMasses()
         {
             double[] mz = { 328.73795, 329.23935, 447.73849, 448.23987, 482.23792, 482.57089, 482.90393, 500.95358, 501.28732, 501.62131, 611.99377, 612.32806, 612.66187, 722.85217, 723.35345 };
-            double[] masses = SpectrumA.GetMasses();
+            double[] masses = _mzSpectrumA.GetMasses();
 
             Assert.AreEqual(mz, masses);
         }
@@ -91,7 +91,7 @@ namespace CSMSL.Tests.Spectral
         public void SpectrumGetIntensities()
         {
             double[] intensities = { 81007096.0, 28604418.0, 78353512.0, 39291696.0, 122781408.0, 94147520.0, 44238040.0, 71198680.0, 54184096.0, 21975364.0, 44514172.0, 43061628.0, 23599424.0, 56022696.0, 41019144.0 };
-            double[] intensities2 = SpectrumA.GetIntensities();
+            double[] intensities2 = _mzSpectrumA.GetIntensities();
 
             Assert.AreEqual(intensities, intensities2);
         }
@@ -99,7 +99,7 @@ namespace CSMSL.Tests.Spectral
         [Test]
         public void SpectrumToArray()
         {
-            double[,] data = SpectrumA.ToArray();
+            double[,] data = _mzSpectrumA.ToArray();
             double[,] realData =
             {
                 {328.73795, 329.23935, 447.73849, 448.23987, 482.23792, 482.57089, 482.90393, 500.95358, 501.28732, 501.62131, 611.99377, 612.32806, 612.66187, 722.85217, 723.35345}
@@ -112,7 +112,7 @@ namespace CSMSL.Tests.Spectral
         [Test]
         public void SpectrumGetIntensityFirst()
         {
-            double intensity = SpectrumA.GetIntensity(0);
+            double intensity = _mzSpectrumA.GetIntensity(0);
 
             Assert.AreEqual(81007096.0, intensity);
         }
@@ -120,7 +120,7 @@ namespace CSMSL.Tests.Spectral
         [Test]
         public void SpectrumGetIntensityRandom()
         {
-            double intensity = SpectrumA.GetIntensity(6);
+            double intensity = _mzSpectrumA.GetIntensity(6);
 
             Assert.AreEqual(44238040.0, intensity);
         }
@@ -128,7 +128,7 @@ namespace CSMSL.Tests.Spectral
         [Test]
         public void SpectrumGetMassFirst()
         {
-            double intensity = SpectrumA.GetMass(0);
+            double intensity = _mzSpectrumA.GetMass(0);
 
             Assert.AreEqual(328.73795, intensity);
         }
@@ -136,7 +136,7 @@ namespace CSMSL.Tests.Spectral
         [Test]
         public void SpectrumGetMassRandom()
         {
-            double intensity = SpectrumA.GetMass(6);
+            double intensity = _mzSpectrumA.GetMass(6);
 
             Assert.AreEqual(482.90393, intensity);
         }
@@ -146,43 +146,43 @@ namespace CSMSL.Tests.Spectral
         [Test]
         public void SpectrumContainsPeak()
         {
-            Assert.IsTrue(SpectrumA.ContainsPeak());
+            Assert.IsTrue(_mzSpectrumA.ContainsPeak());
         }
 
         [Test]
         public void SpectrumContainsPeakInRange()
         {
-            Assert.IsTrue(SpectrumA.ContainsPeak(448.23987 - 0.001, 448.23987 + 0.001));
+            Assert.IsTrue(_mzSpectrumA.ContainsPeak(448.23987 - 0.001, 448.23987 + 0.001));
         }
 
         [Test]
         public void SpectrumContainsPeakInRangeEnd()
         {
-            Assert.IsTrue(SpectrumA.ContainsPeak(448.23987 - 0.001, 448.23987));
+            Assert.IsTrue(_mzSpectrumA.ContainsPeak(448.23987 - 0.001, 448.23987));
         }
 
         [Test]
         public void SpectrumContainsPeakInRangeStart()
         {
-            Assert.IsTrue(SpectrumA.ContainsPeak(448.23987, 448.23987 + 0.001));
+            Assert.IsTrue(_mzSpectrumA.ContainsPeak(448.23987, 448.23987 + 0.001));
         }
 
         [Test]
         public void SpectrumContainsPeakInRangeStartEnd()
         {
-            Assert.IsTrue(SpectrumA.ContainsPeak(448.23987, 448.23987));
+            Assert.IsTrue(_mzSpectrumA.ContainsPeak(448.23987, 448.23987));
         }
 
         [Test]
         public void SpectrumContainsPeakInRangeBackwards()
         {
-            Assert.IsFalse(SpectrumA.ContainsPeak(448.23987 + 0.001, 448.23987 - 0.001));
+            Assert.IsFalse(_mzSpectrumA.ContainsPeak(448.23987 + 0.001, 448.23987 - 0.001));
         }
 
         [Test]
         public void SpectrumDoesntContainPeakInRange()
         {
-            Assert.IsFalse(SpectrumA.ContainsPeak(603.4243 - 0.001, 603.4243 + 0.001));
+            Assert.IsFalse(_mzSpectrumA.ContainsPeak(603.4243 - 0.001, 603.4243 + 0.001));
         }
 
         #endregion Contains Peak
@@ -192,23 +192,23 @@ namespace CSMSL.Tests.Spectral
         {
             MzRange range = new MzRange(328.73795, 723.35345);
 
-            Assert.AreEqual(range, SpectrumA.GetMzRange());
+            Assert.AreEqual(range, _mzSpectrumA.GetMzRange());
         }
 
         [Test]
         public void SpectrumFilterEmpty()
         {
-            Spectrum filteredSpectrum = SpectrumA.Filter(0, 50);
+            MZSpectrum filteredMzSpectrum = _mzSpectrumA.Filter(0, 50);
 
-            Assert.AreEqual(Spectrum.Empty, filteredSpectrum);
+            Assert.AreEqual(MZSpectrum.Empty, filteredMzSpectrum);
         }
 
         [Test]
         public void SpectrumFilterCount()
         {
-            Spectrum filteredSpectrum = SpectrumA.Filter(28604417, 28604419);
+            MZSpectrum filteredMzSpectrum = _mzSpectrumA.Filter(28604417, 28604419);
 
-            Assert.AreEqual(1, filteredSpectrum.Count);
+            Assert.AreEqual(1, filteredMzSpectrum.Count);
         }
     }
 }

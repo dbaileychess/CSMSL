@@ -28,14 +28,6 @@ namespace CSMSL.Spectral
         double Time { get; }
     }
 
-    //public interface ISpectrumTime<out T> : ISpectrum<T> where T : IPeak
-    //{
-    //    /// <summary>
-    //    /// The time associated with this spectrum
-    //    /// </summary>
-    //    double Time { get; }
-    //}
-
     public static class ISpectrumTimeExtension
     {
         public static Chromatogram GetExtractedIonChromatogram(this IEnumerable<ISpectrumTime> spectra, MzRange range)
