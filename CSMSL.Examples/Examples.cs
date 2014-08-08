@@ -64,43 +64,37 @@ namespace CSMSL.Examples
 
         private static void StartExamples()
         {
-            Protease.AddProtease("Derek", Terminus.C, "DEREK", "");
-            Protease.Save();
-            Protease.RemoveProtease("Derek");
-            Protease.Save();
-           
-
-            List<MzTabPSM> psms;
-            List<MzTabProtein> proteins;
-            List<MzTabPeptide> peptides;
-            List<MzTabSmallMolecule> smallMolecules;
-            MzTabMetaData metaData;
+            //List<MzTabPSM> psms;
+            //List<MzTabProtein> proteins;
+            //List<MzTabPeptide> peptides;
+            //List<MzTabSmallMolecule> smallMolecules;
+            //MzTabMetaData metaData;
             
-            using (MzTabReader reader = new MzTabReader(@"E:\Desktop\mzTab Examples\iTRAQ_SQI.mzTab", false))
-            {
-                reader.Open();
+            //using (MzTabReader reader = new MzTabReader(@"E:\Desktop\mzTab Examples\iTRAQ_SQI.mzTab", false))
+            //{
+            //    reader.Open();
                 
-                metaData = reader.MetaData;
+            //    metaData = reader.MetaData;
 
-                psms = reader.GetPsms().ToList();
-                proteins = reader.GetProteins().ToList();
-                peptides = reader.GetPeptides().ToList();
-                smallMolecules = reader.GetSmallMolecules().ToList();
-            }
+            //    psms = reader.GetPsms().ToList();
+            //    proteins = reader.GetProteins().ToList();
+            //    peptides = reader.GetPeptides().ToList();
+            //    smallMolecules = reader.GetSmallMolecules().ToList();
+            //}
    
-            using (MzTabWriter writer = new MzTabWriter(@"E:\Desktop\mzTab Examples\dereksTest.mzTab"))
-            {
-                writer.WriteComment("Test Comment");
-                writer.WriteMetaData(metaData);
-                writer.WriteLine();
-                writer.WriteProteinData(proteins);
-                writer.WriteLine();
-                writer.WritePsmData(psms);
-                writer.WriteLine();
-                writer.WritePeptideData(peptides);
-                writer.WriteLine();
-                writer.WriteSmallMoleculeData(smallMolecules);
-            }
+            //using (MzTabWriter writer = new MzTabWriter(@"E:\Desktop\mzTab Examples\dereksTest.mzTab"))
+            //{
+            //    writer.WriteComment("Test Comment");
+            //    writer.WriteMetaData(metaData);
+            //    writer.WriteLine();
+            //    writer.WriteProteinData(proteins);
+            //    writer.WriteLine();
+            //    writer.WritePsmData(psms);
+            //    writer.WriteLine();
+            //    writer.WritePeptideData(peptides);
+            //    writer.WriteLine();
+            //    writer.WriteSmallMoleculeData(smallMolecules);
+            //}
             
             // Examples coding  
 

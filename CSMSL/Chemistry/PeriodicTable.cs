@@ -29,14 +29,11 @@ namespace CSMSL.Chemistry
     public sealed class PeriodicTable
     {
         /// <summary>
-        /// The singleton instance of the periodic table
-        /// </summary>
-        private static readonly PeriodicTable _instance = new PeriodicTable();
-
-        /// <summary>
         /// The internal dictionary housing all the elements, keyed by their unique atomic symbol
         /// </summary>
         private readonly Dictionary<string, Element> _elements;
+        
+        private static readonly Lazy<PeriodicTable> lazy = new Lazy<PeriodicTable>(() => new PeriodicTable());
 
         /// <summary>
         /// The default size for chemical formula arrays. This is recommend based on the 5 most common elements for proteomics (C H O N P)
@@ -48,7 +45,7 @@ namespace CSMSL.Chemistry
         }
 
         /// <summary>
-        /// Creates a default periodictable with the supplied elements in "Resources/Elements.xml"
+        /// Creates a default periodic table with the supplied elements in "Resources/Elements.xml"
         /// </summary>
         private PeriodicTable()
         {
@@ -67,7 +64,7 @@ namespace CSMSL.Chemistry
         /// </summary>
         public static PeriodicTable Instance
         {
-            get { return _instance; }
+            get { return lazy.Value; }
         }
 
         /// <summary>

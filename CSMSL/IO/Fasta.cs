@@ -155,7 +155,7 @@ namespace CSMSL.IO
         {
             return Sequence.Equals(other.Sequence);
         }
-    } // class Fasta
+    } 
 
     public enum DecoyDatabaseMethod
     {

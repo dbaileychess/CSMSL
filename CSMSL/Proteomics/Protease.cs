@@ -28,6 +28,8 @@ namespace CSMSL.Proteomics
 {
     public class Protease : IProtease
     {
+        #region Static
+
         public static readonly string UserProteasePath;
    
         private static readonly Dictionary<string, Protease> Proteases;
@@ -91,12 +93,7 @@ namespace CSMSL.Proteomics
                 Proteases.Add(name, new Protease(name, terminus, cut, nocut));
             }
         }
-
-        public Protease this[string name]
-        {
-            get { return GetProtease(name); }
-        }
-
+        
         public static IEnumerable<Protease> GetAllProteases()
         {
             return Proteases.Values;
@@ -164,7 +161,10 @@ namespace CSMSL.Proteomics
                     writer.WriteStartElement("Protease");
                     writer.WriteAttributeString("name", protease.Name);
                     writer.WriteAttributeString("terminus", protease.Terminal.ToString());
-                    writer.WriteAttributeString("cut", protease.Cut);
+                    if (!string.IsNullOrEmpty(protease.Cut))
+                    {
+                        writer.WriteAttributeString("cut", protease.Cut);
+                    }
                     if (!string.IsNullOrEmpty(protease.NoCut))
                     {
                         writer.WriteAttributeString("nocut", protease.NoCut);
@@ -178,6 +178,13 @@ namespace CSMSL.Proteomics
         }
 
         public static event EventHandler ProteasesChanged;
+
+        #endregion
+
+        public Protease this[string name]
+        {
+            get { return GetProtease(name); }
+        }
 
         private readonly Regex _cleavageRegex;
 

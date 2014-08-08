@@ -24,6 +24,7 @@ namespace CSMSL.Proteomics
 {
     public class AminoAcid : IAminoAcid
     {
+
         #region The Twenty Common Amino Acids
 
         public static AminoAcid Alanine { get; private set; }
@@ -116,7 +117,7 @@ namespace CSMSL.Proteomics
         }
 
         /// <summary>
-        /// Contruct the actual amino acids
+        /// Construct the actual amino acids
         /// </summary>
         static AminoAcid()
         {

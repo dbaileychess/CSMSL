@@ -178,10 +178,6 @@
     <Compile Include="IO\MzTab\MzTabSoftware.cs" />
     <Compile Include="IO\MzTab\MzTabWriter.cs" />
     <Compile Include="IO\PsmReader.cs" />
-    <Compile Include="IO\uniprot.cs">
-      <DependentUpon>Uniprot.xsd</DependentUpon>
-    </Compile>
-    <Compile Include="IO\UniProtXML.cs" />
     <Compile Include="DoubleRange.cs" />
     <Compile Include="MassRange.cs" />
     <Compile Include="MzRange.cs" />
@@ -243,9 +239,6 @@
     <EmbeddedResource Include="Resources\Elements.xml">
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <None Include="IO\Uniprot.xsd">
-      <SubType>Designer</SubType>
-    </None>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\Modifications.xml" />
