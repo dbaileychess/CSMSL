@@ -97,8 +97,7 @@ namespace CSMSL.Examples
             //}
             
             // Examples coding  
-
-            //ChemicalFormulaExamples();
+            ChemicalFormulaExamples();
             //PeptideExamples();
             //ChemicalFormulaGeneratorExample();
 

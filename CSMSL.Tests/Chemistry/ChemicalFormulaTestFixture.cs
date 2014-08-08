@@ -41,7 +41,7 @@ namespace CSMSL.Tests.Chemistry
             ChemicalFormula formulaA = new ChemicalFormula("C2H3NO");
             ChemicalFormula formulaB = new ChemicalFormula("C2H3N2O");
 
-            Element n = Element.PeriodicTable["N"];
+            Element n = PeriodicTable.GetElement("N");
 
             formulaA.Add(n, 1);
 
@@ -89,7 +89,7 @@ namespace CSMSL.Tests.Chemistry
             ChemicalFormula formulaA = new ChemicalFormula("C2H3NO");
             ChemicalFormula formulaB = new ChemicalFormula("C2H4NO");
 
-            Isotope h1 = Element.PeriodicTable["H"][1];
+            Isotope h1 = PeriodicTable.GetElement("H")[1];
 
             formulaA.Add(h1, 1);
 
@@ -105,7 +105,7 @@ namespace CSMSL.Tests.Chemistry
             ChemicalFormula formulaA = new ChemicalFormula("C2H3NO");
             ChemicalFormula formulaB = new ChemicalFormula("C2H3NOFe");
 
-            Isotope fe = Element.PeriodicTable["Fe"].PrincipalIsotope;
+            Isotope fe = PeriodicTable.GetElement("Fe").PrincipalIsotope;
 
             formulaA.Add(fe, 1);
 
@@ -130,7 +130,7 @@ namespace CSMSL.Tests.Chemistry
             ChemicalFormula formulaA = new ChemicalFormula("C2H3NO");
             ChemicalFormula formulaB = new ChemicalFormula("C2HNO");
 
-            Isotope h1 = Element.PeriodicTable["H"][1];
+            Isotope h1 = PeriodicTable.GetElement("H")[1];
 
             formulaA.Add(h1, -2);
 
@@ -196,7 +196,7 @@ namespace CSMSL.Tests.Chemistry
             ChemicalFormula formulaA = new ChemicalFormula("C2H3NO");
             ChemicalFormula formulaB = new ChemicalFormula("C2H3NO");
 
-            Element n = Element.PeriodicTable["N"];
+            Element n = PeriodicTable.GetElement("N");
 
             formulaA.Add(n, 0);
 
@@ -209,7 +209,7 @@ namespace CSMSL.Tests.Chemistry
             ChemicalFormula formulaA = new ChemicalFormula("C2H3NO");
             ChemicalFormula formulaB = new ChemicalFormula("C2H3NO");
 
-            Isotope h1 = Element.PeriodicTable["H"][1];
+            Isotope h1 = PeriodicTable.GetElement("H")[1];
 
             formulaA.Add(h1, 0);
 
@@ -566,13 +566,13 @@ namespace CSMSL.Tests.Chemistry
         [Test]
         public void InvalidChemicalElement()
         {
-            Assert.Throws<KeyNotFoundException>(() => { _ignore = Element.PeriodicTable["Faa"]; });
+            Assert.Throws<KeyNotFoundException>(() => { _ignore = PeriodicTable.GetElement("Faa"); });
         }
 
         [Test]
         public void InvalidElementIsotope()
         {
-            Assert.Throws<KeyNotFoundException>(() => { _ignore = Element.PeriodicTable["C"][100]; });
+            Assert.Throws<KeyNotFoundException>(() => { _ignore = PeriodicTable.GetElement("C")[100]; });
         }
 
         [Test]
@@ -692,7 +692,7 @@ namespace CSMSL.Tests.Chemistry
             ChemicalFormula formulaA = new ChemicalFormula("C2H3NO");
             ChemicalFormula formulaB = new ChemicalFormula("C2NO");
 
-            formulaA.Remove(Element.PeriodicTable["H"]);
+            formulaA.Remove(PeriodicTable.GetElement("H"));
 
             Assert.AreEqual(formulaA, formulaB);
         }
@@ -714,7 +714,7 @@ namespace CSMSL.Tests.Chemistry
             ChemicalFormula formulaA = new ChemicalFormula("C2C{13}H3NO");
             ChemicalFormula formulaB = new ChemicalFormula("H3NO");
 
-            formulaA.Remove(Element.PeriodicTable["C"]);
+            formulaA.Remove(PeriodicTable.GetElement("C"));
 
             Assert.AreEqual(formulaA, formulaB);
         }
@@ -748,7 +748,7 @@ namespace CSMSL.Tests.Chemistry
             ChemicalFormula formulaA = new ChemicalFormula("C2H3NO");
             ChemicalFormula formulaB = new ChemicalFormula("C2NO");
 
-            formulaA.Remove(Element.PeriodicTable["H"][1]);
+            formulaA.Remove(PeriodicTable.GetElement("H")[1]);
 
             Assert.AreEqual(formulaA, formulaB);
         }
@@ -759,7 +759,7 @@ namespace CSMSL.Tests.Chemistry
             ChemicalFormula formulaA = new ChemicalFormula("C2H3NO");
             ChemicalFormula formulaB = new ChemicalFormula("C2HNO");
 
-            formulaA.Remove(Element.PeriodicTable["H"][1], 2);
+            formulaA.Remove(PeriodicTable.GetElement("H")[1], 2);
 
             Assert.AreEqual(formulaA, formulaB);
         }
@@ -781,7 +781,7 @@ namespace CSMSL.Tests.Chemistry
             ChemicalFormula formulaA = new ChemicalFormula("C2H3NO");
             ChemicalFormula formulaB = new ChemicalFormula("C2H5NO");
 
-            formulaA.Remove(Element.PeriodicTable["H"][1], -2);
+            formulaA.Remove(PeriodicTable.GetElement("H")[1], -2);
 
             Assert.AreEqual(formulaA, formulaB);
         }
@@ -837,7 +837,7 @@ namespace CSMSL.Tests.Chemistry
             ChemicalFormula formulaA = new ChemicalFormula("C2H3NO");
             ChemicalFormula formulaB = new ChemicalFormula("C2H3NO");
 
-            formulaA.Remove(Element.PeriodicTable["H"][1], 0);
+            formulaA.Remove(PeriodicTable.GetIsotope("H", 1), 0);
 
             Assert.AreEqual(formulaA, formulaB);
         }

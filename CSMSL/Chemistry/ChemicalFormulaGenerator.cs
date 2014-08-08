@@ -196,9 +196,9 @@ namespace CSMSL.Chemistry
                     maxValues[j] -= minValues[j];
                 if (maxValues[j] == 0)
                     continue;
-                masses[j] = PeriodicTable.Instance[j].AtomicMass;
+                masses[j] = PeriodicTable.GetIsotope(j).AtomicMass;
             }
-            masses[0] = PeriodicTable.Instance[0].AtomicMass;
+            masses[0] = PeriodicTable.GetIsotope(0).AtomicMass;
 
             GenerateFormulaHelper(correctedLowMass, correctedHighMass, masses, maxValues, length - 1, currentFormula, returnFormulas);
 

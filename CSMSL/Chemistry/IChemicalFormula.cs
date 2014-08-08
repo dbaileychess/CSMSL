@@ -66,7 +66,7 @@ namespace CSMSL.Chemistry
                         int numAtoms = isotopes[i];
                         if (numAtoms != 0)
                             continue;
-                        Isotope isotope = PeriodicTable.Instance[i];
+                        Isotope isotope = PeriodicTable.GetIsotope(i);
 
                         int numValenceElectrons = isotope.ValenceElectrons;
                         totalValence += numValenceElectrons * numAtoms;

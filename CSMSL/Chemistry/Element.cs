@@ -30,9 +30,7 @@ namespace CSMSL.Chemistry
         /// The element's isotopes stored based on their atomic number
         /// </summary>
         internal Dictionary<int, Isotope> Isotopes;
-
-        public static readonly PeriodicTable PeriodicTable = PeriodicTable.Instance;
-
+        
         /// <summary>
         /// Gets an isotope of this element based on its atomic number
         /// </summary>

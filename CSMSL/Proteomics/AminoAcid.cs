@@ -192,7 +192,7 @@ namespace CSMSL.Proteomics
             var formula = new ChemicalFormula();
             if (c)
             {
-                Element carbon = Element.PeriodicTable["C"];
+                Element carbon = PeriodicTable.GetElement("C");
                 int carbon12 = ChemicalFormula.Count(carbon[12]);
                 formula.Add(carbon[12], -carbon12);
                 formula.Add(carbon[13], carbon12);
@@ -200,7 +200,7 @@ namespace CSMSL.Proteomics
 
             if (n)
             {
-                Element nitrogen = Element.PeriodicTable["N"];
+                Element nitrogen = PeriodicTable.GetElement("N");
                 int nitrogen14 = ChemicalFormula.Count(nitrogen[14]);
                 formula.Add(nitrogen[14], -nitrogen14);
                 formula.Add(nitrogen[15], nitrogen14);

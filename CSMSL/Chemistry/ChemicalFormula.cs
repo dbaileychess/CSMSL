@@ -139,7 +139,7 @@ namespace CSMSL.Chemistry
                 if (isotopes != 0)
                 {
                     _isotopes[i] = isotopes;
-                    MonoisotopicMass += isotopes * PeriodicTable.Instance[i].AtomicMass;
+                    MonoisotopicMass += isotopes * PeriodicTable.GetIsotope(i).AtomicMass;
                     _largestIsotopeId = i;
                 }
             }
@@ -381,7 +381,7 @@ namespace CSMSL.Chemistry
         {
             try
             {
-                Isotope isotope = Element.PeriodicTable[symbol].PrincipalIsotope;
+                Isotope isotope = PeriodicTable.GetElement(symbol).PrincipalIsotope;
                 Add(isotope, count);
             }
             catch (KeyNotFoundException e)
@@ -490,7 +490,7 @@ namespace CSMSL.Chemistry
         /// <param name="count">The number of isotopes to remove</param>
         public void Remove(string symbol, int count)
         {
-            Add(Element.PeriodicTable[symbol].PrincipalIsotope, -count);
+            Add(PeriodicTable.GetElement(symbol).PrincipalIsotope, -count);
         }
 
         /// <summary>
@@ -544,7 +544,7 @@ namespace CSMSL.Chemistry
         /// <returns>True if the element was present and removed, false otherwise</returns>
         public int Remove(string symbol)
         {
-            return Remove(Element.PeriodicTable[symbol]);
+            return Remove(PeriodicTable.GetElement(symbol));
         }
 
         /// <summary>
@@ -667,13 +667,13 @@ namespace CSMSL.Chemistry
 
         public int Count(string symbol)
         {
-            Element element = Element.PeriodicTable[symbol];
+            Element element = PeriodicTable.GetElement(symbol);
             return Count(element);
         }
 
         public int Count(string symbol, int atomicNumber)
         {
-            Isotope isotope = Element.PeriodicTable[symbol][atomicNumber];
+            Isotope isotope = PeriodicTable.GetElement(symbol)[atomicNumber];
             return Count(isotope);
         }
 
@@ -689,7 +689,7 @@ namespace CSMSL.Chemistry
                 if (_isotopes[i] == 0)
                     continue;
 
-                neutrons += Element.PeriodicTable[i].Neutrons * _isotopes[i];
+                neutrons += PeriodicTable.GetIsotope(i).Neutrons * _isotopes[i];
             }
             return neutrons;
         }
@@ -706,7 +706,7 @@ namespace CSMSL.Chemistry
                 if (_isotopes[i] == 0)
                     continue;
 
-                protons += Element.PeriodicTable[i].Protons * _isotopes[i];
+                protons += PeriodicTable.GetIsotope(i).Protons * _isotopes[i];
             }
             return protons;
         }
@@ -786,7 +786,7 @@ namespace CSMSL.Chemistry
             {
                 if (_isotopes[i] != 0)
                 {
-                    elements.Add(PeriodicTable.Instance[i].Element);
+                    elements.Add(PeriodicTable.GetIsotope(i).Element);
                 }
             }
             return elements;
@@ -843,7 +843,7 @@ namespace CSMSL.Chemistry
                 if (count == 0)
                     continue;
 
-                Isotope isotope = Element.PeriodicTable[i];
+                Isotope isotope = PeriodicTable.GetIsotope(i);
                 Element element = isotope.Element;
                 elements.Add(element.AtomicNumber);
 
@@ -883,7 +883,7 @@ namespace CSMSL.Chemistry
                 if (count == 0)
                     continue;
 
-                Isotope isotope = Element.PeriodicTable[i];
+                Isotope isotope = PeriodicTable.GetIsotope(i);
 
                 sb.Clear();
                 sb.Append(isotope.AtomicSymbol);
@@ -961,7 +961,7 @@ namespace CSMSL.Chemistry
                 string chemsym = match.Groups[1].Value; // Group 1: Chemical Symbol
 
                 Element element;
-                if (Element.PeriodicTable.TryGetElement(chemsym, out element))
+                if (PeriodicTable.TryGetElement(chemsym, out element))
                 {
                     Isotope isotope = element.PrincipalIsotope; // Start with the most abundant (principal) isotope
 
@@ -1215,7 +1215,7 @@ namespace CSMSL.Chemistry
         public static ChemicalFormula Combine(IEnumerable<IChemicalFormula> formulas)
         {
             int largestId = 0;
-            int[] isotopes = new int[Element.PeriodicTable.BiggestIsotopeNumber];
+            int[] isotopes = new int[PeriodicTable.BiggestIsotopeNumber];
             double mass = 0;
             foreach (IChemicalFormula iformula in formulas)
             {

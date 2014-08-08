@@ -26,15 +26,16 @@ namespace CSMSL.Chemistry
     /// <summary>
     /// The Periodic Table of Elements.
     /// </summary>
-    public sealed class PeriodicTable
+    public static class PeriodicTable
     {
+
+        public static readonly string UserPerodicTablePath;
+
         /// <summary>
         /// The internal dictionary housing all the elements, keyed by their unique atomic symbol
         /// </summary>
-        private readonly Dictionary<string, Element> _elements;
+        private static readonly Dictionary<string, Element> _elements;
         
-        private static readonly Lazy<PeriodicTable> lazy = new Lazy<PeriodicTable>(() => new PeriodicTable());
-
         /// <summary>
         /// The default size for chemical formula arrays. This is recommend based on the 5 most common elements for proteomics (C H O N P)
         /// </summary>
@@ -42,73 +43,52 @@ namespace CSMSL.Chemistry
 
         static PeriodicTable()
         {
-        }
+            UserPerodicTablePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), @"CSMSL\Elements.xml");
 
-        /// <summary>
-        /// Creates a default periodic table with the supplied elements in "Resources/Elements.xml"
-        /// </summary>
-        private PeriodicTable()
-        {
             _elements = new Dictionary<string, Element>();
 
-            // from: http://stackoverflow.com/questions/3314140/how-to-read-embedded-resource-text-file
+            Load();
+        }
+
+        public static void Load()
+        {
+            // Create file if it doesn't exist
+            if (!File.Exists(UserPerodicTablePath))
+            {
+                RestoreDefaults();
+            }
+
+            Load(UserPerodicTablePath);
+        }
+
+        public static void RestoreDefaults()
+        {
             var assembly = Assembly.GetExecutingAssembly();
-            LoadElements(assembly.GetManifestResourceStream("CSMSL.Resources.Elements.xml"));
+            Stream defaultModsStream = assembly.GetManifestResourceStream("CSMSL.Resources.Elements.xml");
 
-            // For reading from an content file
-            //LoadElements("Resources/Elements.xml");
-        }
+            Directory.CreateDirectory(Path.GetDirectoryName(UserPerodicTablePath));
+            using (var fileStream = File.Create(UserPerodicTablePath))
+            {
+                if (defaultModsStream != null) defaultModsStream.CopyTo(fileStream);
+            }
 
-        /// <summary>
-        /// The single instance of the Periodic Table created by the program (singleton pattern)
-        /// </summary>
-        public static PeriodicTable Instance
-        {
-            get { return lazy.Value; }
-        }
-
-        /// <summary>
-        /// The number of unique isotopes in this periodic table
-        /// </summary>
-        private int _uniqueId;
-
-        public int BiggestIsotopeNumber
-        {
-            get { return _uniqueId; }
-        }
-
-        /// <summary>
-        /// The main data store for all the isotopes in this periodic table. The isotope unique ID serves as the index in the array, these IDs are unique for each isotope.
-        /// </summary>
-        private Isotope[] _isotopes;
-
-        public Element this[string element]
-        {
-            get { return _elements[element]; }
-        }
-
-        internal Isotope this[int uniqueId]
-        {
-            get { return _isotopes[uniqueId]; }
-        }
-
-        public bool TryGetElement(string elementSymbol, out Element element)
-        {
-            return _elements.TryGetValue(elementSymbol, out element);
+            Load();
         }
 
         /// <summary>
         /// Load a xml file containing elemental and isotopic data into the periodic table
         /// </summary>
-        public void LoadElements(Stream elementsListXml)
+        public static void Load(string filePath)
         {
-            using (XmlReader reader = XmlReader.Create(elementsListXml))
+            _elements.Clear();
+
+            using (XmlReader reader = XmlReader.Create(filePath))
             {
                 reader.ReadToFollowing("PeriodicTable");
                 var idstr = reader.GetAttribute("defaultID");
                 if (idstr == null)
                     throw new Exception();
-                _uniqueId = int.Parse(idstr);
+                BiggestIsotopeNumber = int.Parse(idstr);
                 var isoStr = reader.GetAttribute("isotopesCount");
                 if (isoStr == null)
                     throw new Exception();
@@ -148,8 +128,8 @@ namespace CSMSL.Chemistry
                             }
                             else
                             {
-                                isotope.UniqueId = _uniqueId;
-                                _isotopes[_uniqueId++] = isotope;
+                                isotope.UniqueId = BiggestIsotopeNumber;
+                                _isotopes[BiggestIsotopeNumber++] = isotope;
                             }
                         }
                         if (!reader.IsStartElement("Isotope"))
@@ -160,9 +140,37 @@ namespace CSMSL.Chemistry
                 }
             }
 
-            if (_isotopes.Length != _uniqueId)
-                Array.Resize(ref _isotopes, _uniqueId);
+            if (_isotopes.Length != BiggestIsotopeNumber)
+                Array.Resize(ref _isotopes, BiggestIsotopeNumber);
         }
+
+        public static int BiggestIsotopeNumber { get; private set; }
+
+        /// <summary>
+        /// The main data store for all the isotopes in this periodic table. The isotope unique ID serves as the index in the array, these IDs are unique for each isotope.
+        /// </summary>
+        private static Isotope[] _isotopes;
+
+        public static Element GetElement(string element)
+        {
+           return _elements[element]; 
+        }
+
+        public static Isotope GetIsotope(string element, int atomicNumber)
+        {
+            return _elements[element][atomicNumber];
+        }
+
+        internal static Isotope GetIsotope(int uniqueId)
+        {
+            return _isotopes[uniqueId];
+        }
+
+        public static bool TryGetElement(string elementSymbol, out Element element)
+        {
+            return _elements.TryGetValue(elementSymbol, out element);
+        }
+
 
         /// <summary>
         /// Adds an element to this periodic table if the element atomic symbol is not already present.
@@ -170,7 +178,7 @@ namespace CSMSL.Chemistry
         /// </summary>
         /// <param name="element">The element to add to the periodic table</param>
         /// <returns>True if the element was not present before, false if the element existed and was overwritten</returns>
-        public bool AddElement(Element element)
+        public static bool AddElement(Element element)
         {
             if (_elements.ContainsKey(element.AtomicSymbol))
             {
