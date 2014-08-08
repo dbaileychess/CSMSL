@@ -96,14 +96,10 @@ namespace CSMSL.Examples
             //    writer.WriteSmallMoleculeData(smallMolecules);
             //}
 
-            PeriodicTable.Load(@"E:\Desktop\table.xml");
-            //PeriodicTable.SaveTo(@"E:\Desktop\table.xml");
-           
-
             // Examples coding  
             //ChemicalFormulaExamples();
             //PeptideExamples();
-            ChemicalFormulaGeneratorExample();
+            //ChemicalFormulaGeneratorExample();
 
             // Example Objects
             //VennDiagramExamples();

@@ -81,16 +81,21 @@ namespace CSMSL.Proteomics
         /// <param name="filePath">The path to the protase file</param>
         public static void Load(string filePath)
         {
-            var proteasesXml = new XmlDocument();
-            proteasesXml.Load(filePath);
+            Proteases.Clear();
 
-            foreach (XmlNode proteaseNode in proteasesXml.SelectNodes("//Proteases/Protease"))
+            using (XmlReader reader = XmlReader.Create(filePath))
             {
-                string name = proteaseNode.Attributes["name"].Value;
-                Terminus terminus = proteaseNode.Attributes["terminus"].Value == "N" ? Terminus.N : Terminus.C;
-                string cut = proteaseNode.Attributes["cut"] != null ? proteaseNode.Attributes["cut"].Value : "";
-                string nocut = proteaseNode.Attributes["nocut"] != null ? proteaseNode.Attributes["nocut"].Value : "";
-                Proteases.Add(name, new Protease(name, terminus, cut, nocut));
+                while (reader.Read())
+                {
+                    if (!reader.IsStartElement() || !reader.Name.Equals("Protease"))
+                        continue;
+
+                    string name = reader["name"];
+                    Terminus terminus = reader["terminus"] == "N" ? Terminus.N : Terminus.C;
+                    string cut = reader["cut"] ?? "";
+                    string nocut = reader["nocut"] ?? "";
+                    Proteases.Add(name, new Protease(name, terminus, cut, nocut));
+                }
             }
         }
         

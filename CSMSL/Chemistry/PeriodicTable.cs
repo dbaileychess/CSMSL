@@ -82,7 +82,7 @@ namespace CSMSL.Chemistry
         {
             _elements.Clear();
             Element element = null;
-            _isotopes = new Isotope[1000];
+            _isotopes = new Isotope[500];
             using (XmlReader reader = XmlReader.Create(filePath))
             {
                 while (reader.Read())
