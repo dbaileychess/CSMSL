@@ -18,6 +18,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Xml;
 
@@ -28,7 +29,6 @@ namespace CSMSL.Chemistry
     /// </summary>
     public static class PeriodicTable
     {
-
         public static readonly string UserPerodicTablePath;
 
         /// <summary>
@@ -81,69 +81,91 @@ namespace CSMSL.Chemistry
         public static void Load(string filePath)
         {
             _elements.Clear();
-
+            Element element = null;
+            _isotopes = new Isotope[1000];
             using (XmlReader reader = XmlReader.Create(filePath))
             {
-                reader.ReadToFollowing("PeriodicTable");
-                var idstr = reader.GetAttribute("defaultID");
-                if (idstr == null)
-                    throw new Exception();
-                BiggestIsotopeNumber = int.Parse(idstr);
-                var isoStr = reader.GetAttribute("isotopesCount");
-                if (isoStr == null)
-                    throw new Exception();
-                int isotopes = int.Parse(isoStr);
-                _isotopes = new Isotope[isotopes];
-                while (reader.ReadToFollowing("Element"))
+                while (reader.Read())
                 {
-                    reader.ReadToFollowing("Name");
-                    string name = reader.ReadElementContentAsString();
-                    reader.ReadToFollowing("Symbol");
-                    string symbol = reader.ReadElementContentAsString();
-                    reader.ReadToFollowing("AtomicNumber");
-                    int atomicnumber = reader.ReadElementContentAsInt();
-                    reader.ReadToFollowing("ValenceElectrons");
-                    int valenceElectrons = reader.ReadElementContentAsInt();
-                    Element element = new Element(name, symbol, atomicnumber, valenceElectrons);
+                    if (!reader.IsStartElement())
+                        continue;
 
-                    bool isStartNode = reader.ReadToNextSibling("Isotope");
-                    while (isStartNode)
+                    switch (reader.Name)
                     {
-                        string unqiueId = reader.GetAttribute("uniqueID");
-                        reader.ReadToFollowing("Mass");
-                        double mass = reader.ReadElementContentAsDouble();
-                        reader.ReadToFollowing("MassNumber");
-                        int massNumber = reader.ReadElementContentAsInt();
-                        reader.ReadToFollowing("RelativeAbundance");
-                        float abundance = reader.ReadElementContentAsFloat();
-                        if (abundance > 0)
-                        {
-                            Isotope isotope = element.AddIsotope(massNumber, mass, abundance);
+                        case "Element":
+                            string name = reader["Name"];
+                            string symbol = reader["Symbol"];
+                            int atomicnumber = int.Parse(reader["AtomicNumber"]);
+                            int valenceElectrons = int.Parse(reader["ValenceElectrons"]);
+                            element = new Element(name, symbol, atomicnumber, valenceElectrons);
+                            AddElement(element);
+                            break;
+                        case "Isotope":
+                            string unqiueId = reader["Id"];
+                            double mass = double.Parse(reader["Mass"]);
+                            int massNumber = int.Parse(reader["MassNumber"]);
+                            float abundance = float.Parse(reader["Abundance"]);
+                            if (abundance > 0)
+                            {
+                                Isotope isotope = element.AddIsotope(massNumber, mass, abundance);
 
-                            if (unqiueId != null)
-                            {
-                                int uniqueId = int.Parse(unqiueId);
-                                isotope.UniqueId = uniqueId;
-                                _isotopes[uniqueId] = isotope;
+                                if (unqiueId != null)
+                                {
+                                    int uniqueId = int.Parse(unqiueId);
+                                    if (uniqueId > BiggestIsotopeNumber)
+                                        BiggestIsotopeNumber = uniqueId;
+                                    isotope.UniqueId = uniqueId;
+                                    _isotopes[uniqueId] = isotope;
+                                }
+                                else
+                                {
+                                    isotope.UniqueId = BiggestIsotopeNumber;
+                                    _isotopes[BiggestIsotopeNumber++] = isotope;
+                                }
                             }
-                            else
-                            {
-                                isotope.UniqueId = BiggestIsotopeNumber;
-                                _isotopes[BiggestIsotopeNumber++] = isotope;
-                            }
-                        }
-                        if (!reader.IsStartElement("Isotope"))
-                            isStartNode = reader.ReadToNextSibling("Isotope");
+                            break;
                     }
-
-                    AddElement(element);
                 }
             }
-
-            if (_isotopes.Length != BiggestIsotopeNumber)
-                Array.Resize(ref _isotopes, BiggestIsotopeNumber);
+            
+            if (_isotopes.Length > BiggestIsotopeNumber)
+                Array.Resize(ref _isotopes, BiggestIsotopeNumber+1);
         }
 
+        public static void Save()
+        {
+            SaveTo(UserPerodicTablePath);
+        }
+
+        public static void SaveTo(string filePath)
+        {
+            using (XmlWriter writer = XmlWriter.Create(filePath, new XmlWriterSettings { Indent = true }))
+            {
+                writer.WriteStartDocument();
+                writer.WriteStartElement("PeriodicTable");
+                foreach (var element in _elements.Values.Where(element => element.Isotopes.Count > 0).GroupBy(element => element.Name).Select(g => g.First()))
+                {
+                    writer.WriteStartElement("Element");
+                    writer.WriteAttributeString("Name", element.Name);
+                    writer.WriteAttributeString("Symbol", element.AtomicSymbol);
+                    writer.WriteAttributeString("AtomicNumber", element.AtomicNumber.ToString());
+                    writer.WriteAttributeString("AverageMass", element.AverageMass.ToString("R"));
+                    writer.WriteAttributeString("ValenceElectrons", element.ValenceElectrons.ToString());
+                    foreach (var isotope in element.Isotopes.Values)
+                    {
+                        writer.WriteStartElement("Isotope");
+                        writer.WriteAttributeString("Id", isotope.UniqueId.ToString());
+                        writer.WriteAttributeString("Mass", isotope.AtomicMass.ToString("R"));
+                        writer.WriteAttributeString("MassNumber", isotope.MassNumber.ToString());
+                        writer.WriteAttributeString("Abundance", isotope.RelativeAbundance.ToString("R"));
+                        writer.WriteEndElement(); // Isotope
+                    }
+                    writer.WriteEndElement(); // Element
+                }
+                writer.WriteEndElement(); // PeriodicTable
+            }
+        }
+        
         public static int BiggestIsotopeNumber { get; private set; }
 
         /// <summary>
@@ -161,6 +183,11 @@ namespace CSMSL.Chemistry
             return _elements[element][atomicNumber];
         }
 
+        /// <summary>
+        /// Get an isotope based on its unique isotope id
+        /// </summary>
+        /// <param name="uniqueId">The unique isotope id of isotope to get</param>
+        /// <returns>An isotope</returns>
         internal static Isotope GetIsotope(int uniqueId)
         {
             return _isotopes[uniqueId];

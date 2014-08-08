@@ -19,68 +19,20 @@ using System;
 
 namespace CSMSL.Chemistry
 {
-    public class Mass : IMass, IComparable<Mass>, IEquatable<Mass>
+    public struct Mass : IMass, IComparable<Mass>, IEquatable<Mass>
     {
         /// <summary>
         /// The mass of all the isotopes (in unified atomic mass units)
         /// </summary>
-        public double MonoisotopicMass { get; internal set; }
+        public double MonoisotopicMass { get; private set; }
 
         public Mass(IMass item)
-            : this(item.MonoisotopicMass)
-        {
-        }
+            : this(item.MonoisotopicMass) { }
 
-        public Mass(double monoisotopic = 0)
+        public Mass(double monoisotopic = 0) : this()
         {
             MonoisotopicMass = monoisotopic;
         }
-
-        /// <summary>
-        /// Adds the mass of another object to this
-        /// </summary>
-        /// <param name="item">The item which possesses a mass</param>
-        public void Add(IMass item)
-        {
-            if (item == null)
-                return;
-
-            MonoisotopicMass += item.MonoisotopicMass;
-        }
-
-        /// <summary>
-        /// Adds the mass of another object to this
-        /// </summary>
-        /// <param name="item">The item which possesses a mass</param>
-        public void Add(Mass item)
-        {
-            if (item == null)
-                return;
-
-            MonoisotopicMass += item.MonoisotopicMass;
-        }
-
-        /// <summary>
-        /// Removes the mass of another object to this
-        /// </summary>
-        /// <param name="item">The item which possesses a mass</param>
-        public void Remove(Mass item)
-        {
-            if (item == null)
-                return;
-
-            MonoisotopicMass -= item.MonoisotopicMass;
-        }
-
-        ///// <summary>
-        ///// Calculates the m/z for the monoisotopic mass
-        ///// </summary>
-        ///// <param name="charge">The charge state</param>
-        ///// <returns>The m/z for the moniosotopic mass at a given charge state</returns>
-        //public double ToMz(int charge)
-        //{
-        //    return MzFromMass(MonoisotopicMass, charge);
-        //}
 
         public override string ToString()
         {
@@ -104,8 +56,10 @@ namespace CSMSL.Chemistry
 
         public override bool Equals(object obj)
         {
-            var other = obj as Mass;
-            return other != null && Equals(other);
+            if (!(obj is Mass))
+                return false;
+            Mass mass = (Mass)obj;
+            return Equals(mass);
         }
 
         public override int GetHashCode()

@@ -27,8 +27,15 @@ namespace CSMSL.Chemistry
     /// </summary>
     public class ChemicalFormulaGenerator
     {
-        private ChemicalFormula _minFormula;
-        private ChemicalFormula _maxFormula;
+        /// <summary>
+        /// The maximum formula that can be generated.
+        /// </summary>
+        public ChemicalFormula MaximumFormula { get; private set; }
+
+        /// <summary>
+        /// The minimum formula that every generated formula has to contain
+        /// </summary>
+        public ChemicalFormula MinimumFormula { get; private set; }
 
         /// <summary>
         /// Create a empty generator, which will produce no formulas unless a constraint is added
@@ -54,20 +61,20 @@ namespace CSMSL.Chemistry
         /// <param name="maximumChemicalFormula">The maximum chemical formula to generate</param>
         public ChemicalFormulaGenerator(ChemicalFormula minimumChemicalFormula, ChemicalFormula maximumChemicalFormula)
         {
-            _minFormula = new ChemicalFormula(minimumChemicalFormula);
-            _maxFormula = new ChemicalFormula(maximumChemicalFormula);
+            MinimumFormula = new ChemicalFormula(minimumChemicalFormula);
+            MaximumFormula = new ChemicalFormula(maximumChemicalFormula);
         }
 
         public void AddConstraint(ChemicalFormula minimumChemicalFormula, ChemicalFormula maximumChemicalFormula)
         {
-            _minFormula.Add(minimumChemicalFormula);
-            _maxFormula.Add(maximumChemicalFormula);
+            MinimumFormula.Add(minimumChemicalFormula);
+            MaximumFormula.Add(maximumChemicalFormula);
         }
 
         public void AddConstraint(Isotope isotope, int min, int max)
         {
-            _minFormula.Add(isotope, min);
-            _maxFormula.Add(isotope, max);
+            MinimumFormula.Add(isotope, min);
+            MaximumFormula.Add(isotope, max);
         }
 
         public void AddConstraint(Isotope isotope, Range<int> range)
@@ -75,76 +82,32 @@ namespace CSMSL.Chemistry
             AddConstraint(isotope, range.Minimum, range.Maximum);
         }
 
-        public void Clear()
+        public void ClearConstraints()
         {
-            _minFormula = new ChemicalFormula();
-            _maxFormula = new ChemicalFormula();
+            MinimumFormula = new ChemicalFormula();
+            MaximumFormula = new ChemicalFormula();
         }
 
         public void RemoveConstraint(Isotope isotope)
         {
-            _minFormula.Remove(isotope);
-            _maxFormula.Remove(isotope);
+            MinimumFormula.Remove(isotope);
+            MaximumFormula.Remove(isotope);
         }
 
+        /// <summary>
+        /// Generate all formulas regardless of mass between the min and max formula
+        /// </summary>
+        /// <returns>A list of chemical formulas</returns>
         public IEnumerable<ChemicalFormula> AllFormulas()
         {
-            return FromMass(0, int.MaxValue - 1);
+            return FromMass(0.0, int.MaxValue-1);
         }
 
-        private static double GetMass(int[] isotopes, double[] masses)
+        public IEnumerable<ChemicalFormula> FromMass(IRange<double> massRange, int maxNumberOfResults = int.MaxValue, bool sort = true)
         {
-            double mass = 0;
-            int count = isotopes.Length;
-            for (int i = 0; i < count; i++)
-            {
-                if (isotopes[i] != 0)
-                {
-                    mass += isotopes[i] * masses[i];
-                }
-            }
-            return mass;
+            return FromMass(massRange.Minimum, massRange.Maximum, maxNumberOfResults, sort);
         }
-
-        private static void GenerateFormulaHelper(double lowMass, double highMass, double[] masses, int[] max, int index, int[] currentFormula, List<ChemicalFormula> formulas)
-        {
-            while (index > 0 && max[index] == 0)
-            {
-                index--;
-            }
-            if (index > 0)
-            {
-                int maxCount = Math.Min((int)Math.Ceiling(highMass / masses[index]), max[index]);
-                for (int count = 0; count <= maxCount; count++)
-                {
-                    currentFormula[index] = count;
-                    GenerateFormulaHelper(lowMass, highMass, masses, max, index - 1, currentFormula, formulas);
-                }
-            }
-            else
-            {
-                double massAtIndex = masses[index];
-                currentFormula[index] = 0;
-                double currentMass = GetMass(currentFormula, masses);
-                int minCount = Math.Max((int)Math.Floor((lowMass - currentMass) / massAtIndex), 0);
-                int value = (int)Math.Ceiling((highMass - currentMass) / massAtIndex);
-                int maxCount = Math.Min(value, max[index]);
-                for (int count = minCount; count <= maxCount; count++)
-                {
-                    currentMass += count * massAtIndex;
-                    currentFormula[index] = count;
-
-                    if (currentMass >= lowMass && currentMass <= highMass)
-                    {
-                        ChemicalFormula formula = new ChemicalFormula(currentFormula);
-                        if (!formula.MassEquals(0.0))
-                            formulas.Add(formula);
-                    }
-                    currentMass -= count * massAtIndex;
-                }
-            }
-        }
-
+        
         public IEnumerable<ChemicalFormula> FromMass(double lowMass, double highMass, int maxNumberOfResults = int.MaxValue, bool sort = true)
         {
             if (highMass <= lowMass)
@@ -152,7 +115,7 @@ namespace CSMSL.Chemistry
                 throw new ArgumentException("The high mass must be greater than the low mass");
             }
 
-            if (!_maxFormula.Contains(_minFormula))
+            if (!MaximumFormula.Contains(MinimumFormula))
             {
                 throw new ArgumentException("The maximum formula must include the minimum formula");
             }
@@ -164,14 +127,14 @@ namespace CSMSL.Chemistry
             double correctedLowMass = lowMass;
             double correctedHighMass = highMass;
 
-            bool minFormulaExists = _minFormula.IsotopeCount != 0;
+            bool minFormulaExists = MinimumFormula.IsotopeCount != 0;
             int[] minValues = null;
             double minFormulaMass = 0;
 
             if (minFormulaExists)
             {
-                minValues = _minFormula.GetIsotopes();
-                minFormulaMass = _minFormula.MonoisotopicMass;
+                minValues = MinimumFormula.GetIsotopes();
+                minFormulaMass = MinimumFormula.MonoisotopicMass;
 
                 correctedLowMass -= minFormulaMass;
                 correctedHighMass -= minFormulaMass;
@@ -180,7 +143,7 @@ namespace CSMSL.Chemistry
             }
 
             // The maximum formula allowed, represented in number of isotopes
-            int[] maxValues = _maxFormula.GetIsotopes();
+            int[] maxValues = MaximumFormula.GetIsotopes();
 
             // The current formula represented in isotopes
             int[] currentFormula = new int[maxValues.Length];
@@ -206,11 +169,11 @@ namespace CSMSL.Chemistry
             {
                 foreach (ChemicalFormula formula in returnFormulas)
                 {
-                    formula.Add(_minFormula);
+                    formula.Add(MinimumFormula);
                 }
                 if (minFormulaMass >= lowMass && minFormulaMass <= highMass)
                 {
-                    returnFormulas.Add(new ChemicalFormula(_minFormula));
+                    returnFormulas.Add(new ChemicalFormula(MinimumFormula));
                 }
             }
 
@@ -219,10 +182,45 @@ namespace CSMSL.Chemistry
             double meanValue = (highMass + lowMass) / 2.0;
             return returnFormulas.OrderBy(formula => Math.Abs(formula.MonoisotopicMass - meanValue)).Take(maxNumberOfResults);
         }
-
-        public IEnumerable<ChemicalFormula> FromMass(IRange<double> massRange, int maxNumberOfResults = int.MaxValue, bool sort = true)
+        
+        private static void GenerateFormulaHelper(double lowMass, double highMass, double[] masses, int[] max, int index, int[] currentFormula, List<ChemicalFormula> formulas)
         {
-            return FromMass(massRange.Minimum, massRange.Maximum, maxNumberOfResults, sort);
+            while (index > 0 && max[index] == 0)
+            {
+                index--;
+            }
+            if (index > 0)
+            {
+                int maxCount = Math.Min((int)Math.Ceiling(highMass / masses[index]), max[index]);
+                for (int count = 0; count <= maxCount; count++)
+                {
+                    currentFormula[index] = count;
+                    GenerateFormulaHelper(lowMass, highMass, masses, max, index - 1, currentFormula, formulas);
+                }
+            }
+            else
+            {
+                double massAtIndex = masses[index];
+                currentFormula[index] = 0;
+                double currentMass = currentFormula.Zip(masses, (i, m) => i * m).Sum(); 
+                int minCount = Math.Max((int)Math.Floor((lowMass - currentMass) / massAtIndex), 0);
+                int value = (int)Math.Ceiling((highMass - currentMass) / massAtIndex);
+                int maxCount = Math.Min(value, max[index]);
+                for (int count = minCount; count <= maxCount; count++)
+                {
+                    currentMass += count * massAtIndex;
+                    currentFormula[index] = count;
+
+                    if (currentMass >= lowMass && currentMass <= highMass)
+                    {
+                        ChemicalFormula formula = new ChemicalFormula(currentFormula);
+                        if (!formula.MassEquals(0.0))
+                            formulas.Add(formula);
+                    }
+                    currentMass -= count * massAtIndex;
+                }
+            }
         }
+        
     }
 }

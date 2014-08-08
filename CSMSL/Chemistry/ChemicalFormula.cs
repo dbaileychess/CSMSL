@@ -989,124 +989,6 @@ namespace CSMSL.Chemistry
                     throw new ArgumentException(string.Format("The chemical Symbol '{0}' does not exist in the Periodic Table", chemsym));
                 }
             }
-
-            //StringBuilder isotopeSB = new StringBuilder(2);
-            //StringBuilder elementSB = new StringBuilder(2);
-            //StringBuilder countSB = new StringBuilder(3);
-            //bool inIsotope = false;
-            //int isotopeValue = 0;
-            //int sign = 1;
-            //int numofelem = 1;
-            //foreach(char c in formula)
-            //{
-            //    // Skip white spaces
-            //    if (char.IsWhiteSpace(c))
-            //        continue;
-
-            //    // Start of a isotope
-            //    if (c == '{')
-            //    {
-            //        inIsotope = true;
-            //        continue;
-            //    }
-
-            //    // inside an isotope
-            //    if (inIsotope)
-            //    {
-            //        // End of a isotope
-            //        if (c == '}')
-            //        {
-            //            isotopeValue = int.Parse(isotopeSB.ToString());
-            //            inIsotope = false;
-            //            isotopeSB.Clear();
-            //            continue;
-            //        }
-            //        isotopeSB.Append(c);
-            //        continue;
-            //    }
-
-            //    if (c == '-')
-            //    {
-            //        sign = -1;
-            //        continue;
-            //    }
-
-            //    if (char.IsLetter(c))
-            //    {
-            //        if (char.IsUpper(c))
-            //        {
-            //            if (elementSB.Length > 0)
-            //            {
-            //                if (countSB.Length > 0)
-            //                {
-            //                    numofelem = int.Parse(countSB.ToString());
-            //                    countSB.Clear();
-            //                }
-
-            //                string chemsym = elementSB.ToString();
-            //                elementSB.Clear();
-            //                Element element;
-            //                if (Element.PeriodicTable.TryGetElement(chemsym, out element))
-            //                {
-            //                    Isotope isotope = element.PrincipalIsotope;     // Start with the most abundant (principal) isotope
-
-            //                    if (chemsym.Equals("D"))                        // Special case for Deuterium
-            //                    {
-            //                        isotope = element.Isotopes[2];
-            //                    }
-            //                    else if (isotopeValue != 0)               // Group 2 (optional): Isotope Mass Number
-            //                    {
-            //                        isotope = element[isotopeValue];
-            //                    }
-
-            //                    Add(isotope, sign * numofelem);
-            //                    numofelem = 1;
-            //                    sign = 1;
-            //                    isotopeValue = 0;
-            //                }
-            //            }
-            //        }
-            //        elementSB.Append(c);
-            //        continue;
-            //    }
-
-            //    if (char.IsDigit(c))
-            //    {
-            //        countSB.Append(c);
-            //        continue;
-            //    }
-
-            //}
-
-            //if (elementSB.Length > 0)
-            //{
-            //    if (countSB.Length > 0)
-            //    {
-            //        numofelem = int.Parse(countSB.ToString());
-            //        countSB.Clear();
-            //    }
-
-            //    string chemsym = elementSB.ToString();
-            //    elementSB.Clear();
-            //    Element element;
-            //    if (Element.PeriodicTable.TryGetElement(chemsym, out element))
-            //    {
-            //        Isotope isotope = element.PrincipalIsotope;     // Start with the most abundant (principal) isotope
-
-            //        if (chemsym.Equals("D"))                        // Special case for Deuterium
-            //        {
-            //            isotope = element.Isotopes[2];
-            //        }
-            //        else if (isotopeValue != 0)               // Group 2 (optional): Isotope Mass Number
-            //        {
-            //            isotope = element[isotopeValue];
-            //        }
-
-            //        Add(isotope, sign * numofelem);
-            //        numofelem = 1;
-            //        sign = 1;
-            //    }
-            //}
         }
 
         #endregion Private Methods
@@ -1128,21 +1010,7 @@ namespace CSMSL.Chemistry
 
         #region Statics
 
-        private static readonly int[] _factorials = { 1, 1, 2, 6, 24, 120, 720, 5040, 40320 };
 
-        private static int Factorial(int n)
-        {
-            if (n < _factorials.Length)
-                return _factorials[n];
-
-            int start = _factorials.Length - 1;
-            int result = _factorials[start];
-            for (int i = start; i <= n; i++)
-            {
-                result *= i;
-            }
-            return result;
-        }
 
         public static implicit operator ChemicalFormula(string sequence)
         {

@@ -19,6 +19,9 @@ using System;
 
 namespace CSMSL.Chemistry
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public interface IMass
     {
         /// <summary>
@@ -27,8 +30,11 @@ namespace CSMSL.Chemistry
         double MonoisotopicMass { get; }
     }
 
-    public static class IMassExtensions
+    public static class MassExtensions
     {
+        /// <summary>
+        /// The mass difference tolerance for having identical masses
+        /// </summary>
         public const double MassEqualityEpsilon = 1e-10;
 
         /// <summary>
@@ -52,7 +58,7 @@ namespace CSMSL.Chemistry
         /// <returns></returns>
         public static double ToMass(this IMass mz, int charge, int c13Isotope = 0)
         {
-            return Mass.MzFromMass(mz.MonoisotopicMass + c13Isotope * Constants.C13C12Difference, charge);
+            return Mass.MassFromMz(mz.MonoisotopicMass + c13Isotope * Constants.C13C12Difference, charge);
         }
 
         public static bool MassEquals(this double mass1, IMass mass2, double epsilon = MassEqualityEpsilon)

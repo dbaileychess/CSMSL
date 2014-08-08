@@ -1,2206 +1,459 @@
-<?xml version="1.0" encoding="utf-8" ?>
-<PeriodicTable defaultID="16" isotopesCount="288">
-  <Element>
-    <Name>Hydrogen</Name>
-    <Symbol>H</Symbol>
-    <AtomicNumber>1</AtomicNumber>
-    <AverageMass>1.00794</AverageMass>
-    <ValenceElectrons>1</ValenceElectrons>
-    <Isotope uniqueID = "0">
-      <Mass>1.00782503207</Mass>
-      <MassNumber>1</MassNumber>
-      <RelativeAbundance>0.999885</RelativeAbundance>
-    </Isotope>
-    <Isotope uniqueID = "7">
-      <Mass>2.0141017778</Mass>
-      <MassNumber>2</MassNumber>
-      <RelativeAbundance>0.000115</RelativeAbundance>
-    </Isotope>
-  </Element>
-  <Element>
-    <Name>Helium</Name>
-    <Symbol>He</Symbol>
-    <AtomicNumber>2</AtomicNumber>
-    <AverageMass>4.002602</AverageMass>
-    <ValenceElectrons>2</ValenceElectrons>
-    <Isotope>
-      <Mass>3.0160293191</Mass>
-      <MassNumber>3</MassNumber>
-      <RelativeAbundance>0.00000134</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>4.00260325415</Mass>
-      <MassNumber>4</MassNumber>
-      <RelativeAbundance>0.99999866</RelativeAbundance>
-    </Isotope>
-  </Element>
-  <Element>
-    <Name>Lithium</Name>
-    <Symbol>Li</Symbol>
-    <AtomicNumber>3</AtomicNumber>
-    <AverageMass>6.941</AverageMass>
-    <ValenceElectrons>1</ValenceElectrons>
-    <Isotope>
-      <Mass>6.015122795</Mass>
-      <MassNumber>6</MassNumber>
-      <RelativeAbundance>0.0759</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>7.01600455</Mass>
-      <MassNumber>7</MassNumber>
-      <RelativeAbundance>0.9241</RelativeAbundance>
-    </Isotope>
-  </Element>
-  <Element>
-    <Name>Beryllium</Name>
-    <Symbol>Be</Symbol>
-    <AtomicNumber>4</AtomicNumber>
-    <AverageMass>9.012182</AverageMass>
-    <ValenceElectrons>2</ValenceElectrons>
-    <Isotope>
-      <Mass>9.0121822</Mass>
-      <MassNumber>9</MassNumber>
-      <RelativeAbundance>1</RelativeAbundance>
-    </Isotope>
-  </Element>
-  <Element>
-    <Name>Boron</Name>
-    <Symbol>B</Symbol>
-    <AtomicNumber>5</AtomicNumber>
-    <AverageMass>10.811</AverageMass>
-    <ValenceElectrons>3</ValenceElectrons>
-    <Isotope>
-      <Mass>10.0129370</Mass>
-      <MassNumber>10</MassNumber>
-      <RelativeAbundance>0.199</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>11.0093054</Mass>
-      <MassNumber>11</MassNumber>
-      <RelativeAbundance>0.801</RelativeAbundance>
-    </Isotope>
-  </Element>
-  <Element>
-    <Name>Carbon</Name>
-    <Symbol>C</Symbol>
-    <AtomicNumber>6</AtomicNumber>
-    <AverageMass>12.0107</AverageMass>
-    <ValenceElectrons>4</ValenceElectrons>
-    <Isotope uniqueID = "1">
-      <Mass>12.0000000</Mass>
-      <MassNumber>12</MassNumber>
-      <RelativeAbundance>0.9893</RelativeAbundance>
-    </Isotope>
-    <Isotope uniqueID = "5">
-      <Mass>13.0033548378</Mass>
-      <MassNumber>13</MassNumber>
-      <RelativeAbundance>0.0107</RelativeAbundance>
-    </Isotope>
-  </Element>
-  <Element>
-    <Name>Nitrogen</Name>
-    <Symbol>N</Symbol>
-    <AtomicNumber>7</AtomicNumber>
-    <AverageMass>14.0067</AverageMass>
-    <ValenceElectrons>5</ValenceElectrons>
-    <Isotope uniqueID = "2">
-      <Mass>14.0030740048</Mass>
-      <MassNumber>14</MassNumber>
-      <RelativeAbundance>0.99636</RelativeAbundance>
-    </Isotope>
-    <Isotope uniqueID = "6">
-      <Mass>15.0001088982</Mass>
-      <MassNumber>15</MassNumber>
-      <RelativeAbundance>0.00364</RelativeAbundance>
-    </Isotope>
-  </Element>
-  <Element>
-    <Name>Oxygen</Name>
-    <Symbol>O</Symbol>
-    <AtomicNumber>8</AtomicNumber>
-    <AverageMass>15.9994</AverageMass>
-    <ValenceElectrons>6</ValenceElectrons>
-    <Isotope uniqueID = "3">
-      <Mass>15.99491461956</Mass>
-      <MassNumber>16</MassNumber>
-      <RelativeAbundance>0.99757</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>16.99913170</Mass>
-      <MassNumber>17</MassNumber>
-      <RelativeAbundance>0.00038</RelativeAbundance>
-    </Isotope>
-    <Isotope uniqueID = "8">
-      <Mass>17.9991610</Mass>
-      <MassNumber>18</MassNumber>
-      <RelativeAbundance>0.00205</RelativeAbundance>
-    </Isotope>
-  </Element>
-  <Element>
-    <Name>Fluorine</Name>
-    <Symbol>F</Symbol>
-    <AtomicNumber>9</AtomicNumber>
-    <AverageMass>18.9984032</AverageMass>
-    <ValenceElectrons>7</ValenceElectrons>
-    <Isotope uniqueID ="13">
-      <Mass>18.99840322</Mass>
-      <MassNumber>19</MassNumber>
-      <RelativeAbundance>1</RelativeAbundance>
-    </Isotope>
-  </Element>
-  <Element>
-    <Name>Neon</Name>
-    <Symbol>Ne</Symbol>
-    <AtomicNumber>10</AtomicNumber>
-    <AverageMass>20.1797</AverageMass>
-    <ValenceElectrons>8</ValenceElectrons>
-    <Isotope>
-      <Mass>19.9924401754</Mass>
-      <MassNumber>20</MassNumber>
-      <RelativeAbundance>0.9048</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>20.99384668</Mass>
-      <MassNumber>21</MassNumber>
-      <RelativeAbundance>0.0027</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>21.991385114</Mass>
-      <MassNumber>22</MassNumber>
-      <RelativeAbundance>0.0925</RelativeAbundance>
-    </Isotope>
-  </Element>
-  <Element>
-    <Name>Sodium</Name>
-    <Symbol>Na</Symbol>
-    <AtomicNumber>11</AtomicNumber>
-    <AverageMass>22.98976928</AverageMass>
-    <ValenceElectrons>1</ValenceElectrons>
-    <Isotope>
-      <Mass>22.9897692809</Mass>
-      <MassNumber>23</MassNumber>
-      <RelativeAbundance>1</RelativeAbundance>
-    </Isotope>
-  </Element>
-  <Element>
-    <Name>Magnesium</Name>
-    <Symbol>Mg</Symbol>
-    <AtomicNumber>12</AtomicNumber>
-    <AverageMass>24.3050</AverageMass>
-    <ValenceElectrons>2</ValenceElectrons>
-    <Isotope>
-      <Mass>23.985041700</Mass>
-      <MassNumber>24</MassNumber>
-      <RelativeAbundance>0.7899</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>24.98583692</Mass>
-      <MassNumber>25</MassNumber>
-      <RelativeAbundance>0.1000</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>25.982592929</Mass>
-      <MassNumber>26</MassNumber>
-      <RelativeAbundance>0.1101</RelativeAbundance>
-    </Isotope>
-  </Element>
-  <Element>
-    <Name>Aluminum</Name>
-    <Symbol>Al</Symbol>
-    <AtomicNumber>13</AtomicNumber>
-    <AverageMass>26.9815386</AverageMass>
-    <ValenceElectrons>3</ValenceElectrons>
-    <Isotope>
-      <Mass>26.98153863</Mass>
-      <MassNumber>27</MassNumber>
-      <RelativeAbundance>1</RelativeAbundance>
-    </Isotope>
-  </Element>
-  <Element>
-    <Name>Silicon</Name>
-    <Symbol>Si</Symbol>
-    <AtomicNumber>14</AtomicNumber>
-    <AverageMass>28.0855</AverageMass>
-    <ValenceElectrons>4</ValenceElectrons>
-    <Isotope>
-      <Mass>27.9769265325</Mass>
-      <MassNumber>28</MassNumber>
-      <RelativeAbundance>0.92223</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>28.976494700</Mass>
-      <MassNumber>29</MassNumber>
-      <RelativeAbundance>0.04685</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>29.97377017</Mass>
-      <MassNumber>30</MassNumber>
-      <RelativeAbundance>0.03092</RelativeAbundance>
-    </Isotope>
-  </Element>
-  <Element>
-    <Name>Phosphorus</Name>
-    <Symbol>P</Symbol>
-    <AtomicNumber>15</AtomicNumber>
-    <AverageMass>30.973762</AverageMass>
-    <ValenceElectrons>5</ValenceElectrons>
-    <Isotope uniqueID = "9">
-      <Mass>30.97376163</Mass>
-      <MassNumber>31</MassNumber>
-      <RelativeAbundance>1</RelativeAbundance>
-    </Isotope>
-  </Element>
-  <Element>
-    <Name>Sulfur</Name>
-    <Symbol>S</Symbol>
-    <AtomicNumber>16</AtomicNumber>
-    <AverageMass>32.065</AverageMass>
-    <ValenceElectrons>6</ValenceElectrons>
-    <Isotope uniqueID = "4">
-      <Mass>31.97207100</Mass>
-      <MassNumber>32</MassNumber>
-      <RelativeAbundance>0.9499</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>32.97145876</Mass>
-      <MassNumber>33</MassNumber>
-      <RelativeAbundance>0.0075</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>33.96786690</Mass>
-      <MassNumber>34</MassNumber>
-      <RelativeAbundance>0.0425</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>35.96708076</Mass>
-      <MassNumber>36</MassNumber>
-      <RelativeAbundance>0.0001</RelativeAbundance>
-    </Isotope>
-  </Element>
-  <Element>
-    <Name>Chlorine</Name>
-    <Symbol>Cl</Symbol>
-    <AtomicNumber>17</AtomicNumber>
-    <AverageMass>35.453</AverageMass>
-    <ValenceElectrons>7</ValenceElectrons>
-    <Isotope uniqueID="14">
-      <Mass>34.96885268</Mass>
-      <MassNumber>35</MassNumber>
-      <RelativeAbundance>0.7576</RelativeAbundance>
-    </Isotope>
-    <Isotope uniqueID="15">
-      <Mass>36.96590259</Mass>
-      <MassNumber>37</MassNumber>
-      <RelativeAbundance>0.2424</RelativeAbundance>
-    </Isotope>
-  </Element>
-  <Element>
-    <Name>Argon</Name>
-    <Symbol>Ar</Symbol>
-    <AtomicNumber>18</AtomicNumber>
-    <AverageMass>39.948</AverageMass>
-    <ValenceElectrons>8</ValenceElectrons>
-    <Isotope>
-      <Mass>35.967545106</Mass>
-      <MassNumber>36</MassNumber>
-      <RelativeAbundance>0.003365</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>37.9627324</Mass>
-      <MassNumber>38</MassNumber>
-      <RelativeAbundance>0.000632</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>39.9623831225</Mass>
-      <MassNumber>40</MassNumber>
-      <RelativeAbundance>0.996003</RelativeAbundance>
-    </Isotope>
-  </Element>
-  <Element>
-    <Name>Potassium</Name>
-    <Symbol>K</Symbol>
-    <AtomicNumber>19</AtomicNumber>
-    <AverageMass>39.0983</AverageMass>
-    <ValenceElectrons>1</ValenceElectrons>
-    <Isotope>
-      <Mass>38.96370668</Mass>
-      <MassNumber>39</MassNumber>
-      <RelativeAbundance>0.932581</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>39.96399848</Mass>
-      <MassNumber>40</MassNumber>
-      <RelativeAbundance>0.000117</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>40.96182576</Mass>
-      <MassNumber>41</MassNumber>
-      <RelativeAbundance>0.067302</RelativeAbundance>
-    </Isotope>
-  </Element>
-  <Element>
-    <Name>Calcium</Name>
-    <Symbol>Ca</Symbol>
-    <AtomicNumber>20</AtomicNumber>
-    <AverageMass>40.078</AverageMass>
-    <ValenceElectrons>2</ValenceElectrons>
-    <Isotope>
-      <Mass>39.96259098</Mass>
-      <MassNumber>40</MassNumber>
-      <RelativeAbundance>0.96941</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>41.95861801</Mass>
-      <MassNumber>42</MassNumber>
-      <RelativeAbundance>0.00647</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>42.9587666</Mass>
-      <MassNumber>43</MassNumber>
-      <RelativeAbundance>0.00135</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>43.9554818</Mass>
-      <MassNumber>44</MassNumber>
-      <RelativeAbundance>0.02086</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>45.9536926</Mass>
-      <MassNumber>46</MassNumber>
-      <RelativeAbundance>0.00004</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>47.952534</Mass>
-      <MassNumber>48</MassNumber>
-      <RelativeAbundance>0.00187</RelativeAbundance>
-    </Isotope>
-  </Element>
-  <Element>
-    <Name>Scandium</Name>
-    <Symbol>Sc</Symbol>
-    <AtomicNumber>21</AtomicNumber>
-    <AverageMass>44.955912</AverageMass>
-    <ValenceElectrons>3</ValenceElectrons>
-    <Isotope>
-      <Mass>44.9559119</Mass>
-      <MassNumber>45</MassNumber>
-      <RelativeAbundance>1</RelativeAbundance>
-    </Isotope>
-  </Element>
-  <Element>
-    <Name>Titanium</Name>
-    <Symbol>Ti</Symbol>
-    <AtomicNumber>22</AtomicNumber>
-    <AverageMass>47.867</AverageMass>
-    <ValenceElectrons>4</ValenceElectrons>
-    <Isotope>
-      <Mass>45.9526316</Mass>
-      <MassNumber>46</MassNumber>
-      <RelativeAbundance>0.0825</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>46.9517631</Mass>
-      <MassNumber>47</MassNumber>
-      <RelativeAbundance>0.0744</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>47.9479463</Mass>
-      <MassNumber>48</MassNumber>
-      <RelativeAbundance>0.7372</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>48.9478700</Mass>
-      <MassNumber>49</MassNumber>
-      <RelativeAbundance>0.0541</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>49.9447912</Mass>
-      <MassNumber>50</MassNumber>
-      <RelativeAbundance>0.0518</RelativeAbundance>
-    </Isotope>
-  </Element>
-  <Element>
-    <Name>Vanadium</Name>
-    <Symbol>V</Symbol>
-    <AtomicNumber>23</AtomicNumber>
-    <AverageMass>50.9415</AverageMass>
-    <ValenceElectrons>5</ValenceElectrons>
-    <Isotope>
-      <Mass>49.9471585</Mass>
-      <MassNumber>50</MassNumber>
-      <RelativeAbundance>0.00250</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>50.9439595</Mass>
-      <MassNumber>51</MassNumber>
-      <RelativeAbundance>0.99750</RelativeAbundance>
-    </Isotope>
-  </Element>
-  <Element>
-    <Name>Chromium</Name>
-    <Symbol>Cr</Symbol>
-    <AtomicNumber>24</AtomicNumber>
-    <AverageMass>51.9961</AverageMass>
-    <ValenceElectrons>6</ValenceElectrons>
-    <Isotope>
-      <Mass>49.9460442</Mass>
-      <MassNumber>50</MassNumber>
-      <RelativeAbundance>0.04345</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>51.9405075</Mass>
-      <MassNumber>52</MassNumber>
-      <RelativeAbundance>0.83789</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>52.9406494</Mass>
-      <MassNumber>53</MassNumber>
-      <RelativeAbundance>0.09501</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>53.9388804</Mass>
-      <MassNumber>54</MassNumber>
-      <RelativeAbundance>0.02365</RelativeAbundance>
-    </Isotope>
-  </Element>
-  <Element>
-    <Name>Manganese</Name>
-    <Symbol>Mn</Symbol>
-    <AtomicNumber>25</AtomicNumber>
-    <AverageMass>54.938045</AverageMass>
-    <ValenceElectrons>7</ValenceElectrons>
-    <Isotope>
-      <Mass>54.9380451</Mass>
-      <MassNumber>55</MassNumber>
-      <RelativeAbundance>1</RelativeAbundance>
-    </Isotope>
-  </Element>
-  <Element>
-    <Name>Iron</Name>
-    <Symbol>Fe</Symbol>
-    <AtomicNumber>26</AtomicNumber>
-    <AverageMass>55.845</AverageMass>
-    <ValenceElectrons>8</ValenceElectrons>
-    <Isotope>
-      <Mass>53.9396105</Mass>
-      <MassNumber>54</MassNumber>
-      <RelativeAbundance>0.05845</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>55.9349375</Mass>
-      <MassNumber>56</MassNumber>
-      <RelativeAbundance>0.91754</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>56.9353940</Mass>
-      <MassNumber>57</MassNumber>
-      <RelativeAbundance>0.02119</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>57.9332756</Mass>
-      <MassNumber>58</MassNumber>
-      <RelativeAbundance>0.00282</RelativeAbundance>
-    </Isotope>
-  </Element>
-  <Element>
-    <Name>Cobalt</Name>
-    <Symbol>Co</Symbol>
-    <AtomicNumber>27</AtomicNumber>
-    <AverageMass>58.933195</AverageMass>
-    <ValenceElectrons>9</ValenceElectrons>
-    <Isotope>
-      <Mass>58.9331950</Mass>
-      <MassNumber>59</MassNumber>
-      <RelativeAbundance>1</RelativeAbundance>
-    </Isotope>
-  </Element>
-  <Element>
-    <Name>Nickel</Name>
-    <Symbol>Ni</Symbol>
-    <AtomicNumber>28</AtomicNumber>
-    <AverageMass>58.6934</AverageMass>
-    <ValenceElectrons>10</ValenceElectrons>
-    <Isotope>
-      <Mass>57.9353429</Mass>
-      <MassNumber>58</MassNumber>
-      <RelativeAbundance>0.680769</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>59.9307864</Mass>
-      <MassNumber>60</MassNumber>
-      <RelativeAbundance>0.262231</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>60.9310560</Mass>
-      <MassNumber>61</MassNumber>
-      <RelativeAbundance>0.011399</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>61.9283451</Mass>
-      <MassNumber>62</MassNumber>
-      <RelativeAbundance>0.036345</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>63.9279660</Mass>
-      <MassNumber>64</MassNumber>
-      <RelativeAbundance>0.009256</RelativeAbundance>
-    </Isotope>
-  </Element>
-  <Element>
-    <Name>Copper</Name>
-    <Symbol>Cu</Symbol>
-    <AtomicNumber>29</AtomicNumber>
-    <AverageMass>63.546</AverageMass>
-    <ValenceElectrons>11</ValenceElectrons>
-    <Isotope>
-      <Mass>62.9295975</Mass>
-      <MassNumber>63</MassNumber>
-      <RelativeAbundance>0.6915</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>64.9277895</Mass>
-      <MassNumber>65</MassNumber>
-      <RelativeAbundance>0.3085</RelativeAbundance>
-    </Isotope>
-  </Element>
-  <Element>
-    <Name>Zinc</Name>
-    <Symbol>Zn</Symbol>
-    <AtomicNumber>30</AtomicNumber>
-    <AverageMass>65.38</AverageMass>
-    <ValenceElectrons>12</ValenceElectrons>
-    <Isotope>
-      <Mass>63.9291422</Mass>
-      <MassNumber>64</MassNumber>
-      <RelativeAbundance>0.48268</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>65.9260334</Mass>
-      <MassNumber>66</MassNumber>
-      <RelativeAbundance>0.27975</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>66.9271273</Mass>
-      <MassNumber>67</MassNumber>
-      <RelativeAbundance>0.04102</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>67.9248442</Mass>
-      <MassNumber>68</MassNumber>
-      <RelativeAbundance>0.19024</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>69.9253193</Mass>
-      <MassNumber>70</MassNumber>
-      <RelativeAbundance>0.00631</RelativeAbundance>
-    </Isotope>
-  </Element>
-  <Element>
-    <Name>Gallium</Name>
-    <Symbol>Ga</Symbol>
-    <AtomicNumber>31</AtomicNumber>
-    <AverageMass>69.723</AverageMass>
-    <ValenceElectrons>3</ValenceElectrons>
-    <Isotope>
-      <Mass>68.9255736</Mass>
-      <MassNumber>69</MassNumber>
-      <RelativeAbundance>0.60108</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>70.9247013</Mass>
-      <MassNumber>71</MassNumber>
-      <RelativeAbundance>0.39892</RelativeAbundance>
-    </Isotope>
-  </Element>
-  <Element>
-    <Name>Germanium</Name>
-    <Symbol>Ge</Symbol>
-    <AtomicNumber>32</AtomicNumber>
-    <AverageMass>72.64</AverageMass>
-    <ValenceElectrons>4</ValenceElectrons>
-    <Isotope>
-      <Mass>69.9242474</Mass>
-      <MassNumber>70</MassNumber>
-      <RelativeAbundance>0.2038</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>71.9220758</Mass>
-      <MassNumber>72</MassNumber>
-      <RelativeAbundance>0.2731</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>72.9234589</Mass>
-      <MassNumber>73</MassNumber>
-      <RelativeAbundance>0.0776</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>73.9211778</Mass>
-      <MassNumber>74</MassNumber>
-      <RelativeAbundance>0.3672</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>75.9214026</Mass>
-      <MassNumber>76</MassNumber>
-      <RelativeAbundance>0.0783</RelativeAbundance>
-    </Isotope>
-  </Element>
-  <Element>
-    <Name>Arsenic</Name>
-    <Symbol>As</Symbol>
-    <AtomicNumber>33</AtomicNumber>
-    <AverageMass>74.92160</AverageMass>
-    <ValenceElectrons>5</ValenceElectrons>
-    <Isotope>
-      <Mass>74.9215965</Mass>
-      <MassNumber>75</MassNumber>
-      <RelativeAbundance>1</RelativeAbundance>
-    </Isotope>
-  </Element>
-  <Element>
-    <Name>Selenium</Name>
-    <Symbol>Se</Symbol>
-    <AtomicNumber>34</AtomicNumber>
-    <AverageMass>78.96</AverageMass>
-    <ValenceElectrons>6</ValenceElectrons>
-    <Isotope>
-      <Mass>73.9224764</Mass>
-      <MassNumber>74</MassNumber>
-      <RelativeAbundance>0.0089</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>75.9192136</Mass>
-      <MassNumber>76</MassNumber>
-      <RelativeAbundance>0.0937</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>76.9199140</Mass>
-      <MassNumber>77</MassNumber>
-      <RelativeAbundance>0.0763</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>77.9173091</Mass>
-      <MassNumber>78</MassNumber>
-      <RelativeAbundance>0.2377</RelativeAbundance>
-    </Isotope>
-    <Isotope uniqueID ="10">
-      <Mass>79.9165213</Mass>
-      <MassNumber>80</MassNumber>
-      <RelativeAbundance>0.4961</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>81.9166994</Mass>
-      <MassNumber>82</MassNumber>
-      <RelativeAbundance>0.0873</RelativeAbundance>
-    </Isotope>
-  </Element>
-  <Element>
-    <Name>Bromine</Name>
-    <Symbol>Br</Symbol>
-    <AtomicNumber>35</AtomicNumber>
-    <AverageMass>79.904</AverageMass>
-    <ValenceElectrons>7</ValenceElectrons>
-    <Isotope uniqueID ="11">
-      <Mass>78.9183371</Mass>
-      <MassNumber>79</MassNumber>
-      <RelativeAbundance>0.5069</RelativeAbundance>
-    </Isotope>
-    <Isotope uniqueID ="12">
-      <Mass>80.9162906</Mass>
-      <MassNumber>81</MassNumber>
-      <RelativeAbundance>0.4931</RelativeAbundance>
-    </Isotope>
-  </Element>
-  <Element>
-    <Name>Krypton</Name>
-    <Symbol>Kr</Symbol>
-    <AtomicNumber>36</AtomicNumber>
-    <AverageMass>83.798</AverageMass>
-    <ValenceElectrons>8</ValenceElectrons>
-    <Isotope>
-      <Mass>77.9203648</Mass>
-      <MassNumber>78</MassNumber>
-      <RelativeAbundance>0.00355</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>79.9163790</Mass>
-      <MassNumber>80</MassNumber>
-      <RelativeAbundance>0.02286</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>81.9134836</Mass>
-      <MassNumber>82</MassNumber>
-      <RelativeAbundance>0.11593</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>82.914136</Mass>
-      <MassNumber>83</MassNumber>
-      <RelativeAbundance>0.11500</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>83.911507</Mass>
-      <MassNumber>84</MassNumber>
-      <RelativeAbundance>0.56987</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>85.91061073</Mass>
-      <MassNumber>86</MassNumber>
-      <RelativeAbundance>0.17279</RelativeAbundance>
-    </Isotope>
-  </Element>
-  <Element>
-    <Name>Rubidium</Name>
-    <Symbol>Rb</Symbol>
-    <AtomicNumber>37</AtomicNumber>
-    <AverageMass>85.4678</AverageMass>
-    <ValenceElectrons>1</ValenceElectrons>
-    <Isotope>
-      <Mass>84.911789738</Mass>
-      <MassNumber>85</MassNumber>
-      <RelativeAbundance>0.7217</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>86.909180527</Mass>
-      <MassNumber>87</MassNumber>
-      <RelativeAbundance>0.2783</RelativeAbundance>
-    </Isotope>
-  </Element>
-  <Element>
-    <Name>Strontium</Name>
-    <Symbol>Sr</Symbol>
-    <AtomicNumber>38</AtomicNumber>
-    <AverageMass>87.62</AverageMass>
-    <ValenceElectrons>2</ValenceElectrons>
-    <Isotope>
-      <Mass>83.913425</Mass>
-      <MassNumber>84</MassNumber>
-      <RelativeAbundance>0.0056</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>85.9092602</Mass>
-      <MassNumber>86</MassNumber>
-      <RelativeAbundance>0.0986</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>86.9088771</Mass>
-      <MassNumber>87</MassNumber>
-      <RelativeAbundance>0.0700</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>87.9056121</Mass>
-      <MassNumber>88</MassNumber>
-      <RelativeAbundance>0.8258</RelativeAbundance>
-    </Isotope>
-  </Element>
-  <Element>
-    <Name>Yttrium</Name>
-    <Symbol>Y</Symbol>
-    <AtomicNumber>39</AtomicNumber>
-    <AverageMass>88.90585</AverageMass>
-    <ValenceElectrons>3</ValenceElectrons>
-    <Isotope>
-      <Mass>88.9058483</Mass>
-      <MassNumber>89</MassNumber>
-      <RelativeAbundance>1</RelativeAbundance>
-    </Isotope>
-  </Element>
-  <Element>
-    <Name>Zirconium</Name>
-    <Symbol>Zr</Symbol>
-    <AtomicNumber>40</AtomicNumber>
-    <AverageMass>91.224</AverageMass>
-    <ValenceElectrons>4</ValenceElectrons>
-    <Isotope>
-      <Mass>89.9047044</Mass>
-      <MassNumber>90</MassNumber>
-      <RelativeAbundance>0.5145</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>90.9056458</Mass>
-      <MassNumber>91</MassNumber>
-      <RelativeAbundance>0.1122</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>91.9050408</Mass>
-      <MassNumber>92</MassNumber>
-      <RelativeAbundance>0.1715</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>93.9063152</Mass>
-      <MassNumber>94</MassNumber>
-      <RelativeAbundance>0.1738</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>95.9082734</Mass>
-      <MassNumber>96</MassNumber>
-      <RelativeAbundance>0.0280</RelativeAbundance>
-    </Isotope>
-  </Element>
-  <Element>
-    <Name>Niobium</Name>
-    <Symbol>Nb</Symbol>
-    <AtomicNumber>41</AtomicNumber>
-    <AverageMass>92.90638</AverageMass>
-    <ValenceElectrons>5</ValenceElectrons>
-    <Isotope>
-      <Mass>92.9063781</Mass>
-      <MassNumber>93</MassNumber>
-      <RelativeAbundance>1</RelativeAbundance>
-    </Isotope>
-  </Element>
-  <Element>
-    <Name>Molybdenum</Name>
-    <Symbol>Mo</Symbol>
-    <AtomicNumber>42</AtomicNumber>
-    <AverageMass>95.96</AverageMass>
-    <ValenceElectrons>6</ValenceElectrons>
-    <Isotope>
-      <Mass>91.906811</Mass>
-      <MassNumber>92</MassNumber>
-      <RelativeAbundance>0.1477</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>93.9050883</Mass>
-      <MassNumber>94</MassNumber>
-      <RelativeAbundance>0.0923</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>94.9058421</Mass>
-      <MassNumber>95</MassNumber>
-      <RelativeAbundance>0.1590</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>95.9046795</Mass>
-      <MassNumber>96</MassNumber>
-      <RelativeAbundance>0.1668</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>96.9060215</Mass>
-      <MassNumber>97</MassNumber>
-      <RelativeAbundance>0.0956</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>97.9054082</Mass>
-      <MassNumber>98</MassNumber>
-      <RelativeAbundance>0.2419</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>99.907477</Mass>
-      <MassNumber>100</MassNumber>
-      <RelativeAbundance>0.0967</RelativeAbundance>
-    </Isotope>
-  </Element>
-  <Element>
-    <Name>Technetium</Name>
-    <Symbol>Tc</Symbol>
-    <AtomicNumber>43</AtomicNumber>
-    <AverageMass>98</AverageMass>
-    <ValenceElectrons>7</ValenceElectrons>
-  </Element>
-  <Element>
-    <Name>Ruthenium</Name>
-    <Symbol>Ru</Symbol>
-    <AtomicNumber>44</AtomicNumber>
-    <AverageMass>101.07</AverageMass>
-    <ValenceElectrons>8</ValenceElectrons>
-    <Isotope>
-      <Mass>95.907598</Mass>
-      <MassNumber>96</MassNumber>
-      <RelativeAbundance>0.0554</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>97.905287</Mass>
-      <MassNumber>98</MassNumber>
-      <RelativeAbundance>0.0187</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>98.9059393</Mass>
-      <MassNumber>99</MassNumber>
-      <RelativeAbundance>0.1276</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>99.9042195</Mass>
-      <MassNumber>100</MassNumber>
-      <RelativeAbundance>0.1260</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>100.9055821</Mass>
-      <MassNumber>101</MassNumber>
-      <RelativeAbundance>0.1706</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>101.9043493</Mass>
-      <MassNumber>102</MassNumber>
-      <RelativeAbundance>0.3155</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>103.905433</Mass>
-      <MassNumber>104</MassNumber>
-      <RelativeAbundance>0.1862</RelativeAbundance>
-    </Isotope>
-  </Element>
-  <Element>
-    <Name>Rhodium</Name>
-    <Symbol>Rh</Symbol>
-    <AtomicNumber>45</AtomicNumber>
-    <AverageMass>102.90550</AverageMass>
-    <ValenceElectrons>9</ValenceElectrons>
-    <Isotope>
-      <Mass>102.905504</Mass>
-      <MassNumber>103</MassNumber>
-      <RelativeAbundance>1</RelativeAbundance>
-    </Isotope>
-  </Element>
-  <Element>
-    <Name>Palladium</Name>
-    <Symbol>Pd</Symbol>
-    <AtomicNumber>46</AtomicNumber>
-    <AverageMass>106.42</AverageMass>
-    <ValenceElectrons>10</ValenceElectrons>
-    <Isotope>
-      <Mass>101.905609</Mass>
-      <MassNumber>102</MassNumber>
-      <RelativeAbundance>0.0102</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>103.904036</Mass>
-      <MassNumber>104</MassNumber>
-      <RelativeAbundance>0.1114</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>104.905085</Mass>
-      <MassNumber>105</MassNumber>
-      <RelativeAbundance>0.2233</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>105.903486</Mass>
-      <MassNumber>106</MassNumber>
-      <RelativeAbundance>0.2733</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>107.903892</Mass>
-      <MassNumber>108</MassNumber>
-      <RelativeAbundance>0.2646</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>109.905153</Mass>
-      <MassNumber>110</MassNumber>
-      <RelativeAbundance>0.1172</RelativeAbundance>
-    </Isotope>
-  </Element>
-  <Element>
-    <Name>Silver</Name>
-    <Symbol>Ag</Symbol>
-    <AtomicNumber>47</AtomicNumber>
-    <AverageMass>107.8682</AverageMass>
-    <ValenceElectrons>11</ValenceElectrons>
-    <Isotope>
-      <Mass>106.905097</Mass>
-      <MassNumber>107</MassNumber>
-      <RelativeAbundance>0.51839</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>108.904752</Mass>
-      <MassNumber>109</MassNumber>
-      <RelativeAbundance>0.48161</RelativeAbundance>
-    </Isotope>
-  </Element>
-  <Element>
-    <Name>Cadmium</Name>
-    <Symbol>Cd</Symbol>
-    <AtomicNumber>48</AtomicNumber>
-    <AverageMass>112.411</AverageMass>
-    <ValenceElectrons>12</ValenceElectrons>
-    <Isotope>
-      <Mass>105.906459</Mass>
-      <MassNumber>106</MassNumber>
-      <RelativeAbundance>0.0125</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>107.904184</Mass>
-      <MassNumber>108</MassNumber>
-      <RelativeAbundance>0.0089</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>109.9030021</Mass>
-      <MassNumber>110</MassNumber>
-      <RelativeAbundance>0.1249</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>110.9041781</Mass>
-      <MassNumber>111</MassNumber>
-      <RelativeAbundance>0.1280</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>111.9027578</Mass>
-      <MassNumber>112</MassNumber>
-      <RelativeAbundance>0.2413</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>112.9044017</Mass>
-      <MassNumber>113</MassNumber>
-      <RelativeAbundance>0.1222</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>113.9033585</Mass>
-      <MassNumber>114</MassNumber>
-      <RelativeAbundance>0.2873</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>115.904756</Mass>
-      <MassNumber>116</MassNumber>
-      <RelativeAbundance>0.0749</RelativeAbundance>
-    </Isotope>
-  </Element>
-  <Element>
-    <Name>Indium</Name>
-    <Symbol>In</Symbol>
-    <AtomicNumber>49</AtomicNumber>
-    <AverageMass>114.818</AverageMass>
-    <ValenceElectrons>3</ValenceElectrons>
-    <Isotope>
-      <Mass>112.904058</Mass>
-      <MassNumber>113</MassNumber>
-      <RelativeAbundance>0.0429</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>114.903878</Mass>
-      <MassNumber>115</MassNumber>
-      <RelativeAbundance>0.9571</RelativeAbundance>
-    </Isotope>
-  </Element>
-  <Element>
-    <Name>Tin</Name>
-    <Symbol>Sn</Symbol>
-    <AtomicNumber>50</AtomicNumber>
-    <AverageMass>118.710</AverageMass>
-    <ValenceElectrons>4</ValenceElectrons>
-    <Isotope>
-      <Mass>111.904818</Mass>
-      <MassNumber>112</MassNumber>
-      <RelativeAbundance>0.0097</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>113.902779</Mass>
-      <MassNumber>114</MassNumber>
-      <RelativeAbundance>0.0066</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>114.903342</Mass>
-      <MassNumber>115</MassNumber>
-      <RelativeAbundance>0.0034</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>115.901741</Mass>
-      <MassNumber>116</MassNumber>
-      <RelativeAbundance>0.1454</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>116.902952</Mass>
-      <MassNumber>117</MassNumber>
-      <RelativeAbundance>0.0768</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>117.901603</Mass>
-      <MassNumber>118</MassNumber>
-      <RelativeAbundance>0.2422</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>118.903308</Mass>
-      <MassNumber>119</MassNumber>
-      <RelativeAbundance>0.0859</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>119.9021947</Mass>
-      <MassNumber>120</MassNumber>
-      <RelativeAbundance>0.3258</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>121.9034390</Mass>
-      <MassNumber>122</MassNumber>
-      <RelativeAbundance>0.0463</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>123.9052739</Mass>
-      <MassNumber>124</MassNumber>
-      <RelativeAbundance>0.0579</RelativeAbundance>
-    </Isotope>
-  </Element>
-  <Element>
-    <Name>Antimony</Name>
-    <Symbol>Sb</Symbol>
-    <AtomicNumber>51</AtomicNumber>
-    <AverageMass>121.760</AverageMass>
-    <ValenceElectrons>5</ValenceElectrons>
-    <Isotope>
-      <Mass>120.9038157</Mass>
-      <MassNumber>121</MassNumber>
-      <RelativeAbundance>0.5721</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>122.9042140</Mass>
-      <MassNumber>123</MassNumber>
-      <RelativeAbundance>0.4279</RelativeAbundance>
-    </Isotope>
-  </Element>
-  <Element>
-    <Name>Tellurium</Name>
-    <Symbol>Te</Symbol>
-    <AtomicNumber>52</AtomicNumber>
-    <AverageMass>127.60</AverageMass>
-    <ValenceElectrons>6</ValenceElectrons>
-    <Isotope>
-      <Mass>119.904020</Mass>
-      <MassNumber>120</MassNumber>
-      <RelativeAbundance>0.0009</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>121.9030439</Mass>
-      <MassNumber>122</MassNumber>
-      <RelativeAbundance>0.0255</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>122.9042700</Mass>
-      <MassNumber>123</MassNumber>
-      <RelativeAbundance>0.0089</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>123.9028179</Mass>
-      <MassNumber>124</MassNumber>
-      <RelativeAbundance>0.0474</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>124.9044307</Mass>
-      <MassNumber>125</MassNumber>
-      <RelativeAbundance>0.0707</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>125.9033117</Mass>
-      <MassNumber>126</MassNumber>
-      <RelativeAbundance>0.1884</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>127.9044631</Mass>
-      <MassNumber>128</MassNumber>
-      <RelativeAbundance>0.3174</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>129.9062244</Mass>
-      <MassNumber>130</MassNumber>
-      <RelativeAbundance>0.3408</RelativeAbundance>
-    </Isotope>
-  </Element>
-  <Element>
-    <Name>Iodine</Name>
-    <Symbol>I</Symbol>
-    <AtomicNumber>53</AtomicNumber>
-    <AverageMass>126.90447</AverageMass>
-    <ValenceElectrons>7</ValenceElectrons>
-    <Isotope>
-      <Mass>126.904473</Mass>
-      <MassNumber>127</MassNumber>
-      <RelativeAbundance>1</RelativeAbundance>
-    </Isotope>
-  </Element>
-  <Element>
-    <Name>Xenon</Name>
-    <Symbol>Xe</Symbol>
-    <AtomicNumber>54</AtomicNumber>
-    <AverageMass>131.293</AverageMass>
-    <ValenceElectrons>8</ValenceElectrons>
-    <Isotope>
-      <Mass>123.9058930</Mass>
-      <MassNumber>124</MassNumber>
-      <RelativeAbundance>0.000952</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>125.904274</Mass>
-      <MassNumber>126</MassNumber>
-      <RelativeAbundance>0.000890</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>127.9035313</Mass>
-      <MassNumber>128</MassNumber>
-      <RelativeAbundance>0.019102</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>128.9047794</Mass>
-      <MassNumber>129</MassNumber>
-      <RelativeAbundance>0.264006</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>129.9035080</Mass>
-      <MassNumber>130</MassNumber>
-      <RelativeAbundance>0.040710</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>130.9050824</Mass>
-      <MassNumber>131</MassNumber>
-      <RelativeAbundance>0.212324</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>131.9041535</Mass>
-      <MassNumber>132</MassNumber>
-      <RelativeAbundance>0.269086</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>133.9053945</Mass>
-      <MassNumber>134</MassNumber>
-      <RelativeAbundance>0.104357</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>135.907219</Mass>
-      <MassNumber>136</MassNumber>
-      <RelativeAbundance>0.088573</RelativeAbundance>
-    </Isotope>
-  </Element>
-  <Element>
-    <Name>Cesium</Name>
-    <Symbol>Cs</Symbol>
-    <AtomicNumber>55</AtomicNumber>
-    <AverageMass>132.9054519</AverageMass>
-    <ValenceElectrons>1</ValenceElectrons>
-    <Isotope>
-      <Mass>132.905451933</Mass>
-      <MassNumber>133</MassNumber>
-      <RelativeAbundance>1</RelativeAbundance>
-    </Isotope>
-  </Element>
-  <Element>
-    <Name>Barium</Name>
-    <Symbol>Ba</Symbol>
-    <AtomicNumber>56</AtomicNumber>
-    <AverageMass>137.327</AverageMass>
-    <ValenceElectrons>2</ValenceElectrons>
-    <Isotope>
-      <Mass>129.9063208</Mass>
-      <MassNumber>130</MassNumber>
-      <RelativeAbundance>0.00106</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>131.9050613</Mass>
-      <MassNumber>132</MassNumber>
-      <RelativeAbundance>0.00101</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>133.9045084</Mass>
-      <MassNumber>134</MassNumber>
-      <RelativeAbundance>0.02417</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>134.9056886</Mass>
-      <MassNumber>135</MassNumber>
-      <RelativeAbundance>0.06592</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>135.9045759</Mass>
-      <MassNumber>136</MassNumber>
-      <RelativeAbundance>0.07854</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>136.9058274</Mass>
-      <MassNumber>137</MassNumber>
-      <RelativeAbundance>0.11232</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>137.9052472</Mass>
-      <MassNumber>138</MassNumber>
-      <RelativeAbundance>0.71698</RelativeAbundance>
-    </Isotope>
-  </Element>
-  <Element>
-    <Name>Lanthanum</Name>
-    <Symbol>La</Symbol>
-    <AtomicNumber>57</AtomicNumber>
-    <AverageMass>138.90547</AverageMass>
-    <ValenceElectrons>2</ValenceElectrons>
-    <Isotope>
-      <Mass>137.907112</Mass>
-      <MassNumber>138</MassNumber>
-      <RelativeAbundance>0.00090</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>138.9063533</Mass>
-      <MassNumber>139</MassNumber>
-      <RelativeAbundance>0.99910</RelativeAbundance>
-    </Isotope>
-  </Element>
-  <Element>
-    <Name>Cerium</Name>
-    <Symbol>Ce</Symbol>
-    <AtomicNumber>58</AtomicNumber>
-    <AverageMass>140.116</AverageMass>
-    <ValenceElectrons>2</ValenceElectrons>
-    <Isotope>
-      <Mass>135.907172</Mass>
-      <MassNumber>136</MassNumber>
-      <RelativeAbundance>0.00185</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>137.905991</Mass>
-      <MassNumber>138</MassNumber>
-      <RelativeAbundance>0.00251</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>139.9054387</Mass>
-      <MassNumber>140</MassNumber>
-      <RelativeAbundance>0.88450</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>141.909244</Mass>
-      <MassNumber>142</MassNumber>
-      <RelativeAbundance>0.11114</RelativeAbundance>
-    </Isotope>
-  </Element>
-  <Element>
-    <Name>Praseodymium</Name>
-    <Symbol>Pr</Symbol>
-    <AtomicNumber>59</AtomicNumber>
-    <AverageMass>140.90765</AverageMass>
-    <ValenceElectrons>2</ValenceElectrons>
-    <Isotope>
-      <Mass>140.9076528</Mass>
-      <MassNumber>141</MassNumber>
-      <RelativeAbundance>1</RelativeAbundance>
-    </Isotope>
-  </Element>
-  <Element>
-    <Name>Neodymium</Name>
-    <Symbol>Nd</Symbol>
-    <AtomicNumber>60</AtomicNumber>
-    <AverageMass>144.242</AverageMass>
-    <ValenceElectrons>2</ValenceElectrons>
-    <Isotope>
-      <Mass>141.9077233</Mass>
-      <MassNumber>142</MassNumber>
-      <RelativeAbundance>0.272</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>142.9098143</Mass>
-      <MassNumber>143</MassNumber>
-      <RelativeAbundance>0.122</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>143.9100873</Mass>
-      <MassNumber>144</MassNumber>
-      <RelativeAbundance>0.238</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>144.9125736</Mass>
-      <MassNumber>145</MassNumber>
-      <RelativeAbundance>0.083</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>145.9131169</Mass>
-      <MassNumber>146</MassNumber>
-      <RelativeAbundance>0.172</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>147.916893</Mass>
-      <MassNumber>148</MassNumber>
-      <RelativeAbundance>0.057</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>149.920891</Mass>
-      <MassNumber>150</MassNumber>
-      <RelativeAbundance>0.056</RelativeAbundance>
-    </Isotope>
-  </Element>
-  <Element>
-    <Name>Promethium</Name>
-    <Symbol>Pm</Symbol>
-    <AtomicNumber>61</AtomicNumber>
-    <AverageMass>[145]</AverageMass>
-    <ValenceElectrons>2</ValenceElectrons>
-  </Element>
-  <Element>
-    <Name>Samarium</Name>
-    <Symbol>Sm</Symbol>
-    <AtomicNumber>62</AtomicNumber>
-    <AverageMass>150.36</AverageMass>
-    <ValenceElectrons>2</ValenceElectrons>
-    <Isotope>
-      <Mass>143.911999</Mass>
-      <MassNumber>144</MassNumber>
-      <RelativeAbundance>0.0307</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>146.9148979</Mass>
-      <MassNumber>147</MassNumber>
-      <RelativeAbundance>0.1499</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>147.9148227</Mass>
-      <MassNumber>148</MassNumber>
-      <RelativeAbundance>0.1124</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>148.9171847</Mass>
-      <MassNumber>149</MassNumber>
-      <RelativeAbundance>0.1382</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>149.9172755</Mass>
-      <MassNumber>150</MassNumber>
-      <RelativeAbundance>0.0738</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>151.9197324</Mass>
-      <MassNumber>152</MassNumber>
-      <RelativeAbundance>0.2675</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>153.9222093</Mass>
-      <MassNumber>154</MassNumber>
-      <RelativeAbundance>0.2275</RelativeAbundance>
-    </Isotope>
-  </Element>
-  <Element>
-    <Name>Europium</Name>
-    <Symbol>Eu</Symbol>
-    <AtomicNumber>63</AtomicNumber>
-    <AverageMass>151.964</AverageMass>
-    <ValenceElectrons>2</ValenceElectrons>
-    <Isotope>
-      <Mass>150.9198502</Mass>
-      <MassNumber>151</MassNumber>
-      <RelativeAbundance>0.4781</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>152.9212303</Mass>
-      <MassNumber>153</MassNumber>
-      <RelativeAbundance>0.5219</RelativeAbundance>
-    </Isotope>
-  </Element>
-  <Element>
-    <Name>Gadolinium</Name>
-    <Symbol>Gd</Symbol>
-    <AtomicNumber>64</AtomicNumber>
-    <AverageMass>157.25</AverageMass>
-    <ValenceElectrons>2</ValenceElectrons>
-    <Isotope>
-      <Mass>151.9197910</Mass>
-      <MassNumber>152</MassNumber>
-      <RelativeAbundance>0.0020</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>153.9208656</Mass>
-      <MassNumber>154</MassNumber>
-      <RelativeAbundance>0.0218</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>154.9226220</Mass>
-      <MassNumber>155</MassNumber>
-      <RelativeAbundance>0.1480</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>155.9221227</Mass>
-      <MassNumber>156</MassNumber>
-      <RelativeAbundance>0.2047</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>156.9239601</Mass>
-      <MassNumber>157</MassNumber>
-      <RelativeAbundance>0.1565</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>157.9241039</Mass>
-      <MassNumber>158</MassNumber>
-      <RelativeAbundance>0.2484</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>159.9270541</Mass>
-      <MassNumber>160</MassNumber>
-      <RelativeAbundance>0.2186</RelativeAbundance>
-    </Isotope>
-  </Element>
-  <Element>
-    <Name>Terbium</Name>
-    <Symbol>Tb</Symbol>
-    <AtomicNumber>65</AtomicNumber>
-    <AverageMass>158.92535</AverageMass>
-    <ValenceElectrons>2</ValenceElectrons>
-    <Isotope>
-      <Mass>158.9253468</Mass>
-      <MassNumber>159</MassNumber>
-      <RelativeAbundance>1</RelativeAbundance>
-    </Isotope>
-  </Element>
-  <Element>
-    <Name>Dysprosium</Name>
-    <Symbol>Dy</Symbol>
-    <AtomicNumber>66</AtomicNumber>
-    <AverageMass>162.500</AverageMass>
-    <ValenceElectrons>2</ValenceElectrons>
-    <Isotope>
-      <Mass>155.924283</Mass>
-      <MassNumber>156</MassNumber>
-      <RelativeAbundance>0.00056</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>157.924409</Mass>
-      <MassNumber>158</MassNumber>
-      <RelativeAbundance>0.00095</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>159.9251975</Mass>
-      <MassNumber>160</MassNumber>
-      <RelativeAbundance>0.02329</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>160.9269334</Mass>
-      <MassNumber>161</MassNumber>
-      <RelativeAbundance>0.18889</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>161.9267984</Mass>
-      <MassNumber>162</MassNumber>
-      <RelativeAbundance>0.25475</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>162.9287312</Mass>
-      <MassNumber>163</MassNumber>
-      <RelativeAbundance>0.24896</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>163.9291748</Mass>
-      <MassNumber>164</MassNumber>
-      <RelativeAbundance>0.28260</RelativeAbundance>
-    </Isotope>
-  </Element>
-  <Element>
-    <Name>Holmium</Name>
-    <Symbol>Ho</Symbol>
-    <AtomicNumber>67</AtomicNumber>
-    <AverageMass>164.93032</AverageMass>
-    <ValenceElectrons>2</ValenceElectrons>
-    <Isotope>
-      <Mass>164.9303221</Mass>
-      <MassNumber>165</MassNumber>
-      <RelativeAbundance>1</RelativeAbundance>
-    </Isotope>
-  </Element>
-  <Element>
-    <Name>Erbium</Name>
-    <Symbol>Er</Symbol>
-    <AtomicNumber>68</AtomicNumber>
-    <AverageMass>167.259</AverageMass>
-    <ValenceElectrons>2</ValenceElectrons>
-    <Isotope>
-      <Mass>161.928778</Mass>
-      <MassNumber>162</MassNumber>
-      <RelativeAbundance>0.00139</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>163.929200</Mass>
-      <MassNumber>164</MassNumber>
-      <RelativeAbundance>0.01601</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>165.9302931</Mass>
-      <MassNumber>166</MassNumber>
-      <RelativeAbundance>0.33503</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>166.9320482</Mass>
-      <MassNumber>167</MassNumber>
-      <RelativeAbundance>0.22869</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>167.9323702</Mass>
-      <MassNumber>168</MassNumber>
-      <RelativeAbundance>0.26978</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>169.9354643</Mass>
-      <MassNumber>170</MassNumber>
-      <RelativeAbundance>0.14910</RelativeAbundance>
-    </Isotope>
-  </Element>
-  <Element>
-    <Name>Thulium</Name>
-    <Symbol>Tm</Symbol>
-    <AtomicNumber>69</AtomicNumber>
-    <AverageMass>168.93421</AverageMass>
-    <ValenceElectrons>2</ValenceElectrons>
-    <Isotope>
-      <Mass>168.9342133</Mass>
-      <MassNumber>169</MassNumber>
-      <RelativeAbundance>1</RelativeAbundance>
-    </Isotope>
-  </Element>
-  <Element>
-    <Name>Ytterbium</Name>
-    <Symbol>Yb</Symbol>
-    <AtomicNumber>70</AtomicNumber>
-    <AverageMass>173.054</AverageMass>
-    <ValenceElectrons>2</ValenceElectrons>
-    <Isotope>
-      <Mass>167.933897</Mass>
-      <MassNumber>168</MassNumber>
-      <RelativeAbundance>0.0013</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>169.9347618</Mass>
-      <MassNumber>170</MassNumber>
-      <RelativeAbundance>0.0304</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>170.9363258</Mass>
-      <MassNumber>171</MassNumber>
-      <RelativeAbundance>0.1428</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>171.9363815</Mass>
-      <MassNumber>172</MassNumber>
-      <RelativeAbundance>0.2183</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>172.9382108</Mass>
-      <MassNumber>173</MassNumber>
-      <RelativeAbundance>0.1613</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>173.9388621</Mass>
-      <MassNumber>174</MassNumber>
-      <RelativeAbundance>0.3183</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>175.9425717</Mass>
-      <MassNumber>176</MassNumber>
-      <RelativeAbundance>0.1276</RelativeAbundance>
-    </Isotope>
-  </Element>
-  <Element>
-    <Name>Lutetium</Name>
-    <Symbol>Lu</Symbol>
-    <AtomicNumber>71</AtomicNumber>
-    <AverageMass>174.9668</AverageMass>
-    <ValenceElectrons>2</ValenceElectrons>
-    <Isotope>
-      <Mass>174.9407718</Mass>
-      <MassNumber>175</MassNumber>
-      <RelativeAbundance>0.9741</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>175.9426863</Mass>
-      <MassNumber>176</MassNumber>
-      <RelativeAbundance>0.0259</RelativeAbundance>
-    </Isotope>
-  </Element>
-  <Element>
-    <Name>Hafnium</Name>
-    <Symbol>Hf</Symbol>
-    <AtomicNumber>72</AtomicNumber>
-    <AverageMass>178.49</AverageMass>
-    <ValenceElectrons>4</ValenceElectrons>
-    <Isotope>
-      <Mass>173.940046</Mass>
-      <MassNumber>174</MassNumber>
-      <RelativeAbundance>0.0016</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>175.9414086</Mass>
-      <MassNumber>176</MassNumber>
-      <RelativeAbundance>0.0526</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>176.9432207</Mass>
-      <MassNumber>177</MassNumber>
-      <RelativeAbundance>0.1860</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>177.9436988</Mass>
-      <MassNumber>178</MassNumber>
-      <RelativeAbundance>0.2728</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>178.9458161</Mass>
-      <MassNumber>179</MassNumber>
-      <RelativeAbundance>0.1362</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>179.9465500</Mass>
-      <MassNumber>180</MassNumber>
-      <RelativeAbundance>0.3508</RelativeAbundance>
-    </Isotope>
-  </Element>
-  <Element>
-    <Name>Tantalum</Name>
-    <Symbol>Ta</Symbol>
-    <AtomicNumber>73</AtomicNumber>
-    <AverageMass>180.94788</AverageMass>
-    <ValenceElectrons>5</ValenceElectrons>
-    <Isotope>
-      <Mass>179.9474648</Mass>
-      <MassNumber>180</MassNumber>
-      <RelativeAbundance>0.00012</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>180.9479958</Mass>
-      <MassNumber>181</MassNumber>
-      <RelativeAbundance>0.99988</RelativeAbundance>
-    </Isotope>
-  </Element>
-  <Element>
-    <Name>Tungsten</Name>
-    <Symbol>W</Symbol>
-    <AtomicNumber>74</AtomicNumber>
-    <AverageMass>183.84</AverageMass>
-    <ValenceElectrons>6</ValenceElectrons>
-    <Isotope>
-      <Mass>179.946704</Mass>
-      <MassNumber>180</MassNumber>
-      <RelativeAbundance>0.0012</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>181.9482042</Mass>
-      <MassNumber>182</MassNumber>
-      <RelativeAbundance>0.2650</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>182.9502230</Mass>
-      <MassNumber>183</MassNumber>
-      <RelativeAbundance>0.1431</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>183.9509312</Mass>
-      <MassNumber>184</MassNumber>
-      <RelativeAbundance>0.3064</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>185.9543641</Mass>
-      <MassNumber>186</MassNumber>
-      <RelativeAbundance>0.2843</RelativeAbundance>
-    </Isotope>
-  </Element>
-  <Element>
-    <Name>Rhenium</Name>
-    <Symbol>Re</Symbol>
-    <AtomicNumber>75</AtomicNumber>
-    <AverageMass>186.207</AverageMass>
-    <ValenceElectrons>7</ValenceElectrons>
-    <Isotope>
-      <Mass>184.9529550</Mass>
-      <MassNumber>185</MassNumber>
-      <RelativeAbundance>0.3740</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>186.9557531</Mass>
-      <MassNumber>187</MassNumber>
-      <RelativeAbundance>0.6260</RelativeAbundance>
-    </Isotope>
-  </Element>
-  <Element>
-    <Name>Osmium</Name>
-    <Symbol>Os</Symbol>
-    <AtomicNumber>76</AtomicNumber>
-    <AverageMass>190.23</AverageMass>
-    <ValenceElectrons>8</ValenceElectrons>
-    <Isotope>
-      <Mass>183.9524891</Mass>
-      <MassNumber>184</MassNumber>
-      <RelativeAbundance>0.0002</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>185.9538382</Mass>
-      <MassNumber>186</MassNumber>
-      <RelativeAbundance>0.0159</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>186.9557505</Mass>
-      <MassNumber>187</MassNumber>
-      <RelativeAbundance>0.0196</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>187.9558382</Mass>
-      <MassNumber>188</MassNumber>
-      <RelativeAbundance>0.1324</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>188.9581475</Mass>
-      <MassNumber>189</MassNumber>
-      <RelativeAbundance>0.1615</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>189.9584470</Mass>
-      <MassNumber>190</MassNumber>
-      <RelativeAbundance>0.2626</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>191.9614807</Mass>
-      <MassNumber>192</MassNumber>
-      <RelativeAbundance>0.4078</RelativeAbundance>
-    </Isotope>
-  </Element>
-  <Element>
-    <Name>Iridium</Name>
-    <Symbol>Ir</Symbol>
-    <AtomicNumber>77</AtomicNumber>
-    <AverageMass>192.217</AverageMass>
-    <ValenceElectrons>9</ValenceElectrons>
-    <Isotope>
-      <Mass>190.9605940</Mass>
-      <MassNumber>191</MassNumber>
-      <RelativeAbundance>0.373</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>192.9629264</Mass>
-      <MassNumber>193</MassNumber>
-      <RelativeAbundance>0.627</RelativeAbundance>
-    </Isotope>
-  </Element>
-  <Element>
-    <Name>Platinum</Name>
-    <Symbol>Pt</Symbol>
-    <AtomicNumber>78</AtomicNumber>
-    <AverageMass>195.084</AverageMass>
-    <ValenceElectrons>10</ValenceElectrons>
-    <Isotope>
-      <Mass>189.959932</Mass>
-      <MassNumber>190</MassNumber>
-      <RelativeAbundance>0.00014</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>191.9610380</Mass>
-      <MassNumber>192</MassNumber>
-      <RelativeAbundance>0.00782</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>193.9626803</Mass>
-      <MassNumber>194</MassNumber>
-      <RelativeAbundance>0.32967</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>194.9647911</Mass>
-      <MassNumber>195</MassNumber>
-      <RelativeAbundance>0.33832</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>195.9649515</Mass>
-      <MassNumber>196</MassNumber>
-      <RelativeAbundance>0.25242</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>197.967893</Mass>
-      <MassNumber>198</MassNumber>
-      <RelativeAbundance>0.07163</RelativeAbundance>
-    </Isotope>
-  </Element>
-  <Element>
-    <Name>Gold</Name>
-    <Symbol>Au</Symbol>
-    <AtomicNumber>79</AtomicNumber>
-    <AverageMass>196.966569</AverageMass>
-    <ValenceElectrons>11</ValenceElectrons>
-    <Isotope>
-      <Mass>196.9665687</Mass>
-      <MassNumber>197</MassNumber>
-      <RelativeAbundance>1</RelativeAbundance>
-    </Isotope>
-  </Element>
-  <Element>
-    <Name>Mercury</Name>
-    <Symbol>Hg</Symbol>
-    <AtomicNumber>80</AtomicNumber>
-    <AverageMass>200.59</AverageMass>
-    <ValenceElectrons>12</ValenceElectrons>
-    <Isotope>
-      <Mass>195.965833</Mass>
-      <MassNumber>196</MassNumber>
-      <RelativeAbundance>0.0015</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>197.9667690</Mass>
-      <MassNumber>198</MassNumber>
-      <RelativeAbundance>0.0997</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>198.9682799</Mass>
-      <MassNumber>199</MassNumber>
-      <RelativeAbundance>0.1687</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>199.9683260</Mass>
-      <MassNumber>200</MassNumber>
-      <RelativeAbundance>0.2310</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>200.9703023</Mass>
-      <MassNumber>201</MassNumber>
-      <RelativeAbundance>0.1318</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>201.9706430</Mass>
-      <MassNumber>202</MassNumber>
-      <RelativeAbundance>0.2986</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>203.9734939</Mass>
-      <MassNumber>204</MassNumber>
-      <RelativeAbundance>0.0687</RelativeAbundance>
-    </Isotope>
-  </Element>
-  <Element>
-    <Name>Thallium</Name>
-    <Symbol>Tl</Symbol>
-    <AtomicNumber>81</AtomicNumber>
-    <AverageMass>204.3833</AverageMass>
-    <ValenceElectrons>3</ValenceElectrons>
-    <Isotope>
-      <Mass>202.9723442</Mass>
-      <MassNumber>203</MassNumber>
-      <RelativeAbundance>0.2952</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>204.9744275</Mass>
-      <MassNumber>205</MassNumber>
-      <RelativeAbundance>0.7048</RelativeAbundance>
-    </Isotope>
-  </Element>
-  <Element>
-    <Name>Lead</Name>
-    <Symbol>Pb</Symbol>
-    <AtomicNumber>82</AtomicNumber>
-    <AverageMass>207.2</AverageMass>
-    <ValenceElectrons>4</ValenceElectrons>
-    <Isotope>
-      <Mass>203.9730436</Mass>
-      <MassNumber>204</MassNumber>
-      <RelativeAbundance>0.014</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>205.9744653</Mass>
-      <MassNumber>206</MassNumber>
-      <RelativeAbundance>0.241</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>206.9758969</Mass>
-      <MassNumber>207</MassNumber>
-      <RelativeAbundance>0.221</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>207.9766521</Mass>
-      <MassNumber>208</MassNumber>
-      <RelativeAbundance>0.524</RelativeAbundance>
-    </Isotope>
-  </Element>
-  <Element>
-    <Name>Bismuth</Name>
-    <Symbol>Bi</Symbol>
-    <AtomicNumber>83</AtomicNumber>
-    <AverageMass>208.98040</AverageMass>
-    <ValenceElectrons>5</ValenceElectrons>
-    <Isotope>
-      <Mass>208.9803987</Mass>
-      <MassNumber>209</MassNumber>
-      <RelativeAbundance>1</RelativeAbundance>
-    </Isotope>
-  </Element>
-  <Element>
-    <Name>Polonium</Name>
-    <Symbol>Po</Symbol>
-    <AtomicNumber>84</AtomicNumber>
-    <AverageMass>[209]</AverageMass>
-    <ValenceElectrons>6</ValenceElectrons>
-  </Element>
-  <Element>
-    <Name>Astatine</Name>
-    <Symbol>At</Symbol>
-    <AtomicNumber>85</AtomicNumber>
-    <AverageMass>[210]</AverageMass>
-    <ValenceElectrons>7</ValenceElectrons>
-  </Element>
-  <Element>
-    <Name>Radon</Name>
-    <Symbol>Rn</Symbol>
-    <AtomicNumber>86</AtomicNumber>
-    <AverageMass>[222]</AverageMass>
-    <ValenceElectrons>8</ValenceElectrons>
-  </Element>
-  <Element>
-    <Name>Francium</Name>
-    <Symbol>Fr</Symbol>
-    <AtomicNumber>87</AtomicNumber>
-    <AverageMass>[223]</AverageMass>
-    <ValenceElectrons>1</ValenceElectrons>
-  </Element>
-  <Element>
-    <Name>Radium</Name>
-    <Symbol>Ra</Symbol>
-    <AtomicNumber>88</AtomicNumber>
-    <AverageMass>[226]</AverageMass>
-    <ValenceElectrons>2</ValenceElectrons>
-  </Element>
-  <Element>
-    <Name>Actinium</Name>
-    <Symbol>Ac</Symbol>
-    <AtomicNumber>89</AtomicNumber>
-    <AverageMass>[227]</AverageMass>
-    <ValenceElectrons>2</ValenceElectrons>
-  </Element>
-  <Element>
-    <Name>Thorium</Name>
-    <Symbol>Th</Symbol>
-    <AtomicNumber>90</AtomicNumber>
-    <AverageMass>232.03806</AverageMass>
-    <ValenceElectrons>2</ValenceElectrons>
-    <Isotope>
-      <Mass>232.0380553</Mass>
-      <MassNumber>232</MassNumber>
-      <RelativeAbundance>1</RelativeAbundance>
-    </Isotope>
-  </Element>
-  <Element>
-    <Name>Protactinium</Name>
-    <Symbol>Pa</Symbol>
-    <AtomicNumber>91</AtomicNumber>
-    <AverageMass>231.03588</AverageMass>
-    <ValenceElectrons>2</ValenceElectrons>
-    <Isotope>
-      <Mass>231.0358840</Mass>
-      <MassNumber>231</MassNumber>
-      <RelativeAbundance>1</RelativeAbundance>
-    </Isotope>
-  </Element>
-  <Element>
-    <Name>Uranium</Name>
-    <Symbol>U</Symbol>
-    <AtomicNumber>92</AtomicNumber>
-    <AverageMass>238.02891</AverageMass>
-    <ValenceElectrons>2</ValenceElectrons>
-    <Isotope>
-      <Mass>234.0409521</Mass>
-      <MassNumber>234</MassNumber>
-      <RelativeAbundance>0.000054</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>235.0439299</Mass>
-      <MassNumber>235</MassNumber>
-      <RelativeAbundance>0.007204</RelativeAbundance>
-    </Isotope>
-    <Isotope>
-      <Mass>238.0507882</Mass>
-      <MassNumber>238</MassNumber>
-      <RelativeAbundance>0.992742</RelativeAbundance>
-    </Isotope>
-  </Element>
-  <Element>
-    <Name>Neptunium</Name>
-    <Symbol>Np</Symbol>
-    <AtomicNumber>93</AtomicNumber>
-    <AverageMass>[237]</AverageMass>
-    <ValenceElectrons>2</ValenceElectrons>
-  </Element>
-  <Element>
-    <Name>Plutonium</Name>
-    <Symbol>Pu</Symbol>
-    <AtomicNumber>94</AtomicNumber>
-    <AverageMass>[244]</AverageMass>
-    <ValenceElectrons>2</ValenceElectrons>
-  </Element>
-  <Element>
-    <Name>Americium</Name>
-    <Symbol>Am</Symbol>
-    <AtomicNumber>95</AtomicNumber>
-    <AverageMass>[243]</AverageMass>
-    <ValenceElectrons>2</ValenceElectrons>
-  </Element>
-  <Element>
-    <Name>Curium</Name>
-    <Symbol>Cm</Symbol>
-    <AtomicNumber>96</AtomicNumber>
-    <AverageMass>[247]</AverageMass>
-    <ValenceElectrons>2</ValenceElectrons>
-  </Element>
-  <Element>
-    <Name>Berkelium</Name>
-    <Symbol>Bk</Symbol>
-    <AtomicNumber>97</AtomicNumber>
-    <AverageMass>[247]</AverageMass>
-    <ValenceElectrons>2</ValenceElectrons>
-  </Element>
-  <Element>
-    <Name>Californium</Name>
-    <Symbol>Cf</Symbol>
-    <AtomicNumber>98</AtomicNumber>
-    <AverageMass>[251]</AverageMass>
-    <ValenceElectrons>2</ValenceElectrons>
-  </Element>
-  <Element>
-    <Name>Einsteinium</Name>
-    <Symbol>Es</Symbol>
-    <AtomicNumber>99</AtomicNumber>
-    <AverageMass>[252]</AverageMass>
-    <ValenceElectrons>2</ValenceElectrons>
-  </Element>
-  <Element>
-    <Name>Fermium</Name>
-    <Symbol>Fm</Symbol>
-    <AtomicNumber>100</AtomicNumber>
-    <AverageMass>[257]</AverageMass>
-    <ValenceElectrons>2</ValenceElectrons>
-  </Element>
-  <Element>
-    <Name>Mendelevium</Name>
-    <Symbol>Md</Symbol>
-    <AtomicNumber>101</AtomicNumber>
-    <AverageMass>[258]</AverageMass>
-    <ValenceElectrons>2</ValenceElectrons>
-  </Element>
-  <Element>
-    <Name>Nobelium</Name>
-    <Symbol>No</Symbol>
-    <AtomicNumber>102</AtomicNumber>
-    <AverageMass>[259]</AverageMass>
-    <ValenceElectrons>2</ValenceElectrons>
-  </Element>
-  <Element>
-    <Name>Lawrencium</Name>
-    <Symbol>Lr</Symbol>
-    <AtomicNumber>103</AtomicNumber>
-    <AverageMass>[262]</AverageMass>
-    <ValenceElectrons>0</ValenceElectrons>
-  </Element>
-  <Element>
-    <Name>Rutherfordium</Name>
-    <Symbol>Rf</Symbol>
-    <AtomicNumber>104</AtomicNumber>
-    <AverageMass>[265]</AverageMass>
-    <ValenceElectrons>0</ValenceElectrons>
-  </Element>
-  <Element>
-    <Name>Dubnium</Name>
-    <Symbol>Db</Symbol>
-    <AtomicNumber>105</AtomicNumber>
-    <AverageMass>[268]</AverageMass>
-    <ValenceElectrons>0</ValenceElectrons>
-  </Element>
-  <Element>
-    <Name>Seaborgium</Name>
-    <Symbol>Sg</Symbol>
-    <AtomicNumber>106</AtomicNumber>
-    <AverageMass>[271]</AverageMass>
-    <ValenceElectrons>0</ValenceElectrons>
-  </Element>
-  <Element>
-    <Name>Bohrium</Name>
-    <Symbol>Bh</Symbol>
-    <AtomicNumber>107</AtomicNumber>
-    <AverageMass>[272]</AverageMass>
-    <ValenceElectrons>0</ValenceElectrons>
-  </Element>
-  <Element>
-    <Name>Hassium</Name>
-    <Symbol>Hs</Symbol>
-    <AtomicNumber>108</AtomicNumber>
-    <AverageMass>[270]</AverageMass>
-    <ValenceElectrons>0</ValenceElectrons>
-  </Element>
-  <Element>
-    <Name>Meitnerium</Name>
-    <Symbol>Mt</Symbol>
-    <AtomicNumber>109</AtomicNumber>
-    <AverageMass>[276]</AverageMass>
-    <ValenceElectrons>0</ValenceElectrons>
+<?xml version="1.0" encoding="utf-8"?>
+<PeriodicTable>
+  <Element Name="Hydrogen" Symbol="H" AtomicNumber="1" AverageMass="1.0079407538957064" ValenceElectrons="1">
+    <Isotope Id="0" Mass="1.00782503207" MassNumber="1" Abundance="0.999885" />
+    <Isotope Id="7" Mass="2.0141017778" MassNumber="2" Abundance="0.000115" />
+  </Element>
+  <Element Name="Helium" Symbol="He" AtomicNumber="2" AverageMass="4.0026019321409265" ValenceElectrons="2">
+    <Isotope Id="16" Mass="3.0160293191" MassNumber="3" Abundance="1.34E-06" />
+    <Isotope Id="17" Mass="4.00260325415" MassNumber="4" Abundance="0.9999987" />
+  </Element>
+  <Element Name="Lithium" Symbol="Li" AtomicNumber="3" AverageMass="6.9400376203465637" ValenceElectrons="1">
+    <Isotope Id="18" Mass="6.015122795" MassNumber="6" Abundance="0.0759" />
+    <Isotope Id="19" Mass="7.01600455" MassNumber="7" Abundance="0.9241" />
+  </Element>
+  <Element Name="Beryllium" Symbol="Be" AtomicNumber="4" AverageMass="9.0121822" ValenceElectrons="2">
+    <Isotope Id="20" Mass="9.0121822" MassNumber="9" Abundance="1" />
+  </Element>
+  <Element Name="Boron" Symbol="B" AtomicNumber="5" AverageMass="10.811028087449788" ValenceElectrons="3">
+    <Isotope Id="21" Mass="10.012937" MassNumber="10" Abundance="0.199" />
+    <Isotope Id="22" Mass="11.0093054" MassNumber="11" Abundance="0.801" />
+  </Element>
+  <Element Name="Carbon" Symbol="C" AtomicNumber="6" AverageMass="12.010735897076005" ValenceElectrons="4">
+    <Isotope Id="1" Mass="12" MassNumber="12" Abundance="0.9893" />
+    <Isotope Id="5" Mass="13.0033548378" MassNumber="13" Abundance="0.0107" />
+  </Element>
+  <Element Name="Nitrogen" Symbol="N" AtomicNumber="7" AverageMass="14.006703211807492" ValenceElectrons="5">
+    <Isotope Id="2" Mass="14.0030740048" MassNumber="14" Abundance="0.99636" />
+    <Isotope Id="6" Mass="15.0001088982" MassNumber="15" Abundance="0.00364" />
+  </Element>
+  <Element Name="Oxygen" Symbol="O" AtomicNumber="8" AverageMass="15.99940492726053" ValenceElectrons="6">
+    <Isotope Id="3" Mass="15.99491461956" MassNumber="16" Abundance="0.99757" />
+    <Isotope Id="23" Mass="16.9991317" MassNumber="17" Abundance="0.00038" />
+    <Isotope Id="8" Mass="17.999161" MassNumber="18" Abundance="0.00205" />
+  </Element>
+  <Element Name="Fluorine" Symbol="F" AtomicNumber="9" AverageMass="18.99840322" ValenceElectrons="7">
+    <Isotope Id="13" Mass="18.99840322" MassNumber="19" Abundance="1" />
+  </Element>
+  <Element Name="Neon" Symbol="Ne" AtomicNumber="10" AverageMass="20.1800463824107" ValenceElectrons="8">
+    <Isotope Id="24" Mass="19.9924401754" MassNumber="20" Abundance="0.9048" />
+    <Isotope Id="25" Mass="20.99384668" MassNumber="21" Abundance="0.0027" />
+    <Isotope Id="26" Mass="21.991385114" MassNumber="22" Abundance="0.0925" />
+  </Element>
+  <Element Name="Sodium" Symbol="Na" AtomicNumber="11" AverageMass="22.9897692809" ValenceElectrons="1">
+    <Isotope Id="27" Mass="22.9897692809" MassNumber="23" Abundance="1" />
+  </Element>
+  <Element Name="Magnesium" Symbol="Mg" AtomicNumber="12" AverageMass="24.305051613610708" ValenceElectrons="2">
+    <Isotope Id="28" Mass="23.9850417" MassNumber="24" Abundance="0.7899" />
+    <Isotope Id="29" Mass="24.98583692" MassNumber="25" Abundance="0.1" />
+    <Isotope Id="30" Mass="25.982592929" MassNumber="26" Abundance="0.1101" />
+  </Element>
+  <Element Name="Aluminum" Symbol="Al" AtomicNumber="13" AverageMass="26.98153863" ValenceElectrons="3">
+    <Isotope Id="31" Mass="26.98153863" MassNumber="27" Abundance="1" />
+  </Element>
+  <Element Name="Silicon" Symbol="Si" AtomicNumber="14" AverageMass="28.085498706880504" ValenceElectrons="4">
+    <Isotope Id="32" Mass="27.9769265325" MassNumber="28" Abundance="0.92223" />
+    <Isotope Id="33" Mass="28.9764947" MassNumber="29" Abundance="0.04685" />
+    <Isotope Id="34" Mass="29.97377017" MassNumber="30" Abundance="0.03092" />
+  </Element>
+  <Element Name="Phosphorus" Symbol="P" AtomicNumber="15" AverageMass="30.97376163" ValenceElectrons="5">
+    <Isotope Id="9" Mass="30.97376163" MassNumber="31" Abundance="1" />
+  </Element>
+  <Element Name="Sulfur" Symbol="S" AtomicNumber="16" AverageMass="32.064787238258681" ValenceElectrons="6">
+    <Isotope Id="4" Mass="31.972071" MassNumber="32" Abundance="0.9499" />
+    <Isotope Id="35" Mass="32.97145876" MassNumber="33" Abundance="0.0075" />
+    <Isotope Id="36" Mass="33.9678669" MassNumber="34" Abundance="0.0425" />
+    <Isotope Id="37" Mass="35.96708076" MassNumber="36" Abundance="0.0001" />
+  </Element>
+  <Element Name="Chlorine" Symbol="Cl" AtomicNumber="17" AverageMass="35.452937581874032" ValenceElectrons="7">
+    <Isotope Id="14" Mass="34.96885268" MassNumber="35" Abundance="0.7576" />
+    <Isotope Id="15" Mass="36.96590259" MassNumber="37" Abundance="0.2424" />
+  </Element>
+  <Element Name="Argon" Symbol="Ar" AtomicNumber="18" AverageMass="39.947676712900027" ValenceElectrons="8">
+    <Isotope Id="38" Mass="35.967545106" MassNumber="36" Abundance="0.003365" />
+    <Isotope Id="39" Mass="37.9627324" MassNumber="38" Abundance="0.000632" />
+    <Isotope Id="40" Mass="39.9623831225" MassNumber="40" Abundance="0.996003" />
+  </Element>
+  <Element Name="Potassium" Symbol="K" AtomicNumber="19" AverageMass="39.098301129986353" ValenceElectrons="1">
+    <Isotope Id="41" Mass="38.96370668" MassNumber="39" Abundance="0.932581" />
+    <Isotope Id="42" Mass="39.96399848" MassNumber="40" Abundance="0.000117" />
+    <Isotope Id="43" Mass="40.96182576" MassNumber="41" Abundance="0.067302" />
+  </Element>
+  <Element Name="Calcium" Symbol="Ca" AtomicNumber="20" AverageMass="40.078022650315241" ValenceElectrons="2">
+    <Isotope Id="44" Mass="39.96259098" MassNumber="40" Abundance="0.96941" />
+    <Isotope Id="45" Mass="41.95861801" MassNumber="42" Abundance="0.00647" />
+    <Isotope Id="46" Mass="42.9587666" MassNumber="43" Abundance="0.00135" />
+    <Isotope Id="47" Mass="43.9554818" MassNumber="44" Abundance="0.02086" />
+    <Isotope Id="48" Mass="45.9536926" MassNumber="46" Abundance="4E-05" />
+    <Isotope Id="49" Mass="47.952534" MassNumber="48" Abundance="0.00187" />
+  </Element>
+  <Element Name="Scandium" Symbol="Sc" AtomicNumber="21" AverageMass="44.9559119" ValenceElectrons="3">
+    <Isotope Id="50" Mass="44.9559119" MassNumber="45" Abundance="1" />
+  </Element>
+  <Element Name="Titanium" Symbol="Ti" AtomicNumber="22" AverageMass="47.866749242652141" ValenceElectrons="4">
+    <Isotope Id="51" Mass="45.9526316" MassNumber="46" Abundance="0.0825" />
+    <Isotope Id="52" Mass="46.9517631" MassNumber="47" Abundance="0.0744" />
+    <Isotope Id="53" Mass="47.9479463" MassNumber="48" Abundance="0.7372" />
+    <Isotope Id="54" Mass="48.94787" MassNumber="49" Abundance="0.0541" />
+    <Isotope Id="55" Mass="49.9447912" MassNumber="50" Abundance="0.0518" />
+  </Element>
+  <Element Name="Vanadium" Symbol="V" AtomicNumber="23" AverageMass="50.9414674975615" ValenceElectrons="5">
+    <Isotope Id="56" Mass="49.9471585" MassNumber="50" Abundance="0.0025" />
+    <Isotope Id="57" Mass="50.9439595" MassNumber="51" Abundance="0.9975" />
+  </Element>
+  <Element Name="Chromium" Symbol="Cr" AtomicNumber="24" AverageMass="51.996133063050053" ValenceElectrons="6">
+    <Isotope Id="58" Mass="49.9460442" MassNumber="50" Abundance="0.04345" />
+    <Isotope Id="59" Mass="51.9405075" MassNumber="52" Abundance="0.83789" />
+    <Isotope Id="60" Mass="52.9406494" MassNumber="53" Abundance="0.09501" />
+    <Isotope Id="61" Mass="53.9388804" MassNumber="54" Abundance="0.02365" />
+  </Element>
+  <Element Name="Manganese" Symbol="Mn" AtomicNumber="25" AverageMass="54.9380451" ValenceElectrons="7">
+    <Isotope Id="62" Mass="54.9380451" MassNumber="55" Abundance="1" />
+  </Element>
+  <Element Name="Iron" Symbol="Fe" AtomicNumber="26" AverageMass="55.845145628497917" ValenceElectrons="8">
+    <Isotope Id="63" Mass="53.9396105" MassNumber="54" Abundance="0.05845" />
+    <Isotope Id="64" Mass="55.9349375" MassNumber="56" Abundance="0.91754" />
+    <Isotope Id="65" Mass="56.935394" MassNumber="57" Abundance="0.02119" />
+    <Isotope Id="66" Mass="57.9332756" MassNumber="58" Abundance="0.00282" />
+  </Element>
+  <Element Name="Cobalt" Symbol="Co" AtomicNumber="27" AverageMass="58.933195" ValenceElectrons="9">
+    <Isotope Id="67" Mass="58.933195" MassNumber="59" Abundance="1" />
+  </Element>
+  <Element Name="Nickel" Symbol="Ni" AtomicNumber="28" AverageMass="58.6933515355769" ValenceElectrons="10">
+    <Isotope Id="68" Mass="57.9353429" MassNumber="58" Abundance="0.680769" />
+    <Isotope Id="69" Mass="59.9307864" MassNumber="60" Abundance="0.262231" />
+    <Isotope Id="70" Mass="60.931056" MassNumber="61" Abundance="0.011399" />
+    <Isotope Id="71" Mass="61.9283451" MassNumber="62" Abundance="0.036345" />
+    <Isotope Id="72" Mass="63.927966" MassNumber="64" Abundance="0.009256" />
+  </Element>
+  <Element Name="Copper" Symbol="Cu" AtomicNumber="29" AverageMass="63.546039715802195" ValenceElectrons="11">
+    <Isotope Id="73" Mass="62.9295975" MassNumber="63" Abundance="0.6915" />
+    <Isotope Id="74" Mass="64.9277895" MassNumber="65" Abundance="0.3085" />
+  </Element>
+  <Element Name="Zinc" Symbol="Zn" AtomicNumber="30" AverageMass="65.408728080355672" ValenceElectrons="12">
+    <Isotope Id="75" Mass="63.9291422" MassNumber="64" Abundance="0.48268" />
+    <Isotope Id="76" Mass="65.9260334" MassNumber="66" Abundance="0.27975" />
+    <Isotope Id="77" Mass="66.9271273" MassNumber="67" Abundance="0.04102" />
+    <Isotope Id="78" Mass="67.9248442" MassNumber="68" Abundance="0.19024" />
+    <Isotope Id="79" Mass="69.9253193" MassNumber="70" Abundance="0.00631" />
+  </Element>
+  <Element Name="Gallium" Symbol="Ga" AtomicNumber="31" AverageMass="69.723065621283268" ValenceElectrons="3">
+    <Isotope Id="80" Mass="68.9255736" MassNumber="69" Abundance="0.60108" />
+    <Isotope Id="81" Mass="70.9247013" MassNumber="71" Abundance="0.39892" />
+  </Element>
+  <Element Name="Germanium" Symbol="Ge" AtomicNumber="32" AverageMass="72.6398432528544" ValenceElectrons="4">
+    <Isotope Id="82" Mass="69.9242474" MassNumber="70" Abundance="0.2038" />
+    <Isotope Id="83" Mass="71.9220758" MassNumber="72" Abundance="0.2731" />
+    <Isotope Id="84" Mass="72.9234589" MassNumber="73" Abundance="0.0776" />
+    <Isotope Id="85" Mass="73.9211778" MassNumber="74" Abundance="0.3672" />
+    <Isotope Id="86" Mass="75.9214026" MassNumber="76" Abundance="0.0783" />
+  </Element>
+  <Element Name="Arsenic" Symbol="As" AtomicNumber="33" AverageMass="74.9215965" ValenceElectrons="5">
+    <Isotope Id="87" Mass="74.9215965" MassNumber="75" Abundance="1" />
+  </Element>
+  <Element Name="Selenium" Symbol="Se" AtomicNumber="34" AverageMass="78.959388253712262" ValenceElectrons="6">
+    <Isotope Id="88" Mass="73.9224764" MassNumber="74" Abundance="0.0089" />
+    <Isotope Id="89" Mass="75.9192136" MassNumber="76" Abundance="0.0937" />
+    <Isotope Id="90" Mass="76.919914" MassNumber="77" Abundance="0.0763" />
+    <Isotope Id="91" Mass="77.9173091" MassNumber="78" Abundance="0.2377" />
+    <Isotope Id="10" Mass="79.9165213" MassNumber="80" Abundance="0.4961" />
+    <Isotope Id="92" Mass="81.9166994" MassNumber="82" Abundance="0.0873" />
+  </Element>
+  <Element Name="Bromine" Symbol="Br" AtomicNumber="35" AverageMass="79.9035279458893" ValenceElectrons="7">
+    <Isotope Id="11" Mass="78.9183371" MassNumber="79" Abundance="0.5069" />
+    <Isotope Id="12" Mass="80.9162906" MassNumber="81" Abundance="0.4931" />
+  </Element>
+  <Element Name="Krypton" Symbol="Kr" AtomicNumber="36" AverageMass="83.798006447836883" ValenceElectrons="8">
+    <Isotope Id="93" Mass="77.9203648" MassNumber="78" Abundance="0.00355" />
+    <Isotope Id="94" Mass="79.916379" MassNumber="80" Abundance="0.02286" />
+    <Isotope Id="95" Mass="81.9134836" MassNumber="82" Abundance="0.11593" />
+    <Isotope Id="96" Mass="82.914136" MassNumber="83" Abundance="0.115" />
+    <Isotope Id="97" Mass="83.911507" MassNumber="84" Abundance="0.56987" />
+    <Isotope Id="98" Mass="85.91061073" MassNumber="86" Abundance="0.17279" />
+  </Element>
+  <Element Name="Rubidium" Symbol="Rb" AtomicNumber="37" AverageMass="85.467663569244053" ValenceElectrons="1">
+    <Isotope Id="99" Mass="84.911789738" MassNumber="85" Abundance="0.7217" />
+    <Isotope Id="100" Mass="86.909180527" MassNumber="87" Abundance="0.2783" />
+  </Element>
+  <Element Name="Strontium" Symbol="Sr" AtomicNumber="38" AverageMass="87.616644105652753" ValenceElectrons="2">
+    <Isotope Id="101" Mass="83.913425" MassNumber="84" Abundance="0.0056" />
+    <Isotope Id="102" Mass="85.9092602" MassNumber="86" Abundance="0.0986" />
+    <Isotope Id="103" Mass="86.9088771" MassNumber="87" Abundance="0.07" />
+    <Isotope Id="104" Mass="87.9056121" MassNumber="88" Abundance="0.8258" />
+  </Element>
+  <Element Name="Yttrium" Symbol="Y" AtomicNumber="39" AverageMass="88.9058483" ValenceElectrons="3">
+    <Isotope Id="105" Mass="88.9058483" MassNumber="89" Abundance="1" />
+  </Element>
+  <Element Name="Zirconium" Symbol="Zr" AtomicNumber="40" AverageMass="91.223647597705721" ValenceElectrons="4">
+    <Isotope Id="106" Mass="89.9047044" MassNumber="90" Abundance="0.5145" />
+    <Isotope Id="107" Mass="90.9056458" MassNumber="91" Abundance="0.1122" />
+    <Isotope Id="108" Mass="91.9050408" MassNumber="92" Abundance="0.1715" />
+    <Isotope Id="109" Mass="93.9063152" MassNumber="94" Abundance="0.1738" />
+    <Isotope Id="110" Mass="95.9082734" MassNumber="96" Abundance="0.028" />
+  </Element>
+  <Element Name="Niobium" Symbol="Nb" AtomicNumber="41" AverageMass="92.9063781" ValenceElectrons="5">
+    <Isotope Id="111" Mass="92.9063781" MassNumber="93" Abundance="1" />
+  </Element>
+  <Element Name="Molybdenum" Symbol="Mo" AtomicNumber="42" AverageMass="95.937592003704921" ValenceElectrons="6">
+    <Isotope Id="112" Mass="91.906811" MassNumber="92" Abundance="0.1477" />
+    <Isotope Id="113" Mass="93.9050883" MassNumber="94" Abundance="0.0923" />
+    <Isotope Id="114" Mass="94.9058421" MassNumber="95" Abundance="0.159" />
+    <Isotope Id="115" Mass="95.9046795" MassNumber="96" Abundance="0.1668" />
+    <Isotope Id="116" Mass="96.9060215" MassNumber="97" Abundance="0.0956" />
+    <Isotope Id="117" Mass="97.9054082" MassNumber="98" Abundance="0.2419" />
+    <Isotope Id="118" Mass="99.907477" MassNumber="100" Abundance="0.0967" />
+  </Element>
+  <Element Name="Ruthenium" Symbol="Ru" AtomicNumber="44" AverageMass="101.06494542017708" ValenceElectrons="8">
+    <Isotope Id="119" Mass="95.907598" MassNumber="96" Abundance="0.0554" />
+    <Isotope Id="120" Mass="97.905287" MassNumber="98" Abundance="0.0187" />
+    <Isotope Id="121" Mass="98.9059393" MassNumber="99" Abundance="0.1276" />
+    <Isotope Id="122" Mass="99.9042195" MassNumber="100" Abundance="0.126" />
+    <Isotope Id="123" Mass="100.9055821" MassNumber="101" Abundance="0.1706" />
+    <Isotope Id="124" Mass="101.9043493" MassNumber="102" Abundance="0.3155" />
+    <Isotope Id="125" Mass="103.905433" MassNumber="104" Abundance="0.1862" />
+  </Element>
+  <Element Name="Rhodium" Symbol="Rh" AtomicNumber="45" AverageMass="102.905504" ValenceElectrons="9">
+    <Isotope Id="126" Mass="102.905504" MassNumber="103" Abundance="1" />
+  </Element>
+  <Element Name="Palladium" Symbol="Pd" AtomicNumber="46" AverageMass="106.41532880948719" ValenceElectrons="10">
+    <Isotope Id="127" Mass="101.905609" MassNumber="102" Abundance="0.0102" />
+    <Isotope Id="128" Mass="103.904036" MassNumber="104" Abundance="0.1114" />
+    <Isotope Id="129" Mass="104.905085" MassNumber="105" Abundance="0.2233" />
+    <Isotope Id="130" Mass="105.903486" MassNumber="106" Abundance="0.2733" />
+    <Isotope Id="131" Mass="107.903892" MassNumber="108" Abundance="0.2646" />
+    <Isotope Id="132" Mass="109.905153" MassNumber="110" Abundance="0.1172" />
+  </Element>
+  <Element Name="Silver" Symbol="Ag" AtomicNumber="47" AverageMass="107.86815084481698" ValenceElectrons="11">
+    <Isotope Id="133" Mass="106.905097" MassNumber="107" Abundance="0.51839" />
+    <Isotope Id="134" Mass="108.904752" MassNumber="109" Abundance="0.48161" />
+  </Element>
+  <Element Name="Cadmium" Symbol="Cd" AtomicNumber="48" AverageMass="112.41155218371259" ValenceElectrons="12">
+    <Isotope Id="135" Mass="105.906459" MassNumber="106" Abundance="0.0125" />
+    <Isotope Id="136" Mass="107.904184" MassNumber="108" Abundance="0.0089" />
+    <Isotope Id="137" Mass="109.9030021" MassNumber="110" Abundance="0.1249" />
+    <Isotope Id="138" Mass="110.9041781" MassNumber="111" Abundance="0.128" />
+    <Isotope Id="139" Mass="111.9027578" MassNumber="112" Abundance="0.2413" />
+    <Isotope Id="140" Mass="112.9044017" MassNumber="113" Abundance="0.1222" />
+    <Isotope Id="141" Mass="113.9033585" MassNumber="114" Abundance="0.2873" />
+    <Isotope Id="142" Mass="115.904756" MassNumber="116" Abundance="0.0749" />
+  </Element>
+  <Element Name="Indium" Symbol="In" AtomicNumber="49" AverageMass="114.81808572022767" ValenceElectrons="3">
+    <Isotope Id="143" Mass="112.904058" MassNumber="113" Abundance="0.0429" />
+    <Isotope Id="144" Mass="114.903878" MassNumber="115" Abundance="0.9571" />
+  </Element>
+  <Element Name="Tin" Symbol="Sn" AtomicNumber="50" AverageMass="118.71010830652079" ValenceElectrons="4">
+    <Isotope Id="145" Mass="111.904818" MassNumber="112" Abundance="0.0097" />
+    <Isotope Id="146" Mass="113.902779" MassNumber="114" Abundance="0.0066" />
+    <Isotope Id="147" Mass="114.903342" MassNumber="115" Abundance="0.0034" />
+    <Isotope Id="148" Mass="115.901741" MassNumber="116" Abundance="0.1454" />
+    <Isotope Id="149" Mass="116.902952" MassNumber="117" Abundance="0.0768" />
+    <Isotope Id="150" Mass="117.901603" MassNumber="118" Abundance="0.2422" />
+    <Isotope Id="151" Mass="118.903308" MassNumber="119" Abundance="0.0859" />
+    <Isotope Id="152" Mass="119.9021947" MassNumber="120" Abundance="0.3258" />
+    <Isotope Id="153" Mass="121.903439" MassNumber="122" Abundance="0.0463" />
+    <Isotope Id="154" Mass="123.9052739" MassNumber="124" Abundance="0.0579" />
+  </Element>
+  <Element Name="Antimony" Symbol="Sb" AtomicNumber="51" AverageMass="121.75978613108555" ValenceElectrons="5">
+    <Isotope Id="155" Mass="120.9038157" MassNumber="121" Abundance="0.5721" />
+    <Isotope Id="156" Mass="122.904214" MassNumber="123" Abundance="0.4279" />
+  </Element>
+  <Element Name="Tellurium" Symbol="Te" AtomicNumber="52" AverageMass="127.60312782587914" ValenceElectrons="6">
+    <Isotope Id="157" Mass="119.90402" MassNumber="120" Abundance="0.0009" />
+    <Isotope Id="158" Mass="121.9030439" MassNumber="122" Abundance="0.0255" />
+    <Isotope Id="159" Mass="122.90427" MassNumber="123" Abundance="0.0089" />
+    <Isotope Id="160" Mass="123.9028179" MassNumber="124" Abundance="0.0474" />
+    <Isotope Id="161" Mass="124.9044307" MassNumber="125" Abundance="0.0707" />
+    <Isotope Id="162" Mass="125.9033117" MassNumber="126" Abundance="0.1884" />
+    <Isotope Id="163" Mass="127.9044631" MassNumber="128" Abundance="0.3174" />
+    <Isotope Id="164" Mass="129.9062244" MassNumber="130" Abundance="0.3408" />
+  </Element>
+  <Element Name="Iodine" Symbol="I" AtomicNumber="53" AverageMass="126.904473" ValenceElectrons="7">
+    <Isotope Id="165" Mass="126.904473" MassNumber="127" Abundance="1" />
+  </Element>
+  <Element Name="Xenon" Symbol="Xe" AtomicNumber="54" AverageMass="131.29276062834285" ValenceElectrons="8">
+    <Isotope Id="166" Mass="123.905893" MassNumber="124" Abundance="0.000952" />
+    <Isotope Id="167" Mass="125.904274" MassNumber="126" Abundance="0.00089" />
+    <Isotope Id="168" Mass="127.9035313" MassNumber="128" Abundance="0.019102" />
+    <Isotope Id="169" Mass="128.9047794" MassNumber="129" Abundance="0.264006" />
+    <Isotope Id="170" Mass="129.903508" MassNumber="130" Abundance="0.04071" />
+    <Isotope Id="171" Mass="130.9050824" MassNumber="131" Abundance="0.212324" />
+    <Isotope Id="172" Mass="131.9041535" MassNumber="132" Abundance="0.269086" />
+    <Isotope Id="173" Mass="133.9053945" MassNumber="134" Abundance="0.104357" />
+    <Isotope Id="174" Mass="135.907219" MassNumber="136" Abundance="0.088573" />
+  </Element>
+  <Element Name="Cesium" Symbol="Cs" AtomicNumber="55" AverageMass="132.905451933" ValenceElectrons="1">
+    <Isotope Id="175" Mass="132.905451933" MassNumber="133" Abundance="1" />
+  </Element>
+  <Element Name="Barium" Symbol="Ba" AtomicNumber="56" AverageMass="137.32689182048657" ValenceElectrons="2">
+    <Isotope Id="176" Mass="129.9063208" MassNumber="130" Abundance="0.00106" />
+    <Isotope Id="177" Mass="131.9050613" MassNumber="132" Abundance="0.00101" />
+    <Isotope Id="178" Mass="133.9045084" MassNumber="134" Abundance="0.02417" />
+    <Isotope Id="179" Mass="134.9056886" MassNumber="135" Abundance="0.06592" />
+    <Isotope Id="180" Mass="135.9045759" MassNumber="136" Abundance="0.07854" />
+    <Isotope Id="181" Mass="136.9058274" MassNumber="137" Abundance="0.11232" />
+    <Isotope Id="182" Mass="137.9052472" MassNumber="138" Abundance="0.71698" />
+  </Element>
+  <Element Name="Lanthanum" Symbol="La" AtomicNumber="57" AverageMass="138.90545398287193" ValenceElectrons="2">
+    <Isotope Id="183" Mass="137.907112" MassNumber="138" Abundance="0.0009" />
+    <Isotope Id="184" Mass="138.9063533" MassNumber="139" Abundance="0.9991" />
+  </Element>
+  <Element Name="Cerium" Symbol="Ce" AtomicNumber="58" AverageMass="140.11572620438346" ValenceElectrons="2">
+    <Isotope Id="185" Mass="135.907172" MassNumber="136" Abundance="0.00185" />
+    <Isotope Id="186" Mass="137.905991" MassNumber="138" Abundance="0.00251" />
+    <Isotope Id="187" Mass="139.9054387" MassNumber="140" Abundance="0.8845" />
+    <Isotope Id="188" Mass="141.909244" MassNumber="142" Abundance="0.11114" />
+  </Element>
+  <Element Name="Praseodymium" Symbol="Pr" AtomicNumber="59" AverageMass="140.9076528" ValenceElectrons="2">
+    <Isotope Id="189" Mass="140.9076528" MassNumber="141" Abundance="1" />
+  </Element>
+  <Element Name="Neodymium" Symbol="Nd" AtomicNumber="60" AverageMass="144.23613135177024" ValenceElectrons="2">
+    <Isotope Id="190" Mass="141.9077233" MassNumber="142" Abundance="0.272" />
+    <Isotope Id="191" Mass="142.9098143" MassNumber="143" Abundance="0.122" />
+    <Isotope Id="192" Mass="143.9100873" MassNumber="144" Abundance="0.238" />
+    <Isotope Id="193" Mass="144.9125736" MassNumber="145" Abundance="0.083" />
+    <Isotope Id="194" Mass="145.9131169" MassNumber="146" Abundance="0.172" />
+    <Isotope Id="195" Mass="147.916893" MassNumber="148" Abundance="0.057" />
+    <Isotope Id="196" Mass="149.920891" MassNumber="150" Abundance="0.056" />
+  </Element>
+  <Element Name="Samarium" Symbol="Sm" AtomicNumber="62" AverageMass="150.36634854950105" ValenceElectrons="2">
+    <Isotope Id="197" Mass="143.911999" MassNumber="144" Abundance="0.0307" />
+    <Isotope Id="198" Mass="146.9148979" MassNumber="147" Abundance="0.1499" />
+    <Isotope Id="199" Mass="147.9148227" MassNumber="148" Abundance="0.1124" />
+    <Isotope Id="200" Mass="148.9171847" MassNumber="149" Abundance="0.1382" />
+    <Isotope Id="201" Mass="149.9172755" MassNumber="150" Abundance="0.0738" />
+    <Isotope Id="202" Mass="151.9197324" MassNumber="152" Abundance="0.2675" />
+    <Isotope Id="203" Mass="153.9222093" MassNumber="154" Abundance="0.2275" />
+  </Element>
+  <Element Name="Europium" Symbol="Eu" AtomicNumber="63" AverageMass="151.96437047056355" ValenceElectrons="2">
+    <Isotope Id="204" Mass="150.9198502" MassNumber="151" Abundance="0.4781" />
+    <Isotope Id="205" Mass="152.9212303" MassNumber="153" Abundance="0.5219" />
+  </Element>
+  <Element Name="Gadolinium" Symbol="Gd" AtomicNumber="64" AverageMass="157.25212223490834" ValenceElectrons="2">
+    <Isotope Id="206" Mass="151.919791" MassNumber="152" Abundance="0.002" />
+    <Isotope Id="207" Mass="153.9208656" MassNumber="154" Abundance="0.0218" />
+    <Isotope Id="208" Mass="154.922622" MassNumber="155" Abundance="0.148" />
+    <Isotope Id="209" Mass="155.9221227" MassNumber="156" Abundance="0.2047" />
+    <Isotope Id="210" Mass="156.9239601" MassNumber="157" Abundance="0.1565" />
+    <Isotope Id="211" Mass="157.9241039" MassNumber="158" Abundance="0.2484" />
+    <Isotope Id="212" Mass="159.9270541" MassNumber="160" Abundance="0.2186" />
+  </Element>
+  <Element Name="Terbium" Symbol="Tb" AtomicNumber="65" AverageMass="158.9253468" ValenceElectrons="2">
+    <Isotope Id="213" Mass="158.9253468" MassNumber="159" Abundance="1" />
+  </Element>
+  <Element Name="Dysprosium" Symbol="Dy" AtomicNumber="66" AverageMass="162.49946567547249" ValenceElectrons="2">
+    <Isotope Id="214" Mass="155.924283" MassNumber="156" Abundance="0.00056" />
+    <Isotope Id="215" Mass="157.924409" MassNumber="158" Abundance="0.00095" />
+    <Isotope Id="216" Mass="159.9251975" MassNumber="160" Abundance="0.02329" />
+    <Isotope Id="217" Mass="160.9269334" MassNumber="161" Abundance="0.18889" />
+    <Isotope Id="218" Mass="161.9267984" MassNumber="162" Abundance="0.25475" />
+    <Isotope Id="219" Mass="162.9287312" MassNumber="163" Abundance="0.24896" />
+    <Isotope Id="220" Mass="163.9291748" MassNumber="164" Abundance="0.2826" />
+  </Element>
+  <Element Name="Holmium" Symbol="Ho" AtomicNumber="67" AverageMass="164.9303221" ValenceElectrons="2">
+    <Isotope Id="221" Mass="164.9303221" MassNumber="165" Abundance="1" />
+  </Element>
+  <Element Name="Erbium" Symbol="Er" AtomicNumber="68" AverageMass="167.25907629146266" ValenceElectrons="2">
+    <Isotope Id="222" Mass="161.928778" MassNumber="162" Abundance="0.00139" />
+    <Isotope Id="223" Mass="163.9292" MassNumber="164" Abundance="0.01601" />
+    <Isotope Id="224" Mass="165.9302931" MassNumber="166" Abundance="0.33503" />
+    <Isotope Id="225" Mass="166.9320482" MassNumber="167" Abundance="0.22869" />
+    <Isotope Id="226" Mass="167.9323702" MassNumber="168" Abundance="0.26978" />
+    <Isotope Id="227" Mass="169.9354643" MassNumber="170" Abundance="0.1491" />
+  </Element>
+  <Element Name="Thulium" Symbol="Tm" AtomicNumber="69" AverageMass="168.9342133" ValenceElectrons="2">
+    <Isotope Id="228" Mass="168.9342133" MassNumber="169" Abundance="1" />
+  </Element>
+  <Element Name="Ytterbium" Symbol="Yb" AtomicNumber="70" AverageMass="173.03769558510845" ValenceElectrons="2">
+    <Isotope Id="229" Mass="167.933897" MassNumber="168" Abundance="0.0013" />
+    <Isotope Id="230" Mass="169.9347618" MassNumber="170" Abundance="0.0304" />
+    <Isotope Id="231" Mass="170.9363258" MassNumber="171" Abundance="0.1428" />
+    <Isotope Id="232" Mass="171.9363815" MassNumber="172" Abundance="0.2183" />
+    <Isotope Id="233" Mass="172.9382108" MassNumber="173" Abundance="0.1613" />
+    <Isotope Id="234" Mass="173.9388621" MassNumber="174" Abundance="0.3183" />
+    <Isotope Id="235" Mass="175.9425717" MassNumber="176" Abundance="0.1276" />
+  </Element>
+  <Element Name="Lutetium" Symbol="Lu" AtomicNumber="71" AverageMass="174.96672138640267" ValenceElectrons="2">
+    <Isotope Id="236" Mass="174.9407718" MassNumber="175" Abundance="0.9741" />
+    <Isotope Id="237" Mass="175.9426863" MassNumber="176" Abundance="0.0259" />
+  </Element>
+  <Element Name="Hafnium" Symbol="Hf" AtomicNumber="72" AverageMass="178.48497214484752" ValenceElectrons="4">
+    <Isotope Id="238" Mass="173.940046" MassNumber="174" Abundance="0.0016" />
+    <Isotope Id="239" Mass="175.9414086" MassNumber="176" Abundance="0.0526" />
+    <Isotope Id="240" Mass="176.9432207" MassNumber="177" Abundance="0.186" />
+    <Isotope Id="241" Mass="177.9436988" MassNumber="178" Abundance="0.2728" />
+    <Isotope Id="242" Mass="178.9458161" MassNumber="179" Abundance="0.1362" />
+    <Isotope Id="243" Mass="179.94655" MassNumber="180" Abundance="0.3508" />
+  </Element>
+  <Element Name="Tantalum" Symbol="Ta" AtomicNumber="73" AverageMass="180.94787573628494" ValenceElectrons="5">
+    <Isotope Id="244" Mass="179.9474648" MassNumber="180" Abundance="0.00012" />
+    <Isotope Id="245" Mass="180.9479958" MassNumber="181" Abundance="0.99988" />
+  </Element>
+  <Element Name="Tungsten" Symbol="W" AtomicNumber="74" AverageMass="183.84177813410645" ValenceElectrons="6">
+    <Isotope Id="246" Mass="179.946704" MassNumber="180" Abundance="0.0012" />
+    <Isotope Id="247" Mass="181.9482042" MassNumber="182" Abundance="0.265" />
+    <Isotope Id="248" Mass="182.950223" MassNumber="183" Abundance="0.1431" />
+    <Isotope Id="249" Mass="183.9509312" MassNumber="184" Abundance="0.3064" />
+    <Isotope Id="250" Mass="185.9543641" MassNumber="186" Abundance="0.2843" />
+  </Element>
+  <Element Name="Rhenium" Symbol="Re" AtomicNumber="75" AverageMass="186.20670658481475" ValenceElectrons="7">
+    <Isotope Id="251" Mass="184.952955" MassNumber="185" Abundance="0.374" />
+    <Isotope Id="252" Mass="186.9557531" MassNumber="187" Abundance="0.626" />
+  </Element>
+  <Element Name="Osmium" Symbol="Os" AtomicNumber="76" AverageMass="190.22486299801764" ValenceElectrons="8">
+    <Isotope Id="253" Mass="183.9524891" MassNumber="184" Abundance="0.0002" />
+    <Isotope Id="254" Mass="185.9538382" MassNumber="186" Abundance="0.0159" />
+    <Isotope Id="255" Mass="186.9557505" MassNumber="187" Abundance="0.0196" />
+    <Isotope Id="256" Mass="187.9558382" MassNumber="188" Abundance="0.1324" />
+    <Isotope Id="257" Mass="188.9581475" MassNumber="189" Abundance="0.1615" />
+    <Isotope Id="258" Mass="189.958447" MassNumber="190" Abundance="0.2626" />
+    <Isotope Id="259" Mass="191.9614807" MassNumber="192" Abundance="0.4078" />
+  </Element>
+  <Element Name="Iridium" Symbol="Ir" AtomicNumber="77" AverageMass="192.21605640065724" ValenceElectrons="9">
+    <Isotope Id="260" Mass="190.960594" MassNumber="191" Abundance="0.373" />
+    <Isotope Id="261" Mass="192.9629264" MassNumber="193" Abundance="0.627" />
+  </Element>
+  <Element Name="Platinum" Symbol="Pt" AtomicNumber="78" AverageMass="195.07780787890889" ValenceElectrons="10">
+    <Isotope Id="262" Mass="189.959932" MassNumber="190" Abundance="0.00014" />
+    <Isotope Id="263" Mass="191.961038" MassNumber="192" Abundance="0.00782" />
+    <Isotope Id="264" Mass="193.9626803" MassNumber="194" Abundance="0.32967" />
+    <Isotope Id="265" Mass="194.9647911" MassNumber="195" Abundance="0.33832" />
+    <Isotope Id="266" Mass="195.9649515" MassNumber="196" Abundance="0.25242" />
+    <Isotope Id="267" Mass="197.967893" MassNumber="198" Abundance="0.07163" />
+  </Element>
+  <Element Name="Gold" Symbol="Au" AtomicNumber="79" AverageMass="196.9665687" ValenceElectrons="11">
+    <Isotope Id="268" Mass="196.9665687" MassNumber="197" Abundance="1" />
+  </Element>
+  <Element Name="Mercury" Symbol="Hg" AtomicNumber="80" AverageMass="200.59916661644277" ValenceElectrons="12">
+    <Isotope Id="269" Mass="195.965833" MassNumber="196" Abundance="0.0015" />
+    <Isotope Id="270" Mass="197.966769" MassNumber="198" Abundance="0.0997" />
+    <Isotope Id="271" Mass="198.9682799" MassNumber="199" Abundance="0.1687" />
+    <Isotope Id="272" Mass="199.968326" MassNumber="200" Abundance="0.231" />
+    <Isotope Id="273" Mass="200.9703023" MassNumber="201" Abundance="0.1318" />
+    <Isotope Id="274" Mass="201.970643" MassNumber="202" Abundance="0.2986" />
+    <Isotope Id="275" Mass="203.9734939" MassNumber="204" Abundance="0.0687" />
+  </Element>
+  <Element Name="Thallium" Symbol="Tl" AtomicNumber="81" AverageMass="204.38341252931522" ValenceElectrons="3">
+    <Isotope Id="276" Mass="202.9723442" MassNumber="203" Abundance="0.2952" />
+    <Isotope Id="277" Mass="204.9744275" MassNumber="205" Abundance="0.7048" />
+  </Element>
+  <Element Name="Lead" Symbol="Pb" AtomicNumber="82" AverageMass="207.21690765721186" ValenceElectrons="4">
+    <Isotope Id="278" Mass="203.9730436" MassNumber="204" Abundance="0.014" />
+    <Isotope Id="279" Mass="205.9744653" MassNumber="206" Abundance="0.241" />
+    <Isotope Id="280" Mass="206.9758969" MassNumber="207" Abundance="0.221" />
+    <Isotope Id="281" Mass="207.9766521" MassNumber="208" Abundance="0.524" />
+  </Element>
+  <Element Name="Bismuth" Symbol="Bi" AtomicNumber="83" AverageMass="208.9803987" ValenceElectrons="5">
+    <Isotope Id="282" Mass="208.9803987" MassNumber="209" Abundance="1" />
+  </Element>
+  <Element Name="Thorium" Symbol="Th" AtomicNumber="90" AverageMass="232.0380553" ValenceElectrons="2">
+    <Isotope Id="283" Mass="232.0380553" MassNumber="232" Abundance="1" />
+  </Element>
+  <Element Name="Protactinium" Symbol="Pa" AtomicNumber="91" AverageMass="231.035884" ValenceElectrons="2">
+    <Isotope Id="284" Mass="231.035884" MassNumber="231" Abundance="1" />
+  </Element>
+  <Element Name="Uranium" Symbol="U" AtomicNumber="92" AverageMass="238.02891026197929" ValenceElectrons="2">
+    <Isotope Id="285" Mass="234.0409521" MassNumber="234" Abundance="5.4E-05" />
+    <Isotope Id="286" Mass="235.0439299" MassNumber="235" Abundance="0.007204" />
+    <Isotope Id="287" Mass="238.0507882" MassNumber="238" Abundance="0.992742" />
   </Element>
 </PeriodicTable>

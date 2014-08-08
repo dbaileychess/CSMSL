@@ -20,6 +20,9 @@ using System.Collections.Generic;
 
 namespace CSMSL.Chemistry
 {
+    /// <summary>
+    /// An object that has a chemical formula
+    /// </summary>
     public interface IChemicalFormula : IMass
     {
         /// <summary>
@@ -28,7 +31,7 @@ namespace CSMSL.Chemistry
         ChemicalFormula ChemicalFormula { get; }
     }
 
-    public static class IChemicalFormulaFilterExtension
+    public static class ChemicalFormulaExtensions
     {
         [Flags]
         public enum FilterTypes

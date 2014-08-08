@@ -56,7 +56,7 @@ namespace CSMSL.Chemistry
             ValenceElectrons = valenceElectrons;
             AverageMass = 0;
             TotalAbundance = 0;
-            Isotopes = new Dictionary<int, Isotope>(4);
+            Isotopes = new Dictionary<int, Isotope>();
         }
 
         /// <summary>
@@ -129,22 +129,20 @@ namespace CSMSL.Chemistry
         internal Isotope AddIsotope(int atomicNumber, double atomicMass, float abundance)
         {
             var isotope = new Isotope(this, atomicNumber, atomicMass, abundance);
-            if (!Isotopes.ContainsKey(atomicNumber))
+            if (Isotopes.ContainsKey(atomicNumber)) 
+                return isotope;
+            Isotopes.Add(atomicNumber, isotope);
+            TotalAbundance += abundance;
+            _totalMass += abundance * atomicMass;
+            AverageMass = _totalMass / TotalAbundance;
+            if (PrincipalIsotope != null && !(abundance > PrincipalIsotope.RelativeAbundance)) 
+                return isotope;
+            if (PrincipalIsotope != null)
             {
-                Isotopes.Add(atomicNumber, isotope);
-                TotalAbundance += abundance;
-                _totalMass += abundance * atomicMass;
-                AverageMass = _totalMass / TotalAbundance;
-                if (PrincipalIsotope == null || abundance > PrincipalIsotope.RelativeAbundance)
-                {
-                    if (PrincipalIsotope != null)
-                    {
-                        PrincipalIsotope.IsPrincipalIsotope = false;
-                    }
-                    PrincipalIsotope = isotope;
-                    PrincipalIsotope.IsPrincipalIsotope = true;
-                }
+                PrincipalIsotope.IsPrincipalIsotope = false;
             }
+            PrincipalIsotope = isotope;
+            PrincipalIsotope.IsPrincipalIsotope = true;
             return isotope;
         }
     }
