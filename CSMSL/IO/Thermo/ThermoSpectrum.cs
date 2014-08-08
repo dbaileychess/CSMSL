@@ -16,7 +16,6 @@
 // License along with CSMSL. If not, see <http://www.gnu.org/licenses/>.
 
 using System;
-using System.Linq;
 using CSMSL.Spectral;
 
 namespace CSMSL.IO.Thermo

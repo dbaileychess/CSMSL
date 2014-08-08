@@ -61,8 +61,6 @@ namespace CSMSL.Proteomics
 
         public static void RestoreDefaults()
         {
-            Proteases.Clear();
-
             var assembly = Assembly.GetExecutingAssembly();
             Stream defaultModsStream = assembly.GetManifestResourceStream("CSMSL.Resources.Proteases.xml");
 
@@ -96,6 +94,40 @@ namespace CSMSL.Proteomics
                     string nocut = reader["nocut"] ?? "";
                     Proteases.Add(name, new Protease(name, terminus, cut, nocut));
                 }
+            }
+        }
+        
+        public static void Save()
+        {
+            SaveTo(UserProteasePath);
+        }
+
+        public static void SaveTo(string filePath)
+        {
+            using (XmlWriter writer = XmlWriter.Create(filePath, new XmlWriterSettings { Indent = true }))
+            {
+                writer.WriteStartDocument();
+
+                writer.WriteStartElement("Proteases");
+
+                foreach (var protease in Proteases.Values.Distinct())
+                {
+                    writer.WriteStartElement("Protease");
+                    writer.WriteAttributeString("name", protease.Name);
+                    writer.WriteAttributeString("terminus", protease.Terminal.ToString());
+                    if (!string.IsNullOrEmpty(protease.Cut))
+                    {
+                        writer.WriteAttributeString("cut", protease.Cut);
+                    }
+                    if (!string.IsNullOrEmpty(protease.NoCut))
+                    {
+                        writer.WriteAttributeString("nocut", protease.NoCut);
+                    }
+                    writer.WriteEndElement();
+                }
+                writer.WriteEndElement(); // end Proteases
+
+                writer.WriteEndDocument();
             }
         }
         
@@ -147,41 +179,7 @@ namespace CSMSL.Proteomics
                 handler(null, EventArgs.Empty);
             }
         }
-
-        public static void Save()
-        {
-            SaveTo(UserProteasePath);
-        }
-
-        public static void SaveTo(string filePath)
-        {
-            using (XmlWriter writer = XmlWriter.Create(filePath, new XmlWriterSettings { Indent = true }))
-            {
-                writer.WriteStartDocument();
-
-                writer.WriteStartElement("Proteases");
-
-                foreach (var protease in Proteases.Values.Distinct())
-                {
-                    writer.WriteStartElement("Protease");
-                    writer.WriteAttributeString("name", protease.Name);
-                    writer.WriteAttributeString("terminus", protease.Terminal.ToString());
-                    if (!string.IsNullOrEmpty(protease.Cut))
-                    {
-                        writer.WriteAttributeString("cut", protease.Cut);
-                    }
-                    if (!string.IsNullOrEmpty(protease.NoCut))
-                    {
-                        writer.WriteAttributeString("nocut", protease.NoCut);
-                    }
-                    writer.WriteEndElement();
-                }
-                writer.WriteEndElement(); // end Proteases
-
-                writer.WriteEndDocument();
-            }
-        }
-
+        
         public static event EventHandler ProteasesChanged;
 
         #endregion

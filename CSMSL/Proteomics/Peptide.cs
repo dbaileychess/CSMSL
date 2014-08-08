@@ -119,7 +119,7 @@ namespace CSMSL.Proteomics
             foreach (Modification mod in isotopologue)
             {
                 // Create a clone of the peptide, cloning modifications as well.
-                Peptide peptide = new Peptide(this, true);
+                Peptide peptide = new Peptide(this);
 
                 // Replace the base isotopologue mod with the specific version
                 peptide.ReplaceModification(isotopologue, mod);
@@ -309,7 +309,7 @@ namespace CSMSL.Proteomics
             for (long isoform = 0; isoform < isoforms; isoform++)
             {
                 // Create a new peptide based on the one passed in
-                Peptide pep = new Peptide(peptide, true);
+                Peptide pep = new Peptide(peptide);
 
                 long x = isoforms - isoform - 1;
                 long a = ptmsites;

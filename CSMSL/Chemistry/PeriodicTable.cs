@@ -65,7 +65,7 @@ namespace CSMSL.Chemistry
         {
             var assembly = Assembly.GetExecutingAssembly();
             Stream defaultModsStream = assembly.GetManifestResourceStream("CSMSL.Resources.Elements.xml");
-
+      
             Directory.CreateDirectory(Path.GetDirectoryName(UserPerodicTablePath));
             using (var fileStream = File.Create(UserPerodicTablePath))
             {
@@ -105,7 +105,7 @@ namespace CSMSL.Chemistry
                             double mass = double.Parse(reader["Mass"]);
                             int massNumber = int.Parse(reader["MassNumber"]);
                             float abundance = float.Parse(reader["Abundance"]);
-                            if (abundance > 0)
+                            if (abundance > 0 && element != null)
                             {
                                 Isotope isotope = element.AddIsotope(massNumber, mass, abundance);
 
@@ -148,15 +148,15 @@ namespace CSMSL.Chemistry
                     writer.WriteStartElement("Element");
                     writer.WriteAttributeString("Name", element.Name);
                     writer.WriteAttributeString("Symbol", element.AtomicSymbol);
-                    writer.WriteAttributeString("AtomicNumber", element.AtomicNumber.ToString());
+                    writer.WriteAttributeString("AtomicNumber", element.AtomicNumber.ToString("N"));
                     writer.WriteAttributeString("AverageMass", element.AverageMass.ToString("R"));
-                    writer.WriteAttributeString("ValenceElectrons", element.ValenceElectrons.ToString());
+                    writer.WriteAttributeString("ValenceElectrons", element.ValenceElectrons.ToString("N"));
                     foreach (var isotope in element.Isotopes.Values)
                     {
                         writer.WriteStartElement("Isotope");
-                        writer.WriteAttributeString("Id", isotope.UniqueId.ToString());
+                        writer.WriteAttributeString("Id", isotope.UniqueId.ToString("N"));
                         writer.WriteAttributeString("Mass", isotope.AtomicMass.ToString("R"));
-                        writer.WriteAttributeString("MassNumber", isotope.MassNumber.ToString());
+                        writer.WriteAttributeString("MassNumber", isotope.MassNumber.ToString("N"));
                         writer.WriteAttributeString("Abundance", isotope.RelativeAbundance.ToString("R"));
                         writer.WriteEndElement(); // Isotope
                     }
