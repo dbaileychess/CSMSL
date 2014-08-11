@@ -64,6 +64,9 @@ namespace CSMSL.Examples
 
         private static void StartExamples()
         {
+
+
+
             //List<MzTabPSM> psms;
             //List<MzTabProtein> proteins;
             //List<MzTabPeptide> peptides;
@@ -115,6 +118,9 @@ namespace CSMSL.Examples
 
             //Example Isotopologue
             //IsotopologueExample();
+
+            // Recalibrate Thermo Files on Lockmass
+            MsDataFileExamples.RecalibrateThermoRawFile();
 
             // Example IO
             //MsDataFileExamples.VendorNeutralDataAccess();

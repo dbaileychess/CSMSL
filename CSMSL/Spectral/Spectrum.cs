@@ -328,6 +328,22 @@ namespace CSMSL.Spectral
             return Convert.ToBase64String(ToBytes(zlibCompressed));
         }
 
+        /// <summary>
+        /// Creates a clone of this spectrum with each mass transformed by some function
+        /// </summary>
+        /// <param name="convertor">The function to convert each mass by</param>
+        /// <returns>A cloned spectrum with masses corrected</returns>
+        public virtual T2 CorrectMasses(Func<double,double> convertor)
+        {
+            T2 newSpectrum = Clone();
+            for (int i = 0; i < newSpectrum.Count; i++)
+            {
+                double oldMass = newSpectrum._masses[i];
+                newSpectrum._masses[i] = convertor(oldMass);
+            }
+            return newSpectrum;
+        }
+
         #region Abstract
 
         public abstract T GetPeak(int index);
@@ -335,6 +351,12 @@ namespace CSMSL.Spectral
         public abstract byte[] ToBytes(bool zlibCompressed = false);
 
         public abstract T2 Extract(double minMZ, double maxMZ);
+
+        /// <summary>
+        /// Returns a new deep clone of this spectrum.
+        /// </summary>
+        /// <returns></returns>
+        public abstract T2 Clone();
 
         #endregion Abstract
 

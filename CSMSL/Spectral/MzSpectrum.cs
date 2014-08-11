@@ -118,6 +118,11 @@ namespace CSMSL.Spectral
             return new MZSpectrum(mz, intensity, false);
         }
 
+        public override MZSpectrum Clone()
+        {
+            return new MZSpectrum(this);
+        }
+
         /// <summary>
         /// Extracts a sub spectrum from this spectrum.
         /// Does not modify this spectrum.

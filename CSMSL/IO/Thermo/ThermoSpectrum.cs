@@ -31,6 +31,7 @@ namespace CSMSL.IO.Thermo
         private readonly double[] _noises;
         private readonly double[] _resolutions;
         private readonly int[] _charges;
+     
 
         private ThermoSpectrum()
         {
@@ -82,6 +83,13 @@ namespace CSMSL.IO.Thermo
                 _charges = charge;
                 _resolutions = resolutions;
             }
+        }
+
+        public ThermoSpectrum(ThermoSpectrum thermoSpectrum)
+            :this(thermoSpectrum._masses, thermoSpectrum._intensities,thermoSpectrum._noises,
+            thermoSpectrum._charges,thermoSpectrum._resolutions, true)
+        {
+            
         }
 
         public double GetNoise(int index)
@@ -194,6 +202,11 @@ namespace CSMSL.IO.Thermo
             Array.Resize(ref noises, j);
             Array.Resize(ref resolutions, j);
             return new ThermoSpectrum(mz, intensity, noises, charges, resolutions, false);
+        }
+
+        public override ThermoSpectrum Clone()
+        {
+            return new ThermoSpectrum(this);
         }
     }
 }

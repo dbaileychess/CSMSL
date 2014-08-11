@@ -97,16 +97,20 @@ namespace CSMSL.Examples
             }
         }
 
-        //public static void WiffExample()
-        //{
-        //    WiffFile.AddLicense("<?xml version=\"1.0\" encoding=\"utf-8\"?><license_key>    <company_name>Promega Corporation|Re-Distributable Beta Agreement 2013-06-04</company_name>    <product_name>ProcessingFramework</product_name>    <features>WiffReader SDK</features>    <key_data>        coGue7N5kug7nWfiCQLXDWlJHvBhQJQ33hDLSkvG4JGd0w2wkjaehw==    </key_data></license_key>");
-        //    WiffFile wiff = new WiffFile(@"Resources/Enolase_repeats_AQv1.4.2.wiff");
-        //    wiff.Open();
+        public static void RecalibrateThermoRawFile()
+        {
+            List<ThermoSpectrum> spectra = new List<ThermoSpectrum>();
+            using (ThermoRawFile rawFile = new ThermoRawFile("Resources/ThermoRawFileMS1MS2.raw"))
+            {
+                rawFile.Open();
+                for(int i = rawFile.FirstSpectrumNumber; i <= rawFile.LastSpectrumNumber; i++) 
+                {
+                    ThermoSpectrum spectrum = rawFile.GetLabeledSpectrum(i);
+                    ThermoSpectrum correctedSpectrum = spectrum.CorrectMasses((mz) => mz - 5);
+                    spectra.Add(correctedSpectrum);
+                }
 
-        //    string[] experiments = wiff.GetSampleNames();
-        //    wiff.SetActiveSample(2);
-        //    var spectrum = wiff.GetMzSpectrum(100);
-
-        //}
+            }
+        }
     }
 }
