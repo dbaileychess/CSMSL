@@ -19,6 +19,6 @@ namespace CSMSL.Spectral
 {
     public interface IMassSpectrum
     {
-        MZSpectrum MassMzSpectrum { get; }
+        MZSpectrum MassSpectrum { get; }
     }
 }

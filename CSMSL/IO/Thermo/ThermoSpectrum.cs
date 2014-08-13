@@ -17,11 +17,15 @@
 
 using System;
 using CSMSL.Spectral;
+using System.Collections.Generic;
 
 namespace CSMSL.IO.Thermo
 {
+    /// <summary>
+    /// A high resolution spectra from a Thermo raw file
+    /// </summary>
     [Serializable]
-    public class ThermoSpectrum : Spectrum<ThermoLabeledPeak, ThermoSpectrum>
+    public sealed class ThermoSpectrum : Spectrum<ThermoLabeledPeak, ThermoSpectrum>
     {
         /// <summary>
         /// An empty spectrum
@@ -31,7 +35,6 @@ namespace CSMSL.IO.Thermo
         private readonly double[] _noises;
         private readonly double[] _resolutions;
         private readonly int[] _charges;
-     
 
         private ThermoSpectrum()
         {
@@ -67,27 +70,14 @@ namespace CSMSL.IO.Thermo
         public ThermoSpectrum(double[] mz, double[] intensity, double[] noise, int[] charge, double[] resolutions, bool shouldCopy = true)
             : base(mz, intensity, shouldCopy)
         {
-            if (shouldCopy)
-            {
-                _noises = new double[Count];
-                _charges = new int[Count];
-                _resolutions = new double[Count];
-
-                Buffer.BlockCopy(noise, 0, _noises, 0, sizeof (double)*Count);
-                Buffer.BlockCopy(charge, 0, _charges, 0, sizeof (int)*Count);
-                Buffer.BlockCopy(resolutions, 0, _resolutions, 0, sizeof (double)*Count);
-            }
-            else
-            {
-                _noises = noise;
-                _charges = charge;
-                _resolutions = resolutions;
-            }
+            _noises = CopyData(noise, shouldCopy);
+            _resolutions = CopyData(resolutions, shouldCopy);
+            _charges = CopyData(charge, shouldCopy);
         }
-
+        
         public ThermoSpectrum(ThermoSpectrum thermoSpectrum)
             :this(thermoSpectrum._masses, thermoSpectrum._intensities,thermoSpectrum._noises,
-            thermoSpectrum._charges,thermoSpectrum._resolutions, true)
+            thermoSpectrum._charges,thermoSpectrum._resolutions)
         {
             
         }
@@ -117,23 +107,17 @@ namespace CSMSL.IO.Thermo
 
         public double[] GetNoises()
         {
-            double[] noises = new double[Count];
-            Buffer.BlockCopy(_noises, 0, noises, 0, sizeof (double)*Count);
-            return noises;
+            return CopyData(_noises);
         }
 
         public double[] GetResolutions()
         {
-            double[] resolutions = new double[Count];
-            Buffer.BlockCopy(_resolutions, 0, resolutions, 0, sizeof (double)*Count);
-            return resolutions;
+            return CopyData(_resolutions);
         }
 
         public int[] GetCharges()
         {
-            int[] charges = new int[Count];
-            Buffer.BlockCopy(_charges, 0, charges, 0, sizeof (int)*Count);
-            return charges;
+            return CopyData(_charges);
         }
 
         public override ThermoLabeledPeak GetPeak(int index)
@@ -143,7 +127,10 @@ namespace CSMSL.IO.Thermo
 
         public override byte[] ToBytes(bool zlibCompressed = false)
         {
-            throw new NotImplementedException();
+            double[] charges = new double[Count];
+            for (int i = 0; i < Count; i++)
+                charges[i] = _charges[i];
+            return ToBytes(zlibCompressed, _masses, _intensities, _resolutions, _noises, charges);
         }
 
         public override double[,] ToArray()
@@ -207,6 +194,11 @@ namespace CSMSL.IO.Thermo
         public override ThermoSpectrum Clone()
         {
             return new ThermoSpectrum(this);
+        }
+
+        public override ThermoSpectrum Filter(IEnumerable<IRange<double>> mzRanges)
+        {
+            throw new NotImplementedException();
         }
     }
 }

@@ -24,6 +24,9 @@ using System.IO;
 
 namespace CSMSL.IO
 {
+    /// <summary>
+    /// A data file for storing data collected from a Mass Spectrometer
+    /// </summary>
     public abstract class MSDataFile : IDisposable, IEquatable<MSDataFile>, IEnumerable<MSDataScan>
     {
         /// <summary>

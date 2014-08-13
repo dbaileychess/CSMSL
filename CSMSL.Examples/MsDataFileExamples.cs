@@ -55,9 +55,9 @@ namespace CSMSL.Examples
                         scan.MsnOrder,
                         scan.RetentionTime,
                         scan.Polarity,
-                        scan.MassMzSpectrum.Count,
+                        scan.MassSpectrum.Count,
                         scan.MzAnalyzer,
-                        scan.MzRange.ToString());
+                        scan.MzRange);
                 }
                 watch.Stop();
                 Console.WriteLine("File: {0}", dataFile.Name);
@@ -85,10 +85,10 @@ namespace CSMSL.Examples
                 Stopwatch watch = new Stopwatch();
                 watch.Start();
 
-                foreach (MSDataScan scan in dataFile.Where(s => s.MassMzSpectrum.Count > 1).Take(4))
+                foreach (MSDataScan scan in dataFile.Where(s => s.MassSpectrum.Count > 1).Take(4))
                 {
                     Console.WriteLine("{0,-4} {1,3} {2,-6:F4} {3,-5} {4,7} {5,-10} {6}", scan.SpectrumNumber, scan.MsnOrder, scan.RetentionTime,
-                        scan.Polarity, scan.MassMzSpectrum.Count, scan.MzAnalyzer, scan.MzRange.ToString());
+                        scan.Polarity, scan.MassSpectrum.Count, scan.MzAnalyzer, scan.MzRange.ToString());
                 }
                 watch.Stop();
                 Console.WriteLine("File: {0}", dataFile);
@@ -99,17 +99,17 @@ namespace CSMSL.Examples
 
         public static void RecalibrateThermoRawFile()
         {
-            List<ThermoSpectrum> spectra = new List<ThermoSpectrum>();
+            List<ISpectrum> spectra = new List<ISpectrum>();
             using (ThermoRawFile rawFile = new ThermoRawFile("Resources/ThermoRawFileMS1MS2.raw"))
             {
                 rawFile.Open();
                 for(int i = rawFile.FirstSpectrumNumber; i <= rawFile.LastSpectrumNumber; i++) 
                 {
                     ThermoSpectrum spectrum = rawFile.GetLabeledSpectrum(i);
-                    ThermoSpectrum correctedSpectrum = spectrum.CorrectMasses((mz) => mz - 5);
+                    ThermoSpectrum correctedSpectrum = spectrum.CorrectMasses((mz) => mz - 5); // shift all masses 5 Th lower
+                    ISpectrum spectrum2 = correctedSpectrum.Extract(0, 5000);
                     spectra.Add(correctedSpectrum);
                 }
-
             }
         }
     }

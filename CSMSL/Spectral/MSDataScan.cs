@@ -29,7 +29,7 @@ namespace CSMSL.Spectral
         /// <summary>
         /// The mass spectrum associated with the scan
         /// </summary>
-        public MZSpectrum MassMzSpectrum
+        public MZSpectrum MassSpectrum
         {
             get
             {

@@ -497,10 +497,7 @@ namespace CSMSL.IO.Thermo
                 double reactTime = double.Parse(Time);
                 return reactTime;
             }
-            else
-            {
-                return double.NaN;
-            }
+            return double.NaN;
         }
 
         public Chromatogram GetTICChroma()

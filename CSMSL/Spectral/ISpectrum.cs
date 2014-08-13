@@ -15,6 +15,8 @@
 // You should have received a copy of the GNU Lesser General Public
 // License along with CSMSL. If not, see <http://www.gnu.org/licenses/>.
 
+using System.Collections.Generic;
+
 namespace CSMSL.Spectral
 {
     public interface ISpectrum
@@ -24,12 +26,40 @@ namespace CSMSL.Spectral
         /// </summary>
         int Count { get; }
 
+        /// <summary>
+        /// The first m/z of the spectrum
+        /// </summary>
+        double FirstMZ { get; }
+
+        /// <summary>
+        /// The last m/z of the spectrum
+        /// </summary>
+        double LastMZ { get; }
+
+        double TotalIonCurrent { get; }
+
+        /// <summary>
+        /// Gets an array of m/z values for this spectrum
+        /// </summary>
+        /// <returns></returns>
         double[] GetMasses();
 
+        /// <summary>
+        /// Gets an array of intenisty values for this spectrumm, ordered by m/z value
+        /// </summary>
+        /// <returns></returns>
         double[] GetIntensities();
 
+        /// <summary>
+        /// Get the intensity of the most intense peak in this spectrum
+        /// </summary>
+        /// <returns></returns>
         double GetBasePeakIntensity();
 
+        /// <summary>
+        /// Get the sum of the intensities for this spectrum
+        /// </summary>
+        /// <returns></returns>
         double GetTotalIonCurrent();
 
         bool TryGetIntensities(double minMZ, double maxMZ, out double intensity);
@@ -37,17 +67,22 @@ namespace CSMSL.Spectral
         bool TryGetIntensities(IRange<double> rangeMZ, out double intensity);
 
         byte[] ToBytes(bool zlibCompressed);
-
+        
         IPeak GetClosestPeak(double minMZ, double maxMZ);
 
         IPeak GetClosestPeak(IRange<double> rangeMZ);
+
+        ISpectrum Extract(double minMZ, double maxMZ);
+
+        ISpectrum Filter(IEnumerable<IRange<double>> mzRanges);
     }
 
-    public interface ISpectrum<out T> : ISpectrum where T : IPeak
+    public interface ISpectrum<out T> : ISpectrum, IEnumerable<T> 
+        where T : IPeak
     {
         new T GetClosestPeak(double minMZ, double maxMZ);
 
         new T GetClosestPeak(IRange<double> rangeMZ);
-    }
+   }
 
 }

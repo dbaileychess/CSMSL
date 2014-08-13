@@ -138,7 +138,7 @@ namespace CSMSL.Examples
                         sb.Append(delimiter);
 
                         // We can just use the original scan object now
-                        sb.Append(scan.MassMzSpectrum.Count);
+                        sb.Append(scan.MassSpectrum.Count);
                         sb.Append(delimiter);
 
                         sb.Append(scan.MzRange);

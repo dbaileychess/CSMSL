@@ -51,7 +51,7 @@ namespace CSMSL.Tests.Spectral
         [Test]
         public void SpectrumFirstMZ()
         {
-            Assert.AreEqual(328.73795, _mzSpectrumA.FirstMz);
+            Assert.AreEqual(328.73795, _mzSpectrumA.FirstMZ);
         }
 
         [Test]

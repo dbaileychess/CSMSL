@@ -27,7 +27,7 @@ namespace CSMSL.IO.Thermo
 
         public double Resolution { get; private set; }
 
-        public double SN
+        public double SignalToNoise
         {
             get
             {
@@ -38,20 +38,7 @@ namespace CSMSL.IO.Thermo
 
         public override string ToString()
         {
-            string charge = "";
-            if (Charge == 0)
-            {
-                charge = "?z";
-            }
-            else if (Charge > 0)
-            {
-                charge = "+" + Charge;
-            }
-            else
-            {
-                charge = "-" + Charge;
-            }
-            return string.Format("{0} {1} SN = {2:F2}", base.ToString(), charge, SN);
+            return string.Format("{0} z = {1:+#;-#;?} SN = {2:F2}", base.ToString(), Charge, SignalToNoise);
         }
 
         public ThermoLabeledPeak()
@@ -68,7 +55,7 @@ namespace CSMSL.IO.Thermo
 
         public double GetSignalToNoise()
         {
-            return SN;
+            return SignalToNoise;
         }
 
         public double GetDenormalizedIntensity(double injectionTime)

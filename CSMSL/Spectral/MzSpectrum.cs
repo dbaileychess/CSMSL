@@ -52,13 +52,18 @@ namespace CSMSL.Spectral
         }
 
         public MZSpectrum(double[,] mzintensities, int count)
-            : base(mzintensities, count)
-        {
-        }
-
+            : base(mzintensities, count) { }
+      
         public MZSpectrum(byte[] mzintensities)
-            : base(mzintensities)
         {
+            _masses = FromBytes(mzintensities, 0);
+            _intensities = FromBytes(mzintensities, 1);
+            Count = mzintensities.Length / (sizeof(double) * 2);
+            int size = sizeof(double) * Count;
+            _masses = new double[Count];
+            _intensities = new double[Count];
+            Buffer.BlockCopy(mzintensities, 0, _masses, 0, size);
+            Buffer.BlockCopy(mzintensities, size, _intensities, 0, size);
         }
 
         private MZSpectrum()
@@ -73,21 +78,6 @@ namespace CSMSL.Spectral
         public override MZPeak GetPeak(int index)
         {
             return new MZPeak(_masses[index], _intensities[index]);
-        }
-
-        public override byte[] ToBytes(bool zlibCompressed = false)
-        {
-            int length = Count * sizeof(double);
-            byte[] bytes = new byte[length * 2];
-            Buffer.BlockCopy(_masses, 0, bytes, 0, length);
-            Buffer.BlockCopy(_intensities, 0, bytes, length, length);
-
-            if (zlibCompressed)
-            {
-                bytes = bytes.Compress();
-            }
-
-            return bytes;
         }
 
         public override MZSpectrum Extract(double minMZ, double maxMZ)
@@ -166,7 +156,7 @@ namespace CSMSL.Spectral
             return new MZSpectrum(mz, intensities, false);
         }
 
-        public MZSpectrum Filter(IEnumerable<IRange<double>> rangesToRemove)
+        public override MZSpectrum Filter(IEnumerable<IRange<double>> mzRanges)
         {
             if (Count == 0)
                 return new MZSpectrum();
@@ -177,7 +167,7 @@ namespace CSMSL.Spectral
             HashSet<int> indiciesToRemove = new HashSet<int>();
 
             // Loop over each range to remove
-            foreach (IRange<double> range in rangesToRemove)
+            foreach (IRange<double> range in mzRanges)
             {
                 double min = range.Minimum;
                 double max = range.Maximum;
@@ -217,6 +207,7 @@ namespace CSMSL.Spectral
             // Return a new spectrum, don't bother recopying the arrays
             return new MZSpectrum(mz, intensities, false);
         }
+        
     }
     
 }

@@ -36,9 +36,9 @@ namespace CSMSL.Analysis.Identification
 
         public override PeptideSpectralMatch Search(IMassSpectrum massSpectrum, Peptide peptide, FragmentTypes fragmentTypes, Tolerance productMassTolerance)
         {
-            double[] eMasses = massSpectrum.MassMzSpectrum.GetMasses();
-            double[] eIntenisties = massSpectrum.MassMzSpectrum.GetIntensities();
-            double tic = massSpectrum.MassMzSpectrum.GetTotalIonCurrent();
+            double[] eMasses = massSpectrum.MassSpectrum.GetMasses();
+            double[] eIntenisties = massSpectrum.MassSpectrum.GetIntensities();
+            double tic = massSpectrum.MassSpectrum.GetTotalIonCurrent();
 
             PeptideSpectralMatch psm = new PeptideSpectralMatch(DefaultPsmScoreType) { Peptide = peptide };
             double[] tMasses = peptide.Fragment(fragmentTypes).Select(frag => Mass.MzFromMass(frag.MonoisotopicMass, 1)).OrderBy(val => val).ToArray();
@@ -52,9 +52,9 @@ namespace CSMSL.Analysis.Identification
         {
             SortedMaxSizedContainer<PeptideSpectralMatch> results = new SortedMaxSizedContainer<PeptideSpectralMatch>(MaxMatchesPerSpectrum);
 
-            double[] eMasses = spectrum.MassMzSpectrum.GetMasses();
-            double[] eIntenisties = spectrum.MassMzSpectrum.GetIntensities();
-            double tic = spectrum.MassMzSpectrum.GetTotalIonCurrent();
+            double[] eMasses = spectrum.MassSpectrum.GetMasses();
+            double[] eIntenisties = spectrum.MassSpectrum.GetIntensities();
+            double tic = spectrum.MassSpectrum.GetTotalIonCurrent();
             ;
 
             foreach (var peptide in peptides)
