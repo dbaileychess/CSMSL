@@ -23,7 +23,7 @@ using System.Xml.Serialization;
 
 namespace CSMSL.IO.MzML
 {
-    public class Mzml : MSDataFile
+    public class Mzml : MSDataFile<MZSpectrum>
     {
         private static string _msnOrderAccession = "MS:1000511";
         private static string _precursorCharge = "MS:1000041";

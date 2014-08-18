@@ -25,7 +25,7 @@ using System.Text.RegularExpressions;
 
 namespace CSMSL.IO.Agilent
 {
-    public class AgilentDDirectory : MSDataFile
+    public class AgilentDDirectory : MSDataFile<MZSpectrum>
     {
         private IMsdrDataReader _msdr;
 

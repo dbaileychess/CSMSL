@@ -163,8 +163,10 @@
     <Compile Include="IO\Fasta.cs" />
     <Compile Include="IO\FastaReader.cs" />
     <Compile Include="IO\FastaWriter.cs" />
+    <Compile Include="IO\IMSDataFile.cs" />
     <Compile Include="IO\MSDataFile.cs" />
     <Compile Include="IO\MsDataFileType.cs" />
+    <Compile Include="IO\IMSDataScan.cs" />
     <Compile Include="IO\MzTab\MzTab.cs" />
     <Compile Include="IO\MzTab\MzTabEntity.cs" />
     <Compile Include="IO\MzTab\MzTabMetaData.cs" />

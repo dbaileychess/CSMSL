@@ -27,7 +27,8 @@ namespace CSMSL.IO
     /// <summary>
     /// A data file for storing data collected from a Mass Spectrometer
     /// </summary>
-    public abstract class MSDataFile : IDisposable, IEquatable<MSDataFile>, IEnumerable<MSDataScan>
+    public abstract class MSDataFile<TSpectrum> : IMSDataFile<TSpectrum>, IDisposable, IEquatable<MSDataFile<TSpectrum>>
+        where TSpectrum : ISpectrum
     {
         /// <summary>
         /// Defines if MS scans should be cached for quicker retrieval. Cached scans are held in an internal
@@ -36,7 +37,7 @@ namespace CSMSL.IO
         /// </summary>
         public static bool CacheScans;
 
-        internal MSDataScan[] Scans = null;
+        internal MSDataScan<TSpectrum>[] Scans = null;
 
         private string _filePath;
 
@@ -108,7 +109,7 @@ namespace CSMSL.IO
             get { return _name; }
         }
 
-        public MSDataScan this[int spectrumNumber]
+        public MSDataScan<TSpectrum> this[int spectrumNumber]
         {
             get { return GetMsScan(spectrumNumber); }
         }
@@ -144,17 +145,17 @@ namespace CSMSL.IO
             _isDisposed = true;
         }
 
-        public bool Equals(MSDataFile other)
+        public bool Equals(MSDataFile<TSpectrum> other)
         {
             if (ReferenceEquals(this, other)) return true;
             return FilePath.Equals(other.FilePath);
         }
 
-        public IEnumerator<MSDataScan> GetEnumerator()
+        public IEnumerator<IMSDataScan<TSpectrum>> GetEnumerator()
         {
             return GetMsScans().GetEnumerator();
         }
-
+      
         public override int GetHashCode()
         {
             return FilePath.GetHashCode();
@@ -180,14 +181,14 @@ namespace CSMSL.IO
         /// </summary>
         /// <param name="spectrumNumber">The spectrum number to get the MS Scan at</param>
         /// <returns></returns>
-        public virtual MSDataScan GetMsScan(int spectrumNumber)
+        public virtual MSDataScan<TSpectrum> GetMsScan(int spectrumNumber)
         {
             if (!CacheScans)
                 return GetMSDataScan(spectrumNumber);
 
             if (Scans == null)
             {
-                Scans = new MSDataScan[LastSpectrumNumber + 1];
+                Scans = new MSDataScan<TSpectrum>[LastSpectrumNumber + 1];
             }
 
             if (Scans[spectrumNumber] == null)
@@ -207,7 +208,7 @@ namespace CSMSL.IO
 
             if (Scans == null)
             {
-                Scans = new MSDataScan[LastSpectrumNumber + 1];
+                Scans = new MSDataScan<TSpectrum>[LastSpectrumNumber + 1];
             }
 
             for (int spectrumNumber = FirstSpectrumNumber; spectrumNumber < LastSpectrumNumber; spectrumNumber++)
@@ -226,11 +227,11 @@ namespace CSMSL.IO
             Array.Clear(Scans, 0, Scans.Length);
         }
 
-        protected virtual MSDataScan GetMSDataScan(int spectrumNumber)
+        protected virtual MSDataScan<TSpectrum> GetMSDataScan(int spectrumNumber)
         {
             int msn = GetMsnOrder(spectrumNumber);
 
-            MSDataScan scan = msn > 1 ? new MsnDataScan(spectrumNumber, msn, this) : new MSDataScan(spectrumNumber, msn, this);
+            MSDataScan<TSpectrum> scan = msn > 1 ? new MsnDataScan<TSpectrum>(spectrumNumber, msn, this) : new MSDataScan<TSpectrum>(spectrumNumber, msn, this);
 
             return scan;
         }
@@ -250,12 +251,12 @@ namespace CSMSL.IO
             return new MzRange(precursormz - halfWidth, precursormz + halfWidth);
         }
 
-        public virtual IEnumerable<MSDataScan> GetMsScans()
+        public virtual IEnumerable<MSDataScan<TSpectrum>> GetMsScans()
         {
             return GetMsScans(FirstSpectrumNumber, LastSpectrumNumber);
         }
 
-        public virtual IEnumerable<MSDataScan> GetMsScans(int firstSpectrumNumber, int lastSpectrumNumber)
+        public virtual IEnumerable<MSDataScan<TSpectrum>> GetMsScans(int firstSpectrumNumber, int lastSpectrumNumber)
         {
             for (int spectrumNumber = firstSpectrumNumber; spectrumNumber <= lastSpectrumNumber; spectrumNumber++)
             {
@@ -263,12 +264,12 @@ namespace CSMSL.IO
             }
         }
 
-        public virtual IEnumerable<MSDataScan> GetMsScans(double firstRT, double lastRT)
+        public virtual IEnumerable<MSDataScan<TSpectrum>> GetMsScans(double firstRT, double lastRT)
         {
             int spectrumNumber = GetSpectrumNumber(firstRT - 0.0000001);
             while (spectrumNumber <= LastSpectrumNumber)
             {
-                MSDataScan scan = GetMsScan(spectrumNumber++);
+                MSDataScan<TSpectrum> scan = GetMsScan(spectrumNumber++);
                 double rt = scan.RetentionTime;
                 if (rt < firstRT)
                     continue;
@@ -278,14 +279,14 @@ namespace CSMSL.IO
             }
         }
 
-        public virtual IEnumerable<MSDataScan> GetMsScans(IRange<int> range)
+        public virtual IEnumerable<MSDataScan<TSpectrum>> GetMsScans(IRange<int> range)
         {
             return GetMsScans(range.Minimum, range.Maximum);
         }
 
         public abstract MZAnalyzerType GetMzAnalyzer(int spectrumNumber);
 
-        public abstract MZSpectrum GetSpectrum(int spectrumNumber);
+        public abstract TSpectrum GetSpectrum(int spectrumNumber);
 
         public abstract Polarity GetPolarity(int spectrumNumber);
 
@@ -313,5 +314,10 @@ namespace CSMSL.IO
         protected abstract int GetFirstSpectrumNumber();
 
         protected abstract int GetLastSpectrumNumber();
+
+        IEnumerator<IMSDataScan> IEnumerable<IMSDataScan>.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
     }
 }

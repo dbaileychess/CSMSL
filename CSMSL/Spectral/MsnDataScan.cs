@@ -21,9 +21,9 @@ using System;
 
 namespace CSMSL.Spectral
 {
-    public class MsnDataScan : MSDataScan
+    public class MsnDataScan<T> : MSDataScan<T> where T : ISpectrum
     {
-        public MsnDataScan(int spectrumNumber, int msnOrder, MSDataFile parentFile = null)
+        public MsnDataScan(int spectrumNumber, int msnOrder, MSDataFile<T> parentFile = null)
             : base(spectrumNumber, msnOrder, parentFile)
         {
         }

@@ -112,19 +112,8 @@ namespace CSMSL.Spectral
         {
             return new MZSpectrum(this);
         }
-
-        /// <summary>
-        /// Extracts a sub spectrum from this spectrum.
-        /// Does not modify this spectrum.
-        /// </summary>
-        /// <param name="range"></param>
-        /// <returns></returns>
-        public MZSpectrum Extract(IRange<double> range)
-        {
-            return Extract(range.Minimum, range.Maximum);
-        }
-
-        public MZSpectrum Filter(double minIntensity, double maxIntensity = double.MaxValue)
+        
+        public override MZSpectrum FilterByIntensity(double minIntensity = 0, double maxIntensity = double.MaxValue)
         {
             if (Count == 0)
                 return new MZSpectrum();
@@ -156,7 +145,7 @@ namespace CSMSL.Spectral
             return new MZSpectrum(mz, intensities, false);
         }
 
-        public override MZSpectrum Filter(IEnumerable<IRange<double>> mzRanges)
+        public override MZSpectrum FilterByMZ(IEnumerable<IRange<double>> mzRanges)
         {
             if (Count == 0)
                 return new MZSpectrum();
@@ -207,7 +196,52 @@ namespace CSMSL.Spectral
             // Return a new spectrum, don't bother recopying the arrays
             return new MZSpectrum(mz, intensities, false);
         }
-        
+
+        public override MZSpectrum FilterByMZ(double minMZ, double maxMZ)
+        {
+            if (Count == 0)
+                return new MZSpectrum();
+
+            int count = Count;
+
+            // Peaks to remove
+            HashSet<int> indiciesToRemove = new HashSet<int>();
+
+            int index = Array.BinarySearch(_masses, minMZ);
+            if (index < 0)
+                index = ~index;
+
+            while (index < count && _masses[index] <= maxMZ)
+            {
+                indiciesToRemove.Add(index);
+                index++;
+            }
+            
+
+            // The size of the cleaned spectrum
+            int cleanCount = count - indiciesToRemove.Count;
+
+            if (cleanCount == 0)
+                return new MZSpectrum();
+
+            // Create the storage for the cleaned spectrum
+            double[] mz = new double[cleanCount];
+            double[] intensities = new double[cleanCount];
+
+            // Transfer peaks from the old spectrum to the new one
+            int j = 0;
+            for (int i = 0; i < count; i++)
+            {
+                if (indiciesToRemove.Contains(i))
+                    continue;
+                mz[j] = _masses[i];
+                intensities[j] = _intensities[i];
+                j++;
+            }
+
+            // Return a new spectrum, don't bother recopying the arrays
+            return new MZSpectrum(mz, intensities, false);
+        }
     }
     
 }

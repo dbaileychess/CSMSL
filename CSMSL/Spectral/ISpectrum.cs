@@ -36,6 +36,9 @@ namespace CSMSL.Spectral
         /// </summary>
         double LastMZ { get; }
 
+        /// <summary>
+        /// The total ion current of the spectrum
+        /// </summary>
         double TotalIonCurrent { get; }
 
         /// <summary>
@@ -45,7 +48,7 @@ namespace CSMSL.Spectral
         double[] GetMasses();
 
         /// <summary>
-        /// Gets an array of intenisty values for this spectrumm, ordered by m/z value
+        /// Gets an array of intensity values for this spectrum, ordered by m/z value
         /// </summary>
         /// <returns></returns>
         double[] GetIntensities();
@@ -72,9 +75,19 @@ namespace CSMSL.Spectral
 
         IPeak GetClosestPeak(IRange<double> rangeMZ);
 
+        ISpectrum Extract(IRange<double> mzRange);
+
         ISpectrum Extract(double minMZ, double maxMZ);
 
-        ISpectrum Filter(IEnumerable<IRange<double>> mzRanges);
+        ISpectrum FilterByMZ(IEnumerable<IRange<double>> mzRanges);
+
+        ISpectrum FilterByMZ(IRange<double> mzRange);
+
+        ISpectrum FilterByMZ(double minMZ, double maxMZ);
+
+        ISpectrum FilterByIntensity(double minIntensity, double maxIntensity);
+
+        ISpectrum FilterByIntensity(IRange<double> intenistyRange);
     }
 
     public interface ISpectrum<out T> : ISpectrum, IEnumerable<T> 

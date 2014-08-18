@@ -198,7 +198,7 @@ namespace CSMSL.Tests.Spectral
         [Test]
         public void SpectrumFilterEmpty()
         {
-            MZSpectrum filteredMzSpectrum = _mzSpectrumA.Filter(0, 50);
+            MZSpectrum filteredMzSpectrum = _mzSpectrumA.FilterByIntensity(0, 50);
 
             Assert.AreEqual(MZSpectrum.Empty, filteredMzSpectrum);
         }
@@ -206,7 +206,7 @@ namespace CSMSL.Tests.Spectral
         [Test]
         public void SpectrumFilterCount()
         {
-            MZSpectrum filteredMzSpectrum = _mzSpectrumA.Filter(28604417, 28604419);
+            MZSpectrum filteredMzSpectrum = _mzSpectrumA.FilterByIntensity(28604417, 28604419);
 
             Assert.AreEqual(1, filteredMzSpectrum.Count);
         }

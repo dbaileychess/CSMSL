@@ -20,16 +20,17 @@ using System;
 
 namespace CSMSL.Spectral
 {
-    public class MSDataScan : IEquatable<MSDataScan>, IMassSpectrum
+    public class MSDataScan<TSpectrum> : IMSDataScan<TSpectrum>, IEquatable<MSDataScan<TSpectrum>> 
+        where TSpectrum : ISpectrum
     {
-        public MSDataFile ParentFile { get; private set; }
+        public MSDataFile<TSpectrum> ParentFile { get; private set; }
 
-        private MZSpectrum _massMzSpectrum;
+        private TSpectrum _massMzSpectrum;
 
         /// <summary>
         /// The mass spectrum associated with the scan
         /// </summary>
-        public MZSpectrum MassSpectrum
+        public TSpectrum MassSpectrum
         {
             get
             {
@@ -43,6 +44,11 @@ namespace CSMSL.Spectral
                 return _massMzSpectrum;
             }
             internal set { _massMzSpectrum = value; }
+        }
+
+        ISpectrum IMSDataScan.MassSpectrum
+        {
+            get { return MassSpectrum; }
         }
 
         public int SpectrumNumber { get; protected set; }
@@ -177,7 +183,7 @@ namespace CSMSL.Spectral
             MsnOrder = -1;
         }
 
-        public MSDataScan(int spectrumNumber, int msnOrder = 1, MSDataFile parentFile = null)
+        public MSDataScan(int spectrumNumber, int msnOrder = 1, MSDataFile<TSpectrum> parentFile = null)
         {
             SpectrumNumber = spectrumNumber;
             MsnOrder = msnOrder;
@@ -198,7 +204,7 @@ namespace CSMSL.Spectral
             return ParentFile.GetHashCode() ^ SpectrumNumber;
         }
 
-        public bool Equals(MSDataScan other)
+        public bool Equals(MSDataScan<TSpectrum> other)
         {
             if (ReferenceEquals(this, other)) return true;
             return SpectrumNumber.Equals(other.SpectrumNumber) && ParentFile.Equals(other.ParentFile);

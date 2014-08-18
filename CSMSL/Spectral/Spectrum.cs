@@ -10,9 +10,9 @@ namespace CSMSL.Spectral
     /// Represents the standard m/z spectrum, with intensity on the y-axis and m/z on the x-axis.
     /// </summary>
     [Serializable]
-    public abstract class Spectrum<TPeak, TSpectrum> : IEnumerable<TPeak>, ISpectrum<TPeak>, ISpectrum
+    public abstract class Spectrum<TPeak, TSpectrum> : ISpectrum<TPeak>
         where TPeak : IPeak
-        where TSpectrum : Spectrum<TPeak, TSpectrum>, ISpectrum
+        where TSpectrum : Spectrum<TPeak, TSpectrum>
     {
         /// <summary>
         /// The m/z of this spectrum in ascending order
@@ -280,15 +280,7 @@ namespace CSMSL.Spectral
             return index >= 0 ? GetPeak(index) : default(TPeak);
         }
 
-        IPeak ISpectrum.GetClosestPeak(IRange<double> massRange)
-        {
-            return GetClosestPeak(massRange);
-        }
-
-        IPeak ISpectrum.GetClosestPeak(double mean, double tolerance)
-        {
-            return GetClosestPeak(mean, tolerance);
-        }
+ 
 
         public virtual bool TryGetPeaks(IRange<double> rangeMZ, out List<TPeak> peaks)
         {
@@ -335,25 +327,78 @@ namespace CSMSL.Spectral
             return newSpectrum;
         }
 
+        public virtual TSpectrum Extract(IRange<double> mzRange)
+        {
+            return Extract(mzRange.Minimum, mzRange.Maximum);
+        }
+
+        public virtual TSpectrum FilterByMZ(IRange<double> mzRange)
+        {
+            return FilterByMZ(mzRange.Minimum, mzRange.Maximum);
+        }
+
+        public virtual TSpectrum FilterByIntensity(IRange<double> intensityRange)
+        {
+            return FilterByIntensity(intensityRange.Minimum, intensityRange.Maximum);
+        }
+        
+        #region ISpectrum
+
+        IPeak ISpectrum.GetClosestPeak(IRange<double> massRange)
+        {
+            return GetClosestPeak(massRange);
+        }
+
+        IPeak ISpectrum.GetClosestPeak(double mean, double tolerance)
+        {
+            return GetClosestPeak(mean, tolerance);
+        }
+
         ISpectrum ISpectrum.Extract(double minMZ, double maxMZ)
         {
             return Extract(minMZ, maxMZ);
         }
 
-        ISpectrum ISpectrum.Filter(IEnumerable<IRange<double>> mzRanges)
+        ISpectrum ISpectrum.Extract(IRange<double> mzRange)
         {
-            return Filter(mzRanges);
+            return Extract(mzRange.Minimum, mzRange.Maximum);
         }
 
+        ISpectrum ISpectrum.FilterByMZ(IEnumerable<IRange<double>> mzRanges)
+        {
+            return FilterByMZ(mzRanges);
+        }
+
+        ISpectrum ISpectrum.FilterByMZ(IRange<double> mzRange)
+        {
+            return FilterByMZ(mzRange.Minimum, mzRange.Maximum);
+        }
+
+        ISpectrum ISpectrum.FilterByMZ(double minMZ, double maxMZ)
+        {
+            return FilterByMZ(minMZ, maxMZ);
+        }
+
+        ISpectrum ISpectrum.FilterByIntensity(double minIntensity, double maxIntensity)
+        {
+            return FilterByIntensity(minIntensity, maxIntensity);
+        }
+
+        ISpectrum ISpectrum.FilterByIntensity(IRange<double> intenistyRange)
+        {
+            return FilterByIntensity(intenistyRange.Minimum, intenistyRange.Maximum);
+        }
+
+        #endregion
+        
         #region Abstract
 
         public abstract TPeak GetPeak(int index);
-        
+       
         public abstract TSpectrum Extract(double minMZ, double maxMZ);
-
-        //public abstract T2 Filter(double minIntensity, double maxIntensity);
-
-        public abstract TSpectrum Filter(IEnumerable<IRange<double>> mzRanges);
+        public abstract TSpectrum FilterByMZ(IEnumerable<IRange<double>> mzRanges);
+        public abstract TSpectrum FilterByMZ(double minMZ, double maxMZ);
+        public abstract TSpectrum FilterByIntensity(double minIntensity = 0, double maxIntensity = double.MaxValue);
 
         /// <summary>
         /// Returns a new deep clone of this spectrum.
@@ -364,7 +409,7 @@ namespace CSMSL.Spectral
         #endregion Abstract
 
         #region Protected Methods
-
+        
         protected double[] FromBytes(byte[] data, int index)
         {
             if (data.IsCompressed())
@@ -500,5 +545,8 @@ namespace CSMSL.Spectral
             return GetEnumerator();
         }
 
+
+
+  
     }
 }

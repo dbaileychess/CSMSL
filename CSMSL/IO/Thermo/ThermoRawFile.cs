@@ -15,8 +15,6 @@
 // You should have received a copy of the GNU Lesser General Public
 // License along with CSMSL. If not, see <http://www.gnu.org/licenses/>.
 
-using System.Linq;
-using System.Runtime.InteropServices;
 using CSMSL.Proteomics;
 using CSMSL.Spectral;
 using MSFileReaderLib;
@@ -27,7 +25,7 @@ using System.Text.RegularExpressions;
 
 namespace CSMSL.IO.Thermo
 {
-    public class ThermoRawFile : MSDataFile
+    public class ThermoRawFile : MSDataFile<ThermoSpectrum>
     {
         internal enum RawLabelDataColumn
         {
@@ -186,12 +184,12 @@ namespace CSMSL.IO.Thermo
             return PolarityRegex.IsMatch(filter) ? Polarity.Positive : Polarity.Negative;
         }
 
-        public override MZSpectrum GetSpectrum(int spectrumNumber)
+        public override ThermoSpectrum GetSpectrum(int spectrumNumber)
         {
             return GetSpectrum(spectrumNumber);
         }
 
-        public MZSpectrum GetSpectrum(int spectrumNumber, bool profileIfAvailable = false)
+        public ThermoSpectrum GetSpectrum(int spectrumNumber, bool profileIfAvailable = false)
         {
             bool useProfile = false;
 
@@ -203,7 +201,7 @@ namespace CSMSL.IO.Thermo
             }
 
             var peakData = GetUnlabeledData(spectrumNumber, !useProfile);
-            return new MZSpectrum(peakData);
+            return new ThermoSpectrum(peakData);
         }
 
         public MZSpectrum GetAveragedSpectrum(int firstSpectrumNumber, int lastSpectrumNumber, string scanFilter = "", IntensityCutoffType type = IntensityCutoffType.None, int intensityCutoff = 0)

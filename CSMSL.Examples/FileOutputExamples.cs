@@ -84,7 +84,7 @@ namespace CSMSL.Examples
             } // The file is automatically written and closed after exiting the using {} block. 
         }
 
-        public static void RawFileToCsv(MSDataFile msDataFile, string outputFilePath)
+        public static void RawFileToCsv<T>(MSDataFile<T> msDataFile, string outputFilePath) where T : ISpectrum
         {
             // See the BasicCsvWriting example for more details
 
@@ -107,7 +107,7 @@ namespace CSMSL.Examples
                     msDataFile.Open();
 
                     // Simply loop over every data scan in the file
-                    foreach (MSDataScan scan in msDataFile)
+                    foreach (MSDataScan<T> scan in msDataFile)
                     {
                         StringBuilder sb = new StringBuilder();
 
@@ -122,7 +122,7 @@ namespace CSMSL.Examples
                         // to cast it to MsnDataScan to access those properties.
                         // Try casting using the 'as' keyword. It will either return the cast object or null, so we need to
                         // check for null before trying to access a property of it.
-                        MsnDataScan msnScan = scan as MsnDataScan;
+                        MsnDataScan<T> msnScan = scan as MsnDataScan<T>;
                         if (msnScan != null)
                         {
                             // It is a MS2 scan

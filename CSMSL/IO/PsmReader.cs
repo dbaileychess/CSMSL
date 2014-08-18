@@ -20,6 +20,7 @@ using CSMSL.Chemistry;
 using CSMSL.Proteomics;
 using System;
 using System.Collections.Generic;
+using CSMSL.Spectral;
 
 namespace CSMSL.IO
 {
@@ -33,7 +34,7 @@ namespace CSMSL.IO
             _proteins = new Dictionary<string, Protein>();
             _fixedMods = new List<Modification>();
             _variableMods = new Dictionary<string, IMass>();
-            _dataFiles = new Dictionary<string, MSDataFile>();
+            _dataFiles = new Dictionary<string, MSDataFile<ISpectrum>>();
             _extraColumns = new List<string>();
         }
 
@@ -41,7 +42,7 @@ namespace CSMSL.IO
 
         protected List<Modification> _fixedMods;
         protected Dictionary<string, IMass> _variableMods;
-        protected Dictionary<string, MSDataFile> _dataFiles;
+        protected Dictionary<string, MSDataFile<ISpectrum>> _dataFiles;
 
         public abstract IEnumerable<PeptideSpectralMatch> ReadNextPsm();
 
@@ -62,15 +63,15 @@ namespace CSMSL.IO
             }
         }
 
-        public void AddMSDataFiles(IEnumerable<MSDataFile> dataFiles)
+        public void AddMSDataFiles(IEnumerable<MSDataFile<ISpectrum>> dataFiles)
         {
-            foreach (MSDataFile dataFile in dataFiles)
+            foreach (MSDataFile<ISpectrum> dataFile in dataFiles)
             {
                 AddMSDataFile(dataFile);
             }
         }
 
-        public void AddMSDataFile(MSDataFile dataFile)
+        public void AddMSDataFile(MSDataFile<ISpectrum> dataFile)
         {
             _dataFiles.Add(dataFile.Name, dataFile);
         }

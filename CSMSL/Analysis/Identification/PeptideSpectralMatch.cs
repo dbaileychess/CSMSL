@@ -24,12 +24,11 @@ using System.Collections.Generic;
 
 namespace CSMSL.Analysis.Identification
 {
-    public class PeptideSpectralMatch : IFalseDiscovery<double>, IMassSpectrum, IEquatable<MSDataScan>,
-        IComparable<PeptideSpectralMatch>, IMass
+    public class PeptideSpectralMatch : IFalseDiscovery<double>, IMassSpectrum, IComparable<PeptideSpectralMatch>, IMass
     {
         public virtual Peptide Peptide { get; set; }
 
-        public virtual MsnDataScan Scan { get; set; }
+        public virtual MsnDataScan<ISpectrum> Scan { get; set; }
 
         public virtual int Charge { get; set; }
 
@@ -88,7 +87,7 @@ namespace CSMSL.Analysis.Identification
             get { return Score;}
         }
         
-        public MZSpectrum MassSpectrum
+        public ISpectrum MassSpectrum
         {
             get
             {
@@ -103,11 +102,7 @@ namespace CSMSL.Analysis.Identification
             return string.Format("{0} (SN: {1} Score: {2:G3} {3})", Peptide, SpectrumNumber, Score,
                 Enum.GetName(typeof(PeptideSpectralMatchScoreType), ScoreType));
         }
-
-        public bool Equals(MSDataScan other)
-        {
-            return Scan.Equals(other);
-        }
+        
 
         /// <summary>
         /// Compares two PSM based on their score.
