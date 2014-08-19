@@ -107,7 +107,7 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ThermoLabeledPeak.cs" />
+    <Compile Include="ThermoMzPeak.cs" />
     <Compile Include="ThermoRawFile.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ThermoSpectrum.cs" />

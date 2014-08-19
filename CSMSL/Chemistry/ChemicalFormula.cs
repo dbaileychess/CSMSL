@@ -1,17 +1,17 @@
 ﻿// Copyright 2012, 2013, 2014 Derek J. Bailey
-//
+// 
 // This file (ChemicalFormula.cs) is part of CSMSL.
-//
+// 
 // CSMSL is free software: you can redistribute it and/or modify it
 // under the terms of the GNU Lesser General Public License as published
 // by the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
-//
+// 
 // CSMSL is distributed in the hope that it will be useful, but WITHOUT
 // ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
 // FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public
 // License for more details.
-//
+// 
 // You should have received a copy of the GNU Lesser General Public
 // License along with CSMSL. If not, see <http://www.gnu.org/licenses/>.
 
@@ -139,7 +139,7 @@ namespace CSMSL.Chemistry
                 if (isotopes != 0)
                 {
                     _isotopes[i] = isotopes;
-                    MonoisotopicMass += isotopes * PeriodicTable.GetIsotope(i).AtomicMass;
+                    MonoisotopicMass += isotopes*PeriodicTable.GetIsotope(i).AtomicMass;
                     _largestIsotopeId = i;
                 }
             }
@@ -400,7 +400,7 @@ namespace CSMSL.Chemistry
             if (isotope == null || count == 0)
                 return;
 
-            MonoisotopicMass += isotope.AtomicMass * count;
+            MonoisotopicMass += isotope.AtomicMass*count;
 
             _isFormulaDirty = _isDirty = true;
 
@@ -522,7 +522,7 @@ namespace CSMSL.Chemistry
                 return 0;
             }
 
-            MonoisotopicMass -= isotope.AtomicMass * count;
+            MonoisotopicMass -= isotope.AtomicMass*count;
 
             _isotopes[id] = 0;
 
@@ -689,7 +689,7 @@ namespace CSMSL.Chemistry
                 if (_isotopes[i] == 0)
                     continue;
 
-                neutrons += PeriodicTable.GetIsotope(i).Neutrons * _isotopes[i];
+                neutrons += PeriodicTable.GetIsotope(i).Neutrons*_isotopes[i];
             }
             return neutrons;
         }
@@ -706,7 +706,7 @@ namespace CSMSL.Chemistry
                 if (_isotopes[i] == 0)
                     continue;
 
-                protons += PeriodicTable.GetIsotope(i).Protons * _isotopes[i];
+                protons += PeriodicTable.GetIsotope(i).Protons*_isotopes[i];
             }
             return protons;
         }
@@ -724,7 +724,7 @@ namespace CSMSL.Chemistry
 
             int hydrogenCount = Count("H");
 
-            return hydrogenCount / (double)carbonCount;
+            return hydrogenCount/(double) carbonCount;
         }
 
         #endregion Count/Contains
@@ -743,7 +743,7 @@ namespace CSMSL.Chemistry
             {
                 unchecked
                 {
-                    hCode = hCode * 23 + _isotopes[i];
+                    hCode = hCode*23 + _isotopes[i];
                 }
             }
             return hCode;
@@ -850,8 +850,8 @@ namespace CSMSL.Chemistry
                 isotopeCount++;
                 atomCount += count;
 
-                monoMass += count * isotope.AtomicMass;
-                avgMass += count * element.AverageMass;
+                monoMass += count*isotope.AtomicMass;
+                avgMass += count*element.AverageMass;
             }
 
             // Set the instance variables to their new values
@@ -982,7 +982,7 @@ namespace CSMSL.Chemistry
                         int.Parse(match.Groups[4].Value) :
                         1;
 
-                    Add(isotope, sign * numofelem);
+                    Add(isotope, sign*numofelem);
                 }
                 else
                 {
@@ -1009,8 +1009,6 @@ namespace CSMSL.Chemistry
         #endregion Internal
 
         #region Statics
-
-
 
         public static implicit operator ChemicalFormula(string sequence)
         {
@@ -1055,7 +1053,7 @@ namespace CSMSL.Chemistry
             {
                 newFormula._isotopes[i] *= count;
             }
-            newFormula.MonoisotopicMass = formula.MonoisotopicMass * count;
+            newFormula.MonoisotopicMass = formula.MonoisotopicMass*count;
             newFormula._isDirty = true;
             newFormula._isFormulaDirty = true;
             return newFormula;
@@ -1063,7 +1061,7 @@ namespace CSMSL.Chemistry
 
         public static ChemicalFormula operator *(int count, ChemicalFormula formula)
         {
-            return formula * count;
+            return formula*count;
         }
 
         public static ChemicalFormula operator +(ChemicalFormula left, IChemicalFormula right)
@@ -1130,7 +1128,7 @@ namespace CSMSL.Chemistry
         #endregion Statics
 
         #region IChemicalFormula
-        
+
         ChemicalFormula IChemicalFormula.ChemicalFormula
         {
             get { return this; }

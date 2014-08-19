@@ -1,17 +1,17 @@
 ﻿// Copyright 2012, 2013, 2014 Derek J. Bailey
-//
+// 
 // This file (AminoAcidPolymer.cs) is part of CSMSL.
-//
+// 
 // CSMSL is free software: you can redistribute it and/or modify it
 // under the terms of the GNU Lesser General Public License as published
 // by the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
-//
+// 
 // CSMSL is distributed in the hope that it will be useful, but WITHOUT
 // ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
 // FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public
 // License for more details.
-//
+// 
 // You should have received a copy of the GNU Lesser General Public
 // License along with CSMSL. If not, see <http://www.gnu.org/licenses/>.
 
@@ -587,7 +587,7 @@ namespace CSMSL.Proteomics
             foreach (IMass mod in _modifications)
             {
                 if (mod is T)
-                    uniqueMods.Add((T)mod);
+                    uniqueMods.Add((T) mod);
             }
             return uniqueMods;
         }
@@ -1401,27 +1401,27 @@ namespace CSMSL.Proteomics
 
             while (true)
             {
-                double QN1 = -1 / (1 + Math.Pow(10, (3.65 - pH)));
-                double QN2 = -d / (1 + Math.Pow(10, (3.90 - pH)));
-                double QN3 = -e / (1 + Math.Pow(10, (4.07 - pH)));
-                double QN4 = -c / (1 + Math.Pow(10, (8.37 - pH)));
-                double QN5 = -y / (1 + Math.Pow(10, (10.46 - pH)));
-                double QP1 = h / (1 + Math.Pow(10, (pH - 6.04)));
-                double QP2 = 1 / (1 + Math.Pow(10, (pH - 8.2)));
-                double QP3 = k / (1 + Math.Pow(10, (pH - 10.54)));
-                double QP4 = r / (1 + Math.Pow(10, (pH - 12.48)));
+                double QN1 = -1/(1 + Math.Pow(10, (3.65 - pH)));
+                double QN2 = -d/(1 + Math.Pow(10, (3.90 - pH)));
+                double QN3 = -e/(1 + Math.Pow(10, (4.07 - pH)));
+                double QN4 = -c/(1 + Math.Pow(10, (8.37 - pH)));
+                double QN5 = -y/(1 + Math.Pow(10, (10.46 - pH)));
+                double QP1 = h/(1 + Math.Pow(10, (pH - 6.04)));
+                double QP2 = 1/(1 + Math.Pow(10, (pH - 8.2)));
+                double QP3 = k/(1 + Math.Pow(10, (pH - 10.54)));
+                double QP4 = r/(1 + Math.Pow(10, (pH - 12.48)));
 
                 double NQ = QN1 + QN2 + QN3 + QN4 + QN5 + QP1 + QP2 + QP3 + QP4;
 
                 if (NQ < 0)
                 {
                     maxpH = pH;
-                    pH = pH - ((pH - minpH) / 2);
+                    pH = pH - ((pH - minpH)/2);
                 }
                 else
                 {
                     minpH = pH;
-                    pH = pH + ((maxpH - pH) / 2);
+                    pH = pH + ((maxpH - pH)/2);
                 }
 
                 if ((pH - minpH < precision) && (maxpH - pH < precision))
@@ -1469,7 +1469,7 @@ namespace CSMSL.Proteomics
 
         public static IEnumerable<Tuple<int, int>> GetDigestionPoints(string sequence, IProtease protease, int maxMissedCleavages = 3, int minLength = 1, int maxLength = int.MaxValue, bool methionineInitiator = true, bool semiDigestion = false)
         {
-            return GetDigestionPoints(sequence, new[] { protease }, maxMissedCleavages, minLength, maxLength, methionineInitiator, semiDigestion);
+            return GetDigestionPoints(sequence, new[] {protease}, maxMissedCleavages, minLength, maxLength, methionineInitiator, semiDigestion);
         }
 
         /// <summary>
@@ -1570,7 +1570,7 @@ namespace CSMSL.Proteomics
 
         public static IEnumerable<string> Digest(string sequence, Protease protease, int maxMissedCleavages = 0, int minLength = 1, int maxLength = int.MaxValue, bool methionineInitiator = true, bool semiDigestion = false)
         {
-            return Digest(sequence, new[] { protease }, maxMissedCleavages, minLength, maxLength, methionineInitiator, semiDigestion);
+            return Digest(sequence, new[] {protease}, maxMissedCleavages, minLength, maxLength, methionineInitiator, semiDigestion);
         }
 
         public static IEnumerable<string> Digest(string sequence, IEnumerable<IProtease> proteases, int maxMissedCleavages = 3, int minLength = 1, int maxLength = int.MaxValue, bool methionineInitiator = true, bool semiDigestion = false)
@@ -1580,7 +1580,7 @@ namespace CSMSL.Proteomics
 
         public static IEnumerable<string> Digest(IAminoAcidSequence sequence, IProtease protease, int maxMissedCleavages = 3, int minLength = 1, int maxLength = int.MaxValue, bool methionineInitiator = true, bool semiDigestion = false)
         {
-            return Digest(sequence.Sequence, new[] { protease }, maxMissedCleavages, minLength, maxLength, methionineInitiator, semiDigestion);
+            return Digest(sequence.Sequence, new[] {protease}, maxMissedCleavages, minLength, maxLength, methionineInitiator, semiDigestion);
         }
 
         #endregion Digestion

@@ -1,4 +1,21 @@
-﻿using System;
+﻿// Copyright 2012, 2013, 2014 Derek J. Bailey
+// 
+// This file (MzTabPeptide.cs) is part of CSMSL.
+// 
+// CSMSL is free software: you can redistribute it and/or modify it
+// under the terms of the GNU Lesser General Public License as published
+// by the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// 
+// CSMSL is distributed in the hope that it will be useful, but WITHOUT
+// ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public
+// License for more details.
+// 
+// You should have received a copy of the GNU Lesser General Public
+// License along with CSMSL. If not, see <http://www.gnu.org/licenses/>.
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -51,7 +68,7 @@ namespace CSMSL.IO.MzTab
                 headers.Add(RetentionTimeWindow);
                 headers.Add(Charge);
                 headers.Add(MZ);
-         
+
                 if (peptides.Any(psm => psm.Uri != null))
                     headers.Add(Uri);
 
@@ -64,7 +81,7 @@ namespace CSMSL.IO.MzTab
                 return headers;
             }
         }
-        
+
         /// <summary>
         /// The peptide's sequence corresponding to the PSM
         /// </summary>
@@ -72,41 +89,43 @@ namespace CSMSL.IO.MzTab
 
         public int ID { get; set; }
 
-        public string Accession{ get; set; }
-    
-        public bool Unique{ get; set; }
-  
-        public string Database{ get; set; }
-   
-        public string DatabaseVersion{ get; set; }
-     
-        public List<CVParamater> SearchEngines{ get; set; }
+        public string Accession { get; set; }
+
+        public bool Unique { get; set; }
+
+        public string Database { get; set; }
+
+        public string DatabaseVersion { get; set; }
+
+        public List<CVParamater> SearchEngines { get; set; }
 
         private List<double> _bestSearchEngineScores;
+
         public List<double> BestSearchEngineScores
         {
             get { return _bestSearchEngineScores; }
             set { _bestSearchEngineScores = value; }
         }
 
-        public MzTab.ReliabilityScore Reliability{ get; set; }
-            
+        public MzTab.ReliabilityScore Reliability { get; set; }
+
         public string Modifications { get; set; }
-     
+
         public List<double> RetentionTime { get; set; }
         public List<double> RetentionTimeWindows { get; set; }
 
         public int Charge { get; set; }
-     
+
         public double MZ { get; set; }
-     
+
         public double TheoreticalMZ { get; set; }
-      
+
         public Uri Uri { get; set; }
-      
+
         public string SpectraReference { get; set; }
 
         private List<double> _abundanceAssays;
+
         public List<double> AbundanceAssays
         {
             get { return _abundanceAssays; }
@@ -114,6 +133,7 @@ namespace CSMSL.IO.MzTab
         }
 
         private List<double> _abundanceStudyVariables;
+
         public List<double> AbundanceStudyVariables
         {
             get { return _abundanceStudyVariables; }
@@ -121,6 +141,7 @@ namespace CSMSL.IO.MzTab
         }
 
         private List<double> _abundanceStdevStudyVariables;
+
         public List<double> AbundanceStdevStudyVariables
         {
             get { return _abundanceStdevStudyVariables; }
@@ -128,12 +149,13 @@ namespace CSMSL.IO.MzTab
         }
 
         private List<double> _abundanceStandardErrorStudyVariables;
+
         public List<double> AbundanceStandardErrorStudyVariables
         {
             get { return _abundanceStandardErrorStudyVariables; }
             set { _abundanceStandardErrorStudyVariables = value; }
         }
-        
+
         public override string GetValue(string fieldName)
         {
             switch (fieldName)
@@ -153,7 +175,7 @@ namespace CSMSL.IO.MzTab
                 case Fields.Reliability:
                     if (Reliability == MzTab.ReliabilityScore.NotSet)
                         return MzTab.NullFieldText;
-                    return ((int)Reliability).ToString();
+                    return ((int) Reliability).ToString();
                 case Fields.Modifications:
                     return Modifications;
                 case Fields.RetentionTime:
@@ -197,7 +219,7 @@ namespace CSMSL.IO.MzTab
 
             throw new ArgumentException("Unexpected field name: " + fieldName);
         }
-        
+
         public override void SetValue(string fieldName, string value)
         {
             if (MzTab.NullFieldText.Equals(value))
@@ -206,33 +228,47 @@ namespace CSMSL.IO.MzTab
             switch (fieldName)
             {
                 case Fields.Sequence:
-                    Sequence = value; return;
+                    Sequence = value;
+                    return;
                 case Fields.Accession:
-                    Accession = value; return;
+                    Accession = value;
+                    return;
                 case Fields.Unique:
-                    Unique = value.Equals("1"); return;
+                    Unique = value.Equals("1");
+                    return;
                 case Fields.Database:
-                    Database = value; return;
+                    Database = value;
+                    return;
                 case Fields.DatabaseVersion:
-                    DatabaseVersion = value; return;
+                    DatabaseVersion = value;
+                    return;
                 case Fields.SearchEngine:
-                    SearchEngines = value.Split('|').Select(datum => (CVParamater)datum).ToList(); return;
+                    SearchEngines = value.Split('|').Select(datum => (CVParamater) datum).ToList();
+                    return;
                 case Fields.Reliability:
-                    Reliability = (MzTab.ReliabilityScore)int.Parse(value); return;
+                    Reliability = (MzTab.ReliabilityScore) int.Parse(value);
+                    return;
                 case Fields.Modifications:
-                    Modifications = value; return;
+                    Modifications = value;
+                    return;
                 case Fields.RetentionTime:
-                    RetentionTime = value.Split('|').Select(double.Parse).ToList(); return;
+                    RetentionTime = value.Split('|').Select(double.Parse).ToList();
+                    return;
                 case Fields.RetentionTimeWindow:
-                    RetentionTimeWindows = value.Split('|').Select(double.Parse).ToList(); return;
+                    RetentionTimeWindows = value.Split('|').Select(double.Parse).ToList();
+                    return;
                 case Fields.Charge:
-                    Charge = int.Parse(value); return;
+                    Charge = int.Parse(value);
+                    return;
                 case Fields.MZ:
-                    MZ = double.Parse(value); return;
+                    MZ = double.Parse(value);
+                    return;
                 case Fields.Uri:
-                    Uri = new Uri(value); return;
+                    Uri = new Uri(value);
+                    return;
                 case Fields.SpectraReference:
-                    SpectraReference = value; return;
+                    SpectraReference = value;
+                    return;
             }
 
             if (fieldName.Contains("["))
@@ -243,15 +279,20 @@ namespace CSMSL.IO.MzTab
                 switch (condensedFieldName)
                 {
                     case Fields.AbundanceAssay:
-                        SetListValue(ref _abundanceAssays, indices[0], double.Parse(value)); return;
+                        SetListValue(ref _abundanceAssays, indices[0], double.Parse(value));
+                        return;
                     case Fields.AbundanceStudyVariable:
-                        SetListValue(ref _abundanceStudyVariables, indices[0], double.Parse(value)); return;
+                        SetListValue(ref _abundanceStudyVariables, indices[0], double.Parse(value));
+                        return;
                     case Fields.AbundanceStDevStudyVariable:
-                        SetListValue(ref _abundanceStdevStudyVariables, indices[0], double.Parse(value)); return;
+                        SetListValue(ref _abundanceStdevStudyVariables, indices[0], double.Parse(value));
+                        return;
                     case Fields.AbudnanceStdErrorStudyVariable:
-                        SetListValue(ref _abundanceStandardErrorStudyVariables, indices[0], double.Parse(value)); return;
+                        SetListValue(ref _abundanceStandardErrorStudyVariables, indices[0], double.Parse(value));
+                        return;
                     case Fields.BestSearchEngineScore:
-                        SetListValue(ref _bestSearchEngineScores, indices[0], double.Parse(value)); return;
+                        SetListValue(ref _bestSearchEngineScores, indices[0], double.Parse(value));
+                        return;
                 }
             }
 

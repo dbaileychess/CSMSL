@@ -1,17 +1,17 @@
 ﻿// Copyright 2012, 2013, 2014 Derek J. Bailey
-//
+// 
 // This file (Combinatorics.cs) is part of CSMSL.
-//
+// 
 // CSMSL is free software: you can redistribute it and/or modify it
 // under the terms of the GNU Lesser General Public License as published
 // by the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
-//
+// 
 // CSMSL is distributed in the hope that it will be useful, but WITHOUT
 // ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
 // FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public
 // License for more details.
-//
+// 
 // You should have received a copy of the GNU Lesser General Public
 // License along with CSMSL. If not, see <http://www.gnu.org/licenses/>.
 
@@ -34,7 +34,7 @@ namespace CSMSL.Util
             double prob = 0;
             while (s <= N)
             {
-                prob += BinomCoefficient(N, s) * Math.Pow(p, s) * Math.Pow(1.0 - p, N - s);
+                prob += BinomCoefficient(N, s)*Math.Pow(p, s)*Math.Pow(1.0 - p, N - s);
                 s++;
             }
             return prob;
@@ -113,7 +113,7 @@ namespace CSMSL.Util
         public static double AScore(int n1, int n2, double p, int N)
         {
             // The difference of logs is the same as the log of the quotient log(a) - log(b) = log(a/b)
-            return -10 * Math.Log10(CumBinom(n1, p, N) / CumBinom(n2, p, N));
+            return -10*Math.Log10(CumBinom(n1, p, N)/CumBinom(n2, p, N));
         }
 
         public static IEnumerable<T[]> Combinations<T>(T[] input, int level)
@@ -127,7 +127,7 @@ namespace CSMSL.Util
             {
                 for (int i = 0; i < n; i++)
                 {
-                    yield return new[] { input[i] };
+                    yield return new[] {input[i]};
                 }
             }
             else

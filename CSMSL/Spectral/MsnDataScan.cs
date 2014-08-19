@@ -1,17 +1,17 @@
 ﻿// Copyright 2012, 2013, 2014 Derek J. Bailey
-//
+// 
 // This file (MsnDataScan.cs) is part of CSMSL.
-//
+// 
 // CSMSL is free software: you can redistribute it and/or modify it
 // under the terms of the GNU Lesser General Public License as published
 // by the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
-//
+// 
 // CSMSL is distributed in the hope that it will be useful, but WITHOUT
 // ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
 // FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public
 // License for more details.
-//
+// 
 // You should have received a copy of the GNU Lesser General Public
 // License along with CSMSL. If not, see <http://www.gnu.org/licenses/>.
 
@@ -21,9 +21,10 @@ using System;
 
 namespace CSMSL.Spectral
 {
-    public class MsnDataScan<T> : MSDataScan<T> where T : ISpectrum
+    public class MsnDataScan<TSpectrum> : MSDataScan<TSpectrum>, IMsnDataScan<TSpectrum>
+        where TSpectrum : ISpectrum
     {
-        public MsnDataScan(int spectrumNumber, int msnOrder, MSDataFile<T> parentFile = null)
+        public MsnDataScan(int spectrumNumber, int msnOrder, MSDataFile<TSpectrum> parentFile = null)
             : base(spectrumNumber, msnOrder, parentFile)
         {
         }
@@ -40,7 +41,7 @@ namespace CSMSL.Spectral
             {
                 if (ParentFile.IsOpen)
                 {
-                    _precursorMz = ParentFile.GetPrecusorMz(SpectrumNumber, MsnOrder);
+                    _precursorMz = ParentFile.GetPrecursorMz(SpectrumNumber, MsnOrder);
                 }
                 else
                 {
@@ -86,6 +87,23 @@ namespace CSMSL.Spectral
             return _precursorCharge;
         }
 
+        private double _injectionTime = -1;
+
+        public virtual double GetInjectionTime()
+        {
+            if (_injectionTime >= 0)
+                return _injectionTime;
+            if (ParentFile.IsOpen)
+            {
+                _injectionTime = ParentFile.GetInjectionTime(SpectrumNumber);
+            }
+            else
+            {
+                throw new ArgumentException("The parent data file is closed");
+            }
+            return _injectionTime;
+        }
+
         private DissociationType _dissociationType = DissociationType.UnKnown;
 
         public DissociationType GetDissociationType()
@@ -102,6 +120,13 @@ namespace CSMSL.Spectral
                 }
             }
             return _dissociationType;
+        }
+
+        public int ParentSpectrumNumber { get; set; }
+
+        public new ISpectrum MassSpectrum
+        {
+            get { return base.MassSpectrum; }
         }
     }
 }

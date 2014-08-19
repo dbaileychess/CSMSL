@@ -1,4 +1,21 @@
-﻿using System;
+﻿// Copyright 2012, 2013, 2014 Derek J. Bailey
+// 
+// This file (MzTabProtein.cs) is part of CSMSL.
+// 
+// CSMSL is free software: you can redistribute it and/or modify it
+// under the terms of the GNU Lesser General Public License as published
+// by the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// 
+// CSMSL is distributed in the hope that it will be useful, but WITHOUT
+// ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public
+// License for more details.
+// 
+// You should have received a copy of the GNU Lesser General Public
+// License along with CSMSL. If not, see <http://www.gnu.org/licenses/>.
+
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -54,7 +71,7 @@ namespace CSMSL.IO.MzTab
                 headers.AddRange(GetHeaders(proteins, NumberOfPsmsPerMsRun, (prot => prot.NumberOfPsmsPerMsRun)));
                 headers.AddRange(GetHeaders(proteins, NumberOfDistinctPeptidesPerMsRun, (prot => prot.NumberOfDistinctPeptidesPerMsRun)));
                 headers.AddRange(GetHeaders(proteins, NumberOfUniquePeptidesPerMsRun, (prot => prot.NumberOfUniquePeptidesPerMsRun)));
-                
+
                 headers.Add(AmbiguityMembers);
                 headers.Add(Modifications);
 
@@ -64,14 +81,14 @@ namespace CSMSL.IO.MzTab
                 if (proteins.Any(protein => protein.GoTerms != null))
                     headers.Add(GoTerms);
 
-                if(proteins.Any(protein => protein.Coverage.HasValue))
+                if (proteins.Any(protein => protein.Coverage.HasValue))
                     headers.Add(Coverage);
-              
+
                 headers.AddRange(GetHeaders(proteins, AbundancePerAssay, (prot => prot.AbundanceAssays)));
                 headers.AddRange(GetHeaders(proteins, AbundanceStudyVariables, (prot => prot.AbundanceStudyVariables)));
                 headers.AddRange(GetHeaders(proteins, AbundanceStdevStudyVariables, (prot => prot.AbundanceStdevStudyVariables)));
                 headers.AddRange(GetHeaders(proteins, AbundanceStandardErrorStudyVariables, (prot => prot.AbundanceStandardErrorStudyVariables)));
-                
+
                 return headers;
             }
         }
@@ -94,7 +111,8 @@ namespace CSMSL.IO.MzTab
 
         public double? Coverage { get; set; }
 
-        private List<CVParamater> _searchEngines; 
+        private List<CVParamater> _searchEngines;
+
         public List<CVParamater> SearchEngines
         {
             get { return _searchEngines; }
@@ -102,6 +120,7 @@ namespace CSMSL.IO.MzTab
         }
 
         private List<double> _bestSearchEngineScores;
+
         public List<double> BestSearchEngineScores
         {
             get { return _bestSearchEngineScores; }
@@ -113,6 +132,7 @@ namespace CSMSL.IO.MzTab
         public List<string> GoTerms { get; set; }
 
         private List<double> _abundanceAssays;
+
         public List<double> AbundanceAssays
         {
             get { return _abundanceAssays; }
@@ -120,6 +140,7 @@ namespace CSMSL.IO.MzTab
         }
 
         private List<double> _abundanceStudyVariables;
+
         public List<double> AbundanceStudyVariables
         {
             get { return _abundanceStudyVariables; }
@@ -127,6 +148,7 @@ namespace CSMSL.IO.MzTab
         }
 
         private List<double> _abundanceStdevStudyVariables;
+
         public List<double> AbundanceStdevStudyVariables
         {
             get { return _abundanceStdevStudyVariables; }
@@ -134,6 +156,7 @@ namespace CSMSL.IO.MzTab
         }
 
         private List<double> _abundanceStandardErrorStudyVariables;
+
         public List<double> AbundanceStandardErrorStudyVariables
         {
             get { return _abundanceStandardErrorStudyVariables; }
@@ -141,6 +164,7 @@ namespace CSMSL.IO.MzTab
         }
 
         private MzTabMultipleSet<double?> _searchEngineScoreMsRun;
+
         public MzTabMultipleSet<double?> SearchEngineScoreMsRun
         {
             get { return _searchEngineScoreMsRun; }
@@ -148,6 +172,7 @@ namespace CSMSL.IO.MzTab
         }
 
         private List<int> _numberOfPsmsPerMsRun;
+
         public List<int> NumberOfPsmsPerMsRun
         {
             get { return _numberOfPsmsPerMsRun; }
@@ -155,6 +180,7 @@ namespace CSMSL.IO.MzTab
         }
 
         private List<int> _numberOfDistinctPeptidesPerMsRun;
+
         public List<int> NumberOfDistinctPeptidesPerMsRun
         {
             get { return _numberOfDistinctPeptidesPerMsRun; }
@@ -162,6 +188,7 @@ namespace CSMSL.IO.MzTab
         }
 
         private List<int> _numberOfUniquePeptidesPerMsRun;
+
         public List<int> NumberOfUniquePeptidesPerMsRun
         {
             get { return _numberOfUniquePeptidesPerMsRun; }
@@ -195,7 +222,7 @@ namespace CSMSL.IO.MzTab
                 case Fields.Reliability:
                     if (Reliability == MzTab.ReliabilityScore.NotSet)
                         return MzTab.NullFieldText;
-                    return ((int)Reliability).ToString();
+                    return ((int) Reliability).ToString();
                 case Fields.Coverage:
                     return Coverage.ToString();
                 case Fields.Uri:
@@ -250,31 +277,44 @@ namespace CSMSL.IO.MzTab
             switch (fieldName)
             {
                 case Fields.Accession:
-                    Accession = value; return;
+                    Accession = value;
+                    return;
                 case Fields.Description:
-                    Description = value; return;
+                    Description = value;
+                    return;
                 case Fields.Database:
-                    Database = value; return;
+                    Database = value;
+                    return;
                 case Fields.DatabaseVersion:
-                    DatabaseVersion = value; return;
+                    DatabaseVersion = value;
+                    return;
                 case Fields.TaxID:
-                    TaxID = int.Parse(value); return;
+                    TaxID = int.Parse(value);
+                    return;
                 case Fields.Species:
-                    Species = value; return;
+                    Species = value;
+                    return;
                 case Fields.Modifications:
-                    Modificiations = value; return;
+                    Modificiations = value;
+                    return;
                 case Fields.SearchEngine:
-                    SearchEngines = value.Split('|').Select(datum => (CVParamater)datum).ToList(); return;
+                    SearchEngines = value.Split('|').Select(datum => (CVParamater) datum).ToList();
+                    return;
                 case Fields.Reliability:
-                    Reliability = (MzTab.ReliabilityScore)int.Parse(value); return;
+                    Reliability = (MzTab.ReliabilityScore) int.Parse(value);
+                    return;
                 case Fields.AmbiguityMembers:
-                    AmbiguityMembers = value.Split(',').ToList(); return;
+                    AmbiguityMembers = value.Split(',').ToList();
+                    return;
                 case Fields.Coverage:
-                    Coverage = double.Parse(value); return;
+                    Coverage = double.Parse(value);
+                    return;
                 case Fields.Uri:
-                    Uri = new Uri(value); return;
+                    Uri = new Uri(value);
+                    return;
                 case Fields.GoTerms:
-                    GoTerms = value.Split('|').Select(datum => datum).ToList(); return;
+                    GoTerms = value.Split('|').Select(datum => datum).ToList();
+                    return;
             }
 
             if (fieldName.Contains("["))
@@ -286,25 +326,35 @@ namespace CSMSL.IO.MzTab
                 switch (condensedFieldName)
                 {
                     case Fields.SearchEngine:
-                        SetListValue(ref _searchEngines, indices[0], new CVParamater(value)); return;
+                        SetListValue(ref _searchEngines, indices[0], new CVParamater(value));
+                        return;
                     case Fields.BestSearchEngineScore:
-                        SetListValue(ref _bestSearchEngineScores, indices[0], double.Parse(value)); return;
+                        SetListValue(ref _bestSearchEngineScores, indices[0], double.Parse(value));
+                        return;
                     case Fields.AbundancePerAssay:
-                        SetListValue(ref _abundanceAssays, indices[0], double.Parse(value)); return;
+                        SetListValue(ref _abundanceAssays, indices[0], double.Parse(value));
+                        return;
                     case Fields.AbundanceStudyVariables:
-                        SetListValue(ref _abundanceStudyVariables, indices[0], double.Parse(value)); return;
+                        SetListValue(ref _abundanceStudyVariables, indices[0], double.Parse(value));
+                        return;
                     case Fields.AbundanceStdevStudyVariables:
-                        SetListValue(ref _abundanceStdevStudyVariables, indices[0], double.Parse(value)); return;
+                        SetListValue(ref _abundanceStdevStudyVariables, indices[0], double.Parse(value));
+                        return;
                     case Fields.AbundanceStandardErrorStudyVariables:
-                        SetListValue(ref _abundanceStandardErrorStudyVariables, indices[0], double.Parse(value)); return;
+                        SetListValue(ref _abundanceStandardErrorStudyVariables, indices[0], double.Parse(value));
+                        return;
                     case Fields.SearchEngineScoreMsRun:
-                        SetListValue(ref _searchEngineScoreMsRun, indices[0], indices[1], double.TryParse(value, out tempDbl) ? tempDbl : default(double?)); return;
+                        SetListValue(ref _searchEngineScoreMsRun, indices[0], indices[1], double.TryParse(value, out tempDbl) ? tempDbl : default(double?));
+                        return;
                     case Fields.NumberOfPsmsPerMsRun:
-                        SetListValue(ref _numberOfPsmsPerMsRun, indices[0], int.Parse(value)); return;
+                        SetListValue(ref _numberOfPsmsPerMsRun, indices[0], int.Parse(value));
+                        return;
                     case Fields.NumberOfDistinctPeptidesPerMsRun:
-                        SetListValue(ref _numberOfDistinctPeptidesPerMsRun, indices[0], int.Parse(value)); return;
+                        SetListValue(ref _numberOfDistinctPeptidesPerMsRun, indices[0], int.Parse(value));
+                        return;
                     case Fields.NumberOfUniquePeptidesPerMsRun:
-                        SetListValue(ref _numberOfUniquePeptidesPerMsRun, indices[0], int.Parse(value)); return;
+                        SetListValue(ref _numberOfUniquePeptidesPerMsRun, indices[0], int.Parse(value));
+                        return;
                 }
             }
 
@@ -316,7 +366,7 @@ namespace CSMSL.IO.MzTab
 
             throw new ArgumentException("Unexpected field name: " + fieldName);
         }
-        
+
         public override string ToString()
         {
             return Description;

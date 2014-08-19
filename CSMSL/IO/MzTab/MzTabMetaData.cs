@@ -1,4 +1,21 @@
-﻿using System;
+﻿// Copyright 2012, 2013, 2014 Derek J. Bailey
+// 
+// This file (MzTabMetaData.cs) is part of CSMSL.
+// 
+// CSMSL is free software: you can redistribute it and/or modify it
+// under the terms of the GNU Lesser General Public License as published
+// by the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// 
+// CSMSL is distributed in the hope that it will be useful, but WITHOUT
+// ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public
+// License for more details.
+// 
+// You should have received a copy of the GNU Lesser General Public
+// License along with CSMSL. If not, see <http://www.gnu.org/licenses/>.
+
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -42,18 +59,19 @@ namespace CSMSL.IO.MzTab
         public MzTab.MzTabMode Mode { get; set; }
 
         public MzTab.MzTabType Type { get; set; }
-    
+
         public string Version { get; set; }
-      
+
         public string Description { get; set; }
-     
+
         public string ID { get; set; }
 
         public string Title { get; set; }
-      
+
         public CVParamater ProteinQuantificationUnit { get; set; }
 
         private List<MzTabSoftware> _software;
+
         public List<MzTabSoftware> Software
         {
             get { return _software; }
@@ -61,6 +79,7 @@ namespace CSMSL.IO.MzTab
         }
 
         private List<string> _msRunLocations;
+
         public List<string> MsRunLocations
         {
             get { return _msRunLocations; }
@@ -68,6 +87,7 @@ namespace CSMSL.IO.MzTab
         }
 
         private List<string> _studyVariableDescriptions;
+
         public List<string> StudyVariableDescriptions
         {
             get { return _studyVariableDescriptions; }
@@ -75,6 +95,7 @@ namespace CSMSL.IO.MzTab
         }
 
         private List<CVParamater> _fixedModifications;
+
         public List<CVParamater> FixedModifications
         {
             get { return _fixedModifications; }
@@ -82,6 +103,7 @@ namespace CSMSL.IO.MzTab
         }
 
         private List<string> _fixedModificationSites;
+
         public List<string> FixedModificationSites
         {
             get { return _fixedModificationSites; }
@@ -89,6 +111,7 @@ namespace CSMSL.IO.MzTab
         }
 
         private List<CVParamater> _variableModifications;
+
         public List<CVParamater> VariableModifications
         {
             get { return _variableModifications; }
@@ -96,6 +119,7 @@ namespace CSMSL.IO.MzTab
         }
 
         private List<CVParamater> _psmSearchEngineScores;
+
         public List<CVParamater> PsmSearchEngineScores
         {
             get { return _psmSearchEngineScores; }
@@ -103,30 +127,31 @@ namespace CSMSL.IO.MzTab
         }
 
         private List<CVParamater> _proteinSearchEngineScores;
+
         public List<CVParamater> ProteinSearchEngineScores
         {
             get { return _proteinSearchEngineScores; }
             set { _proteinSearchEngineScores = value; }
         }
-  
+
         public override string GetValue(string fieldName)
         {
             switch (fieldName)
             {
                 case Fields.Mode:
-                    return Enum.GetName(typeof(MzTab.MzTabMode), Mode);
+                    return Enum.GetName(typeof (MzTab.MzTabMode), Mode);
                 case Fields.Type:
-                    return Enum.GetName(typeof(MzTab.MzTabType), Type);
+                    return Enum.GetName(typeof (MzTab.MzTabType), Type);
                 case Fields.Description:
-                   return Description;
+                    return Description;
                 case Fields.Title:
-                   return Title;
+                    return Title;
                 case Fields.Version:
-                   return Version;
+                    return Version;
                 case Fields.ID:
-                   return ID;
+                    return ID;
                 case Fields.ProteinQuantificationUnit:
-                   return ProteinQuantificationUnit == null ? MzTab.NullFieldText : ProteinQuantificationUnit.ToString();
+                    return ProteinQuantificationUnit == null ? MzTab.NullFieldText : ProteinQuantificationUnit.ToString();
             }
 
             if (fieldName.Contains("["))
@@ -164,19 +189,26 @@ namespace CSMSL.IO.MzTab
             switch (fieldName)
             {
                 case Fields.Mode:
-                    Mode = (MzTab.MzTabMode)Enum.Parse(typeof(MzTab.MzTabMode), value, true); return;
+                    Mode = (MzTab.MzTabMode) Enum.Parse(typeof (MzTab.MzTabMode), value, true);
+                    return;
                 case Fields.Type:
-                    Type = (MzTab.MzTabType)Enum.Parse(typeof(MzTab.MzTabType), value, true); return;
+                    Type = (MzTab.MzTabType) Enum.Parse(typeof (MzTab.MzTabType), value, true);
+                    return;
                 case Fields.Description:
-                    Description = value; return;
+                    Description = value;
+                    return;
                 case Fields.Title:
-                    Title = value; return;
+                    Title = value;
+                    return;
                 case Fields.Version:
-                    Version = value; return;
+                    Version = value;
+                    return;
                 case Fields.ID:
-                    ID = value; return;
+                    ID = value;
+                    return;
                 case Fields.ProteinQuantificationUnit:
-                    ProteinQuantificationUnit = new CVParamater(value); return;
+                    ProteinQuantificationUnit = new CVParamater(value);
+                    return;
             }
 
             if (fieldName.Contains("["))
@@ -186,28 +218,37 @@ namespace CSMSL.IO.MzTab
                 switch (condensedFieldName)
                 {
                     case Fields.FixedMod:
-                        SetListValue(ref _fixedModifications, indices[0], new CVParamater(value)); return;
+                        SetListValue(ref _fixedModifications, indices[0], new CVParamater(value));
+                        return;
                     case Fields.FixedModSite:
-                        SetListValue(ref _fixedModificationSites, indices[0], value); return;
+                        SetListValue(ref _fixedModificationSites, indices[0], value);
+                        return;
                     case Fields.VariableMod:
-                        SetListValue(ref _variableModifications, indices[0], new CVParamater(value)); return;
+                        SetListValue(ref _variableModifications, indices[0], new CVParamater(value));
+                        return;
                     case Fields.PsmSearchEngineScore:
-                        SetListValue(ref _psmSearchEngineScores, indices[0], new CVParamater(value)); return;
+                        SetListValue(ref _psmSearchEngineScores, indices[0], new CVParamater(value));
+                        return;
                     case Fields.ProteinSearchEngineScore:
-                        SetListValue(ref _proteinSearchEngineScores, indices[0], new CVParamater(value)); return;
+                        SetListValue(ref _proteinSearchEngineScores, indices[0], new CVParamater(value));
+                        return;
                     case Fields.StudyVariableDescription:
-                        SetListValue(ref _studyVariableDescriptions, indices[0], value); return;
+                        SetListValue(ref _studyVariableDescriptions, indices[0], value);
+                        return;
                     case Fields.MsRunLocation:
-                        SetListValue(ref _msRunLocations, indices[0], value); return;
+                        SetListValue(ref _msRunLocations, indices[0], value);
+                        return;
                     case Fields.Software:
-                        SetListValue(ref _software, indices[0], new MzTabSoftware(new CVParamater(value))); return;
+                        SetListValue(ref _software, indices[0], new MzTabSoftware(new CVParamater(value)));
+                        return;
                     case Fields.SoftwareSettings:
-                        SetFieldValue(ref _software, indices[0], sw => sw.Settings, value); return;
+                        SetFieldValue(ref _software, indices[0], sw => sw.Settings, value);
+                        return;
                 }
             }
             //throw new ArgumentException("Unexpected field name: " + fieldName);
         }
-        
+
         public IEnumerable<KeyValuePair<string, string>> GetKeyValuePairs()
         {
             int i, j;
@@ -231,7 +272,7 @@ namespace CSMSL.IO.MzTab
             {
                 name = MzTab.GetArrayName(Fields.Software, i);
                 yield return new KeyValuePair<string, string>(name, software.ToString());
-                j = MzTab.IndexBased; 
+                j = MzTab.IndexBased;
                 foreach (string setting in software.Settings)
                 {
                     name = MzTab.GetArrayName(Fields.SoftwareSettings, i, j);
@@ -267,7 +308,7 @@ namespace CSMSL.IO.MzTab
 
             return Software.Count - 1 + MzTab.IndexBased;
         }
-        
+
         #endregion
     }
 }

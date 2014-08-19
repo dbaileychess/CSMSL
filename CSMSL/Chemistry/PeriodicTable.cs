@@ -1,17 +1,17 @@
 ﻿// Copyright 2012, 2013, 2014 Derek J. Bailey
-//
+// 
 // This file (PeriodicTable.cs) is part of CSMSL.
-//
+// 
 // CSMSL is free software: you can redistribute it and/or modify it
 // under the terms of the GNU Lesser General Public License as published
 // by the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
-//
+// 
 // CSMSL is distributed in the hope that it will be useful, but WITHOUT
 // ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
 // FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public
 // License for more details.
-//
+// 
 // You should have received a copy of the GNU Lesser General Public
 // License along with CSMSL. If not, see <http://www.gnu.org/licenses/>.
 
@@ -35,7 +35,7 @@ namespace CSMSL.Chemistry
         /// The internal dictionary housing all the elements, keyed by their unique atomic symbol
         /// </summary>
         private static readonly Dictionary<string, Element> _elements;
-        
+
         /// <summary>
         /// The default size for chemical formula arrays. This is recommend based on the 5 most common elements for proteomics (C H O N P)
         /// </summary>
@@ -65,7 +65,7 @@ namespace CSMSL.Chemistry
         {
             var assembly = Assembly.GetExecutingAssembly();
             Stream defaultModsStream = assembly.GetManifestResourceStream("CSMSL.Resources.Elements.xml");
-      
+
             Directory.CreateDirectory(Path.GetDirectoryName(UserPerodicTablePath));
             using (var fileStream = File.Create(UserPerodicTablePath))
             {
@@ -127,9 +127,9 @@ namespace CSMSL.Chemistry
                     }
                 }
             }
-            
+
             if (_isotopes.Length > BiggestIsotopeNumber)
-                Array.Resize(ref _isotopes, BiggestIsotopeNumber+1);
+                Array.Resize(ref _isotopes, BiggestIsotopeNumber + 1);
         }
 
         public static void Save()
@@ -139,7 +139,7 @@ namespace CSMSL.Chemistry
 
         public static void SaveTo(string filePath)
         {
-            using (XmlWriter writer = XmlWriter.Create(filePath, new XmlWriterSettings { Indent = true }))
+            using (XmlWriter writer = XmlWriter.Create(filePath, new XmlWriterSettings {Indent = true}))
             {
                 writer.WriteStartDocument();
                 writer.WriteStartElement("PeriodicTable");
@@ -165,7 +165,7 @@ namespace CSMSL.Chemistry
                 writer.WriteEndElement(); // PeriodicTable
             }
         }
-        
+
         public static int BiggestIsotopeNumber { get; private set; }
 
         /// <summary>
@@ -175,7 +175,7 @@ namespace CSMSL.Chemistry
 
         public static Element GetElement(string element)
         {
-           return _elements[element]; 
+            return _elements[element];
         }
 
         public static Isotope GetIsotope(string element, int atomicNumber)

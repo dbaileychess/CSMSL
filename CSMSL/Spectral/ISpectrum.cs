@@ -1,17 +1,17 @@
 ﻿// Copyright 2012, 2013, 2014 Derek J. Bailey
-//
+// 
 // This file (ISpectrum.cs) is part of CSMSL.
-//
+// 
 // CSMSL is free software: you can redistribute it and/or modify it
 // under the terms of the GNU Lesser General Public License as published
 // by the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
-//
+// 
 // CSMSL is distributed in the hope that it will be useful, but WITHOUT
 // ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
 // FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public
 // License for more details.
-//
+// 
 // You should have received a copy of the GNU Lesser General Public
 // License along with CSMSL. If not, see <http://www.gnu.org/licenses/>.
 
@@ -19,7 +19,7 @@ using System.Collections.Generic;
 
 namespace CSMSL.Spectral
 {
-    public interface ISpectrum
+    public interface ISpectrum : IEnumerable<MZPeak>
     {
         /// <summary>
         /// The number of peaks in the spectrum
@@ -40,6 +40,20 @@ namespace CSMSL.Spectral
         /// The total ion current of the spectrum
         /// </summary>
         double TotalIonCurrent { get; }
+
+        /// <summary>
+        /// Gets the m/z at a particular index
+        /// </summary>
+        /// <param name="index"></param>
+        /// <returns></returns>
+        double GetMass(int index);
+
+        /// <summary>
+        /// Gets the intensity at a particular index
+        /// </summary>
+        /// <param name="index"></param>
+        /// <returns></returns>
+        double GetIntensity(int index);
 
         /// <summary>
         /// Gets an array of m/z values for this spectrum
@@ -70,10 +84,20 @@ namespace CSMSL.Spectral
         bool TryGetIntensities(IRange<double> rangeMZ, out double intensity);
 
         byte[] ToBytes(bool zlibCompressed);
-        
-        IPeak GetClosestPeak(double minMZ, double maxMZ);
 
-        IPeak GetClosestPeak(IRange<double> rangeMZ);
+        bool ContainsPeak(double minMZ, double maxMZ);
+
+        bool ContainsPeak(IRange<double> range);
+
+        bool ContainsPeak();
+
+        double[,] ToArray();
+
+        MZPeak GetPeak(int index);
+
+        MZPeak GetClosestPeak(double minMZ, double maxMZ);
+
+        MZPeak GetClosestPeak(IRange<double> rangeMZ);
 
         ISpectrum Extract(IRange<double> mzRange);
 
@@ -90,12 +114,27 @@ namespace CSMSL.Spectral
         ISpectrum FilterByIntensity(IRange<double> intenistyRange);
     }
 
-    public interface ISpectrum<out T> : ISpectrum, IEnumerable<T> 
-        where T : IPeak
+    public interface ISpectrum<out TPeak> : ISpectrum
+        where TPeak : IPeak
     {
-        new T GetClosestPeak(double minMZ, double maxMZ);
+        new TPeak GetPeak(int index);
 
-        new T GetClosestPeak(IRange<double> rangeMZ);
-   }
+        new TPeak GetClosestPeak(double minMZ, double maxMZ);
 
+        new TPeak GetClosestPeak(IRange<double> rangeMZ);
+
+        new ISpectrum<TPeak> Extract(IRange<double> mzRange);
+
+        new ISpectrum<TPeak> Extract(double minMZ, double maxMZ);
+
+        new ISpectrum<TPeak> FilterByMZ(IEnumerable<IRange<double>> mzRanges);
+
+        new ISpectrum<TPeak> FilterByMZ(IRange<double> mzRange);
+
+        new ISpectrum<TPeak> FilterByMZ(double minMZ, double maxMZ);
+
+        new ISpectrum<TPeak> FilterByIntensity(double minIntensity, double maxIntensity);
+
+        new ISpectrum<TPeak> FilterByIntensity(IRange<double> intenistyRange);
+    }
 }

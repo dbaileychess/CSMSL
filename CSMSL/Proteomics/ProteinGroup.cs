@@ -1,17 +1,17 @@
 ﻿// Copyright 2012, 2013, 2014 Derek J. Bailey
-//
+// 
 // This file (ProteinGroup.cs) is part of CSMSL.
-//
+// 
 // CSMSL is free software: you can redistribute it and/or modify it
 // under the terms of the GNU Lesser General Public License as published
 // by the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
-//
+// 
 // CSMSL is distributed in the hope that it will be useful, but WITHOUT
 // ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
 // FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public
 // License for more details.
-//
+// 
 // You should have received a copy of the GNU Lesser General Public
 // License along with CSMSL. If not, see <http://www.gnu.org/licenses/>.
 
@@ -158,7 +158,7 @@ namespace CSMSL.Proteomics
 
             int observedAminoAcids = bits.Count(bit => bit > 0);
 
-            return (double)observedAminoAcids / Length * 100.0;
+            return (double) observedAminoAcids/Length*100.0;
         }
 
         #region Statics
@@ -167,7 +167,7 @@ namespace CSMSL.Proteomics
         {
             using (FastaReader fasta = new FastaReader(fastaFile))
             {
-                return GroupProteins(fasta.ReadNextProtein(), new[] { protease }, observeredSequences, peptideComparer, MaxMissedCleavages);
+                return GroupProteins(fasta.ReadNextProtein(), new[] {protease}, observeredSequences, peptideComparer, MaxMissedCleavages);
             }
         }
 
@@ -236,7 +236,7 @@ namespace CSMSL.Proteomics
 
         public static IEnumerable<ProteinGroup> GroupProteins(IEnumerable<Protein> proteins, IProtease protease, IEnumerable<IAminoAcidSequence> observeredSequences, IEqualityComparer<IAminoAcidSequence> peptideComparer, int MaxMissedCleavages = 3, int minPepPerProtein = 1)
         {
-            return GroupProteins(proteins, new[] { protease }, observeredSequences, peptideComparer, MaxMissedCleavages);
+            return GroupProteins(proteins, new[] {protease}, observeredSequences, peptideComparer, MaxMissedCleavages);
         }
 
         private static IEnumerable<ProteinGroup> CombinedProteins(IList<ProteinGroup> proteins, Dictionary<IAminoAcidSequence, int> sharedPeptides, int minPeptidesPerProtein = 1)

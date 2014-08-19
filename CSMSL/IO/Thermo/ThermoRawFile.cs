@@ -199,10 +199,8 @@ namespace CSMSL.IO.Thermo
                 _rawConnection.IsProfileScanForScanNum(spectrumNumber, ref isProfile);
                 useProfile = isProfile == 1;
             }
-
-            var peakData = GetUnlabeledData(spectrumNumber, !useProfile);
-            return new ThermoSpectrum(peakData);
-        }
+            return new ThermoSpectrum(GetLabeledData(spectrumNumber) ?? GetUnlabeledData(spectrumNumber, !useProfile));
+        } 
 
         public MZSpectrum GetAveragedSpectrum(int firstSpectrumNumber, int lastSpectrumNumber, string scanFilter = "", IntensityCutoffType type = IntensityCutoffType.None, int intensityCutoff = 0)
         {
@@ -283,7 +281,7 @@ namespace CSMSL.IO.Thermo
             }
         }
 
-        public override double GetPrecusorMz(int spectrumNumber, int msnOrder = 2)
+        public override double GetPrecursorMz(int spectrumNumber, int msnOrder = 2)
         {
             double mz = double.NaN;
             _rawConnection.GetPrecursorMassForScanNum(spectrumNumber, msnOrder, ref mz);

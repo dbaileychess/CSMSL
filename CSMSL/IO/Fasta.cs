@@ -1,17 +1,17 @@
 ﻿// Copyright 2012, 2013, 2014 Derek J. Bailey
-//
+// 
 // This file (Fasta.cs) is part of CSMSL.
-//
+// 
 // CSMSL is free software: you can redistribute it and/or modify it
 // under the terms of the GNU Lesser General Public License as published
 // by the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
-//
+// 
 // CSMSL is distributed in the hope that it will be useful, but WITHOUT
 // ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
 // FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public
 // License for more details.
-//
+// 
 // You should have received a copy of the GNU Lesser General Public
 // License along with CSMSL. If not, see <http://www.gnu.org/licenses/>.
 
@@ -22,7 +22,7 @@ namespace CSMSL.IO
 {
     public class Fasta : IEquatable<Fasta>
     {
-        public static string[] DecoyIdentifiers = { "DECOY", "REVERSE" };
+        public static string[] DecoyIdentifiers = {"DECOY", "REVERSE"};
 
         private string _description;
 
@@ -112,7 +112,7 @@ namespace CSMSL.IO
 
         private static readonly Random Random = new Random();
 
-        private static readonly List<char> AminoAcids = new List<char>(new[] { 'A', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'K', 'L', 'M', 'N', 'P', 'Q', 'R', 'S', 'T', 'V', 'W', 'Y' });
+        private static readonly List<char> AminoAcids = new List<char>(new[] {'A', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'K', 'L', 'M', 'N', 'P', 'Q', 'R', 'S', 'T', 'V', 'W', 'Y'});
 
         private static void Shuffle(char[] array)
         {
@@ -155,7 +155,7 @@ namespace CSMSL.IO
         {
             return Sequence.Equals(other.Sequence);
         }
-    } 
+    }
 
     public enum DecoyDatabaseMethod
     {

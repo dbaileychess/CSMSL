@@ -95,6 +95,7 @@
     </Compile>
     <Compile Include="PepXmlExamples.cs" />
     <Compile Include="ProteinGroupingExample.cs" />
+    <Compile Include="ThermoRawFileExamples.cs" />
     <Compile Include="TrypticDigestion.cs" />
     <Compile Include="MorpheusSearch.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

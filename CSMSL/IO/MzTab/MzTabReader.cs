@@ -1,4 +1,21 @@
-﻿using System;
+﻿// Copyright 2012, 2013, 2014 Derek J. Bailey
+// 
+// This file (MzTabReader.cs) is part of CSMSL.
+// 
+// CSMSL is free software: you can redistribute it and/or modify it
+// under the terms of the GNU Lesser General Public License as published
+// by the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// 
+// CSMSL is distributed in the hope that it will be useful, but WITHOUT
+// ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public
+// License for more details.
+// 
+// You should have received a copy of the GNU Lesser General Public
+// License along with CSMSL. If not, see <http://www.gnu.org/licenses/>.
+
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.IO;
@@ -16,11 +33,11 @@ namespace CSMSL.IO.MzTab
         public MzTabMetaData MetaData { get; private set; }
 
         #endregion
-        
+
         private StreamReader _reader;
         private MzTab.States _currentState;
         private readonly DataSet _dataSet;
-     
+
         #region Constructors
 
         public MzTabReader(string filePath, bool ignoreComments = true)
@@ -45,7 +62,7 @@ namespace CSMSL.IO.MzTab
             _reader = new StreamReader(stream, MzTab.DefaultEncoding, true);
             LoadData();
         }
-        
+
         public void Dispose()
         {
             if (_reader != null)
@@ -92,13 +109,13 @@ namespace CSMSL.IO.MzTab
             switch (section)
             {
                 case MzTabSection.PSM:
-                    return _psmDataTable != null ? (string)_psmDataTable.Rows[index][columnName] : null;
+                    return _psmDataTable != null ? (string) _psmDataTable.Rows[index][columnName] : null;
                 case MzTabSection.Peptide:
-                    return _peptideDataTable != null ? (string)_peptideDataTable.Rows[index][columnName] : null;
+                    return _peptideDataTable != null ? (string) _peptideDataTable.Rows[index][columnName] : null;
                 case MzTabSection.Protein:
-                    return _proteinDataTable != null ? (string)_proteinDataTable.Rows[index][columnName] : null;
+                    return _proteinDataTable != null ? (string) _proteinDataTable.Rows[index][columnName] : null;
                 case MzTabSection.SmallMolecule:
-                    return _smallMoleculeDataTable != null ? (string)_smallMoleculeDataTable.Rows[index][columnName] : null;
+                    return _smallMoleculeDataTable != null ? (string) _smallMoleculeDataTable.Rows[index][columnName] : null;
                 default:
                     return null;
             }
@@ -109,13 +126,13 @@ namespace CSMSL.IO.MzTab
             switch (section)
             {
                 case MzTabSection.PSM:
-                    return _psmDataTable != null ? (string[])_psmDataTable.Rows[index].ItemArray : null;
+                    return _psmDataTable != null ? (string[]) _psmDataTable.Rows[index].ItemArray : null;
                 case MzTabSection.Peptide:
-                    return _peptideDataTable != null ? (string[])_peptideDataTable.Rows[index].ItemArray : null;
+                    return _peptideDataTable != null ? (string[]) _peptideDataTable.Rows[index].ItemArray : null;
                 case MzTabSection.Protein:
-                    return _proteinDataTable != null ? (string[])_proteinDataTable.Rows[index].ItemArray : null;
+                    return _proteinDataTable != null ? (string[]) _proteinDataTable.Rows[index].ItemArray : null;
                 case MzTabSection.SmallMolecule:
-                    return _smallMoleculeDataTable != null ? (string[])_smallMoleculeDataTable.Rows[index].ItemArray : null;
+                    return _smallMoleculeDataTable != null ? (string[]) _smallMoleculeDataTable.Rows[index].ItemArray : null;
                 default:
                     return null;
             }
@@ -123,20 +140,14 @@ namespace CSMSL.IO.MzTab
 
         public string this[MzTabSection section, int index, string columnName]
         {
-            get
-            {
-                return GetData(section, index, columnName);
-            }
+            get { return GetData(section, index, columnName); }
         }
 
         public string[] this[MzTabSection section, int index]
         {
-            get
-            {
-                return GetData(section, index);
-            }
+            get { return GetData(section, index); }
         }
-        
+
         #endregion
 
         #region Private Methods
@@ -147,7 +158,7 @@ namespace CSMSL.IO.MzTab
             while (!_reader.EndOfStream)
             {
                 lineNumber++;
-                
+
                 // Read the next line
                 string line = _reader.ReadLine();
 
@@ -157,42 +168,42 @@ namespace CSMSL.IO.MzTab
 
                 // Split the line into different parts
                 string[] data = line.Split(MzTab.FieldSeparator);
-               
+
                 // Get the line prefix of the current line
                 string linePrefix = data[0];
 
                 // Jump to the method that handles each of the different line prefixes
                 switch (linePrefix)
                 {
-                    // Comments
+                        // Comments
                     case MzTab.CommentLinePrefix:
                         ReadComment(data, lineNumber);
                         break;
 
-                    // MetaData
+                        // MetaData
                     case MzTab.MetaDataLinePrefix:
                         ReadMetaData(data, lineNumber);
                         break;
 
-                    // Table Headers
+                        // Table Headers
                     case MzTab.ProteinTableLinePrefix:
-                        _proteinDataTable = _dataSet.Tables.Add(Enum.GetName(typeof(MzTabSection), MzTabSection.Protein));
+                        _proteinDataTable = _dataSet.Tables.Add(Enum.GetName(typeof (MzTabSection), MzTabSection.Protein));
                         ReadTableDefinition(MzTab.States.ProteinHeader, data, _proteinDataTable);
                         break;
                     case MzTab.PeptideTableLinePrefix:
-                        _peptideDataTable = _dataSet.Tables.Add(Enum.GetName(typeof(MzTabSection), MzTabSection.Peptide));
+                        _peptideDataTable = _dataSet.Tables.Add(Enum.GetName(typeof (MzTabSection), MzTabSection.Peptide));
                         ReadTableDefinition(MzTab.States.PeptideHeader, data, _peptideDataTable);
                         break;
                     case MzTab.PsmTableLinePrefix:
-                        _psmDataTable = _dataSet.Tables.Add(Enum.GetName(typeof(MzTabSection), MzTabSection.PSM));
+                        _psmDataTable = _dataSet.Tables.Add(Enum.GetName(typeof (MzTabSection), MzTabSection.PSM));
                         ReadTableDefinition(MzTab.States.PsmHeader, data, _psmDataTable);
                         break;
                     case MzTab.SmallMoleculeTableLinePrefix:
-                        _smallMoleculeDataTable = _dataSet.Tables.Add(Enum.GetName(typeof(MzTabSection), MzTabSection.SmallMolecule));
+                        _smallMoleculeDataTable = _dataSet.Tables.Add(Enum.GetName(typeof (MzTabSection), MzTabSection.SmallMolecule));
                         ReadTableDefinition(MzTab.States.SmallMoleculeHeader, data, _smallMoleculeDataTable);
                         break;
-                   
-                    // Table Data
+
+                        // Table Data
                     case MzTab.ProteinDataLinePrefix:
                         ReadDataTable(MzTab.States.ProteinData, data, _proteinDataTable);
                         break;
@@ -206,7 +217,7 @@ namespace CSMSL.IO.MzTab
                         ReadDataTable(MzTab.States.SmallMoleculeData, data, _smallMoleculeDataTable);
                         break;
 
-                    // If we got here, the line prefix is not valid
+                        // If we got here, the line prefix is not valid
                     default:
                         CheckError(line, lineNumber);
                         break;
@@ -214,7 +225,7 @@ namespace CSMSL.IO.MzTab
             }
             IsOpen = true;
         }
-        
+
         private void CheckError(string line, int lineNumber)
         {
             Console.Error.WriteLine(line);
@@ -289,7 +300,7 @@ namespace CSMSL.IO.MzTab
                 var item = new T();
                 for (int i = 0; i < count; i++)
                 {
-                    item.SetValue(columns[i], (string)row.ItemArray[i]);
+                    item.SetValue(columns[i], (string) row.ItemArray[i]);
                 }
                 yield return item;
             }
@@ -298,11 +309,18 @@ namespace CSMSL.IO.MzTab
         #endregion
 
         #region Peptide Section
-        
+
         private DataTable _peptideDataTable;
 
-        public bool ContainsPeptides { get { return _peptideDataTable != null && _peptideDataTable.Rows.Count > 0; } }
-        public int NumberOfPeptides { get { return (ContainsPeptides) ? _peptideDataTable.Rows.Count : 0; } }
+        public bool ContainsPeptides
+        {
+            get { return _peptideDataTable != null && _peptideDataTable.Rows.Count > 0; }
+        }
+
+        public int NumberOfPeptides
+        {
+            get { return (ContainsPeptides) ? _peptideDataTable.Rows.Count : 0; }
+        }
 
         public IEnumerable<MzTabPeptide> GetPeptides()
         {
@@ -315,8 +333,15 @@ namespace CSMSL.IO.MzTab
 
         private DataTable _smallMoleculeDataTable;
 
-        public bool ContainsSmallMolecules { get { return _smallMoleculeDataTable != null && _smallMoleculeDataTable.Rows.Count > 0; } }
-        public int NumberOfSmallMolecules { get { return (ContainsSmallMolecules) ? _smallMoleculeDataTable.Rows.Count : 0; } }
+        public bool ContainsSmallMolecules
+        {
+            get { return _smallMoleculeDataTable != null && _smallMoleculeDataTable.Rows.Count > 0; }
+        }
+
+        public int NumberOfSmallMolecules
+        {
+            get { return (ContainsSmallMolecules) ? _smallMoleculeDataTable.Rows.Count : 0; }
+        }
 
         public IEnumerable<MzTabSmallMolecule> GetSmallMolecules()
         {
@@ -329,8 +354,15 @@ namespace CSMSL.IO.MzTab
 
         private DataTable _psmDataTable;
 
-        public bool ContainsPsms { get { return _psmDataTable != null && _psmDataTable.Rows.Count > 0; } }
-        public int NumberOfPsms { get { return (ContainsPsms) ? _psmDataTable.Rows.Count : 0; } }
+        public bool ContainsPsms
+        {
+            get { return _psmDataTable != null && _psmDataTable.Rows.Count > 0; }
+        }
+
+        public int NumberOfPsms
+        {
+            get { return (ContainsPsms) ? _psmDataTable.Rows.Count : 0; }
+        }
 
         public IEnumerable<MzTabPSM> GetPsms()
         {
@@ -342,9 +374,16 @@ namespace CSMSL.IO.MzTab
         #region Protein Section
 
         private DataTable _proteinDataTable;
-        
-        public bool ContainsProteins { get { return _proteinDataTable != null && _proteinDataTable.Rows.Count > 0; } }
-        public int NumberOfProteins { get { return (ContainsProteins) ? _proteinDataTable.Rows.Count : 0; } }
+
+        public bool ContainsProteins
+        {
+            get { return _proteinDataTable != null && _proteinDataTable.Rows.Count > 0; }
+        }
+
+        public int NumberOfProteins
+        {
+            get { return (ContainsProteins) ? _proteinDataTable.Rows.Count : 0; }
+        }
 
         public IEnumerable<MzTabProtein> GetProteins()
         {
@@ -357,7 +396,11 @@ namespace CSMSL.IO.MzTab
 
         private DataTable _commentsDataTable;
         private readonly bool _ignoreComments;
-        public bool ContainsComments { get { return _commentsDataTable != null; } }
+
+        public bool ContainsComments
+        {
+            get { return _commentsDataTable != null; }
+        }
 
         private void ReadComment(string[] data, int lineNumber)
         {
@@ -369,7 +412,7 @@ namespace CSMSL.IO.MzTab
             if (_commentsDataTable == null)
             {
                 _commentsDataTable = _dataSet.Tables.Add("Comments");
-                _commentsDataTable.Columns.Add("lineNumber", typeof(int));
+                _commentsDataTable.Columns.Add("lineNumber", typeof (int));
                 _commentsDataTable.Columns.Add("comment");
             }
 
@@ -383,12 +426,12 @@ namespace CSMSL.IO.MzTab
         #endregion
 
         #region MetaData Section
-   
+
         private void ReadMetaData(string[] data, int lineNumber)
         {
             // Set that we have enter in Metadata section
             _currentState |= MzTab.States.MetaData;
-            
+
             // Grab the key-value pair, which should correspond to index 1 and 2, respectively
             string key = data[1];
             string value = data[2];
@@ -402,6 +445,5 @@ namespace CSMSL.IO.MzTab
         }
 
         #endregion
-        
     }
 }

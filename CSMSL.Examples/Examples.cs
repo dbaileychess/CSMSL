@@ -120,7 +120,8 @@ namespace CSMSL.Examples
             //IsotopologueExample();
 
             // Recalibrate Thermo Files on Lockmass
-            MsDataFileExamples.RecalibrateThermoRawFile();
+            ThermoRawFileExamples.RecalibrateThermoRawFile();
+            ThermoRawFileExamples.LoopOverEveryScan();
 
             // Example IO
             //MsDataFileExamples.VendorNeutralDataAccess();

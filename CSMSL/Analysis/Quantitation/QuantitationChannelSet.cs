@@ -1,17 +1,17 @@
 ﻿// Copyright 2012, 2013, 2014 Derek J. Bailey
-//
+// 
 // This file (QuantitationChannelSet.cs) is part of CSMSL.
-//
+// 
 // CSMSL is free software: you can redistribute it and/or modify it
 // under the terms of the GNU Lesser General Public License as published
 // by the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
-//
+// 
 // CSMSL is distributed in the hope that it will be useful, but WITHOUT
 // ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
 // FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public
 // License for more details.
-//
+// 
 // You should have received a copy of the GNU Lesser General Public
 // License along with CSMSL. If not, see <http://www.gnu.org/licenses/>.
 
@@ -194,7 +194,7 @@ namespace CSMSL.Analysis.Quantitation
             {
                 default:
                 case QuantitationChannelSetMassType.Average:
-                    return MonoisotopicMass / Count;
+                    return MonoisotopicMass/Count;
 
                 case QuantitationChannelSetMassType.Lightest:
                     return LightestChannel.MonoisotopicMass;
@@ -203,12 +203,12 @@ namespace CSMSL.Analysis.Quantitation
                     return HeaviestChannel.MonoisotopicMass;
 
                 case QuantitationChannelSetMassType.Median:
-                    if (Count % 2 == 0)
+                    if (Count%2 == 0)
                     {
-                        return (_channels.Values[(Count / 2) - 1].MonoisotopicMass + _channels.Values[Count / 2].MonoisotopicMass) / 2.0;
+                        return (_channels.Values[(Count/2) - 1].MonoisotopicMass + _channels.Values[Count/2].MonoisotopicMass)/2.0;
                     }
 
-                    return _channels.Values[Count / 2].MonoisotopicMass;
+                    return _channels.Values[Count/2].MonoisotopicMass;
             }
         }
 
@@ -264,7 +264,7 @@ namespace CSMSL.Analysis.Quantitation
                             }
                             else
                             {
-                                residues = new HashSet<int> { i };
+                                residues = new HashSet<int> {i};
                                 locations.Add(channel, residues);
                             }
                         }

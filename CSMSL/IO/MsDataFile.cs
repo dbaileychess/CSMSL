@@ -1,17 +1,17 @@
 ﻿// Copyright 2012, 2013, 2014 Derek J. Bailey
-//
+// 
 // This file (MSDataFile.cs) is part of CSMSL.
-//
+// 
 // CSMSL is free software: you can redistribute it and/or modify it
 // under the terms of the GNU Lesser General Public License as published
 // by the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
-//
+// 
 // CSMSL is distributed in the hope that it will be useful, but WITHOUT
 // ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
 // FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public
 // License for more details.
-//
+// 
 // You should have received a copy of the GNU Lesser General Public
 // License along with CSMSL. If not, see <http://www.gnu.org/licenses/>.
 
@@ -27,7 +27,7 @@ namespace CSMSL.IO
     /// <summary>
     /// A data file for storing data collected from a Mass Spectrometer
     /// </summary>
-    public abstract class MSDataFile<TSpectrum> : IMSDataFile<TSpectrum>, IDisposable, IEquatable<MSDataFile<TSpectrum>>
+    public abstract class MSDataFile<TSpectrum> : IMSDataFile<TSpectrum>
         where TSpectrum : ISpectrum
     {
         /// <summary>
@@ -109,7 +109,12 @@ namespace CSMSL.IO
             get { return _name; }
         }
 
-        public MSDataScan<TSpectrum> this[int spectrumNumber]
+        IMSDataScan IMSDataFile.this[int spectrumNumber]
+        {
+            get { return GetMsScan(spectrumNumber); }
+        }
+
+        public IMSDataScan<TSpectrum> this[int spectrumNumber]
         {
             get { return GetMsScan(spectrumNumber); }
         }
@@ -129,7 +134,7 @@ namespace CSMSL.IO
 
         protected virtual void Dispose(bool disposing)
         {
-            if(_isDisposed)
+            if (_isDisposed)
                 return;
 
             if (disposing)
@@ -155,7 +160,7 @@ namespace CSMSL.IO
         {
             return GetMsScans().GetEnumerator();
         }
-      
+
         public override int GetHashCode()
         {
             return FilePath.GetHashCode();
@@ -240,14 +245,14 @@ namespace CSMSL.IO
 
         public abstract MzRange GetMzRange(int spectrumNumber);
 
-        public abstract double GetPrecusorMz(int spectrumNumber, int msnOrder = 2);
+        public abstract double GetPrecursorMz(int spectrumNumber, int msnOrder = 2);
 
         public abstract double GetIsolationWidth(int spectrumNumber, int msnOrder = 2);
 
         public virtual MzRange GetIsolationRange(int spectrumNumber, int msnOrder = 2)
         {
-            double precursormz = GetPrecusorMz(spectrumNumber, msnOrder);
-            double halfWidth = GetIsolationWidth(spectrumNumber, msnOrder) / 2;
+            double precursormz = GetPrecursorMz(spectrumNumber, msnOrder);
+            double halfWidth = GetIsolationWidth(spectrumNumber, msnOrder)/2;
             return new MzRange(precursormz - halfWidth, precursormz + halfWidth);
         }
 
@@ -308,7 +313,7 @@ namespace CSMSL.IO
 
         public override string ToString()
         {
-            return string.Format("{0} ({1})", Name, Enum.GetName(typeof(MSDataFileType), FileType));
+            return string.Format("{0} ({1})", Name, Enum.GetName(typeof (MSDataFileType), FileType));
         }
 
         protected abstract int GetFirstSpectrumNumber();
@@ -318,6 +323,16 @@ namespace CSMSL.IO
         IEnumerator<IMSDataScan> IEnumerable<IMSDataScan>.GetEnumerator()
         {
             return GetEnumerator();
+        }
+
+        ISpectrum IMSDataFile.GetSpectrum(int spectrumNumber)
+        {
+            return GetSpectrum(spectrumNumber);
+        }
+
+        public bool Equals(IMSDataFile other)
+        {
+            return Name.Equals(other.Name);
         }
     }
 }

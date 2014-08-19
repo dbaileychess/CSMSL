@@ -1,4 +1,21 @@
-﻿using System;
+﻿// Copyright 2012, 2013, 2014 Derek J. Bailey
+// 
+// This file (MzTabEntity.cs) is part of CSMSL.
+// 
+// CSMSL is free software: you can redistribute it and/or modify it
+// under the terms of the GNU Lesser General Public License as published
+// by the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// 
+// CSMSL is distributed in the hope that it will be useful, but WITHOUT
+// ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public
+// License for more details.
+// 
+// You should have received a copy of the GNU Lesser General Public
+// License along with CSMSL. If not, see <http://www.gnu.org/licenses/>.
+
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -62,7 +79,7 @@ namespace CSMSL.IO.MzTab
 
             index2 -= MzTab.IndexBased;
 
-            if(index2 >= list2.Count)
+            if (index2 >= list2.Count)
                 return MzTab.NullFieldText;
 
             T2 item2 = list2[index2];
@@ -71,7 +88,7 @@ namespace CSMSL.IO.MzTab
 
             return item2.ToString();
         }
-        
+
         protected string GetListValue<T>(List<T> list, int index)
         {
             if (list == null)
@@ -82,7 +99,7 @@ namespace CSMSL.IO.MzTab
                 return MzTab.NullFieldText;
 
             T item = list[index];
-            if(item == null)
+            if (item == null)
                 return MzTab.NullFieldText;
             return item.ToString();
         }
@@ -91,16 +108,16 @@ namespace CSMSL.IO.MzTab
         {
             if (list == null)
                 return MzTab.NullFieldText;
-     
+
             T value;
             if (!list.TryGetValue(index1, index2, out value))
                 return MzTab.NullFieldText;
 
-            if(value == null)
+            if (value == null)
                 return MzTab.NullFieldText;
             return value.ToString();
         }
-        
+
         public IEnumerable<KeyValuePair<string, object>> GetListValues(string fieldName)
         {
             object o;
@@ -132,7 +149,7 @@ namespace CSMSL.IO.MzTab
 
         public string GetOptionalData(string optionalField)
         {
-            if(OptionalData == null)
+            if (OptionalData == null)
                 return MzTab.NullFieldText;
             object data;
             if (!OptionalData.TryGetValue(optionalField, out data))
@@ -145,15 +162,15 @@ namespace CSMSL.IO.MzTab
             return headers.Select(GetValue);
         }
 
-        protected static IEnumerable<string> GetHeaders<T, T2>(IList<T> data, string fieldName, Func<T, MzTabMultipleSet<T2>> selector) 
-            where T : MzTabEntity 
+        protected static IEnumerable<string> GetHeaders<T, T2>(IList<T> data, string fieldName, Func<T, MzTabMultipleSet<T2>> selector)
+            where T : MzTabEntity
         {
             MzTabMultipleSet<T2> set;
             int maxIndex1 = data.Max(d => (set = selector(d)) == null ? 0 : set.MaxIndex1);
             int maxIndex2 = data.Max(d => (set = selector(d)) == null ? 0 : set.MaxIndex2);
 
-            int index1 = fieldName.IndexOf('[',0);
-            int index2 = fieldName.IndexOf('[', index1+1);
+            int index1 = fieldName.IndexOf('[', 0);
+            int index2 = fieldName.IndexOf('[', index1 + 1);
 
             for (int i = 1; i <= maxIndex1; i++)
             {
@@ -185,22 +202,23 @@ namespace CSMSL.IO.MzTab
         /// <returns></returns>
         public static IEnumerable<string> GetHeader<T>(IList<T> data) where T : MzTabEntity
         {
-            Type tType = typeof(T);
+            Type tType = typeof (T);
 
             List<string> headers = new List<string>();
 
-            if (typeof(MzTabPSM) == tType)
+            if (typeof (MzTabPSM) == tType)
             {
                 headers.AddRange(MzTabPSM.Fields.GetHeader(data.Cast<MzTabPSM>().ToList()));
-            } else if (typeof(MzTabProtein) == tType)
+            }
+            else if (typeof (MzTabProtein) == tType)
             {
                 headers.AddRange(MzTabProtein.Fields.GetHeader(data.Cast<MzTabProtein>().ToList()));
             }
-            else if (typeof(MzTabPeptide) == tType)
+            else if (typeof (MzTabPeptide) == tType)
             {
                 headers.AddRange(MzTabPeptide.Fields.GetHeader(data.Cast<MzTabPeptide>().ToList()));
             }
-            else if (typeof(MzTabSmallMolecule) == tType)
+            else if (typeof (MzTabSmallMolecule) == tType)
             {
                 headers.AddRange(MzTabSmallMolecule.Fields.GetHeader(data.Cast<MzTabSmallMolecule>().ToList()));
             }

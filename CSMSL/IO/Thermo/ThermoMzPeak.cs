@@ -19,7 +19,7 @@ using CSMSL.Spectral;
 
 namespace CSMSL.IO.Thermo
 {
-    public class ThermoLabeledPeak : MZPeak
+    public class ThermoMzPeak : MZPeak
     {
         public int Charge { get; private set; }
 
@@ -36,16 +36,18 @@ namespace CSMSL.IO.Thermo
             }
         }
 
+        public bool IsHighResolution { get { return Resolution > 0;} }
+
         public override string ToString()
         {
             return string.Format("{0} z = {1:+#;-#;?} SN = {2:F2}", base.ToString(), Charge, SignalToNoise);
         }
 
-        public ThermoLabeledPeak()
+        public ThermoMzPeak()
         {
         }
 
-        public ThermoLabeledPeak(double mz, double intensity, int charge, double noise, double resolution)
+        public ThermoMzPeak(double mz, double intensity, int charge = 0, double noise = 0.0, double resolution = 0.0)
             : base(mz, intensity)
         {
             Charge = charge;

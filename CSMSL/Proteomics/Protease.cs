@@ -1,17 +1,17 @@
 ﻿// Copyright 2012, 2013, 2014 Derek J. Bailey
-//
+// 
 // This file (Protease.cs) is part of CSMSL.
-//
+// 
 // CSMSL is free software: you can redistribute it and/or modify it
 // under the terms of the GNU Lesser General Public License as published
 // by the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
-//
+// 
 // CSMSL is distributed in the hope that it will be useful, but WITHOUT
 // ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
 // FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public
 // License for more details.
-//
+// 
 // You should have received a copy of the GNU Lesser General Public
 // License along with CSMSL. If not, see <http://www.gnu.org/licenses/>.
 
@@ -31,7 +31,7 @@ namespace CSMSL.Proteomics
         #region Static
 
         public static readonly string UserProteasePath;
-   
+
         private static readonly Dictionary<string, Protease> Proteases;
 
         static Protease()
@@ -96,7 +96,7 @@ namespace CSMSL.Proteomics
                 }
             }
         }
-        
+
         public static void Save()
         {
             SaveTo(UserProteasePath);
@@ -104,7 +104,7 @@ namespace CSMSL.Proteomics
 
         public static void SaveTo(string filePath)
         {
-            using (XmlWriter writer = XmlWriter.Create(filePath, new XmlWriterSettings { Indent = true }))
+            using (XmlWriter writer = XmlWriter.Create(filePath, new XmlWriterSettings {Indent = true}))
             {
                 writer.WriteStartDocument();
 
@@ -130,7 +130,7 @@ namespace CSMSL.Proteomics
                 writer.WriteEndDocument();
             }
         }
-        
+
         public static IEnumerable<Protease> GetAllProteases()
         {
             return Proteases.Values;
@@ -170,7 +170,7 @@ namespace CSMSL.Proteomics
             }
             return false;
         }
-        
+
         private static void OnProteasesChanged()
         {
             var handler = ProteasesChanged;
@@ -179,7 +179,7 @@ namespace CSMSL.Proteomics
                 handler(null, EventArgs.Empty);
             }
         }
-        
+
         public static event EventHandler ProteasesChanged;
 
         #endregion

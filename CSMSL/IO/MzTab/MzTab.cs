@@ -1,11 +1,27 @@
-﻿using System;
+﻿// Copyright 2012, 2013, 2014 Derek J. Bailey
+// 
+// This file (MzTab.cs) is part of CSMSL.
+// 
+// CSMSL is free software: you can redistribute it and/or modify it
+// under the terms of the GNU Lesser General Public License as published
+// by the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// 
+// CSMSL is distributed in the hope that it will be useful, but WITHOUT
+// ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public
+// License for more details.
+// 
+// You should have received a copy of the GNU Lesser General Public
+// License along with CSMSL. If not, see <http://www.gnu.org/licenses/>.
+
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Text.RegularExpressions;
 
 namespace CSMSL.IO.MzTab
 {
-
     /// <summary>
     /// mzTab: exchange format for proteomics and metabolomics results
     /// </summary>
@@ -32,7 +48,7 @@ namespace CSMSL.IO.MzTab
         /// </summary>
         public static Regex MultipleEntryRegex = new Regex(@"\[([1-9][0-9]*)\]", RegexOptions.Compiled);
 
-       // public static Regex OptionalColumnName= new Regex(@"[A-Za-z0-9_-:\]\[]+", RegexOptions.Compiled);
+        // public static Regex OptionalColumnName= new Regex(@"[A-Za-z0-9_-:\]\[]+", RegexOptions.Compiled);
 
         /// <summary>
         /// All column labels and field names are case-sensitive
@@ -76,7 +92,7 @@ namespace CSMSL.IO.MzTab
         public const string SmallMoleculeDataLinePrefix = "SML";
 
         public enum LinePrefix
-        {          
+        {
             MetaData,
             Comment,
             ProteinTable,
@@ -107,7 +123,7 @@ namespace CSMSL.IO.MzTab
         }
 
         #endregion
-        
+
         #region Date/time Format
 
         /// <summary>
@@ -122,8 +138,17 @@ namespace CSMSL.IO.MzTab
 
         #endregion
 
-        public enum MzTabMode { Summary, Complete };
-        public enum MzTabType { Identification, Quantification };
+        public enum MzTabMode
+        {
+            Summary,
+            Complete
+        };
+
+        public enum MzTabType
+        {
+            Identification,
+            Quantification
+        };
 
         [Flags]
         internal enum States

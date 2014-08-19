@@ -1,17 +1,17 @@
 ﻿// Copyright 2012, 2013, 2014 Derek J. Bailey
-//
+// 
 // This file (DoubleRange.cs) is part of CSMSL.
-//
+// 
 // CSMSL is free software: you can redistribute it and/or modify it
 // under the terms of the GNU Lesser General Public License as published
 // by the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
-//
+// 
 // CSMSL is distributed in the hope that it will be useful, but WITHOUT
 // ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
 // FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public
 // License for more details.
-//
+// 
 // You should have received a copy of the GNU Lesser General Public
 // License along with CSMSL. If not, see <http://www.gnu.org/licenses/>.
 
@@ -84,18 +84,18 @@ namespace CSMSL
             switch (tolerance.Unit)
             {
                 default:
-                    Minimum = mean - value / 2.0;
-                    Maximum = mean + value / 2.0;
+                    Minimum = mean - value/2.0;
+                    Maximum = mean + value/2.0;
                     break;
 
                 case ToleranceUnit.MMU:
-                    Minimum = mean - value / 2000.0;
-                    Maximum = mean + value / 2000.0;
+                    Minimum = mean - value/2000.0;
+                    Maximum = mean + value/2000.0;
                     break;
 
                 case ToleranceUnit.PPM:
-                    Minimum = mean * (1 - (value / 2e6));
-                    Maximum = mean * (1 + (value / 2e6));
+                    Minimum = mean*(1 - (value/2e6));
+                    Maximum = mean*(1 + (value/2e6));
                     break;
             }
         }
@@ -106,7 +106,7 @@ namespace CSMSL
         /// </summary>
         public double Mean
         {
-            get { return (Maximum + Minimum) / 2.0; }
+            get { return (Maximum + Minimum)/2.0; }
         }
 
         /// <summary>
@@ -125,7 +125,7 @@ namespace CSMSL
         /// <returns>The ppm</returns>
         public double ToPPM()
         {
-            return 1e6 * Width / Mean;
+            return 1e6*Width/Mean;
         }
 
         /// <summary>

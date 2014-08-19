@@ -25,7 +25,7 @@ namespace CSMSL.IO.Thermo
     /// A high resolution spectra from a Thermo raw file
     /// </summary>
     [Serializable]
-    public sealed class ThermoSpectrum : Spectrum<ThermoLabeledPeak, ThermoSpectrum>
+    public sealed class ThermoSpectrum : Spectrum<ThermoMzPeak, ThermoSpectrum>
     {
         /// <summary>
         /// An empty spectrum
@@ -45,21 +45,20 @@ namespace CSMSL.IO.Thermo
         {
             int arrayLength = peakData.GetLength(1);
             int depthLength = peakData.GetLength(0);
-            if (depthLength > 2)
+            if (depthLength <= 2) 
+                return;
+            _noises = new double[Count];
+            _resolutions = new double[Count];
+            var charges = new double[Count];
+
+            Buffer.BlockCopy(peakData, sizeof (double)*arrayLength*(int) ThermoRawFile.RawLabelDataColumn.Resolution, _resolutions, 0, sizeof (double)*Count);
+            Buffer.BlockCopy(peakData, sizeof (double)*arrayLength*(int) ThermoRawFile.RawLabelDataColumn.NoiseLevel, _noises, 0, sizeof (double)*Count);
+            Buffer.BlockCopy(peakData, sizeof (double)*arrayLength*(int) ThermoRawFile.RawLabelDataColumn.Charge, charges, 0, sizeof (double)*Count);
+
+            _charges = new int[Count];
+            for (int i = 0; i < Count; i++)
             {
-                _noises = new double[Count];
-                _resolutions = new double[Count];
-                var charges = new double[Count];
-
-                Buffer.BlockCopy(peakData, sizeof (double)*arrayLength*(int) ThermoRawFile.RawLabelDataColumn.Resolution, _resolutions, 0, sizeof (double)*Count);
-                Buffer.BlockCopy(peakData, sizeof (double)*arrayLength*(int) ThermoRawFile.RawLabelDataColumn.NoiseLevel, _noises, 0, sizeof (double)*Count);
-                Buffer.BlockCopy(peakData, sizeof (double)*arrayLength*(int) ThermoRawFile.RawLabelDataColumn.Charge, charges, 0, sizeof (double)*Count);
-
-                _charges = new int[Count];
-                for (int i = 0; i < Count; i++)
-                {
-                    _charges[i] = (int) charges[i];
-                }
+                _charges[i] = (int) charges[i];
             }
         }
 
@@ -85,25 +84,27 @@ namespace CSMSL.IO.Thermo
 
         public double GetNoise(int index)
         {
-            return _noises[index];
+            return IsHighResolution ? _noises[index] : 0;
         }
 
         public double GetSignalToNoise(int index)
         {
+            if (!IsHighResolution)
+                return 0;
             double noise = _noises[index];
-            if (noise == 0)
+            if (Math.Abs(noise) < 1e-25)
                 return 0;
             return _intensities[index]/noise;
         }
 
         public int GetCharge(int index)
         {
-            return _charges[index];
+            return IsHighResolution ? _charges[index] : 0;
         }
 
         public double GetResolution(int index)
         {
-            return _resolutions[index];
+            return IsHighResolution ? _resolutions[index] : 0;
         }
 
         public double[] GetNoises()
@@ -121,9 +122,10 @@ namespace CSMSL.IO.Thermo
             return CopyData(_charges);
         }
 
-        public override ThermoLabeledPeak GetPeak(int index)
+        public override ThermoMzPeak GetPeak(int index)
         {
-            return new ThermoLabeledPeak(_masses[index], _intensities[index], _charges[index], _noises[index], _resolutions[index]);
+            return IsHighResolution ? new ThermoMzPeak(_masses[index], _intensities[index], _charges[index], _noises[index], _resolutions[index]) 
+                : new ThermoMzPeak(_masses[index], _intensities[index]);
         }
 
         public override byte[] ToBytes(bool zlibCompressed = false)

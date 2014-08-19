@@ -137,7 +137,7 @@ namespace CSMSL.IO.Agilent
             }
         }
 
-        public override double GetPrecusorMz(int spectrumNumber, int msnOrder = 2)
+        public override double GetPrecursorMz(int spectrumNumber, int msnOrder = 2)
         {
             IMSScanRecord scan_record = _msdr.GetScanRecord(spectrumNumber - 1);
             return scan_record.MZOfInterest;

@@ -1,17 +1,17 @@
 ﻿// Copyright 2012, 2013, 2014 Derek J. Bailey
-//
+// 
 // This file (ClassExtensions.cs) is part of CSMSL.
-//
+// 
 // CSMSL is free software: you can redistribute it and/or modify it
 // under the terms of the GNU Lesser General Public License as published
 // by the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
-//
+// 
 // CSMSL is distributed in the hope that it will be useful, but WITHOUT
 // ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
 // FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public
 // License for more details.
-//
+// 
 // You should have received a copy of the GNU Lesser General Public
 // License along with CSMSL. If not, see <http://www.gnu.org/licenses/>.
 
@@ -51,7 +51,6 @@ namespace CSMSL
         {
             return Math.Abs(item1 - item2) < tolerance;
         }
-       
     }
 
     public static class CollectionExtension
@@ -59,10 +58,10 @@ namespace CSMSL
         public static double[] BoxCarSmooth(this double[] data, int points)
         {
             // Force to be odd
-            points = points - (1 - points % 2);
+            points = points - (1 - points%2);
 
             int count = data.Length;
-         
+
             if (points <= 0 || points > count)
             {
                 return null;
@@ -71,7 +70,7 @@ namespace CSMSL
             int newCount = count - points + 1;
 
             double[] smoothedData = new double[newCount];
-           
+
             for (int i = 0; i < newCount; i++)
             {
                 double value = 0;
@@ -81,7 +80,7 @@ namespace CSMSL
                     value += data[j];
                 }
 
-                smoothedData[i] = value / points;
+                smoothedData[i] = value/points;
             }
             return smoothedData;
         }
@@ -151,13 +150,13 @@ namespace CSMSL
 
             values.Sort();
 
-            int mid = length / 2;
-            if (length % 2 != 0)
+            int mid = length/2;
+            if (length%2 != 0)
             {
                 return values[mid];
             }
 
-            return (values[mid] + values[mid - 1]) / 2.0;
+            return (values[mid] + values[mid - 1])/2.0;
         }
 
         /// <summary>
@@ -173,8 +172,8 @@ namespace CSMSL
                 return 0;
 
             double mean = values.Average();
-            double stdDev = values.Sum(value => (value - mean) * (value - mean));
-            return Math.Sqrt(stdDev / values.Count);
+            double stdDev = values.Sum(value => (value - mean)*(value - mean));
+            return Math.Sqrt(stdDev/values.Count);
         }
 
         public static int[] Histogram(this IList<double> values, int numberOfBins, out double min, out double max, out double binSize)
@@ -182,12 +181,12 @@ namespace CSMSL
             max = values.Max();
             min = values.Min();
             double range = max - min;
-            binSize = range / numberOfBins;
+            binSize = range/numberOfBins;
             int[] bins = new int[numberOfBins];
 
             foreach (double value in values)
             {
-                int binnedValue = (int)((value - min) / binSize); // (int)Math.Floor((value - min) / binSize);
+                int binnedValue = (int) ((value - min)/binSize); // (int)Math.Floor((value - min) / binSize);
                 if (binnedValue == numberOfBins)
                     binnedValue--;
                 bins[binnedValue]++;
@@ -198,14 +197,14 @@ namespace CSMSL
         public static int[] Histogram(this IList<double> values, int numberOfBins, double min, double max, out double binSize)
         {
             double range = max - min;
-            binSize = range / numberOfBins;
+            binSize = range/numberOfBins;
             int[] bins = new int[numberOfBins];
 
             foreach (double value in values)
             {
                 if (value < min || value > max)
                     continue;
-                int binnedValue = (int)((value - min) / binSize);
+                int binnedValue = (int) ((value - min)/binSize);
                 if (binnedValue == numberOfBins)
                     binnedValue--;
                 bins[binnedValue]++;
@@ -224,7 +223,7 @@ namespace CSMSL
             T maxValue;
             return MaxIndex(items, out maxValue);
         }
-        
+
         /// <summary>
         /// Finds the index of the maximum value in a collection
         /// </summary>
@@ -371,7 +370,7 @@ namespace CSMSL
                 if (big.FussyEquals(0.0))
                     throw new Exception("singular matrix");
 
-                vv[i] = 1.0 / big; //calculate scaling and save
+                vv[i] = 1.0/big; //calculate scaling and save
             }
             //k is for columns start with the left look for the columns under the diagonal for the biggest value want to move the largest over diagonal
             for (k = 0; k < n; k++) //find the largest pivot element
@@ -379,7 +378,7 @@ namespace CSMSL
                 big = 0.0;
                 for (i = k; i < n; i++)
                 {
-                    temp = vv[i] * Math.Abs(m[i, k]);
+                    temp = vv[i]*Math.Abs(m[i, k]);
                     if (temp > big)
                     {
                         big = temp;
@@ -403,7 +402,7 @@ namespace CSMSL
                 {
                     temp = m[i, k] /= m[k, k]; //divide pilot element
                     for (j = k + 1; j < n; j++)
-                        m[i, j] -= temp * m[k, j];
+                        m[i, j] -= temp*m[k, j];
                 }
             }
             return m;
@@ -427,7 +426,7 @@ namespace CSMSL
                 sum = result[ip];
                 result[ip] = result[i];
                 if (ii != 0)
-                    for (j = ii - 1; j < i; j++) sum -= luMatrix[i, j] * result[j];
+                    for (j = ii - 1; j < i; j++) sum -= luMatrix[i, j]*result[j];
                 else if (sum.Equals(0.0))
                     ii = i + 1;
                 result[i] = sum;
@@ -435,8 +434,8 @@ namespace CSMSL
             for (i = n - 1; i >= 0; i--)
             {
                 sum = result[i];
-                for (j = i + 1; j < n; j++) sum -= luMatrix[i, j] * result[j];
-                result[i] = sum / luMatrix[i, i];
+                for (j = i + 1; j < n; j++) sum -= luMatrix[i, j]*result[j];
+                result[i] = sum/luMatrix[i, i];
             }
 
             return result;

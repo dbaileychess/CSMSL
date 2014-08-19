@@ -183,7 +183,7 @@ namespace CSMSL.IO.MzML
             return new MzRange(low, high);
         }
 
-        public override double GetPrecusorMz(int spectrumNumber, int msnOrder = 2)
+        public override double GetPrecursorMz(int spectrumNumber, int msnOrder = 2)
         {
             spectrumNumber--;
             foreach (CVParamType cv in _mzMLConnection.run.spectrumList.spectrum[spectrumNumber].precursorList.precursor[0].selectedIonList.selectedIon[0].cvParam)

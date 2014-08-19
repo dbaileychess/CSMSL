@@ -1,4 +1,21 @@
-﻿using System;
+﻿// Copyright 2012, 2013, 2014 Derek J. Bailey
+// 
+// This file (MzTabPSM.cs) is part of CSMSL.
+// 
+// CSMSL is free software: you can redistribute it and/or modify it
+// under the terms of the GNU Lesser General Public License as published
+// by the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// 
+// CSMSL is distributed in the hope that it will be useful, but WITHOUT
+// ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public
+// License for more details.
+// 
+// You should have received a copy of the GNU Lesser General Public
+// License along with CSMSL. If not, see <http://www.gnu.org/licenses/>.
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -60,11 +77,11 @@ namespace CSMSL.IO.MzTab
                 headers.Add(FollowingAminoAcid);
                 headers.Add(StartResidue);
                 headers.Add(EndResidue);
-                
+
                 return headers;
             }
         }
-        
+
         /// <summary>
         /// The peptide's sequence corresponding to the PSM
         /// </summary>
@@ -72,47 +89,48 @@ namespace CSMSL.IO.MzTab
 
         public int ID { get; set; }
 
-        public string Accession{ get; set; }
-    
-        public bool Unique{ get; set; }
-  
-        public string Database{ get; set; }
-   
-        public string DatabaseVersion{ get; set; }
-     
-        public List<CVParamater> SearchEngines{ get; set; }
+        public string Accession { get; set; }
+
+        public bool Unique { get; set; }
+
+        public string Database { get; set; }
+
+        public string DatabaseVersion { get; set; }
+
+        public List<CVParamater> SearchEngines { get; set; }
 
         private List<double> _searchEngineScores;
+
         public List<double> SearchEngineScores
         {
             get { return _searchEngineScores; }
             set { _searchEngineScores = value; }
         }
 
-        public MzTab.ReliabilityScore Reliability{ get; set; }
-            
+        public MzTab.ReliabilityScore Reliability { get; set; }
+
         public string Modifications { get; set; }
-     
+
         public List<double> RetentionTime { get; set; }
-    
+
         public int Charge { get; set; }
-     
+
         public double ExperimentalMZ { get; set; }
-     
+
         public double TheoreticalMZ { get; set; }
-      
+
         public Uri Uri { get; set; }
-      
+
         public string SpectraReference { get; set; }
-     
+
         public char PreviousAminoAcid { get; set; }
-    
+
         public char FollowingAminoAcid { get; set; }
-      
+
         public int EndResiduePosition { get; set; }
 
         public int StartResiduePosition { get; set; }
-      
+
         public override string ToString()
         {
             return string.Format("(#{0}) {1}", ID, Sequence);
@@ -139,7 +157,7 @@ namespace CSMSL.IO.MzTab
                 case Fields.Reliability:
                     if (Reliability == MzTab.ReliabilityScore.NotSet)
                         return MzTab.NullFieldText;
-                    return ((int)Reliability).ToString();
+                    return ((int) Reliability).ToString();
                 case Fields.Modifications:
                     return string.IsNullOrEmpty(Modifications) ? MzTab.NullFieldText : Modifications;
                 case Fields.RetentionTime:
@@ -155,7 +173,7 @@ namespace CSMSL.IO.MzTab
                 case Fields.SpectraReference:
                     return string.IsNullOrEmpty(SpectraReference) ? MzTab.NullFieldText : SpectraReference;
                 case Fields.PreviousAminoAcid:
-                    return default(char).Equals(PreviousAminoAcid) ? "-" :  PreviousAminoAcid.ToString();
+                    return default(char).Equals(PreviousAminoAcid) ? "-" : PreviousAminoAcid.ToString();
                 case Fields.FollowingAminoAcid:
                     return default(char).Equals(FollowingAminoAcid) ? "-" : FollowingAminoAcid.ToString();
                 case Fields.StartResidue:
@@ -182,49 +200,68 @@ namespace CSMSL.IO.MzTab
 
             throw new ArgumentException("Unexpected field name: " + fieldName);
         }
-        
+
         public override void SetValue(string fieldName, string value)
         {
             switch (fieldName)
             {
                 case Fields.Sequence:
-                    Sequence = value; return;
+                    Sequence = value;
+                    return;
                 case Fields.ID:
-                    ID = int.Parse(value); return;
+                    ID = int.Parse(value);
+                    return;
                 case Fields.Accession:
-                    Accession = value; return;
+                    Accession = value;
+                    return;
                 case Fields.Unique:
-                    Unique = value.Equals("1"); return;
+                    Unique = value.Equals("1");
+                    return;
                 case Fields.Database:
-                    Database = value; return;
+                    Database = value;
+                    return;
                 case Fields.DatabaseVersion:
-                    DatabaseVersion = value; return;
+                    DatabaseVersion = value;
+                    return;
                 case Fields.SearchEngine:
-                    SearchEngines = value.Split('|').Select(datum => (CVParamater)datum).ToList(); return;
+                    SearchEngines = value.Split('|').Select(datum => (CVParamater) datum).ToList();
+                    return;
                 case Fields.Reliability:
-                    Reliability = (MzTab.ReliabilityScore)int.Parse(value); return;
+                    Reliability = (MzTab.ReliabilityScore) int.Parse(value);
+                    return;
                 case Fields.Modifications:
-                    Modifications = value; return;
+                    Modifications = value;
+                    return;
                 case Fields.RetentionTime:
-                    RetentionTime = value.Split('|').Select(double.Parse).ToList(); return;
+                    RetentionTime = value.Split('|').Select(double.Parse).ToList();
+                    return;
                 case Fields.Charge:
-                    Charge = int.Parse(value); return;
+                    Charge = int.Parse(value);
+                    return;
                 case Fields.ExperimentalMZ:
-                    ExperimentalMZ = double.Parse(value); return;
+                    ExperimentalMZ = double.Parse(value);
+                    return;
                 case Fields.TheoreticalMZ:
-                    TheoreticalMZ = double.Parse(value); return;
+                    TheoreticalMZ = double.Parse(value);
+                    return;
                 case Fields.Uri:
-                    Uri = new Uri(value); return;
+                    Uri = new Uri(value);
+                    return;
                 case Fields.SpectraReference:
-                    SpectraReference = value; return;
+                    SpectraReference = value;
+                    return;
                 case Fields.PreviousAminoAcid:
-                    PreviousAminoAcid = value[0]; return;
+                    PreviousAminoAcid = value[0];
+                    return;
                 case Fields.FollowingAminoAcid:
-                    FollowingAminoAcid = value[0]; return;
+                    FollowingAminoAcid = value[0];
+                    return;
                 case Fields.StartResidue:
-                    StartResiduePosition = int.Parse(value); return;
+                    StartResiduePosition = int.Parse(value);
+                    return;
                 case Fields.EndResidue:
-                    EndResiduePosition = int.Parse(value); return;
+                    EndResiduePosition = int.Parse(value);
+                    return;
             }
 
             if (fieldName.Contains("["))
@@ -247,6 +284,5 @@ namespace CSMSL.IO.MzTab
 
             throw new ArgumentException("Unexpected field name: " + fieldName);
         }
-        
     }
 }

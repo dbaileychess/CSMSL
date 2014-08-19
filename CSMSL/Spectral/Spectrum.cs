@@ -1,4 +1,21 @@
-﻿using System;
+﻿// Copyright 2012, 2013, 2014 Derek J. Bailey
+// 
+// This file (Spectrum.cs) is part of CSMSL.
+// 
+// CSMSL is free software: you can redistribute it and/or modify it
+// under the terms of the GNU Lesser General Public License as published
+// by the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// 
+// CSMSL is distributed in the hope that it will be useful, but WITHOUT
+// ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public
+// License for more details.
+// 
+// You should have received a copy of the GNU Lesser General Public
+// License along with CSMSL. If not, see <http://www.gnu.org/licenses/>.
+
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,8 +27,8 @@ namespace CSMSL.Spectral
     /// Represents the standard m/z spectrum, with intensity on the y-axis and m/z on the x-axis.
     /// </summary>
     [Serializable]
-    public abstract class Spectrum<TPeak, TSpectrum> : ISpectrum<TPeak>
-        where TPeak : IPeak
+    public abstract class Spectrum<TPeak, TSpectrum> : ISpectrum<TPeak>, ISpectrum
+        where TPeak : MZPeak
         where TSpectrum : Spectrum<TPeak, TSpectrum>
     {
         /// <summary>
@@ -45,6 +62,9 @@ namespace CSMSL.Spectral
             get { return Count == 0 ? 0 : _masses[Count - 1]; }
         }
 
+        /// <summary>
+        /// The total ion current of this spectrum
+        /// </summary>
         public double TotalIonCurrent
         {
             get { return Count == 0 ? 0 : GetTotalIonCurrent(); }
@@ -71,8 +91,6 @@ namespace CSMSL.Spectral
         protected Spectrum()
         {
             Count = 0;
-            //_masses = new double[0];
-            //_intensities = new double[0];
         }
 
         /// <summary>
@@ -99,21 +117,21 @@ namespace CSMSL.Spectral
 
             _masses = new double[count];
             _intensities = new double[count];
-            Buffer.BlockCopy(mzintensities, 0, _masses, 0, sizeof(double) * count);
-            Buffer.BlockCopy(mzintensities, sizeof(double) * length, _intensities, 0, sizeof(double) * count);
+            Buffer.BlockCopy(mzintensities, 0, _masses, 0, sizeof (double)*count);
+            Buffer.BlockCopy(mzintensities, sizeof (double)*length, _intensities, 0, sizeof (double)*count);
             Count = count;
         }
-        
+
         protected Spectrum(byte[] mzintensities)
         {
-            Count = mzintensities.Length / (sizeof(double) * 2);
-            int size = sizeof(double) * Count;
+            Count = mzintensities.Length/(sizeof (double)*2);
+            int size = sizeof (double)*Count;
             _masses = new double[Count];
             _intensities = new double[Count];
             Buffer.BlockCopy(mzintensities, 0, _masses, 0, size);
             Buffer.BlockCopy(mzintensities, size, _intensities, 0, size);
         }
-        
+
         /// <summary>
         /// Gets the peak at the specified index
         /// </summary>
@@ -167,9 +185,9 @@ namespace CSMSL.Spectral
         public virtual double[,] ToArray()
         {
             double[,] data = new double[2, Count];
-            const int size = sizeof(double);
-            Buffer.BlockCopy(_masses, 0, data, 0, size * Count);
-            Buffer.BlockCopy(_intensities, 0, data, size * Count, size * Count);
+            const int size = sizeof (double);
+            Buffer.BlockCopy(_masses, 0, data, 0, size*Count);
+            Buffer.BlockCopy(_intensities, 0, data, size*Count, size*Count);
             return data;
         }
 
@@ -181,7 +199,7 @@ namespace CSMSL.Spectral
         {
             return Count == 0 ? 0 : _intensities.Sum();
         }
-  
+
         /// <summary>
         /// Gets the m/z value at the specified index
         /// </summary>
@@ -268,7 +286,7 @@ namespace CSMSL.Spectral
 
         public virtual TPeak GetClosestPeak(IRange<double> massRange)
         {
-            double mean = (massRange.Maximum + massRange.Minimum) / 2.0;
+            double mean = (massRange.Maximum + massRange.Minimum)/2.0;
             double width = massRange.Maximum - massRange.Minimum;
             return GetClosestPeak(mean, width);
         }
@@ -280,7 +298,6 @@ namespace CSMSL.Spectral
             return index >= 0 ? GetPeak(index) : default(TPeak);
         }
 
- 
 
         public virtual bool TryGetPeaks(IRange<double> rangeMZ, out List<TPeak> peaks)
         {
@@ -319,7 +336,7 @@ namespace CSMSL.Spectral
         /// </summary>
         /// <param name="convertor">The function to convert each mass by</param>
         /// <returns>A cloned spectrum with masses corrected</returns>
-        public virtual TSpectrum CorrectMasses(Func<double,double> convertor)
+        public virtual TSpectrum CorrectMasses(Func<double, double> convertor)
         {
             TSpectrum newSpectrum = Clone();
             for (int i = 0; i < newSpectrum.Count; i++)
@@ -341,15 +358,15 @@ namespace CSMSL.Spectral
         {
             return FilterByIntensity(intensityRange.Minimum, intensityRange.Maximum);
         }
-        
+
         #region ISpectrum
 
-        IPeak ISpectrum.GetClosestPeak(IRange<double> massRange)
+        MZPeak ISpectrum.GetClosestPeak(IRange<double> massRange)
         {
             return GetClosestPeak(massRange);
         }
 
-        IPeak ISpectrum.GetClosestPeak(double mean, double tolerance)
+        MZPeak ISpectrum.GetClosestPeak(double mean, double tolerance)
         {
             return GetClosestPeak(mean, tolerance);
         }
@@ -390,11 +407,11 @@ namespace CSMSL.Spectral
         }
 
         #endregion
-        
+
         #region Abstract
 
         public abstract TPeak GetPeak(int index);
-       
+
         public abstract TSpectrum Extract(double minMZ, double maxMZ);
         public abstract TSpectrum FilterByMZ(IEnumerable<IRange<double>> mzRanges);
         public abstract TSpectrum FilterByMZ(double minMZ, double maxMZ);
@@ -409,13 +426,13 @@ namespace CSMSL.Spectral
         #endregion Abstract
 
         #region Protected Methods
-        
+
         protected double[] FromBytes(byte[] data, int index)
         {
             if (data.IsCompressed())
                 data = data.Decompress();
-            Count = data.Length / (sizeof(double) * 2);
-            int size = sizeof(double) * Count;
+            Count = data.Length/(sizeof (double)*2);
+            int size = sizeof (double)*Count;
             double[] outArray = new double[Count];
             Buffer.BlockCopy(data, index*size, outArray, 0, size);
             return outArray;
@@ -423,13 +440,13 @@ namespace CSMSL.Spectral
 
         protected byte[] ToBytes(bool zlibCompressed, params double[][] arrays)
         {
-            int length = Count * sizeof(double);
+            int length = Count*sizeof (double);
             int arrayCount = arrays.Length;
-            byte[] bytes = new byte[length * arrayCount];
+            byte[] bytes = new byte[length*arrayCount];
             int i = 0;
             foreach (double[] array in arrays)
             {
-                Buffer.BlockCopy(array, 0, bytes, length * i++, length);
+                Buffer.BlockCopy(array, 0, bytes, length*i++, length);
             }
 
             if (zlibCompressed)
@@ -446,7 +463,7 @@ namespace CSMSL.Spectral
         /// <typeparam name="TArray"></typeparam>
         /// <param name="sourceArray">The source array to copy from</param>
         /// <param name="deepCopy">If true, a new array will be generate, else references are copied</param>
-        protected TArray[] CopyData<TArray>(TArray[] sourceArray, bool deepCopy = true) where TArray : struct 
+        protected TArray[] CopyData<TArray>(TArray[] sourceArray, bool deepCopy = true) where TArray : struct
         {
             if (!deepCopy)
             {
@@ -454,8 +471,8 @@ namespace CSMSL.Spectral
             }
             int count = sourceArray.Length;
             TArray[] dstArray = new TArray[Count];
-            Type type = typeof(TArray);
-            Buffer.BlockCopy(sourceArray, 0, dstArray, 0, count * Marshal.SizeOf(type));
+            Type type = typeof (TArray);
+            Buffer.BlockCopy(sourceArray, 0, dstArray, 0, count*Marshal.SizeOf(type));
             return dstArray;
         }
 
@@ -540,13 +557,54 @@ namespace CSMSL.Spectral
             }
         }
 
-        IEnumerator IEnumerable.GetEnumerator()
+        ISpectrum<TPeak> ISpectrum<TPeak>.Extract(IRange<double> mzRange)
         {
-            return GetEnumerator();
+            throw new NotImplementedException();
         }
 
+        ISpectrum<TPeak> ISpectrum<TPeak>.Extract(double minMZ, double maxMZ)
+        {
+            throw new NotImplementedException();
+        }
 
+        ISpectrum<TPeak> ISpectrum<TPeak>.FilterByMZ(IEnumerable<IRange<double>> mzRanges)
+        {
+            throw new NotImplementedException();
+        }
 
-  
+        ISpectrum<TPeak> ISpectrum<TPeak>.FilterByMZ(IRange<double> mzRange)
+        {
+            throw new NotImplementedException();
+        }
+
+        ISpectrum<TPeak> ISpectrum<TPeak>.FilterByMZ(double minMZ, double maxMZ)
+        {
+            throw new NotImplementedException();
+        }
+
+        ISpectrum<TPeak> ISpectrum<TPeak>.FilterByIntensity(double minIntensity, double maxIntensity)
+        {
+            throw new NotImplementedException();
+        }
+
+        ISpectrum<TPeak> ISpectrum<TPeak>.FilterByIntensity(IRange<double> intenistyRange)
+        {
+            throw new NotImplementedException();
+        }
+
+        MZPeak ISpectrum.GetPeak(int index)
+        {
+            throw new NotImplementedException();
+        }
+
+        IEnumerator<MZPeak> IEnumerable<MZPeak>.GetEnumerator()
+        {
+            throw new NotImplementedException();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

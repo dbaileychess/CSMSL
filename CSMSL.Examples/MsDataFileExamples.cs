@@ -19,7 +19,6 @@ using System.Linq;
 using CSMSL.IO;
 using CSMSL.IO.Agilent;
 using CSMSL.IO.MzML;
-using CSMSL.IO.MzTab;
 using CSMSL.IO.Thermo;
 using CSMSL.Spectral;
 using System;
@@ -57,7 +56,7 @@ namespace CSMSL.Examples
                 foreach (IMSDataScan scan in dataFile.Where(s => s.MassSpectrum.Count > 1).Take(4))
                 {
                     Console.WriteLine("{0,-4} {1,3} {2,-6:F4} {3,-5} {4,7} {5,-10} {6}", scan.SpectrumNumber, scan.MsnOrder, scan.RetentionTime,
-                        scan.Polarity, scan.MassSpectrum.Count, scan.MzAnalyzer, scan.MzRange.ToString());
+                        scan.Polarity, scan.MassSpectrum.Count, scan.MzAnalyzer, scan.MzRange);
                 }
                 watch.Stop();
                 Console.WriteLine("File: {0}", dataFile);
@@ -66,21 +65,6 @@ namespace CSMSL.Examples
             }
         }
 
-        public static void RecalibrateThermoRawFile()
-        {
-            List<ISpectrum> spectra = new List<ISpectrum>();
-            using (ThermoRawFile rawFile = new ThermoRawFile("Resources/ThermoRawFileMS1MS2.raw"))
-            {
-                rawFile.Open();
-                for(int i = rawFile.FirstSpectrumNumber; i <= rawFile.LastSpectrumNumber; i++) 
-                {
-                    ThermoSpectrum spectrum = rawFile.GetLabeledSpectrum(i);
-                    ThermoSpectrum mzSpectrum = rawFile.GetSpectrum(i);
-                    ThermoSpectrum correctedSpectrum = spectrum.CorrectMasses((mz) => mz - 5); // shift all masses 5 Th lower
-                    ISpectrum spectrum2 = correctedSpectrum.Extract(0, 5000);
-                    spectra.Add(correctedSpectrum);
-                }
-            }
-        }
+      
     }
 }

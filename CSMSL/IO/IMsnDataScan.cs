@@ -1,6 +1,6 @@
 ﻿// Copyright 2012, 2013, 2014 Derek J. Bailey
 // 
-// This file (DissociationType.cs) is part of CSMSL.
+// This file (IMsnDataScan.cs) is part of CSMSL.
 // 
 // CSMSL is free software: you can redistribute it and/or modify it
 // under the terms of the GNU Lesser General Public License as published
@@ -15,22 +15,24 @@
 // You should have received a copy of the GNU Lesser General Public
 // License along with CSMSL. If not, see <http://www.gnu.org/licenses/>.
 
-namespace CSMSL.Proteomics
+using CSMSL.Proteomics;
+using CSMSL.Spectral;
+
+namespace CSMSL.IO
 {
-    public enum DissociationType
+    public interface IMsnDataScan : IMSDataScan
     {
-        UnKnown = -1,
-        None = 6,
-        CID = 0,
-        HCD = 5,
-        ETD = 4,
-        MPD = 1,
-        ECD = 2,
-        PQD = 3,
-        SA = 7,
-        PTR = 8,
-        NETD = 9,
-        NPTR = 10,
-        CI = 11
+        int ParentSpectrumNumber { get; }
+        double GetPrecursorMz();
+        DoubleRange GetIsolationRange();
+        int GetPrecursorCharge();
+        DissociationType GetDissociationType();
+        double GetInjectionTime();
+    }
+
+    public interface IMsnDataScan<out TSpectrum> : IMsnDataScan
+        where TSpectrum : ISpectrum
+    {
+        new TSpectrum MassSpectrum { get; }
     }
 }

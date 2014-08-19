@@ -1,17 +1,17 @@
 ﻿// Copyright 2012, 2013, 2014 Derek J. Bailey
-//
+// 
 // This file (ChemicalFormulaGenerator.cs) is part of CSMSL.
-//
+// 
 // CSMSL is free software: you can redistribute it and/or modify it
 // under the terms of the GNU Lesser General Public License as published
 // by the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
-//
+// 
 // CSMSL is distributed in the hope that it will be useful, but WITHOUT
 // ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
 // FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public
 // License for more details.
-//
+// 
 // You should have received a copy of the GNU Lesser General Public
 // License along with CSMSL. If not, see <http://www.gnu.org/licenses/>.
 
@@ -100,14 +100,14 @@ namespace CSMSL.Chemistry
         /// <returns>A list of chemical formulas</returns>
         public IEnumerable<ChemicalFormula> AllFormulas()
         {
-            return FromMass(0.0, int.MaxValue-1);
+            return FromMass(0.0, int.MaxValue - 1);
         }
 
         public IEnumerable<ChemicalFormula> FromMass(IRange<double> massRange, int maxNumberOfResults = int.MaxValue, bool sort = true)
         {
             return FromMass(massRange.Minimum, massRange.Maximum, maxNumberOfResults, sort);
         }
-        
+
         public IEnumerable<ChemicalFormula> FromMass(double lowMass, double highMass, int maxNumberOfResults = int.MaxValue, bool sort = true)
         {
             if (highMass <= lowMass)
@@ -179,10 +179,10 @@ namespace CSMSL.Chemistry
 
             if (!sort)
                 return returnFormulas;
-            double meanValue = (highMass + lowMass) / 2.0;
+            double meanValue = (highMass + lowMass)/2.0;
             return returnFormulas.OrderBy(formula => Math.Abs(formula.MonoisotopicMass - meanValue)).Take(maxNumberOfResults);
         }
-        
+
         private static void GenerateFormulaHelper(double lowMass, double highMass, double[] masses, int[] max, int index, int[] currentFormula, List<ChemicalFormula> formulas)
         {
             while (index > 0 && max[index] == 0)
@@ -191,7 +191,7 @@ namespace CSMSL.Chemistry
             }
             if (index > 0)
             {
-                int maxCount = Math.Min((int)Math.Ceiling(highMass / masses[index]), max[index]);
+                int maxCount = Math.Min((int) Math.Ceiling(highMass/masses[index]), max[index]);
                 for (int count = 0; count <= maxCount; count++)
                 {
                     currentFormula[index] = count;
@@ -202,13 +202,13 @@ namespace CSMSL.Chemistry
             {
                 double massAtIndex = masses[index];
                 currentFormula[index] = 0;
-                double currentMass = currentFormula.Zip(masses, (i, m) => i * m).Sum(); 
-                int minCount = Math.Max((int)Math.Floor((lowMass - currentMass) / massAtIndex), 0);
-                int value = (int)Math.Ceiling((highMass - currentMass) / massAtIndex);
+                double currentMass = currentFormula.Zip(masses, (i, m) => i*m).Sum();
+                int minCount = Math.Max((int) Math.Floor((lowMass - currentMass)/massAtIndex), 0);
+                int value = (int) Math.Ceiling((highMass - currentMass)/massAtIndex);
                 int maxCount = Math.Min(value, max[index]);
                 for (int count = minCount; count <= maxCount; count++)
                 {
-                    currentMass += count * massAtIndex;
+                    currentMass += count*massAtIndex;
                     currentFormula[index] = count;
 
                     if (currentMass >= lowMass && currentMass <= highMass)
@@ -217,10 +217,9 @@ namespace CSMSL.Chemistry
                         if (!formula.MassEquals(0.0))
                             formulas.Add(formula);
                     }
-                    currentMass -= count * massAtIndex;
+                    currentMass -= count*massAtIndex;
                 }
             }
         }
-        
     }
 }
