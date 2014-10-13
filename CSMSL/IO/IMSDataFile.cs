@@ -16,6 +16,7 @@
 // License along with CSMSL. If not, see <http://www.gnu.org/licenses/>.
 
 using System;
+using CSMSL.Proteomics;
 using CSMSL.Spectral;
 using System.Collections.Generic;
 
@@ -32,6 +33,7 @@ namespace CSMSL.IO
         double GetInjectionTime(int spectrumNumber);
         double GetPrecursorMz(int spectrumNumber, int msnOrder = 2);
         double GetRetentionTime(int spectrumNumber);
+        DissociationType GetDissociationType(int spectrumNumber, int msnOrder = 2);
         Polarity GetPolarity(int spectrumNumber);
         ISpectrum GetSpectrum(int spectrumNumber);
         IMSDataScan this[int spectrumNumber] { get; }

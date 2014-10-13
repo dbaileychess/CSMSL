@@ -122,7 +122,22 @@ namespace CSMSL.Spectral
             return _dissociationType;
         }
 
-        public int ParentSpectrumNumber { get; set; }
+        public int _parentScanNumber = -1;
+
+        public virtual int GetParentSpectrumNumber()
+        {
+            if (_parentScanNumber >= 0)
+                return _parentScanNumber;
+            if (ParentFile.IsOpen)
+            {
+                _parentScanNumber = ParentFile.GetParentSpectrumNumber(SpectrumNumber);
+            }
+            else
+            {
+                throw new ArgumentException("The parent data file is closed");
+            }
+            return _parentScanNumber;
+        }
 
         public new ISpectrum MassSpectrum
         {

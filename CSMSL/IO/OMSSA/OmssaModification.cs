@@ -206,14 +206,32 @@ namespace CSMSL.IO.OMSSA
 
     public static class OmssaModExtension
     {
-        public static AminoAcidPolymer SetModifications(this AminoAcidPolymer aap, string mods)
+        /// <summary>
+        /// Parse and apply an omssa modification line to this current amino acid polymer
+        /// </summary>
+        /// <param name="aap"></param>
+        /// <param name="omssaModificationLine"></param>
+        /// <returns></returns>
+        public static AminoAcidPolymer SetModifications(this AminoAcidPolymer aap, string omssaModificationLine)
         {
-            if (string.IsNullOrEmpty(mods))
+            if (string.IsNullOrEmpty(omssaModificationLine))
                 return aap;
 
-            foreach (Tuple<Modification, int> modPosition in OmssaModification.ParseModificationLine(mods))
+            foreach (Tuple<Modification, int> modPosition in OmssaModification.ParseModificationLine(omssaModificationLine))
             {
-                aap.SetModification(modPosition.Item1, modPosition.Item2);
+                int pos = modPosition.Item2;
+                if (pos == 0)
+                {
+                    aap.NTerminusModification = modPosition.Item1;
+                }
+                else if (pos == aap.Length + 1)
+                {
+                    aap.CTerminusModification = modPosition.Item1;
+                }
+                else
+                {
+                    aap.SetModification(modPosition.Item1, pos);
+                }
             }
 
             return aap;

@@ -84,18 +84,18 @@ namespace CSMSL
             switch (tolerance.Unit)
             {
                 default:
-                    Minimum = mean - value/2.0;
-                    Maximum = mean + value/2.0;
+                    Minimum = mean - value / 2.0;
+                    Maximum = mean + value / 2.0;
                     break;
 
                 case ToleranceUnit.MMU:
-                    Minimum = mean - value/2000.0;
-                    Maximum = mean + value/2000.0;
+                    Minimum = mean - value / 2000.0;
+                    Maximum = mean + value / 2000.0;
                     break;
 
                 case ToleranceUnit.PPM:
-                    Minimum = mean*(1 - (value/2e6));
-                    Maximum = mean*(1 + (value/2e6));
+                    Minimum = mean * (1 - (value / 2e6));
+                    Maximum = mean * (1 + (value / 2e6));
                     break;
             }
         }
@@ -106,7 +106,7 @@ namespace CSMSL
         /// </summary>
         public double Mean
         {
-            get { return (Maximum + Minimum)/2.0; }
+            get { return (Maximum + Minimum) / 2.0; }
         }
 
         /// <summary>
@@ -125,7 +125,47 @@ namespace CSMSL
         /// <returns>The ppm</returns>
         public double ToPPM()
         {
-            return 1e6*Width/Mean;
+            return 1e6 * Width / Mean;
+        }
+
+        public double OverlapFraction(DoubleRange otherRange)
+        {
+            DoubleRange shorter, longer;
+            if (Width < otherRange.Width)
+            {
+                shorter = this;
+                longer = otherRange;
+            }
+            else
+            {
+                shorter = otherRange;
+                longer = this;
+            }
+
+            double coveredWidth = 0;
+            if (shorter.Minimum > longer.Minimum)
+            {
+                if (shorter.Minimum < longer.Maximum)
+                {
+                    coveredWidth = Math.Min(longer.Maximum, shorter.Maximum) - shorter.Minimum;
+                }
+                else
+                {
+                    return 0;
+                }
+            }
+            else
+            {
+                if (shorter.Maximum < longer.Minimum)
+                {
+                    coveredWidth = Math.Min(shorter.Maximum, longer.Maximum) - shorter.Maximum;
+                }
+                else
+                {
+                    return 0;
+                }
+            }
+            return coveredWidth / shorter.Width;
         }
 
         /// <summary>

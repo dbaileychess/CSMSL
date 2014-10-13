@@ -190,6 +190,7 @@
     <Compile Include="Proteomics\Isotopologue.cs" />
     <Compile Include="Proteomics\ModificationDictionary.cs" />
     <Compile Include="Spectral\ChromatogramType.cs" />
+    <Compile Include="Spectral\ChromatographicElutionProfile.cs" />
     <Compile Include="Spectral\ISpectrumTime.cs" />
     <Compile Include="Spectral\SmoothingType.cs" />
     <Compile Include="Spectral\Spectrum.cs" />

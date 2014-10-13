@@ -203,6 +203,61 @@ namespace CSMSL.Spectral
             return GetPeak(apexIndex);
         }
 
+        public virtual ChromatographicElutionProfile<T> GetElutionProfile(IRange<double> timeRange)
+        {
+            return GetElutionProfile(timeRange.Minimum, timeRange.Maximum);
+        }
+
+        public virtual ChromatographicElutionProfile<T> GetElutionProfile(double mintime, double maxTime)
+        {
+            int index = Array.BinarySearch(_times, mintime);
+            if (index < 0)
+                index = ~index;
+
+            List<T> peaks = new List<T>();
+            while (index < Count && _times[index] <= maxTime)
+            {
+                peaks.Add(GetPeak(index));
+                index++;
+            }
+            return new ChromatographicElutionProfile<T>(peaks);
+        }
+
+        public virtual bool ContainsPeak(IRange<double> timeRange)
+        {
+            return ContainsPeak(timeRange.Minimum, timeRange.Maximum);
+        }
+
+        public virtual bool ContainsPeak(double mintime, double maxTime)
+        {
+            int index = Array.BinarySearch(_times, mintime);
+            if (index < 0)
+                index = ~index;
+
+            if (index >= Count)
+            {
+                return false;
+            }
+
+            double startIntensity = _intensities[index];
+            double maxIntensity = startIntensity;
+            double endIntensity = startIntensity;
+            while (index < Count && _times[index] <= maxTime)
+            {
+                double currentIntensity = _intensities[index];
+                endIntensity = currentIntensity;
+                if (currentIntensity > maxIntensity) {
+                    maxIntensity = currentIntensity;
+                }
+                index++;
+            }
+            if (maxIntensity <= 0)
+                return false;
+
+            double maxEndPointIntensity = Math.Max(startIntensity, endIntensity);
+            return maxIntensity >= 1.4 * maxEndPointIntensity;
+        }
+        
         public virtual T GetApex()
         {
             int index = _intensities.MaxIndex();
@@ -264,8 +319,8 @@ namespace CSMSL.Spectral
 
             return GetPeak(bestApex);
         }
-
-        public DoubleRange GetPeakWidth(double time, double fraction, int upPts = 3, double upPrecent = 1.4)
+        
+        public DoubleRange GetPeakWidth(double time, double fraction = 0.1, int upPts = 3, double upPrecent = 1.4, double minValue = 0)
         {
             int index = Array.BinarySearch(_times, time);
             if (index < 0)
@@ -276,7 +331,7 @@ namespace CSMSL.Spectral
 
             double maxTime = _times[index];
             double minTime = maxTime;
-            double threshold = _intensities[index]*fraction;
+            double threshold = Math.Max(_intensities[index]*fraction, minValue);
 
             int count = 0;
             double localMin = _intensities[index];
@@ -300,7 +355,7 @@ namespace CSMSL.Spectral
 
                 count = 0;
 
-                if (peakIntensity < threshold)
+                if (peakIntensity <= threshold)
                     break;
             }
 

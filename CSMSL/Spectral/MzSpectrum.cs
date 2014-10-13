@@ -38,7 +38,7 @@ namespace CSMSL.Spectral
         /// </summary>
         /// <param name="mzSpectrum">The spectrum to clone</param>
         public MZSpectrum(MZSpectrum mzSpectrum)
-            : this(mzSpectrum._masses, mzSpectrum._intensities)
+            : this(mzSpectrum.Masses, mzSpectrum.Intensities)
         {
         }
 
@@ -58,14 +58,14 @@ namespace CSMSL.Spectral
 
         public MZSpectrum(byte[] mzintensities)
         {
-            _masses = FromBytes(mzintensities, 0);
-            _intensities = FromBytes(mzintensities, 1);
+            Masses = FromBytes(mzintensities, 0);
+            Intensities = FromBytes(mzintensities, 1);
             Count = mzintensities.Length/(sizeof (double)*2);
             int size = sizeof (double)*Count;
-            _masses = new double[Count];
-            _intensities = new double[Count];
-            Buffer.BlockCopy(mzintensities, 0, _masses, 0, size);
-            Buffer.BlockCopy(mzintensities, size, _intensities, 0, size);
+            Masses = new double[Count];
+            Intensities = new double[Count];
+            Buffer.BlockCopy(mzintensities, 0, Masses, 0, size);
+            Buffer.BlockCopy(mzintensities, size, Intensities, 0, size);
         }
 
         private MZSpectrum()
@@ -79,7 +79,7 @@ namespace CSMSL.Spectral
 
         public override MZPeak GetPeak(int index)
         {
-            return new MZPeak(_masses[index], _intensities[index]);
+            return new MZPeak(Masses[index], Intensities[index]);
         }
 
         public override MZSpectrum Extract(double minMZ, double maxMZ)
@@ -94,10 +94,10 @@ namespace CSMSL.Spectral
             double[] intensity = new double[count];
             int j = 0;
 
-            while (index < Count && _masses[index] <= maxMZ)
+            while (index < Count && Masses[index] <= maxMZ)
             {
-                mz[j] = _masses[index];
-                intensity[j] = _intensities[index];
+                mz[j] = Masses[index];
+                intensity[j] = Intensities[index];
                 index++;
                 j++;
             }
@@ -126,10 +126,10 @@ namespace CSMSL.Spectral
             int j = 0;
             for (int i = 0; i < count; i++)
             {
-                double intensity = _intensities[i];
+                double intensity = Intensities[i];
                 if (intensity >= minIntensity && intensity < maxIntensity)
                 {
-                    mz[j] = _masses[i];
+                    mz[j] = Masses[i];
                     intensities[j] = intensity;
                     j++;
                 }
@@ -163,11 +163,11 @@ namespace CSMSL.Spectral
                 double min = range.Minimum;
                 double max = range.Maximum;
 
-                int index = Array.BinarySearch(_masses, min);
+                int index = Array.BinarySearch(Masses, min);
                 if (index < 0)
                     index = ~index;
 
-                while (index < count && _masses[index] <= max)
+                while (index < count && Masses[index] <= max)
                 {
                     indiciesToRemove.Add(index);
                     index++;
@@ -190,8 +190,8 @@ namespace CSMSL.Spectral
             {
                 if (indiciesToRemove.Contains(i))
                     continue;
-                mz[j] = _masses[i];
-                intensities[j] = _intensities[i];
+                mz[j] = Masses[i];
+                intensities[j] = Intensities[i];
                 j++;
             }
 
@@ -209,11 +209,11 @@ namespace CSMSL.Spectral
             // Peaks to remove
             HashSet<int> indiciesToRemove = new HashSet<int>();
 
-            int index = Array.BinarySearch(_masses, minMZ);
+            int index = Array.BinarySearch(Masses, minMZ);
             if (index < 0)
                 index = ~index;
 
-            while (index < count && _masses[index] <= maxMZ)
+            while (index < count && Masses[index] <= maxMZ)
             {
                 indiciesToRemove.Add(index);
                 index++;
@@ -236,8 +236,8 @@ namespace CSMSL.Spectral
             {
                 if (indiciesToRemove.Contains(i))
                     continue;
-                mz[j] = _masses[i];
-                intensities[j] = _intensities[i];
+                mz[j] = Masses[i];
+                intensities[j] = Intensities[i];
                 j++;
             }
 

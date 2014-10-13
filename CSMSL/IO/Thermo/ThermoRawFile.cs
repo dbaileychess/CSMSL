@@ -15,6 +15,7 @@
 // You should have received a copy of the GNU Lesser General Public
 // License along with CSMSL. If not, see <http://www.gnu.org/licenses/>.
 
+using System.Linq;
 using CSMSL.Proteomics;
 using CSMSL.Spectral;
 using MSFileReaderLib;
@@ -258,7 +259,8 @@ namespace CSMSL.IO.Thermo
             object labels = null;
             object flags = null;
             _rawConnection.GetLabelData(ref labels, ref flags, ref spectrumNumber);
-            return (double[,]) labels;
+            double[,] data = labels as double[,];
+            return data == null || data.Length == 0 ? null : data;
         }
 
         public override MZAnalyzerType GetMzAnalyzer(int spectrumNumber)
@@ -522,17 +524,18 @@ namespace CSMSL.IO.Thermo
             return new Chromatogram(pvarArray);
         }
 
-        public IEnumerable<double> GetMsxValues(int spectrumNumber)
+        private readonly static Regex _msxRegex = new Regex(@"([\d.]+)@", RegexOptions.Compiled);
+
+        public List<double> GetMSXPrecursors(int spectrumNumber)
         {
-            int numberMSX = -1;
-            _rawConnection.GetMSXMultiplexValueFromScanNum(spectrumNumber, ref numberMSX);
-            object data = null;
-            _rawConnection.GetFullMSOrderPrecursorDataFromScanNum(spectrumNumber, 2, ref data);
-            for (int i = 0; i < numberMSX; i++)
-            {
-                //TODO
-            }
-            yield break;
+            string scanheader = GetScanFilter(spectrumNumber);
+            
+            int msxnumber = -1;
+            _rawConnection.GetMSXMultiplexValueFromScanNum(spectrumNumber, ref msxnumber);
+
+            var matches = _msxRegex.Matches(scanheader);
+
+            return (from Match match in matches select double.Parse(match.Groups[1].Value)).ToList();
         }
     }
 }

@@ -27,19 +27,19 @@ namespace CSMSL.Spectral
     /// Represents the standard m/z spectrum, with intensity on the y-axis and m/z on the x-axis.
     /// </summary>
     [Serializable]
-    public abstract class Spectrum<TPeak, TSpectrum> : ISpectrum<TPeak>, ISpectrum
+    public abstract class Spectrum<TPeak, TSpectrum> : ISpectrum<TPeak>
         where TPeak : MZPeak
         where TSpectrum : Spectrum<TPeak, TSpectrum>
     {
         /// <summary>
         /// The m/z of this spectrum in ascending order
         /// </summary>
-        protected double[] _masses;
+        protected double[] Masses;
 
         /// <summary>
         /// The intensity of this spectrum, linked to their m/z by index in the array
         /// </summary>
-        protected double[] _intensities;
+        protected double[] Intensities;
 
         /// <summary>
         /// The number of peaks in this spectrum
@@ -51,7 +51,7 @@ namespace CSMSL.Spectral
         /// </summary>
         public double FirstMZ
         {
-            get { return Count == 0 ? 0 : _masses[0]; }
+            get { return Count == 0 ? 0 : Masses[0]; }
         }
 
         /// <summary>
@@ -59,7 +59,7 @@ namespace CSMSL.Spectral
         /// </summary>
         public double LastMZ
         {
-            get { return Count == 0 ? 0 : _masses[Count - 1]; }
+            get { return Count == 0 ? 0 : Masses[Count - 1]; }
         }
 
         /// <summary>
@@ -79,13 +79,8 @@ namespace CSMSL.Spectral
         protected Spectrum(double[] mz, double[] intensities, bool shouldCopy = true)
         {
             Count = mz.Length;
-            if (intensities.Length != Count)
-            {
-                throw new ArgumentException("M/Z and Intensity arrays are not the same length");
-            }
-
-            _masses = CopyData(mz, shouldCopy);
-            _intensities = CopyData(intensities, shouldCopy);
+            Masses = CopyData(mz, shouldCopy);
+            Intensities = CopyData(intensities, shouldCopy);
         }
 
         protected Spectrum()
@@ -115,10 +110,10 @@ namespace CSMSL.Spectral
         {
             int length = mzintensities.GetLength(1);
 
-            _masses = new double[count];
-            _intensities = new double[count];
-            Buffer.BlockCopy(mzintensities, 0, _masses, 0, sizeof (double)*count);
-            Buffer.BlockCopy(mzintensities, sizeof (double)*length, _intensities, 0, sizeof (double)*count);
+            Masses = new double[count];
+            Intensities = new double[count];
+            Buffer.BlockCopy(mzintensities, 0, Masses, 0, sizeof (double)*count);
+            Buffer.BlockCopy(mzintensities, sizeof (double)*length, Intensities, 0, sizeof (double)*count);
             Count = count;
         }
 
@@ -126,10 +121,10 @@ namespace CSMSL.Spectral
         {
             Count = mzintensities.Length/(sizeof (double)*2);
             int size = sizeof (double)*Count;
-            _masses = new double[Count];
-            _intensities = new double[Count];
-            Buffer.BlockCopy(mzintensities, 0, _masses, 0, size);
-            Buffer.BlockCopy(mzintensities, size, _intensities, 0, size);
+            Masses = new double[Count];
+            Intensities = new double[Count];
+            Buffer.BlockCopy(mzintensities, 0, Masses, 0, size);
+            Buffer.BlockCopy(mzintensities, size, Intensities, 0, size);
         }
 
         /// <summary>
@@ -148,7 +143,7 @@ namespace CSMSL.Spectral
         /// <returns>The largest intensity value in this spectrum</returns>
         public virtual double GetBasePeakIntensity()
         {
-            return Count == 0 ? 0 : _intensities.Max();
+            return Count == 0 ? 0 : Intensities.Max();
         }
 
         /// <summary>
@@ -166,7 +161,7 @@ namespace CSMSL.Spectral
         /// <returns></returns>
         public virtual double[] GetMasses()
         {
-            return CopyData(_masses);
+            return CopyData(Masses);
         }
 
         /// <summary>
@@ -175,7 +170,7 @@ namespace CSMSL.Spectral
         /// <returns></returns>
         public virtual double[] GetIntensities()
         {
-            return CopyData(_intensities);
+            return CopyData(Intensities);
         }
 
         /// <summary>
@@ -186,8 +181,8 @@ namespace CSMSL.Spectral
         {
             double[,] data = new double[2, Count];
             const int size = sizeof (double);
-            Buffer.BlockCopy(_masses, 0, data, 0, size*Count);
-            Buffer.BlockCopy(_intensities, 0, data, size*Count, size*Count);
+            Buffer.BlockCopy(Masses, 0, data, 0, size*Count);
+            Buffer.BlockCopy(Intensities, 0, data, size*Count, size*Count);
             return data;
         }
 
@@ -197,7 +192,7 @@ namespace CSMSL.Spectral
         /// <returns>The total ion current of this spectrum</returns>
         public virtual double GetTotalIonCurrent()
         {
-            return Count == 0 ? 0 : _intensities.Sum();
+            return Count == 0 ? 0 : Intensities.Sum();
         }
 
         /// <summary>
@@ -207,7 +202,7 @@ namespace CSMSL.Spectral
         /// <returns></returns>
         public virtual double GetMass(int index)
         {
-            return _masses[index];
+            return Masses[index];
         }
 
         /// <summary>
@@ -217,7 +212,7 @@ namespace CSMSL.Spectral
         /// <returns></returns>
         public virtual double GetIntensity(int index)
         {
-            return _intensities[index];
+            return Intensities[index];
         }
 
         /// <summary>
@@ -250,13 +245,13 @@ namespace CSMSL.Spectral
             if (Count == 0)
                 return false;
 
-            int index = Array.BinarySearch(_masses, minMZ);
+            int index = Array.BinarySearch(Masses, minMZ);
             if (index >= 0)
                 return true;
 
             index = ~index;
 
-            return index < Count && _masses[index] <= maxMZ;
+            return index < Count && Masses[index] <= maxMZ;
         }
 
         public virtual bool TryGetIntensities(IRange<double> rangeMZ, out double intensity)
@@ -273,15 +268,15 @@ namespace CSMSL.Spectral
 
             int index = GetPeakIndex(minMZ);
 
-            while (index < Count && _masses[index] <= maxMZ)
-                intensity += _intensities[index++];
+            while (index < Count && Masses[index] <= maxMZ)
+                intensity += Intensities[index++];
 
             return intensity > 0.0;
         }
 
         public virtual TPeak GetBasePeak()
         {
-            return GetPeak(_intensities.MaxIndex());
+            return GetPeak(Intensities.MaxIndex());
         }
 
         public virtual TPeak GetClosestPeak(IRange<double> massRange)
@@ -298,7 +293,6 @@ namespace CSMSL.Spectral
             return index >= 0 ? GetPeak(index) : default(TPeak);
         }
 
-
         public virtual bool TryGetPeaks(IRange<double> rangeMZ, out List<TPeak> peaks)
         {
             return TryGetPeaks(rangeMZ.Minimum, rangeMZ.Maximum, out peaks);
@@ -313,7 +307,7 @@ namespace CSMSL.Spectral
 
             int index = GetPeakIndex(minMZ);
 
-            while (index < Count && _masses[index] <= maxMZ)
+            while (index < Count && Masses[index] <= maxMZ)
             {
                 peaks.Add(GetPeak(index++));
             }
@@ -328,7 +322,7 @@ namespace CSMSL.Spectral
 
         public virtual byte[] ToBytes(bool zlibCompressed = false)
         {
-            return ToBytes(zlibCompressed, _masses, _intensities);
+            return ToBytes(zlibCompressed, Masses, Intensities);
         }
 
         /// <summary>
@@ -340,7 +334,7 @@ namespace CSMSL.Spectral
         {
             TSpectrum newSpectrum = Clone();
             for (int i = 0; i < newSpectrum.Count; i++)
-                newSpectrum._masses[i] = convertor(newSpectrum._masses[i]);
+                newSpectrum.Masses[i] = convertor(newSpectrum.Masses[i]);
             return newSpectrum;
         }
 
@@ -465,6 +459,10 @@ namespace CSMSL.Spectral
         /// <param name="deepCopy">If true, a new array will be generate, else references are copied</param>
         protected TArray[] CopyData<TArray>(TArray[] sourceArray, bool deepCopy = true) where TArray : struct
         {
+            if (sourceArray == null)
+                return null;
+            if (sourceArray.Length != Count)
+                throw new ArgumentException("Mismatched array size");
             if (!deepCopy)
             {
                 return sourceArray;
@@ -481,7 +479,7 @@ namespace CSMSL.Spectral
             if (Count == 0)
                 return -1;
 
-            int index = Array.BinarySearch(_masses, meanMZ);
+            int index = Array.BinarySearch(Masses, meanMZ);
 
             if (index >= 0)
                 return index;
@@ -496,7 +494,7 @@ namespace CSMSL.Spectral
             {
                 // only the indexm1 peak can be closer
 
-                if (indexm1 >= 0 && _masses[indexm1] >= minMZ)
+                if (indexm1 >= 0 && Masses[indexm1] >= minMZ)
                 {
                     return indexm1;
                 }
@@ -506,7 +504,7 @@ namespace CSMSL.Spectral
             if (index == 0)
             {
                 // only the index can be closer
-                if (_masses[index] <= maxMZ)
+                if (Masses[index] <= maxMZ)
                 {
                     return index;
                 }
@@ -514,8 +512,8 @@ namespace CSMSL.Spectral
                 return -1;
             }
 
-            double p1 = _masses[indexm1];
-            double p2 = _masses[index];
+            double p1 = Masses[indexm1];
+            double p2 = Masses[index];
 
             if (p2 > maxMZ)
             {
@@ -534,7 +532,7 @@ namespace CSMSL.Spectral
 
         protected int GetPeakIndex(double mz)
         {
-            int index = Array.BinarySearch(_masses, mz);
+            int index = Array.BinarySearch(Masses, mz);
 
             if (index >= 0)
                 return index;
@@ -559,52 +557,52 @@ namespace CSMSL.Spectral
 
         ISpectrum<TPeak> ISpectrum<TPeak>.Extract(IRange<double> mzRange)
         {
-            throw new NotImplementedException();
+            return Extract(mzRange);
         }
 
         ISpectrum<TPeak> ISpectrum<TPeak>.Extract(double minMZ, double maxMZ)
         {
-            throw new NotImplementedException();
+            return Extract(minMZ, maxMZ);
         }
 
         ISpectrum<TPeak> ISpectrum<TPeak>.FilterByMZ(IEnumerable<IRange<double>> mzRanges)
         {
-            throw new NotImplementedException();
+            return FilterByMZ(mzRanges);
         }
 
         ISpectrum<TPeak> ISpectrum<TPeak>.FilterByMZ(IRange<double> mzRange)
         {
-            throw new NotImplementedException();
+            return FilterByMZ(mzRange);
         }
 
         ISpectrum<TPeak> ISpectrum<TPeak>.FilterByMZ(double minMZ, double maxMZ)
         {
-            throw new NotImplementedException();
+            return FilterByMZ(minMZ, maxMZ);
         }
 
         ISpectrum<TPeak> ISpectrum<TPeak>.FilterByIntensity(double minIntensity, double maxIntensity)
         {
-            throw new NotImplementedException();
+            return FilterByIntensity(minIntensity, maxIntensity);
         }
 
         ISpectrum<TPeak> ISpectrum<TPeak>.FilterByIntensity(IRange<double> intenistyRange)
         {
-            throw new NotImplementedException();
+            return FilterByIntensity(intenistyRange);
         }
 
         MZPeak ISpectrum.GetPeak(int index)
         {
-            throw new NotImplementedException();
+            return GetPeak(index);
         }
 
         IEnumerator<MZPeak> IEnumerable<MZPeak>.GetEnumerator()
         {
-            throw new NotImplementedException();
+            return GetEnumerator();
         }
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-            throw new NotImplementedException();
+            return GetEnumerator();
         }
     }
 }

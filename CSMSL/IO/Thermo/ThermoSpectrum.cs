@@ -62,6 +62,16 @@ namespace CSMSL.IO.Thermo
             }
         }
 
+        public ThermoSpectrum(byte[] mzintensities)
+        {
+            Count = mzintensities.Length/(sizeof (double)*2);
+            int size = sizeof (double)*Count;
+            Masses = new double[Count];
+            Intensities = new double[Count];
+            Buffer.BlockCopy(mzintensities, 0, Masses, 0, size);
+            Buffer.BlockCopy(mzintensities, size, Intensities, 0, size);
+        }
+
         internal ThermoSpectrum(double[,] peakData)
             : this(peakData, peakData.GetLength(1))
         {
@@ -76,8 +86,7 @@ namespace CSMSL.IO.Thermo
         }
         
         public ThermoSpectrum(ThermoSpectrum thermoSpectrum)
-            :this(thermoSpectrum._masses, thermoSpectrum._intensities,thermoSpectrum._noises,
-            thermoSpectrum._charges,thermoSpectrum._resolutions)
+            :this(thermoSpectrum.Masses, thermoSpectrum.Intensities,thermoSpectrum._noises, thermoSpectrum._charges,thermoSpectrum._resolutions)
         {
             
         }
@@ -94,7 +103,7 @@ namespace CSMSL.IO.Thermo
             double noise = _noises[index];
             if (Math.Abs(noise) < 1e-25)
                 return 0;
-            return _intensities[index]/noise;
+            return Intensities[index]/noise;
         }
 
         public int GetCharge(int index)
@@ -124,16 +133,20 @@ namespace CSMSL.IO.Thermo
 
         public override ThermoMzPeak GetPeak(int index)
         {
-            return IsHighResolution ? new ThermoMzPeak(_masses[index], _intensities[index], _charges[index], _noises[index], _resolutions[index]) 
-                : new ThermoMzPeak(_masses[index], _intensities[index]);
+            return IsHighResolution ? new ThermoMzPeak(Masses[index], Intensities[index], _charges[index], _noises[index], _resolutions[index]) 
+                : new ThermoMzPeak(Masses[index], Intensities[index]);
         }
 
         public override byte[] ToBytes(bool zlibCompressed = false)
         {
-            double[] charges = new double[Count];
-            for (int i = 0; i < Count; i++)
-                charges[i] = _charges[i];
-            return ToBytes(zlibCompressed, _masses, _intensities, _resolutions, _noises, charges);
+            if (IsHighResolution)
+            {
+                double[] charges = new double[Count];
+                for (int i = 0; i < Count; i++)
+                    charges[i] = _charges[i];
+                return ToBytes(zlibCompressed, Masses, Intensities, _resolutions, _noises, charges);
+            }
+            return base.ToBytes(zlibCompressed);
         }
 
         public override double[,] ToArray()
@@ -141,8 +154,8 @@ namespace CSMSL.IO.Thermo
             double[,] data = new double[5, Count];
             const int size = sizeof (double);
             int bytesToCopy = size*Count;
-            Buffer.BlockCopy(_masses, 0, data, 0, bytesToCopy);
-            Buffer.BlockCopy(_intensities, 0, data, bytesToCopy, bytesToCopy);
+            Buffer.BlockCopy(Masses, 0, data, 0, bytesToCopy);
+            Buffer.BlockCopy(Intensities, 0, data, bytesToCopy, bytesToCopy);
             Buffer.BlockCopy(_resolutions, 0, data, (int) ThermoRawFile.RawLabelDataColumn.Resolution*bytesToCopy, bytesToCopy);
             Buffer.BlockCopy(_noises, 0, data, (int) ThermoRawFile.RawLabelDataColumn.NoiseLevel*bytesToCopy, bytesToCopy);
 
@@ -154,28 +167,27 @@ namespace CSMSL.IO.Thermo
             Buffer.BlockCopy(charges, 0, data, (int) ThermoRawFile.RawLabelDataColumn.Charge*bytesToCopy, bytesToCopy);
             return data;
         }
-
+        
         public override ThermoSpectrum Extract(double minMZ, double maxMZ)
         {
             if (Count == 0)
                 return Empty;
 
-            int index = Array.BinarySearch(_masses, minMZ);
-            if (index < 0)
-                index = ~index;
+            int index = GetPeakIndex(minMZ);
+            int index2 = GetPeakIndex(maxMZ);
 
-            int count = Count;
+            int count = 1 + index2 - index;
             double[] mz = new double[count];
             double[] intensity = new double[count];
             int[] charges = new int[count];
             double[] noises = new double[count];
             double[] resolutions = new double[count];
             int j = 0;
-
-            while (index < Count && _masses[index] <= maxMZ)
+            
+            while (index < Count && Masses[index] <= maxMZ)
             {
-                mz[j] = _masses[index];
-                intensity[j] = _intensities[index];
+                mz[j] = Masses[index];
+                intensity[j] = Intensities[index];
                 charges[j] = _charges[index];
                 noises[j] = _noises[index];
                 resolutions[j] = _resolutions[index];
@@ -194,9 +206,34 @@ namespace CSMSL.IO.Thermo
             return new ThermoSpectrum(mz, intensity, noises, charges, resolutions, false);
         }
 
+        public MZSpectrum ToMZSpectrum()
+        {
+            return new MZSpectrum(Masses, Intensities);
+        }
+
         public override ThermoSpectrum Clone()
         {
             return new ThermoSpectrum(this);
+        }
+
+        public bool TryGetSignalToNoise(IRange<double> rangeMZ, out double signalToNoise)
+        {
+            return TryGetSignalToNoise(rangeMZ.Minimum, rangeMZ.Maximum, out signalToNoise);
+        }
+
+        public bool TryGetSignalToNoise(double minMZ, double maxMZ, out double signalToNoise)
+        {
+            signalToNoise = 0;
+
+            if (Count == 0)
+                return false;
+
+            int index = GetPeakIndex(minMZ);
+
+            while (index < Count && Masses[index] <= maxMZ)
+                signalToNoise += GetSignalToNoise(index++);
+
+            return signalToNoise > 0.0;
         }
         
         public override ThermoSpectrum FilterByIntensity(double minIntensity = 0, double maxIntensity = double.MaxValue)
@@ -214,10 +251,10 @@ namespace CSMSL.IO.Thermo
             int j = 0;
             for (int i = 0; i < count; i++)
             {
-                double intensity = _intensities[i];
+                double intensity = Intensities[i];
                 if (intensity >= minIntensity && intensity < maxIntensity)
                 {
-                    mz[j] = _masses[i];
+                    mz[j] = Masses[i];
                     intensities[j] = intensity;
                     resolutions[j] = _resolutions[i];
                     charges[j] = _charges[i];
@@ -240,6 +277,7 @@ namespace CSMSL.IO.Thermo
 
             return new ThermoSpectrum(mz, intensities, noises, charges, resolutions, false);
         }
+
 
         public override ThermoSpectrum FilterByMZ(IEnumerable<IRange<double>> mzRanges)
         {
@@ -298,18 +336,16 @@ namespace CSMSL.IO.Thermo
         {
             throw new NotImplementedException();
             //if (Count == 0)
-            //    return new ThermoSpectrum();
+            //    return Empty;
 
             //int count = Count;
 
             //// Peaks to remove
             //HashSet<int> indiciesToRemove = new HashSet<int>();
 
-            //int index = Array.BinarySearch(_masses, minMZ);
-            //if (index < 0)
-            //    index = ~index;
-
-            //while (index < count && _masses[index] <= maxMZ)
+            //int index = GetPeakIndex(minMZ);
+          
+            //while (index < count && Masses[index] <= maxMZ)
             //{
             //    indiciesToRemove.Add(index);
             //    index++;
@@ -320,7 +356,7 @@ namespace CSMSL.IO.Thermo
             //int cleanCount = count - indiciesToRemove.Count;
 
             //if (cleanCount == 0)
-            //    return new ThermoSpectrum();
+            //    return Empty;
 
             //// Create the storage for the cleaned spectrum
             //double[] mz = new double[cleanCount];
@@ -332,13 +368,13 @@ namespace CSMSL.IO.Thermo
             //{
             //    if (indiciesToRemove.Contains(i))
             //        continue;
-            //    mz[j] = _masses[i];
-            //    intensities[j] = _intensities[i];
+            //    mz[j] = Masses[i];
+            //    intensities[j] = Intensities[i];
             //    j++;
             //}
 
             //// Return a new spectrum, don't bother recopying the arrays
-            //return new MZSpectrum(mz, intensities, false);
+            //return new ThermoSpectrum(mz, intensities);
         }
     }
 }

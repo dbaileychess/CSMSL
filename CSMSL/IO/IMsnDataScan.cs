@@ -22,7 +22,7 @@ namespace CSMSL.IO
 {
     public interface IMsnDataScan : IMSDataScan
     {
-        int ParentSpectrumNumber { get; }
+        int GetParentSpectrumNumber();
         double GetPrecursorMz();
         DoubleRange GetIsolationRange();
         int GetPrecursorCharge();

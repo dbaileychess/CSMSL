@@ -20,6 +20,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
+using System.Text;
 
 namespace CSMSL
 {
@@ -176,6 +177,42 @@ namespace CSMSL
             return Math.Sqrt(stdDev/values.Count);
         }
 
+        public static byte[] GetBytes(this double[] values)
+        {
+            if (values == null)
+                return null;
+            var result = new byte[values.Length * sizeof(double)];
+            Buffer.BlockCopy(values, 0, result, 0, result.Length);
+            return result;
+        }
+
+        public static double[] GetDoubles(this byte[] bytes)
+        {
+            var result = new double[bytes.Length / sizeof(double)];
+            Buffer.BlockCopy(bytes, 0, result, 0, bytes.Length);
+            return result;
+        }
+
+        public static string ToCsvString(this IEnumerable<string> values, char delimiter = ',')
+        {
+            StringBuilder sb = new StringBuilder();
+            foreach (string value in values)
+            {
+                if (value.Contains(delimiter))
+                {
+                    sb.Append("\"" + value + "\"");
+                }
+                else
+                {
+                    sb.Append(value);
+                }
+                sb.Append(',');
+            }
+            if (sb.Length > 1)
+                sb.Remove(sb.Length - 1, 1);
+            return sb.ToString();
+        }
+       
         public static int[] Histogram(this IList<double> values, int numberOfBins, out double min, out double max, out double binSize)
         {
             max = values.Max();
@@ -212,16 +249,27 @@ namespace CSMSL
             return bins;
         }
 
+        public static int MaxIndex<TSource>(this IEnumerable<TSource> items) where TSource : IComparable<TSource>
+        {
+            TSource maxItem;
+            return MaxIndex(items, o => o, out maxItem);
+        }
+
+        public static int MaxIndex<TSource>(this IEnumerable<TSource> items, out TSource maxItem) where TSource : IComparable<TSource>
+        {
+            return MaxIndex(items, o => o, out maxItem);
+        }
+
         /// <summary>
         /// Finds the index of the maximum value in a collection
         /// </summary>
-        /// <typeparam name="T"></typeparam>
+        /// <typeparam name="TSource"></typeparam>
         /// <param name="items">The collection of items</param>
         /// <returns>An index to the place of the maximum value in the collection</returns>
-        public static int MaxIndex<T>(this IEnumerable<T> items) where T : IComparable<T>
+        public static int MaxIndex<TSource, TResult>(this IEnumerable<TSource> items, Func<TSource, TResult> selectFunc) where TResult : IComparable<TResult>
         {
-            T maxValue;
-            return MaxIndex(items, out maxValue);
+            TSource maxItem;
+            return MaxIndex(items, selectFunc, out maxItem);
         }
 
         /// <summary>
@@ -231,18 +279,22 @@ namespace CSMSL
         /// <param name="items">The collection of items</param>
         /// <param name="maxValue">The maximum value in the collection</param>
         /// <returns>An index to the place of the maximum value in the collection</returns>
-        public static int MaxIndex<T>(this IEnumerable<T> items, out T maxValue) where T : IComparable<T>
+        public static int MaxIndex<TSource, TResult>(this IEnumerable<TSource> items, Func<TSource, TResult> selectFunc, out TSource maxItem) where TResult : IComparable<TResult>
         {
             // From: http://stackoverflow.com/questions/462699/how-do-i-get-the-index-of-the-highest-value-in-an-array-using-linq
             int maxIndex = -1;
-            maxValue = default(T);
+            TResult maxValue = default(TResult);
+            maxItem = default(TSource);
 
             int index = 0;
-            foreach (T value in items)
+            foreach (TSource item in items)
             {
+                TResult value = selectFunc(item);
+
                 if (value.CompareTo(maxValue) > 0 || maxIndex == -1)
                 {
                     maxIndex = index;
+                    maxItem = item;
                     maxValue = value;
                 }
                 index++;

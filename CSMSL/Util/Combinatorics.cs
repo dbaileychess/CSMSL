@@ -127,7 +127,7 @@ namespace CSMSL.Util
             {
                 for (int i = 0; i < n; i++)
                 {
-                    yield return new[] {input[i]};
+                    yield return new[] { input[i] };
                 }
             }
             else
