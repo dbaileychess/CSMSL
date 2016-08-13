@@ -245,11 +245,10 @@ namespace CSMSL.Tests.Proteomics
             Assert.AreEqual(peptide1, peptide2);
         }
 
-        [Test]
-        [ExpectedException(typeof(ArgumentException), ExpectedMessage = "Unable to correctly parse the following modification: TMT 7-plex")]
+        [Test]       
         public void ParseNamedChemicalModificationInvalidName()
         {
-            Peptide peptide = new Peptide("T[TMT 7-plex]HGEAK[Acetyl]K");
+            Assert.Throws<ArgumentException>(() => new Peptide("T[TMT 7-plex]HGEAK[Acetyl]K"), "Unable to correctly parse the following modification: TMT 7-plex");
         }
 
         [Test]
@@ -334,19 +333,17 @@ namespace CSMSL.Tests.Proteomics
         }
 
         [Test]
-        [ExpectedException(typeof(IndexOutOfRangeException), ExpectedMessage = "Residue number not in the correct range: [1-20] you specified: 25")]
         public void SetResiduePositionModificationOutOfRangeUpper()
         {
             ChemicalFormula formula = new ChemicalFormula("Fe");
-            _mockPeptideEveryAminoAcid.SetModification(formula, 25);
+            Assert.Throws<IndexOutOfRangeException>(()=>_mockPeptideEveryAminoAcid.SetModification(formula, 25), "Residue number not in the correct range: [1-20] you specified: 25");
         }
 
         [Test]
-        [ExpectedException(typeof(IndexOutOfRangeException), ExpectedMessage = "Residue number not in the correct range: [1-20] you specified: 0")]
         public void SetResiduePositionModificationOutOfRangeLower()
         {
             ChemicalFormula formula = new ChemicalFormula("Fe");
-            _mockPeptideEveryAminoAcid.SetModification(formula, 0);
+            Assert.Throws< IndexOutOfRangeException>(()=>_mockPeptideEveryAminoAcid.SetModification(formula, 0), "Residue number not in the correct range: [1-20] you specified: 0");
         }
 
         [Test]

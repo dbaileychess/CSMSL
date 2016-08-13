@@ -25,13 +25,13 @@ namespace CSMSL.Tests.Chemistry
     [TestFixture, Category("Periodic Table")]
     public sealed class PeriodicTableTestFixture
     {
-        [TestFixtureTearDown]
+        [OneTimeTearDown]
+        [TearDown]
         public void CleanUP()
         {
             // We need to restore the default table before each test, or other tests will fail
             PeriodicTable.RestoreDefaults();
-        }      
-   
+        }
 
         [Test]
         public void LoadUserDefineTable()

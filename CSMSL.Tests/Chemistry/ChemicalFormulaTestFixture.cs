@@ -138,12 +138,11 @@ namespace CSMSL.Tests.Chemistry
         }
 
         [Test]
-        [ExpectedException(typeof(KeyNotFoundException), ExpectedMessage = "The element symbol 'Faa' is not found in the periodic table")]
         public void AddNonExistentSymbolToFormula()
         {
             ChemicalFormula formulaA = new ChemicalFormula("C2H3NO");
 
-            formulaA.Add("Faa", 1);
+            Assert.Throws<KeyNotFoundException>(() => formulaA.Add("Faa", 1), "The element symbol 'Faa' is not found in the periodic table");
         }
 
         [Test]

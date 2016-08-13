@@ -27,17 +27,15 @@ namespace CSMSL.Tests.Util.Collections
     public sealed class SortedMaxSizedContainerTestFixture
     {
         [Test]
-        [ExpectedException(typeof(ArgumentOutOfRangeException), ExpectedMessage = "Max size must be a positive, non-zero value\r\nParameter name: maxSize")]
         public void SortedMaxSizedContainerMaxSizeZero()
         {
-            SortedMaxSizedContainer<int> container = new SortedMaxSizedContainer<int>(0);
+            Assert.Throws<ArgumentOutOfRangeException>(()=> new SortedMaxSizedContainer<int>(0), "Max size must be a positive, non-zero value\r\nParameter name: maxSize");
         }
 
         [Test]
-        [ExpectedException(typeof(ArgumentOutOfRangeException), ExpectedMessage = "Max size must be a positive, non-zero value\r\nParameter name: maxSize")]
         public void SortedMaxSizedContainerMaxSizeNegative()
         {
-            SortedMaxSizedContainer<int> container = new SortedMaxSizedContainer<int>(-5);
+            Assert.Throws<ArgumentOutOfRangeException>(()=>new SortedMaxSizedContainer<int>(-5), "Max size must be a positive, non-zero value\r\nParameter name: maxSize");
         }
 
         [Test]

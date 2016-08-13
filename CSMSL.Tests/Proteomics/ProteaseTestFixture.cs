@@ -27,7 +27,7 @@ namespace CSMSL.Tests.Proteomics
     {
         private Protein _proteinA;
 
-        [TestFixtureSetUp]
+        [SetUp]
         public void Setup()
         {
             _proteinA = new Protein("MMRGFKQRLIKKTTGSSSSSSSKKKDKEKEKEKSSTTSSTSKKPASASSSSHGTTHSSASSTGSKSTTEKGKQSGSVPSQ" +
