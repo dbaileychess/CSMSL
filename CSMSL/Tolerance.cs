@@ -16,6 +16,7 @@
 // License along with CSMSL. If not, see <http://www.gnu.org/licenses/>.
 
 using System;
+using System.Globalization;
 using System.Text.RegularExpressions;
 
 namespace CSMSL
@@ -71,7 +72,7 @@ namespace CSMSL
             if (!m.Success)
                 throw new ArgumentException("Input string is not in the correct format: " + s);
             Type = m.Groups[1].Success ? ToleranceType.PlusAndMinus : ToleranceType.FullWidth;
-            Value = double.Parse(m.Groups[2].Value);
+            Value = double.Parse(m.Groups[2].Value, CultureInfo.CurrentCulture);
             ToleranceUnit type;
             Enum.TryParse(m.Groups[3].Value, true, out type);
             Unit = type;

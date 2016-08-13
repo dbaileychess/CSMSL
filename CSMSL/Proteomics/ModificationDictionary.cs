@@ -18,6 +18,7 @@
 using CSMSL.Chemistry;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -81,7 +82,7 @@ namespace CSMSL.Proteomics
                     }
                     else
                     {
-                        mass = double.Parse(modNode.SelectSingleNode("DeltaMass").InnerText);
+                        mass = double.Parse(modNode.SelectSingleNode("DeltaMass").InnerText, CultureInfo.CurrentCulture);
                     }
 
                     ModificationSites sites = ModificationSites.None;

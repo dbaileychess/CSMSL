@@ -17,6 +17,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 
 namespace CSMSL.IO.MzTab
@@ -239,10 +240,10 @@ namespace CSMSL.IO.MzTab
                     Charge = int.Parse(value);
                     return;
                 case Fields.ExperimentalMZ:
-                    ExperimentalMZ = double.Parse(value);
+                    ExperimentalMZ = double.Parse(value, CultureInfo.CurrentCulture);
                     return;
                 case Fields.TheoreticalMZ:
-                    TheoreticalMZ = double.Parse(value);
+                    TheoreticalMZ = double.Parse(value, CultureInfo.CurrentCulture);
                     return;
                 case Fields.Uri:
                     Uri = new Uri(value);
@@ -271,7 +272,7 @@ namespace CSMSL.IO.MzTab
 
                 if (condensedFieldName == Fields.SearchEngineScore)
                 {
-                    SetListValue(ref _searchEngineScores, indices[0], double.Parse(value));
+                    SetListValue(ref _searchEngineScores, indices[0], double.Parse(value, CultureInfo.CurrentCulture));
                     return;
                 }
             }

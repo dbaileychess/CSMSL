@@ -17,6 +17,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -83,6 +84,7 @@ namespace CSMSL.Chemistry
             _elements.Clear();
             Element element = null;
             _isotopes = new Isotope[500];
+            BiggestIsotopeNumber = -1;
             using (XmlReader reader = XmlReader.Create(filePath))
             {
                 while (reader.Read())
@@ -102,9 +104,10 @@ namespace CSMSL.Chemistry
                             break;
                         case "Isotope":
                             string unqiueId = reader["Id"];
-                            double mass = double.Parse(reader["Mass"]);
+                            string a = reader["Mass"];
+                            double mass = double.Parse(reader["Mass"], CultureInfo.CurrentCulture);
                             int massNumber = int.Parse(reader["MassNumber"]);
-                            float abundance = float.Parse(reader["Abundance"]);
+                            float abundance = float.Parse(reader["Abundance"], CultureInfo.CurrentCulture);
                             if (abundance > 0 && element != null)
                             {
                                 Isotope isotope = element.AddIsotope(massNumber, mass, abundance);
@@ -148,16 +151,16 @@ namespace CSMSL.Chemistry
                     writer.WriteStartElement("Element");
                     writer.WriteAttributeString("Name", element.Name);
                     writer.WriteAttributeString("Symbol", element.AtomicSymbol);
-                    writer.WriteAttributeString("AtomicNumber", element.AtomicNumber.ToString("N"));
-                    writer.WriteAttributeString("AverageMass", element.AverageMass.ToString("R"));
-                    writer.WriteAttributeString("ValenceElectrons", element.ValenceElectrons.ToString("N"));
+                    writer.WriteAttributeString("AtomicNumber", element.AtomicNumber.ToString("N", CultureInfo.CurrentCulture));
+                    writer.WriteAttributeString("AverageMass", element.AverageMass.ToString("R", CultureInfo.CurrentCulture));
+                    writer.WriteAttributeString("ValenceElectrons", element.ValenceElectrons.ToString("N", CultureInfo.CurrentCulture));
                     foreach (var isotope in element.Isotopes.Values)
                     {
                         writer.WriteStartElement("Isotope");
-                        writer.WriteAttributeString("Id", isotope.UniqueId.ToString("N"));
-                        writer.WriteAttributeString("Mass", isotope.AtomicMass.ToString("R"));
-                        writer.WriteAttributeString("MassNumber", isotope.MassNumber.ToString("N"));
-                        writer.WriteAttributeString("Abundance", isotope.RelativeAbundance.ToString("R"));
+                        writer.WriteAttributeString("Id", isotope.UniqueId.ToString("N", CultureInfo.CurrentCulture));
+                        writer.WriteAttributeString("Mass", isotope.AtomicMass.ToString("R", CultureInfo.CurrentCulture));
+                        writer.WriteAttributeString("MassNumber", isotope.MassNumber.ToString("N", CultureInfo.CurrentCulture));
+                        writer.WriteAttributeString("Abundance", isotope.RelativeAbundance.ToString("R", CultureInfo.CurrentCulture));
                         writer.WriteEndElement(); // Isotope
                     }
                     writer.WriteEndElement(); // Element

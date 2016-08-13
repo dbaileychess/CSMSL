@@ -20,6 +20,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using CSMSL.Proteomics;
+using System.Globalization;
 
 namespace CSMSL.IO.MzTab
 {
@@ -307,7 +308,7 @@ namespace CSMSL.IO.MzTab
                     AmbiguityMembers = value.Split(',').ToList();
                     return;
                 case Fields.Coverage:
-                    Coverage = double.Parse(value);
+                    Coverage = double.Parse(value, CultureInfo.CurrentCulture);
                     return;
                 case Fields.Uri:
                     Uri = new Uri(value);
@@ -329,19 +330,19 @@ namespace CSMSL.IO.MzTab
                         SetListValue(ref _searchEngines, indices[0], new CVParamater(value));
                         return;
                     case Fields.BestSearchEngineScore:
-                        SetListValue(ref _bestSearchEngineScores, indices[0], double.Parse(value));
+                        SetListValue(ref _bestSearchEngineScores, indices[0], double.Parse(value, CultureInfo.CurrentCulture));
                         return;
                     case Fields.AbundancePerAssay:
-                        SetListValue(ref _abundanceAssays, indices[0], double.Parse(value));
+                        SetListValue(ref _abundanceAssays, indices[0], double.Parse(value, CultureInfo.CurrentCulture));
                         return;
                     case Fields.AbundanceStudyVariables:
-                        SetListValue(ref _abundanceStudyVariables, indices[0], double.Parse(value));
+                        SetListValue(ref _abundanceStudyVariables, indices[0], double.Parse(value, CultureInfo.CurrentCulture));
                         return;
                     case Fields.AbundanceStdevStudyVariables:
-                        SetListValue(ref _abundanceStdevStudyVariables, indices[0], double.Parse(value));
+                        SetListValue(ref _abundanceStdevStudyVariables, indices[0], double.Parse(value, CultureInfo.CurrentCulture));
                         return;
                     case Fields.AbundanceStandardErrorStudyVariables:
-                        SetListValue(ref _abundanceStandardErrorStudyVariables, indices[0], double.Parse(value));
+                        SetListValue(ref _abundanceStandardErrorStudyVariables, indices[0], double.Parse(value, CultureInfo.CurrentCulture));
                         return;
                     case Fields.SearchEngineScoreMsRun:
                         SetListValue(ref _searchEngineScoreMsRun, indices[0], indices[1], double.TryParse(value, out tempDbl) ? tempDbl : default(double?));

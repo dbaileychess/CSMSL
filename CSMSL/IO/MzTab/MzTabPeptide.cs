@@ -17,6 +17,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 
 namespace CSMSL.IO.MzTab
@@ -261,7 +262,7 @@ namespace CSMSL.IO.MzTab
                     Charge = int.Parse(value);
                     return;
                 case Fields.MZ:
-                    MZ = double.Parse(value);
+                    MZ = double.Parse(value, CultureInfo.InvariantCulture);
                     return;
                 case Fields.Uri:
                     Uri = new Uri(value);
@@ -279,19 +280,19 @@ namespace CSMSL.IO.MzTab
                 switch (condensedFieldName)
                 {
                     case Fields.AbundanceAssay:
-                        SetListValue(ref _abundanceAssays, indices[0], double.Parse(value));
+                        SetListValue(ref _abundanceAssays, indices[0], double.Parse(value, CultureInfo.CurrentCulture));
                         return;
                     case Fields.AbundanceStudyVariable:
-                        SetListValue(ref _abundanceStudyVariables, indices[0], double.Parse(value));
+                        SetListValue(ref _abundanceStudyVariables, indices[0], double.Parse(value, CultureInfo.CurrentCulture));
                         return;
                     case Fields.AbundanceStDevStudyVariable:
-                        SetListValue(ref _abundanceStdevStudyVariables, indices[0], double.Parse(value));
+                        SetListValue(ref _abundanceStdevStudyVariables, indices[0], double.Parse(value, CultureInfo.CurrentCulture));
                         return;
                     case Fields.AbudnanceStdErrorStudyVariable:
-                        SetListValue(ref _abundanceStandardErrorStudyVariables, indices[0], double.Parse(value));
+                        SetListValue(ref _abundanceStandardErrorStudyVariables, indices[0], double.Parse(value, CultureInfo.CurrentCulture));
                         return;
                     case Fields.BestSearchEngineScore:
-                        SetListValue(ref _bestSearchEngineScores, indices[0], double.Parse(value));
+                        SetListValue(ref _bestSearchEngineScores, indices[0], double.Parse(value, CultureInfo.CurrentCulture));
                         return;
                 }
             }

@@ -19,6 +19,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using CSMSL.Chemistry;
+using System.Globalization;
 
 namespace CSMSL.IO.MzTab
 {
@@ -254,10 +255,10 @@ namespace CSMSL.IO.MzTab
                     Description = value;
                     return;
                 case Fields.ExperimentMZ:
-                    ExperimentalMZ = double.Parse(value);
+                    ExperimentalMZ = double.Parse(value, CultureInfo.CurrentCulture);
                     return;
                 case Fields.TheoreticalMZ:
-                    TheoreticalMZ = double.Parse(value);
+                    TheoreticalMZ = double.Parse(value, CultureInfo.CurrentCulture);
                     return;
                 case Fields.Charge:
                     Charge = int.Parse(value);
@@ -302,22 +303,22 @@ namespace CSMSL.IO.MzTab
                 switch (condensedFieldName)
                 {
                     case Fields.BestSearchEngineScores:
-                        SetListValue(ref _bestSearchEngineScores, indices[0], double.Parse(value));
+                        SetListValue(ref _bestSearchEngineScores, indices[0], double.Parse(value, CultureInfo.CurrentCulture));
                         return;
                     case Fields.SearchEngineScorePerMsRun:
-                        SetListValue(ref _searchEngineScorePerMsRun, indices[0], indices[1], double.Parse(value));
+                        SetListValue(ref _searchEngineScorePerMsRun, indices[0], indices[1], double.Parse(value, CultureInfo.CurrentCulture));
                         return;
                     case Fields.AbundanceAssay:
-                        SetListValue(ref _abundanceAssays, indices[0], double.Parse(value));
+                        SetListValue(ref _abundanceAssays, indices[0], double.Parse(value, CultureInfo.CurrentCulture));
                         return;
                     case Fields.AbundanceStudyVariable:
-                        SetListValue(ref _abundanceStudyVariables, indices[0], double.Parse(value));
+                        SetListValue(ref _abundanceStudyVariables, indices[0], double.Parse(value, CultureInfo.CurrentCulture));
                         return;
                     case Fields.AbundanceStDevStudyVariable:
-                        SetListValue(ref _abundanceStdevStudyVariables, indices[0], double.Parse(value));
+                        SetListValue(ref _abundanceStdevStudyVariables, indices[0], double.Parse(value, CultureInfo.CurrentCulture));
                         return;
                     case Fields.AbudnanceStdErrorStudyVariable:
-                        SetListValue(ref _abundanceStandardErrorStudyVariables, indices[0], double.Parse(value));
+                        SetListValue(ref _abundanceStandardErrorStudyVariables, indices[0], double.Parse(value, CultureInfo.CurrentCulture));
                         return;
                 }
             }
